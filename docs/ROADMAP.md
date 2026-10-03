@@ -26,11 +26,11 @@
 
 ## v2.3 distinct enumeration and Pareto search
 
-- [ ] Replace seed variation as the primary alternative-generation mechanism with CP-SAT no-good cuts.
-- [ ] Allow explicit distinctness dimensions such as melody, rhythm, bass, and harmony.
-- [ ] Add objective-vector metadata.
-- [ ] Add weighted scalarization and/or Pareto-front approximation.
-- [ ] Test deterministic enumeration and Pareto dominance independently.
+- [x] Replace seed variation as the primary alternative-generation mechanism with CP-SAT no-good cuts.
+- [x] Allow explicit distinctness dimensions: melody, rhythm, bass, and harmony.
+- [x] Add named objective-vector metadata with independent recomputation.
+- [x] Add deterministic weighted scalarization profiles and Pareto-front approximation.
+- [x] Test deterministic enumeration, metadata integrity, and Pareto dominance independently.
 
 ## v2.4 solver-native multi-voice harmony
 

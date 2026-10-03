@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.3.0a1 — distinct enumeration and Pareto search
+
+- Replaced seed-only `generate_many()` variation with CP-SAT no-good cuts that guarantee distinctness over selected musical dimensions.
+- Added explicit distinctness dimensions for melody, rhythm, bass, and harmony.
+- Split the scalar objective into five named minimized components: tension deviation, melody motion, bass motion, harmonic repetition, and contour mismatch.
+- Added independent objective-vector recomputation from serialized musical values; solver-side and independent vectors must agree.
+- Added deterministic weighted scalarization profiles and a bounded Pareto-front approximation API.
+- Added independent Pareto dominance filtering and deterministic single-worker enumeration tests.
+- Versioned JSON artifacts to schema 2.3 with integrity-protected objective-vector metadata.
+- Added CLI controls for distinct dimensions, Pareto mode, and Pareto candidate-pool size.
+- Kept the hard musical certification contract unchanged at `CM001`–`CM026`; v2.3 changes search/ranking semantics, not feasibility semantics.
+
 ## 2.2.0a1 — verified phrase grammar
 
 - Added explicit phrase spans with unique IDs and non-overlap/in-bounds validation.

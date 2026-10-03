@@ -7,8 +7,15 @@ from pathlib import Path
 
 from .midi import write_midi
 from .models import GenerationSpec
-from .provenance import load_result_json, verify_artifact_integrity, write_result_json
+from .objective import evaluate_objective_vector
+from .provenance import (
+    ARTIFACT_SCHEMA_VERSION,
+    load_result_json,
+    verify_artifact_integrity,
+    write_result_json,
+)
 from .render import render_grid
+from .search import objective_mapping
 from .solver import ConstraintMusicSolver, InternalVerificationError, NoSolutionError
 from .verifier import verify_result
 
@@ -29,13 +36,29 @@ def build_parser() -> argparse.ArgumentParser:
         "--json", dest="json_path", type=Path, help="Write a verifiable JSON artifact"
     )
     generate.add_argument("--seed", type=int, help="Override the YAML seed")
-    generate.add_argument("--count", type=int, default=1, help="Generate N seeded alternatives")
+    generate.add_argument("--count", type=int, default=1, help="Generate N distinct alternatives")
+    generate.add_argument(
+        "--distinct-on",
+        default="melody",
+        help="Comma-separated no-good dimensions: melody,rhythm,bass,harmony",
+    )
+    generate.add_argument(
+        "--pareto",
+        action="store_true",
+        help="Approximate a nondominated front using deterministic weighted scalarizations",
+    )
+    generate.add_argument(
+        "--pareto-candidate-multiplier",
+        type=int,
+        default=3,
+        help="Candidate-pool multiplier for Pareto approximation (1..8)",
+    )
     generate.add_argument("--print-grid", action="store_true", help="Print the solved note grid")
 
     verify = subparsers.add_parser(
         "verify",
         help=(
-            "Verify hard musical constraints and v2.1 artifact provenance "
+            "Verify hard musical constraints and current artifact provenance "
             "without rerunning the solver"
         ),
     )
@@ -63,11 +86,29 @@ def main(argv: list[str] | None = None) -> None:
             spec = GenerationSpec.from_yaml(args.config)
             if args.seed is not None:
                 spec = replace(spec, seed=args.seed)
-            _run_generation(spec, args.output, args.json_path, args.count, args.print_grid)
+            _run_generation(
+                spec,
+                args.output,
+                args.json_path,
+                args.count,
+                args.print_grid,
+                args.distinct_on,
+                args.pareto,
+                args.pareto_candidate_multiplier,
+            )
         elif args.command == "verify":
             _run_verification(args.artifact, args.allow_legacy)
         elif args.command == "demo":
-            _run_generation(GenerationSpec(), args.output, args.json_path, 1, args.print_grid)
+            _run_generation(
+                GenerationSpec(),
+                args.output,
+                args.json_path,
+                1,
+                args.print_grid,
+                "melody",
+                False,
+                3,
+            )
         else:
             parser.error(f"Unknown command {args.command}")
     except (ValueError, NoSolutionError, InternalVerificationError, OSError) as exc:
@@ -81,22 +122,34 @@ def _run_generation(
     json_path: Path | None,
     count: int,
     print_grid: bool,
+    distinct_on: str,
+    pareto: bool,
+    pareto_candidate_multiplier: int,
 ) -> None:
     solver = ConstraintMusicSolver()
-    results = solver.generate_many(spec, count)
+    if pareto:
+        results = solver.generate_pareto(
+            spec,
+            count,
+            distinct_on,
+            pareto_candidate_multiplier,
+        )
+    else:
+        results = solver.generate_many(spec, count, distinct_on)
     for index, result in enumerate(results, start=1):
-        midi_path = _numbered_path(output, index, count)
+        midi_path = _numbered_path(output, index, len(results))
         write_midi(result, midi_path)
         if json_path is not None:
-            report_path = _numbered_path(json_path, index, count)
+            report_path = _numbered_path(json_path, index, len(results))
             write_result_json(result, report_path)
         if print_grid:
             if index > 1:
                 print("\n" + "=" * 80 + "\n")
             print(render_grid(result))
+        vector = objective_mapping(evaluate_objective_vector(result))
         print(
             f"wrote {midi_path} | {result.solver_status} | "
-            f"objective={result.objective_value:.1f} | verification=PASS"
+            f"objective={result.objective_value:.1f} | vector={vector} | verification=PASS"
         )
 
 
@@ -104,7 +157,7 @@ def _run_verification(path: Path, allow_legacy: bool) -> None:
     result, payload = load_result_json(path)
     report = verify_result(result)
     integrity_issues = verify_artifact_integrity(result, payload)
-    if allow_legacy and payload.get("schema_version") != "2.1":
+    if allow_legacy and payload.get("schema_version") != ARTIFACT_SCHEMA_VERSION:
         integrity_issues = ()
 
     if report.valid and not integrity_issues:

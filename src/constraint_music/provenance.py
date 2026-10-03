@@ -8,8 +8,10 @@ from typing import Any
 
 from .contract import CONTRACT_VERSION, contract_digest
 from .models import GenerationResult
+from .objective import evaluate_objective_vector
+from .search import objective_mapping
 
-ARTIFACT_SCHEMA_VERSION = "2.2"
+ARTIFACT_SCHEMA_VERSION = "2.3"
 
 
 def _sha256_json(payload: object) -> str:
@@ -36,7 +38,7 @@ def composition_digest(result: GenerationResult) -> str:
 def artifact_content_digest(payload: Mapping[str, Any]) -> str:
     content = {
         key: payload[key]
-        for key in ("spec", "solver", "validation", "music")
+        for key in ("spec", "solver", "validation", "music", "search")
         if key in payload
     }
     return _sha256_json(content)
@@ -45,6 +47,10 @@ def artifact_content_digest(payload: Mapping[str, Any]) -> str:
 def artifact_payload(result: GenerationResult) -> dict[str, Any]:
     payload = result.to_dict()
     payload["schema_version"] = ARTIFACT_SCHEMA_VERSION
+    payload["search"] = {
+        "objective_vector": objective_mapping(evaluate_objective_vector(result)),
+        "semantics": "all objective components are minimized",
+    }
     payload["provenance"] = {
         "constraint_contract_version": CONTRACT_VERSION,
         "constraint_contract_sha256": contract_digest(),
@@ -82,6 +88,17 @@ def verify_artifact_integrity(
     provenance = payload.get("provenance")
     if not isinstance(provenance, Mapping):
         return (*issues, "missing provenance object")
+    search = payload.get("search")
+    if not isinstance(search, Mapping):
+        issues.append("missing search metadata")
+    else:
+        try:
+            expected_vector = objective_mapping(evaluate_objective_vector(result))
+        except (IndexError, ValueError):
+            issues.append("objective vector cannot be recomputed from invalid musical values")
+        else:
+            if search.get("objective_vector") != expected_vector:
+                issues.append("objective vector metadata mismatch")
     if provenance.get("constraint_contract_version") != CONTRACT_VERSION:
         issues.append("constraint contract version does not match this verifier")
     if provenance.get("constraint_contract_sha256") != contract_digest():
