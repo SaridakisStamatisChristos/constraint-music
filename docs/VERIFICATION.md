@@ -1,51 +1,62 @@
 # Verification model
 
-Constraint Music v2.4 defines 32 hard musical rules (`CM001`–`CM032`). The verifier checks them from a serialized result plus its generation specification, without rerunning the solver.
+Constraint Music v2.6 defines 40 stable hard musical rules (`CM001`–`CM040`). The verifier checks them from ordinary serialized musical values plus the generation specification, without rerunning CP-SAT and without inspecting solver variables or constraints.
 
-`CM001`–`CM016` retain the v2 tonal/harmonic contract: shape, pitch domains, harmony domain, chord membership, progression legality, melodic leap limits, tritone avoidance, leading-tone resolution, repetition bounds, large-leap recovery, bass leap/tritone limits, parallel-perfect avoidance, and the backward-compatible whole-piece closure rule.
+## Contract layers
 
-v2.1 adds the rhythm/motif layer:
+`CM001`–`CM016` retain the original tonal/harmonic contract: shape, pitch domains, harmony domain, strong-beat melody/bass chord membership, progression legality, melodic/bass motion limits, tritone avoidance, tendency-tone resolution, repetition, leap recovery, parallel-perfect avoidance, and the backward-compatible whole-piece closure rule.
 
-- `CM017` — rhythm state domain (`onset`, `tie`, `rest`);
-- `CM018` — tie/rest grammar, tied-pitch identity, and run limits;
-- `CM019` — per-bar onset/rest/tie density and optional downbeat onset;
-- `CM020` — exact motif repetition/transposition including rhythm inheritance;
-- `CM021` — newly articulated final tonic for the legacy whole-piece closure.
+`CM017`–`CM021` certify rhythm, tie/rest grammar, bar density, motif relations, and terminal articulation.
 
-v2.2 adds the phrase layer:
+`CM022`–`CM026` certify phrase boundaries, roles, structural relations, phrase-local cadences, and answer-linked antecedent/consequent structure.
 
-- `CM022` — phrase IDs/spans are unique, in bounds, and non-overlapping;
-- `CM023` — phrase-role opening/closing semantics;
-- `CM024` — exact repeat/transpose/answer/sequence reconstruction;
-- `CM025` — exact phrase-local cadence semantics;
-- `CM026` — answer-linked antecedent/consequent open-to-strong structure.
+`CM027`–`CM032` certify the solver-native SATB layer: beat shape and soprano anchoring, ranges/order, spacing, complete triadic realization/root doubling, inner-voice parallel-perfect avoidance, and inner leading-tone resolution.
 
-v2.3 adds no new hard musical IDs. Distinct enumeration and Pareto ranking operate only after the same feasible-set contract has been compiled.
+`CM033`–`CM036` certify the v2.5 harmonic-form layer: explicit chord kind/inversion metadata, complete seventh realization and inversion agreement, chordal-seventh downward resolution, and global dominant-seventh resolution.
 
-v2.4 adds the solver-native SATB layer:
+v2.6 adds four tonicization rules:
 
-- `CM027` — one soprano, alto, and tenor note per beat, with soprano anchored to the strong-grid melody;
-- `CM028` — SATB ranges and strict `bass < tenor < alto < soprano` ordering;
-- `CM029` — soprano/alto and alto/tenor spacing does not exceed one octave;
-- `CM030` — every four-part sonority contains the complete active triad and doubles its root;
-- `CM031` — when enabled, voice pairs involving alto or tenor avoid parallel perfect fifths and octaves;
-- `CM032` — when enabled, alto and tenor leading tones resolve upward by semitone.
-
-SATB rules are conditional on SATB voice arrays being present. This lets the current verifier load historical artifacts without inventing missing inner voices, while every v2.4 solver-produced result carries and verifies SATB data.
+- `CM037` — tonicization context: enabled artifacts carry one nullable target per beat; non-null targets are supported local diatonic tonics, use seventh form, and satisfy `minimum_applied_dominants`;
+- `CM038` — applied-dominant realization: global root degree, target-derived dominant-seventh pitch-class set, completeness, and inversion/bass agreement are recomputed independently;
+- `CM039` — target resolution: every applied dominant resolves immediately to its declared untargeted diatonic target chord;
+- `CM040` — local tendency resolution: the applied chordal seventh moves down by step and the local leading tone moves up by semitone in whichever SATB voice carries each tone.
 
 ## Solver/verifier symmetry
 
-Every hard musical rule has both a CP-SAT-side enforcement path and a post-solve verifier path. Phrase metadata is validated before model construction, while every musical consequence of that metadata is compiled and then reconstructed independently by the verifier.
+Every hard musical consequence introduced by the solver has a separately implemented post-solve check. Configuration validation may reject malformed declarations before model construction, but certification never trusts that a CP-SAT constraint was present merely because the solver returned `OPTIMAL` or `FEASIBLE`.
 
-The same rule applies to SATB. CP-SAT solves the four-part harmonic skeleton, but the verifier reads only ordinary MIDI-note arrays and recomputes range/order, spacing, chord-completeness/root-doubling, parallel-perfect, and tendency-tone invariants. It does not inspect SATB solver variables or constraints.
+For SATB and harmonic context, the verifier receives ordinary MIDI-note arrays, global chord degrees, chord-kind/inversion metadata, and nullable tonicization targets. It reconstructs pitch classes and target-derived applied-dominant identities itself.
 
-A solver assignment that fails the verifier raises `InternalVerificationError` and is not exported as a verified composition.
+A solver assignment that fails this independent pass raises `InternalVerificationError` and is not exported as verified output.
+
+## Preserved outer-voice semantics
+
+v2.6 deliberately does not reinterpret `CM005` or `CM006`.
+
+- `CM005` still requires the strong-grid melody/soprano to belong to the global diatonic triad identified by `chord_degrees[beat]`.
+- `CM006` still requires bass to belong to that same global diatonic triad.
+
+Applied-dominant chromatic tones therefore occur in inner voices. A candidate tonicization target is exposed only when its applied dominant can be represented completely while preserving those historical outer-voice rules. Unsupported targets are rejected by the theory/configuration layer instead of being admitted through a verifier exception.
+
+This boundary is important for artifact compatibility: v2.6 expands harmonic context without changing the meaning of any earlier rule ID.
+
+## Applied-dominant verification
+
+For a non-null target degree `t`, the verifier derives:
+
+1. the target pitch class from the global key;
+2. the applied-dominant root one perfect fifth above that target;
+3. the dominant-seventh pitch classes `(root, major third, perfect fifth, minor seventh)`;
+4. the expected global diatonic root degree stored in `chord_degrees`;
+5. the bass pitch class implied by the serialized inversion.
+
+It then requires the four SATB voices to realize those four pitch classes exactly once. The following beat must have `chord_degrees == t` and `tonicization_target == null`.
+
+The local leading tone is the major third of the applied dominant and must move up one semitone. The applied chordal seventh must move down one or two semitones. These checks inspect all four voices independently.
 
 ## Search-objective verification
 
-The search objective remains auditable without promoting optimization preferences into hard musical rules.
-
-The CP-SAT model exposes five minimized objective components:
+Optimization preferences remain outside the hard musical contract. The model exposes five minimized objective components:
 
 - tension deviation;
 - melody motion;
@@ -53,57 +64,35 @@ The CP-SAT model exposes five minimized objective components:
 - harmonic repetition;
 - contour mismatch.
 
-After each solve, a separate application-level function reconstructs the same objective vector directly from the finished melody, bass, harmony, tension target, and generation specification. If the compiled vector and independently reconstructed vector differ, generation fails closed with `InternalVerificationError`.
+A separate application-level function reconstructs the same objective vector from finished musical values. Compiled and independently reconstructed vectors must agree exactly or generation fails closed.
 
-The objective-vector check is deliberately separate from `CM001`–`CM032`: a different objective value changes ranking, not musical validity.
-
-## SATB verification
-
-The SATB verifier reconstructs the beat-level harmonic skeleton from `soprano_midi`, `alto_midi`, `tenor_midi`, the existing bass line, chord degrees, and the generation specification.
-
-It checks:
-
-- exact beat counts and soprano-to-melody anchoring;
-- canonical alto and tenor ranges plus the configured soprano/bass ranges;
-- strict non-crossing voice order;
-- octave spacing between adjacent upper voices;
-- membership in the active triad, complete triad coverage, and root doubling;
-- adjacent-beat parallel-perfect motion for every voice pair involving alto or tenor;
-- alto and tenor leading-tone resolution when enabled.
-
-The v2.4 policy deliberately remains limited to diatonic triads. Seventh chords, applied dominants, mixture, tonicization, and modulation remain outside this release's hard contract.
-
-## Phrase verification
-
-The phrase verifier does not inspect CP-SAT variables or solver state. It reads only the finished `GenerationResult` and specification and reconstructs:
-
-- phrase boundaries;
-- role-specific harmonic openings/closures;
-- source/target melodic and rhythmic relations;
-- cadence chord sequences and tonic outer-voice endings;
-- answer-linked antecedent/consequent strength ordering.
-
-`repeat` and `transpose` compare complete equal-length phrase spans. `answer` compares the declared opening fragment. `sequence` reconstructs every target fragment from the source fragment and the declared per-copy semitone step.
+No-good distinctness dimensions also remain search semantics rather than hard-rule semantics. v2.6 keeps the established meanings of `melody`, `rhythm`, `bass`, `harmony`, `voicing`, and `harmonic_form`, and adds `tonicization` for the nullable local-target sequence.
 
 ## Artifact integrity
 
-A v2.4 JSON artifact carries:
+A current v2.6 JSON artifact carries:
 
-- artifact schema version;
-- constraint-contract version;
-- SHA-256 of the canonical hard-rule contract;
-- SHA-256 of the semantic specification + musical result;
-- SATB soprano/alto/tenor arrays committed by the semantic composition digest;
-- integrity-protected `search.objective_vector` metadata;
+- artifact schema version `2.6`;
+- constraint-contract version `2.6`;
+- SHA-256 of the canonical `CM001`–`CM040` contract;
+- SHA-256 of the semantic specification and musical result;
+- SATB soprano/alto/tenor arrays;
+- harmonic kind/inversion metadata when present;
+- tonicization-target metadata when present;
+- independently recomputable objective-vector metadata;
 - SHA-256 of the complete serialized spec/solver/validation/music/search payload;
-- IDs of the constraints checked at generation time.
+- IDs of the hard constraints checked at generation time.
 
-Offline verification independently recomputes the objective vector and rejects search-metadata tampering as well as ordinary composition, SATB, or provenance tampering.
+The semantic composition digest commits tonicization targets, so changing a local target while leaving the notes untouched is detectable as provenance tampering. The full artifact digest additionally commits serialized validation/search metadata.
 
-`constraint-music verify artifact.json` checks both musical validity and those integrity fields. `--allow-legacy` remains available for old artifacts without current provenance.
+`constraint-music verify artifact.json` checks musical validity plus current provenance. `--allow-legacy` remains available when intentionally inspecting older artifacts whose schema/contract predates the current verifier.
+
+## Historical payloads
+
+SATB payloads that predate v2.5 may omit harmonic-form arrays. Payloads that predate v2.6 may omit tonicization targets. Constraint Music does not synthesize fictional metadata for those artifacts. Missing tonicization metadata is accepted only when the loaded specification has tonicization disabled; a current tonicization-enabled artifact must carry explicit target data and fails `CM037` otherwise.
 
 ## Claim boundary
 
-This is independent application-level verification, not a formal proof that OR-Tools itself is correct and not proof of equivalence for every future implementation. The engineering claim is narrower: generated artifacts are re-evaluated by separate code paths against the declared hard-rule contract and objective-vector semantics, and regression/adversarial tests are used to detect drift.
+Independent verification is an application-level separation of trust, not a formal proof of OR-Tools, Python, or the host machine. Constraint compliance demonstrates conformance to the declared executable contract; it does not prove aesthetic quality, perceptual optimality, or complete historical-style authenticity.
 
-Constraint compliance is not a proof of aesthetic quality, perceptual optimality, or historical-style authenticity. The v2.4 SATB layer is a deliberately bounded four-part triadic contract, not a complete model of species counterpoint or common-practice harmony. Likewise, Pareto mode returns candidates nondominated within its explored pool; it does not prove that the complete mathematical Pareto frontier of the feasible space has been enumerated.
+v2.6 implements bounded tonicization through applied dominant sevenths. It does not yet certify modal mixture, secondary leading-tone chords, persistent local-key regions, pivot-chord modulation, arbitrary chromatic harmony, or third-inversion sevenths. Pareto mode returns candidates nondominated within its explored pool; it does not prove enumeration of the global mathematical Pareto frontier.

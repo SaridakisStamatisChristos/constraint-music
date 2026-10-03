@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.6.0a1 — verified applied-dominant tonicization
+
+- Added opt-in applied-dominant tonicization on top of the v2.5 `triads+sevenths` vocabulary.
+- Added explicit nullable per-beat tonicization-target metadata, kept orthogonal to global chord degree, chord kind, inversion, and SATB voicing.
+- Added target-derived dominant-seventh construction instead of unrestricted chromatic pitch permission or opaque slash-chord labels.
+- Added structural filtering of tonicization targets that cannot preserve the established CM005/CM006 outer-voice semantics.
+- Added complete applied-dominant SATB realization with root, first, and second inversions under the preserved outer-voice contract.
+- Added solver-native immediate resolution to the declared local tonic, downward applied chordal-seventh resolution, and upward local-leading-tone resolution in every SATB voice.
+- Extended the independent hard contract from 36 to 40 rules (`CM001`–`CM040`) with separate tonicization-context, realization, target-resolution, and tendency-resolution IDs.
+- Added independent reconstruction of applied-dominant pitch content and resolution from ordinary serialized musical values.
+- Added `tonicization` as a separate no-good distinctness dimension without redefining `harmony`, `harmonic_form`, or `voicing`.
+- Versioned JSON artifacts and the hard-rule contract to 2.6; semantic provenance now commits tonicization target metadata when present.
+- Preserved loading and musical verification of older SATB/harmonic-form payloads without inventing tonicization metadata when the feature is disabled.
+- Added positive forced `I -> V7/V -> V -> I -> V -> I` generation coverage and adversarial tests for forged targets, wrong target resolution, unresolved local tendency tones, and provenance tampering.
+- Kept modal mixture, secondary leading-tone chords, persistent local-key regions, modulation, and third-inversion sevenths outside the v2.6 boundary.
+
 ## 2.5.0a1 — expanded harmonic vocabulary
 
 - Added an opt-in `triads+sevenths` harmonic vocabulary while preserving `triads` as the default for backward-compatible specifications.

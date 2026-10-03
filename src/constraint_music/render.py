@@ -1,19 +1,26 @@
 from __future__ import annotations
 
 from .models import GenerationResult, RhythmState
+from .satb import SatbGenerationResult
 from .theory import midi_note_name
 
 
 def render_grid(result: GenerationResult) -> str:
     spec = result.spec
     rhythm = result.effective_rhythm
+    chord_labels = result.chord_names
+    if (
+        isinstance(result, SatbGenerationResult)
+        and len(result.chord_form_names) == spec.total_beats
+    ):
+        chord_labels = result.chord_form_names
     lines = [
         f"Key: {spec.tonal_key} | {spec.bars} bars | {spec.tempo_bpm} BPM | "
         f"status={result.solver_status} | objective={result.objective_value:.1f}",
         f"Validation: {'PASS' if result.validation.valid else 'FAIL'}",
         "",
-        "bar beat | chord | bass | melody/rhythm                    | tension target/actual",
-        "---------+-------+------+-----------------------------------+----------------------",
+        "bar beat | chord    | bass | melody/rhythm                    | tension target/actual",
+        "---------+----------+------+-----------------------------------+----------------------",
     ]
     symbols = {RhythmState.ONSET: "●", RhythmState.TIE: "—", RhythmState.REST: "·"}
     for beat in range(spec.total_beats):
@@ -27,7 +34,7 @@ def render_grid(result: GenerationResult) -> str:
             for note, state in zip(notes, states, strict=True)
         )
         lines.append(
-            f"{bar:>3} {beat_in_bar:>4} | {result.chord_names[beat]:>5} | "
+            f"{bar:>3} {beat_in_bar:>4} | {chord_labels[beat]:>8} | "
             f"{midi_note_name(result.bass[beat]):>4} | {tokens:<33} | "
             f"{result.target_tension[beat]:>3}/{result.actual_tension[beat]:<3}"
         )

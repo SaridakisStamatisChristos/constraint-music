@@ -26,4 +26,4 @@ __all__ = [
     "verify_result",
 ]
 
-__version__ = "2.5.0a1"
+__version__ = "2.6.0a1"

@@ -73,6 +73,8 @@ class ChordKind(IntEnum):
         return "triad" if self is ChordKind.TRIAD else "seventh"
 
 
+NO_TONICIZATION_TARGET = 7
+
 SCALE_INTERVALS: dict[Mode, tuple[int, ...]] = {
     Mode.MAJOR: (0, 2, 4, 5, 7, 9, 11),
     # Harmonic minor is deliberate: it gives the solver a true leading tone and dominant.
@@ -151,6 +153,50 @@ class Key:
             scale[(degree + 6) % 7],
         )
 
+    def triad_quality(self, degree: int) -> str:
+        root, third, fifth = self.triad_pitch_classes(degree)
+        intervals = ((third - root) % 12, (fifth - root) % 12)
+        return {
+            (4, 7): "major",
+            (3, 7): "minor",
+            (3, 6): "diminished",
+            (4, 8): "augmented",
+        }.get(intervals, "other")
+
+    def applied_dominant_root_pc(self, target_degree: int) -> int:
+        if not 1 <= target_degree <= 6:
+            raise ValueError("Applied-dominant target degree must be in 1..6")
+        return (self.pitch_classes[target_degree] + 7) % 12
+
+    def applied_dominant_root_degree(self, target_degree: int) -> int:
+        return self.degree_of_pc(self.applied_dominant_root_pc(target_degree))
+
+    def applied_dominant_seventh_pitch_classes(
+        self, target_degree: int
+    ) -> tuple[int, int, int, int]:
+        root = self.applied_dominant_root_pc(target_degree)
+        return (root, (root + 4) % 12, (root + 7) % 12, (root + 10) % 12)
+
+    @property
+    def applied_dominant_targets(self) -> tuple[int, ...]:
+        """Targets realizable without changing the established CM005/CM006 outer-voice contract."""
+        supported: list[int] = []
+        for target_degree in range(1, 7):
+            if self.triad_quality(target_degree) not in {"major", "minor"}:
+                continue
+            try:
+                root_degree = self.applied_dominant_root_degree(target_degree)
+            except ValueError:
+                continue
+            legacy_outer_pcs = set(self.triad_pitch_classes(root_degree))
+            applied_pcs = set(self.applied_dominant_seventh_pitch_classes(target_degree))
+            # A complete seventh chord uses four distinct pitch classes. Because soprano and
+            # bass retain CM005/CM006, at least two distinct applied tones must also belong to
+            # the legacy diatonic triad rooted on chord_degrees[beat].
+            if len(legacy_outer_pcs & applied_pcs) >= 2:
+                supported.append(target_degree)
+        return tuple(supported)
+
     def chord_name(self, degree: int) -> str:
         return ROMAN_NUMERALS[self.mode][degree]
 
@@ -160,6 +206,14 @@ class Key:
         if not 0 <= inversion < len(figures):
             raise ValueError(f"Unsupported inversion {inversion} for {kind.label}")
         return f"{base}{figures[inversion]}"
+
+    def applied_dominant_name(self, target_degree: int, inversion: int) -> str:
+        if target_degree not in self.applied_dominant_targets:
+            raise ValueError(f"Unsupported applied-dominant target degree: {target_degree}")
+        figures = ("7", "65", "43")
+        if not 0 <= inversion < len(figures):
+            raise ValueError(f"Unsupported applied-dominant inversion: {inversion}")
+        return f"V{figures[inversion]}/{self.chord_name(target_degree)}"
 
     def pitches_in_range(self, low: int, high: int) -> tuple[int, ...]:
         pcs = set(self.pitch_classes)
