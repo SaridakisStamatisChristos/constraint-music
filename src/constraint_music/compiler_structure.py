@@ -174,7 +174,9 @@ def add_phrase_constraints(
             model.add(chord[final_beat] == 4)
         elif phrase.cadence == "dominant_to_tonic":
             if end_beat - start_beat < 2:
-                raise ValueError(f"phrase {phrase.id!r}: dominant_to_tonic needs at least two beats")
+                raise ValueError(
+                    f"phrase {phrase.id!r}: dominant_to_tonic needs at least two beats"
+                )
             model.add(chord[final_beat - 1] == 4)
             require_phrase_close(phrase, strong=False)
         elif phrase.cadence == "leading_tone_to_tonic":
