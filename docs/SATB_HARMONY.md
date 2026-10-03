@@ -30,7 +30,11 @@ The v2.4 harmonic vocabulary remains diatonic triads. A SATB sonority therefore 
 
 ## Search semantics
 
-`distinct_on=("harmony",)` now treats the inner-voice realization as part of harmony. A no-good cut therefore covers chord degrees plus alto and tenor assignments. Soprano is already anchored to melody and bass remains available as its own distinctness dimension.
+v2.4 preserves the v2.3 meaning of `distinct_on=("harmony",)`: alternatives must differ in their **chord-degree sequence**.
+
+SATB realizations have a separate `voicing` dimension. `distinct_on=("voicing",)` requires alto or tenor to differ from every previously accepted realization while permitting the same chord-degree sequence. Soprano remains anchored to melody, and bass remains available through the existing `bass` dimension.
+
+Dimensions can be combined, for example `distinct_on=("harmony", "voicing")`, when both harmonic plan and four-part realization should participate in the no-good cut.
 
 ## Independent verification
 
