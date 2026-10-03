@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.4.0a1 — solver-native SATB harmony
+
+- Added explicit beat-level soprano, alto, tenor, and bass SATB realization inside CP-SAT.
+- Anchored soprano to the strong-grid melody while solving alto and tenor independently.
+- Added canonical inner-voice ranges, strict voice ordering, and octave upper-voice spacing.
+- Added complete-triad enforcement with an explicit root-doubling policy.
+- Added solver-native parallel-perfect avoidance for every voice pair involving alto or tenor.
+- Added solver-native leading-tone resolution for alto and tenor.
+- Extended the independently verified hard contract from 26 to 32 rules (`CM001`–`CM032`).
+- Added `SatbGenerationResult` serialization and artifact schema 2.4; semantic digests now commit to SATB voices.
+- Extended harmony no-good cuts so distinct harmony alternatives can differ by inner-voice realization as well as chord degree.
+- Added positive SATB generation tests and adversarial verification tests for crossing and chord-completeness tampering.
+
 ## 2.3.0a1 — distinct enumeration and Pareto search
 
 - Replaced seed-only `generate_many()` variation with CP-SAT no-good cuts that guarantee distinctness over selected musical dimensions.
