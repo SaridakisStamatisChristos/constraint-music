@@ -267,7 +267,11 @@ def add_satb_constraints(
         for beat in range(spec.total_beats)
     ]
     modal_source = [
-        model.new_int_var(NO_MODAL_SOURCE, int(ModalSource.PARALLEL_NATURAL_MINOR), f"modal_source_{beat}")
+        model.new_int_var(
+            NO_MODAL_SOURCE,
+            int(ModalSource.PARALLEL_NATURAL_MINOR),
+            f"modal_source_{beat}",
+        )
         for beat in range(spec.total_beats)
     ]
 
@@ -625,7 +629,10 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                 issues.append(
                     ("CM041", f"Beat {beat}: cadential dominant-function chord must remain global")
                 )
-            if beat < len(result.chord_degrees) and result.chord_degrees[beat] not in supported_borrowed:
+            if (
+                beat < len(result.chord_degrees)
+                and result.chord_degrees[beat] not in supported_borrowed
+            ):
                 issues.append(
                     (
                         "CM041",
