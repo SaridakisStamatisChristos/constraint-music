@@ -11,7 +11,6 @@ from constraint_music.solver import ConstraintMusicSolver
 from constraint_music.theory import ChordKind
 from constraint_music.verifier import verify_result
 
-
 FORCED_DOMINANT_GRAPH: tuple[tuple[int, ...], ...] = (
     (0, 4),
     (1,),
