@@ -156,13 +156,19 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM027",
         "satb_shape",
-        "Solver-native SATB output contains one soprano, alto, and tenor note per beat and anchors soprano to the strong-step melody.",
+        (
+            "Solver-native SATB output contains one soprano, alto, and tenor note per beat "
+            "and anchors soprano to the strong-step melody."
+        ),
         conditional=True,
     ),
     ConstraintRule(
         "CM028",
         "satb_ranges_order",
-        "SATB voices remain inside their ranges and maintain strict bass-tenor-alto-soprano ordering.",
+        (
+            "SATB voices remain inside their ranges and maintain strict "
+            "bass-tenor-alto-soprano ordering."
+        ),
         conditional=True,
     ),
     ConstraintRule(
@@ -180,7 +186,10 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM031",
         "satb_inner_parallel_perfects",
-        "When enabled, voice pairs involving alto or tenor avoid parallel perfect fifths and octaves.",
+        (
+            "When enabled, voice pairs involving alto or tenor avoid parallel perfect fifths "
+            "and octaves."
+        ),
         conditional=True,
     ),
     ConstraintRule(
