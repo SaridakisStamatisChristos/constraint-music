@@ -4,7 +4,13 @@ from dataclasses import replace
 
 from constraint_music.contract import HARD_CONSTRAINT_IDS
 from constraint_music.models import GenerationSpec
-from constraint_music.satb import ALTO_HIGH, ALTO_LOW, TENOR_HIGH, TENOR_LOW, SatbGenerationResult
+from constraint_music.satb import (
+    ALTO_HIGH,
+    ALTO_LOW,
+    TENOR_HIGH,
+    TENOR_LOW,
+    SatbGenerationResult,
+)
 from constraint_music.solver import ConstraintMusicSolver
 from constraint_music.verifier import verify_result
 
@@ -33,9 +39,15 @@ def test_solver_emits_independently_verified_satb() -> None:
     assert len(result.tenor) == result.spec.total_beats
 
     key = result.spec.tonal_key
-    for beat, (soprano, alto, tenor, bass, chord) in enumerate(
-        zip(result.soprano, result.alto, result.tenor, result.bass, result.chord_degrees, strict=True)
-    ):
+    voices = zip(
+        result.soprano,
+        result.alto,
+        result.tenor,
+        result.bass,
+        result.chord_degrees,
+        strict=True,
+    )
+    for beat, (soprano, alto, tenor, bass, chord) in enumerate(voices):
         assert soprano == result.melody[beat * result.spec.subdivisions_per_beat]
         assert ALTO_LOW <= alto <= ALTO_HIGH
         assert TENOR_LOW <= tenor <= TENOR_HIGH
