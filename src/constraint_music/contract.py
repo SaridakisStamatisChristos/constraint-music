@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.4"
+CONTRACT_VERSION = "2.5"
 
 
 @dataclass(frozen=True, slots=True)
@@ -196,6 +196,39 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM032",
         "satb_tendency_resolution",
         "When enabled, alto and tenor leading tones resolve upward by semitone.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM033",
+        "harmonic_form_shape",
+        (
+            "When expanded harmonic-form metadata is present, chord kind and inversion arrays "
+            "cover every beat and comply with the declared vocabulary/minimum seventh count."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM034",
+        "expanded_chord_realization",
+        (
+            "Seventh forms contain all four diatonic chord tones exactly once, while every "
+            "serialized inversion agrees with the realized bass pitch class."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM035",
+        "chordal_seventh_resolution",
+        "Every chordal seventh has a following sonority and resolves downward by diatonic step.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM036",
+        "dominant_seventh_resolution",
+        (
+            "Every dominant seventh resolves to tonic and each voice carrying its leading tone "
+            "resolves upward by semitone."
+        ),
         conditional=True,
     ),
 )
