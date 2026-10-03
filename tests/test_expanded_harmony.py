@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-
-import pytest
+from functools import cache
 
 from constraint_music.contract import HARD_CONSTRAINT_IDS
 from constraint_music.models import GenerationResult, GenerationSpec
@@ -24,7 +23,7 @@ FORCED_DOMINANT_GRAPH: tuple[tuple[int, ...], ...] = (
 )
 
 
-@pytest.fixture(scope="module")
+@cache
 def dominant_seventh_piece() -> SatbGenerationResult:
     spec = GenerationSpec(
         bars=1,
@@ -43,10 +42,8 @@ def dominant_seventh_piece() -> SatbGenerationResult:
     return result
 
 
-def test_expanded_solver_emits_verified_dominant_seventh(
-    dominant_seventh_piece: SatbGenerationResult,
-) -> None:
-    result = dominant_seventh_piece
+def test_expanded_solver_emits_verified_dominant_seventh() -> None:
+    result = dominant_seventh_piece()
     assert result.validation.valid, result.validation.issues
     assert result.validation.checked_rules == HARD_CONSTRAINT_IDS
     assert result.chord_degrees == (0, 0, 4, 0)
@@ -66,10 +63,8 @@ def test_expanded_solver_emits_verified_dominant_seventh(
     assert result.chord_form_names[2].startswith("V")
 
 
-def test_verifier_rejects_false_inversion_metadata(
-    dominant_seventh_piece: SatbGenerationResult,
-) -> None:
-    result = dominant_seventh_piece
+def test_verifier_rejects_false_inversion_metadata() -> None:
+    result = dominant_seventh_piece()
     inversions = list(result.chord_inversions)
     inversions[2] = (inversions[2] + 1) % 3
     report = verify_result(replace(result, chord_inversions=tuple(inversions)))
@@ -77,10 +72,8 @@ def test_verifier_rejects_false_inversion_metadata(
     assert "CM034" in report.failed_rules
 
 
-def test_verifier_rejects_unresolved_chordal_seventh(
-    dominant_seventh_piece: SatbGenerationResult,
-) -> None:
-    result = dominant_seventh_piece
+def test_verifier_rejects_unresolved_chordal_seventh() -> None:
+    result = dominant_seventh_piece()
     seventh_pc = result.spec.tonal_key.seventh_pitch_classes(4)[3]
     for field_name in ("soprano", "alto", "tenor", "bass"):
         voice = list(getattr(result, field_name))
@@ -94,10 +87,8 @@ def test_verifier_rejects_unresolved_chordal_seventh(
     raise AssertionError("Generated V7 has no chordal seventh carrier")
 
 
-def test_verifier_rejects_dominant_seventh_wrong_target(
-    dominant_seventh_piece: SatbGenerationResult,
-) -> None:
-    result = dominant_seventh_piece
+def test_verifier_rejects_dominant_seventh_wrong_target() -> None:
+    result = dominant_seventh_piece()
     chords = list(result.chord_degrees)
     chords[3] = 4
     report = verify_result(replace(result, chord_degrees=tuple(chords)))
@@ -105,10 +96,9 @@ def test_verifier_rejects_dominant_seventh_wrong_target(
     assert "CM036" in report.failed_rules
 
 
-def test_harmonic_form_tampering_breaks_semantic_provenance(
-    dominant_seventh_piece: SatbGenerationResult,
-) -> None:
-    payload = artifact_payload(dominant_seventh_piece)
+def test_harmonic_form_tampering_breaks_semantic_provenance() -> None:
+    result = dominant_seventh_piece()
+    payload = artifact_payload(result)
     payload["music"]["chord_inversions"][2] = (
         int(payload["music"]["chord_inversions"][2]) + 1
     ) % 3
