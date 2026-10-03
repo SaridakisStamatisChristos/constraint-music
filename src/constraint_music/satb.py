@@ -330,7 +330,9 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
             == len(result.chord_inversions)
             == spec.total_beats
         ):
-            issues.append(("CM033", "Harmonic kind/inversion arrays must contain one value per beat"))
+            issues.append(
+                ("CM033", "Harmonic kind/inversion arrays must contain one value per beat")
+            )
         else:
             try:
                 kinds = tuple(ChordKind.parse(item) for item in result.chord_kinds)
@@ -471,7 +473,10 @@ def _verify_expanded_harmony_motion(
                 delta = voice[beat + 1] - voice[beat]
                 if delta not in {-1, -2}:
                     issues.append(
-                        ("CM035", f"{label} beat {beat}: chordal seventh does not resolve down by step")
+                        (
+                            "CM035",
+                            f"{label} beat {beat}: chordal seventh does not resolve down by step",
+                        )
                     )
 
         if degree == 4:
