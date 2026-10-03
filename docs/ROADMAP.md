@@ -34,9 +34,11 @@
 
 ## v2.4 solver-native multi-voice harmony
 
-- [ ] Explicit soprano/alto/tenor/bass solver variables.
-- [ ] Voice ranges, ordering, spacing, chord completeness, and doubling policy.
-- [ ] Inner-voice parallel-perfect and tendency-tone resolution rules.
+- [x] Explicit soprano/alto/tenor/bass solver variables.
+- [x] Voice ranges, ordering, spacing, chord completeness, and doubling policy.
+- [x] Inner-voice parallel-perfect and tendency-tone resolution rules.
+- [x] Independent SATB verification and artifact-provenance coverage.
+- [x] Harmony no-good cuts include inner-voice realizations.
 
 ## Later
 
