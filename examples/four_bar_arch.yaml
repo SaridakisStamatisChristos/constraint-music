@@ -1,0 +1,22 @@
+key: C
+mode: major
+bars: 4
+beats_per_bar: 4
+subdivisions_per_beat: 2
+tempo_bpm: 108
+melody_low: 60
+melody_high: 81
+bass_low: 36
+bass_high: 55
+max_melody_leap: 12
+max_bass_leap: 7
+max_repeated_notes: 2
+require_authentic_cadence: true
+resolve_leading_tone: true
+avoid_parallel_perfects: true
+# progression_graph is optional and can be overridden per composition; see README.
+# Sparse control points are interpolated across all 16 beats.
+tension_curve: [0.06, 0.22, 0.48, 0.86, 0.54, 0.18, 0.02]
+seed: 20260719
+max_time_seconds: 15
+workers: 8
