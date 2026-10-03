@@ -103,7 +103,11 @@ def test_solver_emits_verified_borrowed_triad_without_redefining_cadence() -> No
     assert result.tonicization_targets[beat] is None
     assert result.chord_kinds[beat] is ChordKind.TRIAD
 
-    expected = borrowed_triad_pitch_classes(result.spec.tonal_key, result.chord_degrees[beat], source)
+    expected = borrowed_triad_pitch_classes(
+        result.spec.tonal_key,
+        result.chord_degrees[beat],
+        source,
+    )
     pcs = (
         result.soprano[beat] % 12,
         result.alto[beat] % 12,
