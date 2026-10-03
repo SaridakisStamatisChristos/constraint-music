@@ -7,8 +7,8 @@ from typing import Any
 
 from ortools.sat.python import cp_model
 
-from .models import GenerationResult, ValidationReport
-from .theory import is_parallel_perfect, midi_note_name
+from .models import GenerationResult, GenerationSpec
+from .theory import Key, is_parallel_perfect, midi_note_name
 
 ALTO_LOW = 55
 ALTO_HIGH = 74
@@ -86,12 +86,11 @@ def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
 
 def add_satb_constraints(
     model: cp_model.CpModel,
-    result_spec: Any,
+    spec: GenerationSpec,
     chord: list[cp_model.IntVar],
     melody_note: list[cp_model.IntVar],
     bass_note: list[cp_model.IntVar],
 ) -> SatbVariables:
-    spec = result_spec
     key = spec.tonal_key
     soprano_domain = key.pitches_in_range(spec.melody_low, spec.melody_high)
     alto_domain = key.pitches_in_range(ALTO_LOW, ALTO_HIGH)
@@ -105,11 +104,15 @@ def add_satb_constraints(
         model.new_int_var(spec.melody_low, spec.melody_high, f"soprano_{beat}")
         for beat in range(spec.total_beats)
     ]
-    alto = [model.new_int_var(ALTO_LOW, ALTO_HIGH, f"alto_{beat}") for beat in range(spec.total_beats)]
+    alto = [
+        model.new_int_var(ALTO_LOW, ALTO_HIGH, f"alto_{beat}")
+        for beat in range(spec.total_beats)
+    ]
     tenor = [
         model.new_int_var(TENOR_LOW, TENOR_HIGH, f"tenor_{beat}")
         for beat in range(spec.total_beats)
     ]
+    chord_rows = _satb_chord_rows(key)
 
     for beat in range(spec.total_beats):
         strong_step = beat * spec.subdivisions_per_beat
@@ -123,9 +126,10 @@ def add_satb_constraints(
         model.add(alto[beat] - tenor[beat] <= MAX_UPPER_SPACING)
 
         pcs = [model.new_int_var(0, 11, f"satb_pc_{beat}_{voice}") for voice in range(4)]
-        for pc, voice in zip(pcs, (soprano[beat], alto[beat], tenor[beat], bass_note[beat]), strict=True):
+        voices = (soprano[beat], alto[beat], tenor[beat], bass_note[beat])
+        for pc, voice in zip(pcs, voices, strict=True):
             model.add_modulo_equality(pc, voice, 12)
-        model.add_allowed_assignments([chord[beat], *pcs], _satb_chord_rows(key))
+        model.add_allowed_assignments([chord[beat], *pcs], chord_rows)
 
     if spec.avoid_parallel_perfects:
         pair_domains = (
@@ -167,18 +171,24 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
         return ()
     spec = result.spec
     key = spec.tonal_key
-    s, a, t, b = result.soprano, result.alto, result.tenor, result.bass
+    soprano, alto, tenor, bass = result.soprano, result.alto, result.tenor, result.bass
     issues: list[tuple[str, str]] = []
 
-    if not all(len(voice) == spec.total_beats for voice in (s, a, t)):
+    if not all(
+        len(voice) == spec.total_beats for voice in (soprano, alto, tenor, bass)
+    ):
         issues.append(("CM027", "SATB voices must contain exactly one note per beat"))
         return tuple(issues)
-    for beat, note in enumerate(s):
+    for beat, note in enumerate(soprano):
         strong_step = beat * spec.subdivisions_per_beat
         if strong_step >= len(result.melody) or note != result.melody[strong_step]:
-            issues.append(("CM027", f"Beat {beat}: soprano is not anchored to the strong-step melody"))
+            issues.append(
+                ("CM027", f"Beat {beat}: soprano is not anchored to the strong-step melody")
+            )
 
-    for beat, (sv, av, tv, bv) in enumerate(zip(s, a, t, b, strict=True)):
+    for beat, (sv, av, tv, bv) in enumerate(
+        zip(soprano, alto, tenor, bass, strict=True)
+    ):
         if not spec.melody_low <= sv <= spec.melody_high:
             issues.append(("CM028", f"Beat {beat}: soprano is outside its configured range"))
         if not ALTO_LOW <= av <= ALTO_HIGH:
@@ -186,7 +196,9 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
         if not TENOR_LOW <= tv <= TENOR_HIGH:
             issues.append(("CM028", f"Beat {beat}: tenor is outside {TENOR_LOW}..{TENOR_HIGH}"))
         if not bv < tv < av < sv:
-            issues.append(("CM028", f"Beat {beat}: SATB voice order/crossing invariant is violated"))
+            issues.append(
+                ("CM028", f"Beat {beat}: SATB voice order/crossing invariant is violated")
+            )
         if sv - av > MAX_UPPER_SPACING or av - tv > MAX_UPPER_SPACING:
             issues.append(("CM029", f"Beat {beat}: adjacent upper voices exceed octave spacing"))
 
@@ -194,28 +206,50 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
             triad = key.triad_pitch_classes(result.chord_degrees[beat])
             pcs = (sv % 12, av % 12, tv % 12, bv % 12)
             root = triad[0]
-            if any(pc not in triad for pc in pcs) or set(pcs) != set(triad) or pcs.count(root) < 2:
-                issues.append(("CM030", f"Beat {beat}: SATB chord is incomplete or does not double the root"))
+            if (
+                any(pc not in triad for pc in pcs)
+                or set(pcs) != set(triad)
+                or pcs.count(root) < 2
+            ):
+                issues.append(
+                    (
+                        "CM030",
+                        f"Beat {beat}: SATB chord is incomplete or does not double the root",
+                    )
+                )
 
     if spec.avoid_parallel_perfects:
-        named = (("S-A", s, a), ("S-T", s, t), ("A-T", a, t), ("A-B", a, b), ("T-B", t, b))
+        named = (
+            ("S-A", soprano, alto),
+            ("S-T", soprano, tenor),
+            ("A-T", alto, tenor),
+            ("A-B", alto, bass),
+            ("T-B", tenor, bass),
+        )
         for label, left_voice, right_voice in named:
             for beat in range(min(len(left_voice), len(right_voice)) - 1):
                 if is_parallel_perfect(
-                    left_voice[beat], right_voice[beat], left_voice[beat + 1], right_voice[beat + 1]
+                    left_voice[beat],
+                    right_voice[beat],
+                    left_voice[beat + 1],
+                    right_voice[beat + 1],
                 ):
-                    issues.append(("CM031", f"Beats {beat}->{beat + 1}: parallel perfect in {label}"))
+                    issues.append(
+                        ("CM031", f"Beats {beat}->{beat + 1}: parallel perfect in {label}")
+                    )
 
     if spec.resolve_leading_tone:
-        for label, voice in (("alto", a), ("tenor", t)):
+        for label, voice in (("alto", alto), ("tenor", tenor)):
             for beat, (left, right) in enumerate(pairwise(voice)):
                 if left % 12 == key.leading_tone_pc and right != left + 1:
-                    issues.append(("CM032", f"{label} beat {beat}: leading tone does not resolve upward"))
+                    issues.append(
+                        ("CM032", f"{label} beat {beat}: leading tone does not resolve upward")
+                    )
 
     return tuple(issues)
 
 
-def _satb_chord_rows(key: Any) -> list[tuple[int, int, int, int, int]]:
+def _satb_chord_rows(key: Key) -> list[tuple[int, int, int, int, int]]:
     rows: list[tuple[int, int, int, int, int]] = []
     for degree in range(7):
         triad = key.triad_pitch_classes(degree)
