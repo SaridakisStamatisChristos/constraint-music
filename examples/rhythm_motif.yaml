@@ -1,0 +1,33 @@
+key: C
+mode: major
+bars: 4
+beats_per_bar: 4
+subdivisions_per_beat: 2
+tempo_bpm: 112
+
+melody_low: 60
+melody_high: 84
+bass_low: 36
+bass_high: 55
+
+rhythm_enabled: true
+min_onsets_per_bar: 5
+max_onsets_per_bar: 6
+min_rests_per_bar: 1
+max_rests_per_bar: 2
+min_ties_per_bar: 1
+max_ties_per_bar: 1
+max_consecutive_rests: 1
+max_tie_steps: 1
+require_bar_downbeat_onset: true
+
+motif_relation: transpose
+motif_source_bar: 0
+motif_target_bar: 2
+motif_length_steps: 4
+motif_transpose_semitones: 12
+
+tension_curve: [0.08, 0.28, 0.62, 0.86, 0.42, 0.12, 0.02]
+seed: 20261003
+max_time_seconds: 20
+workers: 1

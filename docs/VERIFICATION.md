@@ -1,25 +1,33 @@
 # Verification model
 
-Constraint Music v2.0a1 defines 16 hard rules (`CM001`–`CM016`). The verifier checks them from a serialized result plus its generation specification, without rerunning the solver.
+Constraint Music v2.1 defines 21 hard rules (`CM001`–`CM021`). The verifier checks them from a serialized result plus its generation specification, without rerunning the solver.
 
-The contract covers shape, pitch domains, harmony domain, chord membership, progression legality, melodic leap limits, tritone avoidance, leading-tone resolution, repetition bounds, large-leap recovery, bass leap/tritone limits, parallel-perfect avoidance, and authentic-cadence requirements.
+`CM001`–`CM016` retain the v2.0 tonal/harmonic contract: shape, pitch domains, harmony domain, chord membership, progression legality, melodic leap limits, tritone avoidance, leading-tone resolution, repetition bounds, large-leap recovery, bass leap/tritone limits, parallel-perfect avoidance, and authentic-cadence requirements.
 
-## Why this changed from v1.1
+v2.1 adds a structural layer:
 
-The recovered v1.1 solver enforced melodic/bass tritone avoidance and large-leap recovery, but the separate validator did not re-check those rules. v2 closes that gap and makes failed rules explicit by ID.
+- `CM017` — rhythm state domain (`onset`, `tie`, `rest`);
+- `CM018` — tie/rest grammar, tied-pitch identity, and run limits;
+- `CM019` — per-bar onset/rest/tie density and optional downbeat onset;
+- `CM020` — exact motif repetition/transposition including rhythm inheritance;
+- `CM021` — newly articulated final tonic for authentic cadence.
+
+## Solver/verifier symmetry
+
+Every v2.1 hard rule has a CP-SAT-side enforcement path and a post-solve verifier path. A solver assignment that fails the verifier raises `InternalVerificationError` and is not exported as a verified composition.
 
 ## Artifact integrity
 
-A v2 JSON artifact carries:
+A v2.1 JSON artifact carries:
 
 - artifact schema version;
 - constraint-contract version;
 - SHA-256 of the canonical contract;
-- SHA-256 of the semantic specification + musical result;
+- SHA-256 of the semantic specification + musical result, including rhythm;
 - SHA-256 of the complete serialized spec/solver/validation/music payload;
 - IDs of the constraints checked at generation time.
 
-`constraint-music verify artifact.json` checks both musical validity and those integrity fields. `--allow-legacy` permits old JSON without v2 provenance to receive musical verification only.
+`constraint-music verify artifact.json` checks both musical validity and those integrity fields. `--allow-legacy` remains available for old artifacts without current provenance.
 
 ## Claim boundary
 

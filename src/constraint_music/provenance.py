@@ -9,7 +9,7 @@ from typing import Any
 from .contract import CONTRACT_VERSION, contract_digest
 from .models import GenerationResult
 
-ARTIFACT_SCHEMA_VERSION = "2.0"
+ARTIFACT_SCHEMA_VERSION = "2.1"
 
 
 def _sha256_json(payload: object) -> str:
@@ -23,6 +23,7 @@ def composition_digest(result: GenerationResult) -> str:
         "spec": payload["spec"],
         "music": {
             "melody_midi": payload["music"]["melody_midi"],
+            "rhythm": payload["music"]["rhythm"],
             "bass_midi": payload["music"]["bass_midi"],
             "chord_degrees": payload["music"]["chord_degrees"],
             "target_tension": payload["music"]["target_tension"],

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
 
-from .models import GenerationResult
+from .models import GenerationResult, RhythmState
 
 TICKS_PER_BEAT = 480
 
@@ -28,12 +28,11 @@ def _add_conductor_track(midi: MidiFile, result: GenerationResult) -> None:
     spec = result.spec
     track.append(MetaMessage("track_name", name="Constraint Music", time=0))
     track.append(MetaMessage("set_tempo", tempo=bpm2tempo(spec.tempo_bpm), time=0))
-    denominator = 4
     track.append(
         MetaMessage(
             "time_signature",
             numerator=spec.beats_per_bar,
-            denominator=denominator,
+            denominator=4,
             time=0,
         )
     )
@@ -47,10 +46,20 @@ def _add_melody_track(midi: MidiFile, result: GenerationResult) -> None:
     track.append(MetaMessage("track_name", name="Melody", time=0))
     track.append(Message("program_change", channel=0, program=0, time=0))
     step_ticks = TICKS_PER_BEAT // result.spec.subdivisions_per_beat
+    rhythm = result.effective_rhythm
     events: list[tuple[int, int, Message]] = []
-    for step, note in enumerate(result.melody):
+    step = 0
+    while step < len(result.melody):
+        state = rhythm[step]
+        if state != RhythmState.ONSET:
+            step += 1
+            continue
+        end_step = step + 1
+        while end_step < len(rhythm) and rhythm[end_step] == RhythmState.TIE:
+            end_step += 1
+        note = result.melody[step]
         start = step * step_ticks
-        end = (step + 1) * step_ticks
+        end = end_step * step_ticks
         beat = step // result.spec.subdivisions_per_beat
         accent = 12 if beat % result.spec.beats_per_bar == 0 else 0
         velocity = min(112, 78 + accent + result.actual_tension[beat] // 10)
@@ -58,6 +67,7 @@ def _add_melody_track(midi: MidiFile, result: GenerationResult) -> None:
             (start, 1, Message("note_on", note=note, velocity=velocity, channel=0, time=0))
         )
         events.append((end, 0, Message("note_off", note=note, velocity=0, channel=0, time=0)))
+        step = end_step
     _append_absolute_events(track, events)
 
 
@@ -88,8 +98,7 @@ def _add_harmony_track(midi: MidiFile, result: GenerationResult) -> None:
     for beat, degree in enumerate(result.chord_degrees):
         start = beat * TICKS_PER_BEAT
         end = (beat + 1) * TICKS_PER_BEAT
-        pitch_classes = key.triad_pitch_classes(degree)
-        notes = _closed_voicing(pitch_classes, low=55, high=74)
+        notes = _closed_voicing(key.triad_pitch_classes(degree), low=55, high=74)
         velocity = 42 + result.actual_tension[beat] // 7
         for note in notes:
             events.append(
