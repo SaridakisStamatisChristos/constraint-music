@@ -82,7 +82,7 @@ constraint-music generate examples/eight_bar_period.yaml \
   --json build/variant.json
 ```
 
-Supported distinctness dimensions are `melody`, `rhythm`, `bass`, and `harmony`.
+The original v2.3 distinctness dimensions remain `melody`, `rhythm`, `bass`, and `harmony`, where `harmony` means the chord-degree sequence. v2.4 adds `voicing` for SATB alto/tenor realizations without changing that established meaning.
 
 The objective is exposed as five minimized components:
 
@@ -107,7 +107,7 @@ Every solved composition now includes a beat-level four-part harmonic skeleton:
 
 CP-SAT enforces strict `bass < tenor < alto < soprano` ordering, octave spacing between adjacent upper voices, complete diatonic triads, explicit root doubling, parallel-perfect avoidance for every pair involving an inner voice, and alto/tenor leading-tone resolution.
 
-The SATB layer is independently rechecked after solving and after JSON reload. `distinct_on=harmony` now includes alto/tenor realizations as well as chord degrees. See [Solver-Native SATB Harmony](docs/SATB_HARMONY.md).
+The SATB layer is independently rechecked after solving and after JSON reload. Use `--distinct-on voicing` to enumerate different inner-voice realizations while allowing the same chord plan; use `--distinct-on harmony,voicing` when both chord sequence and realization should participate in distinctness. See [Solver-Native SATB Harmony](docs/SATB_HARMONY.md).
 
 ## Hard-constraint contract
 
