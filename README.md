@@ -162,7 +162,7 @@ pytest --cov=constraint_music --cov-report=term-missing
 python -m build
 ```
 
-GitHub Actions runs the quality suite on Python 3.11, 3.12, and 3.13.
+GitHub Actions runs runtime tests on Python 3.11, 3.12, and 3.13. Ruff runs across the matrix; strict mypy analysis and package building are anchored to Python 3.11, the minimum supported interpreter.
 
 ## Design claim boundary
 
