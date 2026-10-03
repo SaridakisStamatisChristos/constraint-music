@@ -1,5 +1,6 @@
 """Deterministic, verifiable constraint-programming music synthesis."""
 
+from .modal_mixture import ModalSource
 from .models import GenerationResult, GenerationSpec, RhythmState, ValidationReport
 from .objective import evaluate_objective_vector
 from .phrase import PhraseSpec
@@ -15,6 +16,7 @@ __all__ = [
     "GenerationResult",
     "GenerationSpec",
     "InternalVerificationError",
+    "ModalSource",
     "NoSolutionError",
     "PhraseSpec",
     "RhythmState",
@@ -26,4 +28,4 @@ __all__ = [
     "verify_result",
 ]
 
-__version__ = "2.6.0a1"
+__version__ = "2.7.0a1"

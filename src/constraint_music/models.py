@@ -9,6 +9,7 @@ from typing import Any
 
 import yaml
 
+from .modal_mixture import supported_borrowed_degrees
 from .phrase import PhraseSpec, normalize_phrases, phrase_by_id
 from .theory import DEFAULT_PROGRESSION_GRAPH_ROWS, Key, Mode, midi_note_name
 
@@ -64,6 +65,11 @@ class GenerationSpec:
     # dominant-seventh forms with an explicit local target; generic chromaticism is not enabled.
     tonicization_enabled: bool = False
     minimum_applied_dominants: int = 0
+
+    # v2.7 modal mixture is independent of seventh vocabulary and tonicization. Borrowed
+    # triads carry explicit parallel-source identity while legacy outer-voice rules stay intact.
+    modal_mixture_enabled: bool = False
+    minimum_borrowed_chords: int = 0
 
     rhythm_enabled: bool = False
     min_onsets_per_bar: int = 1
@@ -195,10 +201,32 @@ class GenerationSpec:
                 "minimum_applied_dominants cannot include the final beat because tonicizations "
                 "must resolve"
             )
+
+        _between(
+            "minimum_borrowed_chords",
+            self.minimum_borrowed_chords,
+            0,
+            self.total_beats,
+        )
+        if not self.modal_mixture_enabled and self.minimum_borrowed_chords != 0:
+            raise ValueError("minimum_borrowed_chords requires modal_mixture_enabled=true")
+        reserved_cadence_beats = 2 if self.require_authentic_cadence else 1
+        maximum_borrowed = max(0, self.total_beats - reserved_cadence_beats)
+        if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:
+            raise ValueError(
+                "minimum_borrowed_chords exceeds beats available outside the preserved global "
+                "cadential boundary"
+            )
+
         _ = self.tonal_key
         if self.tonicization_enabled and not self.tonal_key.applied_dominant_targets:
             raise ValueError(
                 "The selected key has no applied-dominant targets compatible with the current "
+                "outer-voice contract"
+            )
+        if self.modal_mixture_enabled and not supported_borrowed_degrees(self.tonal_key):
+            raise ValueError(
+                "The selected key has no borrowed triads compatible with the current "
                 "outer-voice contract"
             )
         if len(self.tonal_key.pitches_in_range(self.melody_low, self.melody_high)) < 8:

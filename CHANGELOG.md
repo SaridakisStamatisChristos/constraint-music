@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.7.0a1 — verified modal mixture
+
+- Added opt-in modal mixture through explicit per-beat parallel-source identity.
+- Added canonical source modes: parallel natural minor for global-major pieces and parallel major for global-minor pieces.
+- Added source-derived borrowed triads without granting unrestricted chromatic pitch permission or storing harmony as opaque Roman-numeral strings.
+- Preserved CM005/CM006 outer-voice semantics by carrying borrowed chromatic tones in inner voices and structurally filtering unsupported borrowed degrees.
+- Preserved the global closure contract by prohibiting borrowing on the final beat and, under authentic cadence, on the penultimate beat.
+- Made borrowing and tonicization mutually exclusive on a beat while allowing both features to coexist elsewhere in the same composition.
+- Extended the independent hard contract from 40 to 42 rules with `CM041` modal-mixture context and `CM042` borrowed-chord realization.
+- Added independent reconstruction of source-mode pitch classes, complete borrowed-triad realization, and inversion/bass agreement from serialized values.
+- Added `modal_source` as a separate no-good distinctness dimension without redefining `harmony`, `harmonic_form`, `tonicization`, or `voicing`.
+- Versioned package to `2.7.0a1` and artifact/contract schema to 2.7; semantic provenance now commits modal-source metadata.
+- Preserved loading and musical verification of older payloads without inventing modal-source metadata when modal mixture is disabled.
+- Added deterministic positive generation plus adversarial tests for forged source identity, degree/inversion tampering, provenance tampering, legacy loading, and modal-source distinctness.
+- Kept borrowed sevenths, secondary leading-tone chords, persistent local-key regions, modulation, and third-inversion sevenths outside the v2.7 boundary.
+
 ## 2.6.0a1 — verified applied-dominant tonicization
 
 - Added opt-in applied-dominant tonicization on top of the v2.5 `triads+sevenths` vocabulary.

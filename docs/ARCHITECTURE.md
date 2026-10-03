@@ -8,7 +8,7 @@ YAML GenerationSpec
        v
  tonal/key-domain construction
        |
-       +--> harmonic-form + tonicization relation tables
+       +--> harmonic-form + tonicization + modal-source relation tables
        |
        v
 CP-SAT compiler ------------------------------------+
@@ -38,59 +38,59 @@ The same separation applies to objective metadata. Objective-component values pr
 
 ## Stable hard-rule contract
 
-`constraint_music.contract` defines stable IDs for every hard musical rule. v2.6 contains `CM001`–`CM040`.
+`constraint_music.contract` defines stable IDs for every hard musical rule. v2.7 contains `CM001`–`CM042`.
 
-New feasibility semantics are introduced as a synchronized change across:
-
-1. contract metadata;
-2. CP-SAT compilation;
-3. independent post-solve verification;
-4. adversarial regression tests;
-5. artifact/provenance representation when new state is serialized.
+New feasibility semantics are introduced as a synchronized change across contract metadata, CP-SAT compilation, independent post-solve verification, adversarial regression tests, and artifact/provenance representation whenever new state is serialized.
 
 Search mechanisms cannot waive a `CM` rule. No-good cuts constrain which already-valid assignment may be returned next; weighted scalarization ranks feasible assignments; Pareto filtering compares independently reconstructed objective vectors.
 
 ## Harmonic identity is decomposed
 
-Constraint Music intentionally does not collapse harmony into a single display string. At v2.6, a beat's harmonic state is represented through separate axes:
+Constraint Music intentionally does not collapse harmony into a display string. At v2.7, each beat can carry separate axes:
 
-- global diatonic `chord_degree`;
+- global functional `chord_degree`;
 - `ChordKind` (`triad` or `seventh`);
 - inversion (`0`, `1`, or `2`);
 - nullable `tonicization_target`;
+- nullable `modal_source`;
 - concrete SATB notes.
 
-Roman/slash notation is a derived presentation, not the canonical identity. For example, `V7/V` in C major is reconstructed from a global root degree, seventh kind, inversion, and target degree 5. This prevents display syntax from becoming solver state and leaves room for future local-key/modulation representation without redefining existing fields.
+Roman/slash/source notation is derived presentation rather than canonical identity. `V7/V` is reconstructed from global root degree, seventh kind, inversion, and target degree. A borrowed `iv[parallel_natural_minor]` is reconstructed from global functional degree, triad kind, inversion, and explicit source mode.
 
 ## SATB compiler
 
-The SATB harmonic skeleton operates at one sonority per beat. Soprano is constrained to equal the melody at each beat's strong grid step; alto and tenor are independent solver variables; bass reuses the established beat-level bass variable.
+The SATB harmonic skeleton operates at one sonority per beat. Soprano equals the melody at each beat's strong grid step; alto and tenor are independent solver variables; bass reuses the established beat-level bass variable.
 
-Pitch-class variables are linked to note variables with modulo constraints. Cached allowed-assignment tables jointly constrain chord degree, chord kind, inversion, tonicization target, and four voice pitch classes. Normal triads/sevenths and applied dominants therefore use the same typed relation-table architecture rather than special post-processing.
+Pitch-class variables are linked to note variables with modulo constraints. Cached allowed-assignment tables jointly constrain chord degree, chord kind, inversion, tonicization target, modal source, and four voice pitch classes. Global triads/sevenths, applied dominants, and borrowed triads therefore use the same typed relation-table architecture instead of post-processing exceptions.
 
-Ordering/spacing use direct integer constraints. Parallel-perfect and tendency-tone behavior use adjacent-beat transition constraints.
+Ordering/spacing use direct integer constraints. Parallel-perfect and seventh/tendency-tone behavior use adjacent-beat transition constraints.
 
 ## v2.6 tonicization model
 
-Tonicization is opt-in and requires the v2.5 seventh vocabulary. `NO_TONICIZATION_TARGET` is an internal sentinel only; serialized artifacts expose `null` for ordinary global-key harmony and an integer scale degree for an applied target.
+Tonicization remains opt-in and requires the seventh vocabulary. `NO_TONICIZATION_TARGET` is internal only; serialized artifacts expose `null` for global harmony and an integer scale degree for an applied target.
 
-For each supported target, the tonal layer derives the applied dominant root and exact dominant-seventh pitch classes. The SATB relation table admits only complete realizations consistent with the preserved outer-voice contract.
+For each supported target, the tonal layer derives the applied dominant root and exact dominant-seventh pitch classes. The SATB relation table admits only complete realizations compatible with the preserved outer-voice contract. Motion constraints require immediate target resolution, downward applied-seventh resolution, and upward local-leading-tone resolution. The verifier reconstructs those consequences from serialized values.
 
-The motion layer then requires:
+## v2.7 modal-mixture model
 
-- target beat exists;
-- next global chord degree equals the declared target;
-- next beat is not itself marked as the continuation of the same tonicization;
-- the applied seventh resolves down by step;
-- the target's chromatic leading tone resolves upward by semitone.
+Modal mixture is an independent opt-in context axis. `NO_MODAL_SOURCE` is an internal sentinel; serialized artifacts use `null` for global harmony and an explicit source label for borrowed harmony.
 
-The verifier independently reconstructs the same facts from serialized notes and metadata.
+The canonical source policy is deliberately small:
+
+- global major -> parallel natural minor;
+- global minor -> parallel major.
+
+For a borrowed beat, the theory layer derives the source scale from the global tonic, builds the source triad on the stored functional degree, and admits only complete SATB realizations of that triad. A borrowed beat is triadic in v2.7 and cannot also carry a tonicization target.
+
+The final beat remains global. With authentic closure enabled, the penultimate beat remains global as well. This keeps earlier cadence semantics stable.
 
 ## Compatibility boundary
 
-`CM005` and `CM006` continue to interpret strong melody and bass against the global diatonic triad identified by `chord_degree`. v2.6 does not reinterpret those IDs. Applied chromatic tones are therefore carried by inner voices.
+`CM005` and `CM006` continue to interpret strong melody and bass against the global diatonic triad identified by `chord_degree`. Neither tonicization nor mixture reinterprets these IDs. Chromatic applied or borrowed tones are therefore carried by inner voices.
 
-The theory layer computes which local targets are representable under that invariant. Targets that would require weakening the established outer-voice semantics are omitted from the supported target set. This is an explicit compatibility decision, not a claim that those tonicizations are musically invalid.
+The theory layer exposes only harmonic contexts representable under that invariant. This is an explicit compatibility decision rather than a claim that omitted harmonies are invalid in music theory.
+
+Borrowed triads receive their own source-derived completeness rule (`CM042`) rather than weakening global-triad root-doubling (`CM030`). Borrowed sevenths are deferred because they need source-aware seventh/tendency semantics rather than silently inheriting global CM035/CM036 behavior.
 
 ## Optimization
 
@@ -102,7 +102,7 @@ All hard musical rules remain non-negotiable. The minimized objective vector rem
 - harmonic repetition;
 - contour mismatch.
 
-v2.6 intentionally does not add an objective reward for tonicization. Tonicization changes feasibility/context when enabled, while search ranking remains comparable with earlier versions.
+v2.7 intentionally adds no reward or penalty for modal mixture. Mixture changes the feasible/contextual space when enabled while objective ranking remains comparable with earlier versions.
 
 ## Distinct enumeration
 
@@ -114,9 +114,10 @@ Exact no-good dimensions are independent:
 - `harmony` — global chord-degree sequence;
 - `voicing` — alto/tenor realization;
 - `harmonic_form` — chord kind + inversion;
-- `tonicization` — nullable local-target sequence.
+- `tonicization` — nullable local-target sequence;
+- `modal_source` — nullable parallel-source sequence.
 
-This decomposition lets callers ask for different tonicization plans without forcing different chord roots, or different voicings without claiming a different harmonic identity.
+This decomposition allows two outputs to share functional roots while differing only in tonicization, borrowing, form, or voicing.
 
 ## Pareto approximation
 
@@ -124,4 +125,4 @@ Pareto mode explores a deterministic family of weighted scalarizations, applies 
 
 ## Extension boundary
 
-Future modal mixture and modulation should add explicit source/mode/local-key identity rather than treating non-diatonic pitch classes as globally permitted. The v2.6 separation between global chord identity and local target context is intended to make that extension possible without mutating earlier artifacts or rule meanings.
+Future chromatic expansion should continue to add typed context rather than globally permitting altered pitch classes. Secondary leading-tone chords need explicit tendency semantics; persistent local-key regions need local-key identity; modulation needs destination and pivot identity. Third-inversion sevenths require an explicit revision of the preserved outer-voice contract rather than a silent reinterpretation.
