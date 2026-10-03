@@ -7,7 +7,7 @@ import pytest
 from constraint_music.contract import HARD_CONSTRAINT_IDS
 from constraint_music.models import GenerationResult, GenerationSpec
 from constraint_music.provenance import artifact_payload, verify_artifact_integrity
-from constraint_music.satb import result_from_dict, SatbGenerationResult
+from constraint_music.satb import SatbGenerationResult, result_from_dict
 from constraint_music.solver import ConstraintMusicSolver
 from constraint_music.theory import ChordKind
 from constraint_music.verifier import verify_result
