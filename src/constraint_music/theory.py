@@ -156,10 +156,7 @@ class Key:
 
     def chord_form_name(self, degree: int, kind: ChordKind, inversion: int) -> str:
         base = self.chord_name(degree)
-        if kind is ChordKind.TRIAD:
-            figures = ("", "6", "64")
-        else:
-            figures = ("7", "65", "43")
+        figures = ("", "6", "64") if kind is ChordKind.TRIAD else ("7", "65", "43")
         if not 0 <= inversion < len(figures):
             raise ValueError(f"Unsupported inversion {inversion} for {kind.label}")
         return f"{base}{figures[inversion]}"
