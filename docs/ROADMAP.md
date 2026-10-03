@@ -61,9 +61,21 @@
 - [x] `tonicization` distinctness without redefining `harmony` or `harmonic_form`.
 - [x] Schema/contract 2.6 provenance for tonicization target metadata.
 
+## v2.7 verified modal mixture
+
+- [x] Explicit nullable per-beat source-mode identity.
+- [x] Canonical parallel source policy: natural minor for global major, major for global minor.
+- [x] Source-derived borrowed triads with no unrestricted chromatic pitch permission.
+- [x] Structural filtering of borrowed degrees incompatible with preserved CM005/CM006 semantics.
+- [x] Preserve final/global authentic-cadence context while allowing borrowing earlier in the phrase.
+- [x] Make modal mixture and tonicization mutually exclusive at a beat.
+- [x] Independent CM041–CM042 verifier symmetry and adversarial tamper tests.
+- [x] `modal_source` distinctness without redefining existing search dimensions.
+- [x] Schema/contract 2.7 provenance for modal-source metadata.
+
 ## Later harmonic expansion
 
-- [ ] Modal mixture / borrowed-chord representation with explicit source-mode identity.
+- [ ] Borrowed seventh chords with explicit source-aware seventh/tendency semantics.
 - [ ] Secondary leading-tone chords with independent tendency-tone semantics.
 - [ ] Persistent local-key regions distinct from one-chord tonicization.
 - [ ] Controlled modulation with explicit pivot and destination-key identity.
@@ -79,4 +91,4 @@
 
 ## Neuro-symbolic track
 
-A model may propose motifs, harmonic plans, rhythmic cells, phrase plans, tonicization targets, or target curves, but only the symbolic layer is allowed to certify the final artifact. The intended boundary is `proposal -> compile/repair -> independent verify -> export`, not unconstrained model generation presented as verified composition.
+A model may propose motifs, harmonic plans, rhythmic cells, phrase plans, tonicization targets, modal-source plans, or target curves, but only the symbolic layer is allowed to certify the final artifact. The intended boundary is `proposal -> compile/repair -> independent verify -> export`, not unconstrained model generation presented as verified composition.

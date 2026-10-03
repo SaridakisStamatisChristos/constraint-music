@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.7.0a1 — verified modal mixture
+
+- Added opt-in modal mixture through explicit per-beat parallel-source identity.
+- Added canonical source modes: parallel natural minor for global-major pieces and parallel major for global-minor pieces.
+- Added source-derived borrowed triads without granting unrestricted chromatic pitch permission or storing harmony as opaque Roman-numeral strings.
+- Preserved CM005/CM006 outer-voice semantics by carrying borrowed chromatic tones in inner voices and structurally filtering unsupported borrowed degrees.
+- Preserved the global closure contract by prohibiting borrowing on the final beat and, under authentic cadence, on the penultimate beat.
+- Made borrowing and tonicization mutually exclusive on a beat while allowing both features to coexist elsewhere in the same composition.
+- Extended the independent hard contract from 40 to 42 rules with `CM041` modal-mixture context and `CM042` borrowed-chord realization.
+- Added independent reconstruction of source-mode pitch classes, complete borrowed-triad realization, and inversion/bass agreement from serialized values.
+- Added `modal_source` as a separate no-good distinctness dimension without redefining `harmony`, `harmonic_form`, `tonicization`, or `voicing`.
+- Versioned package to `2.7.0a1` and artifact/contract schema to 2.7; semantic provenance now commits modal-source metadata.
+- Preserved loading and musical verification of older payloads without inventing modal-source metadata when modal mixture is disabled.
+- Added deterministic positive generation plus adversarial tests for forged source identity, degree/inversion tampering, provenance tampering, legacy loading, and modal-source distinctness.
+- Kept borrowed sevenths, secondary leading-tone chords, persistent local-key regions, modulation, and third-inversion sevenths outside the v2.7 boundary.
+
 ## 2.6.0a1 — verified applied-dominant tonicization
 
 - Added opt-in applied-dominant tonicization on top of the v2.5 `triads+sevenths` vocabulary.
@@ -32,64 +48,25 @@
 
 ## 2.4.0a1 — solver-native SATB harmony
 
-- Added explicit beat-level soprano, alto, tenor, and bass SATB realization inside CP-SAT.
-- Anchored soprano to the strong-grid melody while solving alto and tenor independently.
-- Added canonical inner-voice ranges, strict voice ordering, and octave upper-voice spacing.
-- Added complete-triad enforcement with an explicit root-doubling policy.
-- Added solver-native parallel-perfect avoidance for every voice pair involving alto or tenor.
-- Added solver-native leading-tone resolution for alto and tenor.
-- Extended the independently verified hard contract from 26 to 32 rules (`CM001`–`CM032`).
-- Added `SatbGenerationResult` serialization and artifact schema 2.4; semantic digests now commit to SATB voices.
-- Preserved v2.3 `harmony` distinctness as chord-sequence distinctness and added a separate `voicing` dimension for alto/tenor realizations.
-- Added positive SATB generation tests and adversarial verification tests for crossing and chord-completeness tampering.
-- Cached immutable SATB chord and parallel-motion tables to avoid rebuilding the same transition relations across repeated solves.
+- Added explicit beat-level soprano/alto/tenor/bass solver variables and independent SATB verification.
+- Added voice ranges, ordering, spacing, complete-triad/root-doubling policy, inner-voice parallel-perfect avoidance, and inner leading-tone resolution.
+- Extended the independently verified contract from 26 to 32 rules and added `voicing` distinctness.
 
 ## 2.3.0a1 — distinct enumeration and Pareto search
 
-- Replaced seed-only `generate_many()` variation with CP-SAT no-good cuts that guarantee distinctness over selected musical dimensions.
-- Added explicit distinctness dimensions for melody, rhythm, bass, and harmony.
-- Split the scalar objective into five named minimized components: tension deviation, melody motion, bass motion, harmonic repetition, and contour mismatch.
-- Added independent objective-vector recomputation from serialized musical values; solver-side and independent vectors must agree.
-- Added deterministic weighted scalarization profiles and a bounded Pareto-front approximation API.
-- Added independent Pareto dominance filtering and deterministic single-worker enumeration tests.
-- Versioned JSON artifacts to schema 2.3 with integrity-protected objective-vector metadata.
-- Added CLI controls for distinct dimensions, Pareto mode, and Pareto candidate-pool size.
-- Kept the hard musical certification contract unchanged at `CM001`–`CM026`; v2.3 changes search/ranking semantics, not feasibility semantics.
+- Added CP-SAT no-good cuts, explicit distinctness dimensions, named objective vectors, independent objective recomputation, deterministic scalarizations, and bounded Pareto-front approximation.
 
 ## 2.2.0a1 — verified phrase grammar
 
-- Added explicit phrase spans with unique IDs and non-overlap/in-bounds validation.
-- Added phrase roles: `statement`, `antecedent`, `consequent`, `transition`, and `cadential`.
-- Added exact phrase relations: `independent`, `repeat`, `transpose`, `answer`, and `sequence`.
-- Added precise phrase-local cadence labels: `tonic_close`, `dominant_open`, `dominant_to_tonic`, and `leading_tone_to_tonic`.
-- Added a minimal answer-linked antecedent/consequent period grammar with open-to-strong closure semantics.
-- Extended the hard contract from 21 to 26 rules (`CM001`–`CM026`) with independent phrase verification.
-- Versioned JSON provenance to schema/contract 2.2; phrase declarations are committed by the semantic digest through the serialized specification.
-- Added Phase 0 stabilization regressions for old all-onset configs, malformed rhythm deserialization, deterministic single-worker generation, and tamper detection.
-- Added positive and adversarial phrase tests plus an eight-bar period example.
-- Kept the historical `require_authentic_cadence` field backward compatible while documenting it as the legacy whole-piece closure rule.
+- Added explicit phrase spans, roles, phrase relations, phrase-local cadence semantics, answer-linked antecedent/consequent structure, and independent phrase verification.
 
 ## 2.1.0a1 — rhythm and motif grammar
 
-- Promoted melody rhythm to an explicit CP-SAT dimension with `onset`, `tie`, and `rest` states.
-- Added verified per-bar onset/rest/tie density, downbeat articulation, maximum rest runs, and maximum tie runs.
-- Made ties preserve pitch and render as sustained MIDI notes; rests now create real silence in the melody track.
-- Added motif grammar with exact repetition and exact semitone transposition between configured phrase locations.
-- Extended the independent contract from 16 to 21 hard rules (`CM001`–`CM021`).
-- Added v2.1 JSON provenance; semantic hashes now commit to rhythm as well as pitch/harmony/tension.
-- Added rhythm/motif adversarial tests, MIDI duration tests, documentation, and an expressive example spec.
-- Preserved v2.0 generation behavior by keeping rhythm generation opt-in.
+- Added explicit onset/tie/rest rhythm, bar-density/run constraints, real ties/rests in MIDI, and verified repeat/transpose motif grammar.
 
 ## 2.0.0a1 — revival baseline
 
-- Rebuilt the recovered v1.1 constraint-programming engine as a clean v2 foundation.
-- Added a versioned 16-rule hard-constraint contract with stable rule IDs.
-- Closed the v1.1 verifier gaps for melodic tritones, bass tritones, and large-leap recovery.
-- Added fail-closed solver/verifier contract enforcement.
-- Added independently re-verifiable JSON artifacts with SHA-256 composition and contract digests.
-- Added `constraint-music verify` for offline validation without rerunning CP-SAT.
-- Preserved deterministic seeded generation, MIDI export, custom progression graphs, tension curves, and harmonic-minor support.
-- Added adversarial verifier tests and CI quality gates.
+- Rebuilt the recovered v1.1 CP-SAT engine with a versioned hard-rule contract, fail-closed independent verification, verifiable JSON provenance, and offline `verify`.
 
 ## 1.1.0 — recovered historical implementation
 
