@@ -125,10 +125,10 @@ def add_satb_constraints(
         model.add(soprano[beat] - alto[beat] <= MAX_UPPER_SPACING)
         model.add(alto[beat] - tenor[beat] <= MAX_UPPER_SPACING)
 
-        pcs = [model.new_int_var(0, 11, f"satb_pc_{beat}_{voice}") for voice in range(4)]
-        voices = (soprano[beat], alto[beat], tenor[beat], bass_note[beat])
-        for pc, voice in zip(pcs, voices, strict=True):
-            model.add_modulo_equality(pc, voice, 12)
+        pcs = [model.new_int_var(0, 11, f"satb_pc_{beat}_{index}") for index in range(4)]
+        voice_notes = (soprano[beat], alto[beat], tenor[beat], bass_note[beat])
+        for pc, note_var in zip(pcs, voice_notes, strict=True):
+            model.add_modulo_equality(pc, note_var, 12)
         model.add_allowed_assignments([chord[beat], *pcs], chord_rows)
 
     if spec.avoid_parallel_perfects:
@@ -153,15 +153,21 @@ def add_satb_constraints(
                 )
 
     if spec.resolve_leading_tone:
-        for voice, domain in ((alto, alto_domain), (tenor, tenor_domain)):
+        resolution_voices: tuple[
+            tuple[list[cp_model.IntVar], tuple[int, ...]], ...
+        ] = (
+            (alto, alto_domain),
+            (tenor, tenor_domain),
+        )
+        for voice_vars, domain in resolution_voices:
             allowed = [
-                (left, right)
-                for left in domain
-                for right in domain
-                if left % 12 != key.leading_tone_pc or right == left + 1
+                (left_note, right_note)
+                for left_note in domain
+                for right_note in domain
+                if left_note % 12 != key.leading_tone_pc or right_note == left_note + 1
             ]
-            for left, right in pairwise(voice):
-                model.add_allowed_assignments([left, right], allowed)
+            for left_var, right_var in pairwise(voice_vars):
+                model.add_allowed_assignments([left_var, right_var], allowed)
 
     return SatbVariables(soprano=soprano, alto=alto, tenor=tenor)
 
@@ -256,7 +262,7 @@ def _satb_chord_rows(key: Key) -> list[tuple[int, int, int, int, int]]:
         root = triad[0]
         for pcs in product(triad, repeat=4):
             if set(pcs) == set(triad) and pcs.count(root) >= 2:
-                rows.append((degree, *pcs))
+                rows.append((degree, pcs[0], pcs[1], pcs[2], pcs[3]))
     return rows
 
 
