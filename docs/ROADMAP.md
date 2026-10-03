@@ -9,10 +9,14 @@
 - [x] Add verifiable JSON provenance.
 - [x] Add offline `verify` command.
 
-## Next: expressive symbolic composition
+## v2.1 expressive structure
 
-- [ ] Rhythm CSP: onsets, ties, rests, durations, syncopation, metrical accents.
-- [ ] Motif and phrase grammar: repetition, transposition, sequence, antecedent/consequent structure.
+- [x] Rhythm CSP: explicit onsets, ties, rests, density, run limits, metrical downbeats.
+- [x] Motif grammar: exact repetition and exact semitone transposition with rhythm inheritance.
+- [ ] Antecedent/consequent phrase grammar and sequence transformations.
+
+## Next
+
 - [ ] Species-counterpoint module with explicit dissonance treatment.
 - [ ] Four-part SATB voicing and voice-leading constraints.
 - [ ] Multi-objective/Pareto solution enumeration rather than one weighted objective.
@@ -21,4 +25,4 @@
 
 ## Later: neuro-symbolic mode
 
-A model may propose motifs, harmonic plans, or target curves, but only the symbolic layer is allowed to certify the final artifact. The intended boundary is `proposal -> compile/repair -> independent verify -> export`, not unconstrained model generation presented as verified composition.
+A model may propose motifs, harmonic plans, rhythmic cells, or target curves, but only the symbolic layer is allowed to certify the final artifact. The intended boundary is `proposal -> compile/repair -> independent verify -> export`, not unconstrained model generation presented as verified composition.

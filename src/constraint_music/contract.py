@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.0"
+CONTRACT_VERSION = "2.1"
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,7 +16,9 @@ class ConstraintRule:
 
 
 HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
-    ConstraintRule("CM001", "shape", "Melody, bass, and harmony lengths match the specification."),
+    ConstraintRule(
+        "CM001", "shape", "Melody, rhythm, bass, and harmony lengths match the specification."
+    ),
     ConstraintRule(
         "CM002", "melody_domain", "Every melody pitch is in-key and inside the configured range."
     ),
@@ -70,6 +72,35 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "authentic_cadence",
         "When enabled, the phrase opens on tonic and closes dominant-function to tonic, "
         "with tonic outer voices.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM017",
+        "rhythm_domain",
+        "Every melody grid step is explicitly classified as onset, tie, or rest.",
+    ),
+    ConstraintRule(
+        "CM018",
+        "rhythm_grammar",
+        "Ties extend a sounding note, preserve pitch, and tie/rest runs stay within bounds.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM019",
+        "rhythm_bar_density",
+        "When rhythm generation is enabled, each bar satisfies onset/rest/tie density and downbeat rules.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM020",
+        "motif_relation",
+        "When configured, a target motif repeats or transposes the source motif exactly, including rhythm.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM021",
+        "cadential_articulation",
+        "An authentic cadence ends on a newly articulated tonic melody onset.",
         conditional=True,
     ),
 )

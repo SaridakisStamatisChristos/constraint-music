@@ -2,12 +2,35 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
+from enum import IntEnum
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 from .theory import DEFAULT_PROGRESSION_GRAPH_ROWS, Key, Mode, midi_note_name
+
+
+class RhythmState(IntEnum):
+    REST = 0
+    ONSET = 1
+    TIE = 2
+
+    @classmethod
+    def parse(cls, value: object) -> RhythmState:
+        if isinstance(value, cls):
+            return value
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            names = {"rest": cls.REST, "onset": cls.ONSET, "tie": cls.TIE}
+            if normalized in names:
+                return names[normalized]
+        if isinstance(value, int):
+            try:
+                return cls(value)
+            except ValueError as exc:
+                raise ValueError(f"Unknown rhythm state: {value!r}") from exc
+        raise ValueError(f"Unknown rhythm state: {value!r}")
 
 
 @dataclass(frozen=True, slots=True)
@@ -30,6 +53,24 @@ class GenerationSpec:
     avoid_parallel_perfects: bool = True
     progression_graph: tuple[tuple[int, ...], ...] = DEFAULT_PROGRESSION_GRAPH_ROWS
     tension_curve: tuple[float, ...] = (0.08, 0.20, 0.48, 0.82, 0.18, 0.02)
+
+    rhythm_enabled: bool = False
+    min_onsets_per_bar: int = 1
+    max_onsets_per_bar: int = 16
+    min_rests_per_bar: int = 0
+    max_rests_per_bar: int = 4
+    min_ties_per_bar: int = 0
+    max_ties_per_bar: int = 4
+    max_consecutive_rests: int = 1
+    max_tie_steps: int = 1
+    require_bar_downbeat_onset: bool = True
+
+    motif_relation: str = "none"
+    motif_source_bar: int = 0
+    motif_target_bar: int = 2
+    motif_length_steps: int = 4
+    motif_transpose_semitones: int = 0
+
     seed: int = 7
     max_time_seconds: float = 15.0
     workers: int = 8
@@ -40,6 +81,7 @@ class GenerationSpec:
             self, "progression_graph", _normalize_progression_graph(self.progression_graph)
         )
         object.__setattr__(self, "tension_curve", tuple(float(x) for x in self.tension_curve))
+        object.__setattr__(self, "motif_relation", str(self.motif_relation).strip().lower())
         self.validate()
 
     @property
@@ -55,12 +97,24 @@ class GenerationSpec:
         return self.total_beats * self.subdivisions_per_beat
 
     @property
+    def steps_per_bar(self) -> int:
+        return self.beats_per_bar * self.subdivisions_per_beat
+
+    @property
     def progression_pairs(self) -> tuple[tuple[int, int], ...]:
         return tuple(
             (source, target)
             for source, targets in enumerate(self.progression_graph)
             for target in targets
         )
+
+    @property
+    def motif_source_start(self) -> int:
+        return self.motif_source_bar * self.steps_per_bar
+
+    @property
+    def motif_target_start(self) -> int:
+        return self.motif_target_bar * self.steps_per_bar
 
     def validate(self) -> None:
         _between("bars", self.bars, 1, 32)
@@ -97,6 +151,49 @@ class GenerationSpec:
             raise ValueError("Melody range is too narrow for the selected key")
         if len(self.tonal_key.pitches_in_range(self.bass_low, self.bass_high)) < 5:
             raise ValueError("Bass range is too narrow for the selected key")
+
+        if self.rhythm_enabled:
+            steps = self.steps_per_bar
+            for name, value in (
+                ("min_onsets_per_bar", self.min_onsets_per_bar),
+                ("max_onsets_per_bar", self.max_onsets_per_bar),
+                ("min_rests_per_bar", self.min_rests_per_bar),
+                ("max_rests_per_bar", self.max_rests_per_bar),
+                ("min_ties_per_bar", self.min_ties_per_bar),
+                ("max_ties_per_bar", self.max_ties_per_bar),
+            ):
+                _between(name, value, 0, steps)
+            if self.min_onsets_per_bar > self.max_onsets_per_bar:
+                raise ValueError("min_onsets_per_bar cannot exceed max_onsets_per_bar")
+            if self.min_rests_per_bar > self.max_rests_per_bar:
+                raise ValueError("min_rests_per_bar cannot exceed max_rests_per_bar")
+            if self.min_ties_per_bar > self.max_ties_per_bar:
+                raise ValueError("min_ties_per_bar cannot exceed max_ties_per_bar")
+            if (
+                self.min_onsets_per_bar + self.min_rests_per_bar + self.min_ties_per_bar
+                > steps
+            ):
+                raise ValueError("Minimum rhythm-state counts exceed steps_per_bar")
+            if (
+                self.max_onsets_per_bar + self.max_rests_per_bar + self.max_ties_per_bar
+                < steps
+            ):
+                raise ValueError("Maximum rhythm-state counts cannot cover steps_per_bar")
+            _between("max_consecutive_rests", self.max_consecutive_rests, 0, steps)
+            _between("max_tie_steps", self.max_tie_steps, 0, steps)
+
+        if self.motif_relation not in {"none", "repeat", "transpose"}:
+            raise ValueError("motif_relation must be one of: none, repeat, transpose")
+        if self.motif_relation != "none":
+            _between("motif_source_bar", self.motif_source_bar, 0, self.bars - 1)
+            _between("motif_target_bar", self.motif_target_bar, 0, self.bars - 1)
+            if self.motif_source_bar == self.motif_target_bar:
+                raise ValueError("motif_source_bar and motif_target_bar must differ")
+            _between("motif_length_steps", self.motif_length_steps, 1, self.steps_per_bar)
+            if not -24 <= self.motif_transpose_semitones <= 24:
+                raise ValueError("motif_transpose_semitones must be in -24..24")
+            if self.motif_relation == "repeat" and self.motif_transpose_semitones != 0:
+                raise ValueError("repeat motifs require motif_transpose_semitones=0")
 
     def expanded_tension(self) -> tuple[int, ...]:
         """Linearly interpolate control points to one integer target per beat (0..100)."""
@@ -151,9 +248,16 @@ class GenerationResult:
     objective_value: float
     solver_status: str
     wall_time_seconds: float
+    rhythm: tuple[RhythmState, ...] = ()
     validation: ValidationReport = field(
         default_factory=lambda: ValidationReport(False, ("Not independently verified",))
     )
+
+    @property
+    def effective_rhythm(self) -> tuple[RhythmState, ...]:
+        if self.rhythm:
+            return tuple(RhythmState.parse(state) for state in self.rhythm)
+        return (RhythmState.ONSET,) * len(self.melody)
 
     @property
     def chord_names(self) -> tuple[str, ...]:
@@ -167,6 +271,10 @@ class GenerationResult:
     @property
     def bass_names(self) -> tuple[str, ...]:
         return tuple(midi_note_name(note) for note in self.bass)
+
+    @property
+    def rhythm_names(self) -> tuple[str, ...]:
+        return tuple(state.name.lower() for state in self.effective_rhythm)
 
     def to_dict(self) -> dict[str, Any]:
         spec_dict = asdict(self.spec)
@@ -190,6 +298,7 @@ class GenerationResult:
             "music": {
                 "melody_midi": list(self.melody),
                 "melody_names": list(self.melody_names),
+                "rhythm": list(self.rhythm_names),
                 "bass_midi": list(self.bass),
                 "bass_names": list(self.bass_names),
                 "chord_degrees": list(self.chord_degrees),
@@ -223,6 +332,10 @@ class GenerationResult:
             tuple(str(x) for x in raw_validation.get("checked_rules", ())),
             tuple(str(x) for x in raw_validation.get("failed_rules", ())),
         )
+        raw_rhythm = raw_music.get("rhythm", ())
+        if not isinstance(raw_rhythm, Sequence) or isinstance(raw_rhythm, (str, bytes)):
+            raise ValueError("Result JSON music.rhythm must be an array")
+        rhythm = tuple(RhythmState.parse(state) for state in raw_rhythm)
         return cls(
             spec=spec,
             melody=tuple(int(x) for x in _sequence(raw_music, "melody_midi")),
@@ -233,6 +346,7 @@ class GenerationResult:
             objective_value=float(raw_solver.get("objective", 0.0)),
             solver_status=str(raw_solver.get("status", "IMPORTED")),
             wall_time_seconds=float(raw_solver.get("wall_time_seconds", 0.0)),
+            rhythm=rhythm,
             validation=validation,
         )
 

@@ -35,7 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     verify = subparsers.add_parser(
         "verify",
         help=(
-            "Verify hard musical constraints and v2 artifact provenance "
+            "Verify hard musical constraints and v2.1 artifact provenance "
             "without rerunning the solver"
         ),
     )
@@ -43,7 +43,7 @@ def build_parser() -> argparse.ArgumentParser:
     verify.add_argument(
         "--allow-legacy",
         action="store_true",
-        help="Accept missing v2 provenance while still checking the musical constraints",
+        help="Accept missing current provenance while still checking musical constraints",
     )
 
     demo = subparsers.add_parser("demo", help="Generate a built-in four-bar C-major example")
@@ -104,7 +104,7 @@ def _run_verification(path: Path, allow_legacy: bool) -> None:
     result, payload = load_result_json(path)
     report = verify_result(result)
     integrity_issues = verify_artifact_integrity(result, payload)
-    if allow_legacy and "provenance" not in payload:
+    if allow_legacy and payload.get("schema_version") != "2.1":
         integrity_issues = ()
 
     if report.valid and not integrity_issues:

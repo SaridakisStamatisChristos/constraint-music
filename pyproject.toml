@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "constraint-music"
-version = "2.0.0a1"
+version = "2.1.0a1"
 description = "Deterministic constraint-programming music synthesis with independent verification"
 readme = "README.md"
 requires-python = ">=3.11"
