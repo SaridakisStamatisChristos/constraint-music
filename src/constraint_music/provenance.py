@@ -92,9 +92,13 @@ def verify_artifact_integrity(
     if not isinstance(search, Mapping):
         issues.append("missing search metadata")
     else:
-        expected_vector = objective_mapping(evaluate_objective_vector(result))
-        if search.get("objective_vector") != expected_vector:
-            issues.append("objective vector metadata mismatch")
+        try:
+            expected_vector = objective_mapping(evaluate_objective_vector(result))
+        except (IndexError, ValueError):
+            issues.append("objective vector cannot be recomputed from invalid musical values")
+        else:
+            if search.get("objective_vector") != expected_vector:
+                issues.append("objective vector metadata mismatch")
     if provenance.get("constraint_contract_version") != CONTRACT_VERSION:
         issues.append("constraint contract version does not match this verifier")
     if provenance.get("constraint_contract_sha256") != contract_digest():
