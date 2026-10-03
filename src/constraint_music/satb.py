@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from functools import cache
 from itertools import pairwise, product
 from typing import Any
 
@@ -255,7 +256,8 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
     return tuple(issues)
 
 
-def _satb_chord_rows(key: Key) -> list[tuple[int, int, int, int, int]]:
+@cache
+def _satb_chord_rows(key: Key) -> tuple[tuple[int, int, int, int, int], ...]:
     rows: list[tuple[int, int, int, int, int]] = []
     for degree in range(7):
         triad = key.triad_pitch_classes(degree)
@@ -263,17 +265,18 @@ def _satb_chord_rows(key: Key) -> list[tuple[int, int, int, int, int]]:
         for pcs in product(triad, repeat=4):
             if set(pcs) == set(triad) and pcs.count(root) >= 2:
                 rows.append((degree, pcs[0], pcs[1], pcs[2], pcs[3]))
-    return rows
+    return tuple(rows)
 
 
+@cache
 def _parallel_rows(
     left_domain: tuple[int, ...], right_domain: tuple[int, ...]
-) -> list[tuple[int, int, int, int]]:
-    return [
+) -> tuple[tuple[int, int, int, int], ...]:
+    return tuple(
         (left_a, right_a, left_b, right_b)
         for left_a in left_domain
         for right_a in right_domain
         for left_b in left_domain
         for right_b in right_domain
         if is_parallel_perfect(left_a, right_a, left_b, right_b)
-    ]
+    )
