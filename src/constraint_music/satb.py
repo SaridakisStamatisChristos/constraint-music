@@ -665,7 +665,10 @@ def _verify_expanded_harmony_motion(
                         issues.append(
                             (
                                 "CM040",
-                                f"{label} beat {beat}: applied chordal seventh does not resolve down",
+                                (
+                                    f"{label} beat {beat}: applied chordal seventh "
+                                    "does not resolve down"
+                                ),
                             )
                         )
                 if voice[beat] % 12 == leading_pc and voice[beat + 1] != voice[beat] + 1:
@@ -805,9 +808,8 @@ def _chordal_seventh_flag_rows(
                     elif target in supported and degree == key.applied_dominant_root_degree(target):
                         seventh_pc = key.applied_dominant_seventh_pitch_classes(target)[3]
                 for pc in range(12):
-                    rows.append(
-                        (degree, int(kind), target, pc, int(seventh_pc is not None and pc == seventh_pc))
-                    )
+                    flag = int(seventh_pc is not None and pc == seventh_pc)
+                    rows.append((degree, int(kind), target, pc, flag))
     return tuple(rows)
 
 
@@ -847,9 +849,8 @@ def _dominant_leading_flag_rows(
                     elif target in supported and degree == key.applied_dominant_root_degree(target):
                         leading_pc = key.applied_dominant_seventh_pitch_classes(target)[1]
                 for pc in range(12):
-                    rows.append(
-                        (degree, int(kind), target, pc, int(leading_pc is not None and pc == leading_pc))
-                    )
+                    flag = int(leading_pc is not None and pc == leading_pc)
+                    rows.append((degree, int(kind), target, pc, flag))
     return tuple(rows)
 
 

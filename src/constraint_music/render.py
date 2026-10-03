@@ -9,7 +9,10 @@ def render_grid(result: GenerationResult) -> str:
     spec = result.spec
     rhythm = result.effective_rhythm
     chord_labels = result.chord_names
-    if isinstance(result, SatbGenerationResult) and len(result.chord_form_names) == spec.total_beats:
+    if (
+        isinstance(result, SatbGenerationResult)
+        and len(result.chord_form_names) == spec.total_beats
+    ):
         chord_labels = result.chord_form_names
     lines = [
         f"Key: {spec.tonal_key} | {spec.bars} bars | {spec.tempo_bpm} BPM | "
