@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import dataclass, replace
 
 from ortools.sat.python import cp_model
 
@@ -17,7 +17,15 @@ from .compiler_tonal import (
 )
 from .contract import HARD_CONSTRAINT_IDS
 from .models import GenerationResult, GenerationSpec, RhythmState
-from .objective import add_objective
+from .objective import ObjectiveBundle, add_objective, evaluate_objective_vector
+from .search import (
+    DEFAULT_OBJECTIVE_WEIGHTS,
+    ObjectiveVector,
+    normalize_distinct_on,
+    normalize_objective_weights,
+    pareto_indices,
+    scalarization_profiles,
+)
 from .verifier import verify_result
 
 COMPILED_HARD_CONSTRAINT_IDS: tuple[str, ...] = HARD_CONSTRAINT_IDS
@@ -28,13 +36,142 @@ class NoSolutionError(RuntimeError):
 
 
 class InternalVerificationError(RuntimeError):
-    """Raised when the solver emits an assignment rejected by the independent verifier."""
+    """Raised when solver output disagrees with an independent application-level check."""
+
+
+@dataclass(slots=True)
+class _CompiledProblem:
+    model: cp_model.CpModel
+    melody_note: list[cp_model.IntVar]
+    rhythm: list[cp_model.IntVar]
+    bass_note: list[cp_model.IntVar]
+    chord: list[cp_model.IntVar]
+    objective: ObjectiveBundle
 
 
 class ConstraintMusicSolver:
-    """Compile the declared musical contract into CP-SAT and fail closed after verification."""
+    """Compile the musical contract into CP-SAT and fail closed after verification."""
 
     def generate(self, spec: GenerationSpec) -> GenerationResult:
+        return self.generate_weighted(spec, DEFAULT_OBJECTIVE_WEIGHTS)
+
+    def generate_weighted(
+        self,
+        spec: GenerationSpec,
+        weights: object,
+    ) -> GenerationResult:
+        normalized = normalize_objective_weights(weights)
+        return self._solve(spec, normalized, (), ("melody",))
+
+    def generate_many(
+        self,
+        spec: GenerationSpec,
+        count: int,
+        distinct_on: object = ("melody",),
+    ) -> tuple[GenerationResult, ...]:
+        if not 1 <= count <= 32:
+            raise ValueError("count must be in 1..32")
+        dimensions = normalize_distinct_on(distinct_on)
+        results: list[GenerationResult] = []
+        for _ in range(count):
+            try:
+                result = self._solve(
+                    spec,
+                    DEFAULT_OBJECTIVE_WEIGHTS,
+                    tuple(results),
+                    dimensions,
+                )
+            except NoSolutionError as exc:
+                raise NoSolutionError(
+                    f"Only {len(results)} distinct compositions exist under distinct_on={dimensions}"
+                ) from exc
+            results.append(result)
+        return tuple(results)
+
+    def generate_pareto(
+        self,
+        spec: GenerationSpec,
+        count: int,
+        distinct_on: object = ("melody",),
+        candidate_multiplier: int = 3,
+    ) -> tuple[GenerationResult, ...]:
+        if not 1 <= count <= 16:
+            raise ValueError("Pareto count must be in 1..16")
+        if not 1 <= candidate_multiplier <= 8:
+            raise ValueError("candidate_multiplier must be in 1..8")
+        dimensions = normalize_distinct_on(distinct_on)
+        pool_size = min(32, max(count, count * candidate_multiplier))
+        profiles = scalarization_profiles(DEFAULT_OBJECTIVE_WEIGHTS, pool_size)
+        candidates: list[GenerationResult] = []
+        for profile in profiles:
+            try:
+                candidate = self._solve(spec, profile, tuple(candidates), dimensions)
+            except NoSolutionError:
+                break
+            candidates.append(candidate)
+        if not candidates:
+            raise NoSolutionError("No feasible composition found during Pareto search")
+        vectors = tuple(evaluate_objective_vector(candidate) for candidate in candidates)
+        front = pareto_indices(vectors)
+        return tuple(candidates[index] for index in front[:count])
+
+    def _solve(
+        self,
+        spec: GenerationSpec,
+        weights: ObjectiveVector,
+        exclusions: tuple[GenerationResult, ...],
+        distinct_on: tuple[str, ...],
+    ) -> GenerationResult:
+        problem = self._compile(spec, weights)
+        for exclusion_index, result in enumerate(exclusions):
+            self._add_no_good(problem, result, distinct_on, exclusion_index)
+
+        solver = cp_model.CpSolver()
+        solver.parameters.max_time_in_seconds = spec.max_time_seconds
+        solver.parameters.num_search_workers = spec.workers
+        solver.parameters.random_seed = spec.seed
+        solver.parameters.randomize_search = True
+        solver.parameters.log_search_progress = False
+
+        status = solver.solve(problem.model)
+        status_name = solver.status_name(status)
+        if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
+            raise NoSolutionError(
+                f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
+                "phrase, cadence, repetition, or distinctness constraints."
+            )
+
+        raw_result = GenerationResult(
+            spec=spec,
+            melody=tuple(solver.value(note) for note in problem.melody_note),
+            bass=tuple(solver.value(note) for note in problem.bass_note),
+            chord_degrees=tuple(solver.value(item) for item in problem.chord),
+            target_tension=spec.expanded_tension(),
+            actual_tension=tuple(
+                round(solver.value(value) / 3) for value in problem.objective.actual_tensions
+            ),
+            objective_value=solver.objective_value,
+            solver_status=status_name,
+            wall_time_seconds=solver.wall_time,
+            rhythm=tuple(RhythmState(solver.value(item)) for item in problem.rhythm),
+        )
+        report = verify_result(raw_result)
+        if not report.valid:
+            joined = "; ".join(report.issues[:5])
+            raise InternalVerificationError(f"Solver/verifier contract breach: {joined}")
+
+        solver_vector = tuple(
+            (name, solver.value(problem.objective.components[name]))
+            for name, _ in weights
+        )
+        independent_vector = evaluate_objective_vector(raw_result)
+        if solver_vector != independent_vector:
+            raise InternalVerificationError(
+                "Solver/objective-vector breach: compiled and independent objective vectors differ"
+            )
+        return replace(raw_result, validation=report)
+
+    def _compile(self, spec: GenerationSpec, weights: ObjectiveVector) -> _CompiledProblem:
         melody_domain = spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
         bass_domain = spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
         model = cp_model.CpModel()
@@ -74,7 +211,7 @@ class ConstraintMusicSolver:
         add_rhythm_constraints(model, spec, rhythm, melody_note)
         add_motif_constraints(model, spec, rhythm, melody_note)
         add_phrase_constraints(model, spec, rhythm, melody_note, bass_note, chord)
-        objective_terms, actual_tension = add_objective(
+        objective = add_objective(
             model,
             spec,
             chord,
@@ -83,46 +220,35 @@ class ConstraintMusicSolver:
             rhythm,
             bass_note,
             melody_domain,
+            weights,
         )
-        model.minimize(sum(objective_terms))
+        model.minimize(objective.scalarized)
+        return _CompiledProblem(model, melody_note, rhythm, bass_note, chord, objective)
 
-        solver = cp_model.CpSolver()
-        solver.parameters.max_time_in_seconds = spec.max_time_seconds
-        solver.parameters.num_search_workers = spec.workers
-        solver.parameters.random_seed = spec.seed
-        solver.parameters.randomize_search = True
-        solver.parameters.log_search_progress = False
-
-        status = solver.solve(model)
-        status_name = solver.status_name(status)
-        if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
-            raise NoSolutionError(
-                f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
-                "phrase, cadence, or repetition constraints."
+    def _add_no_good(
+        self,
+        problem: _CompiledProblem,
+        result: GenerationResult,
+        distinct_on: tuple[str, ...],
+        exclusion_index: int,
+    ) -> None:
+        variables: list[tuple[cp_model.IntVar, int]] = []
+        if "melody" in distinct_on:
+            variables.extend(zip(problem.melody_note, result.melody, strict=True))
+        if "rhythm" in distinct_on:
+            variables.extend(
+                (variable, int(value))
+                for variable, value in zip(problem.rhythm, result.effective_rhythm, strict=True)
             )
+        if "bass" in distinct_on:
+            variables.extend(zip(problem.bass_note, result.bass, strict=True))
+        if "harmony" in distinct_on:
+            variables.extend(zip(problem.chord, result.chord_degrees, strict=True))
 
-        raw_result = GenerationResult(
-            spec=spec,
-            melody=tuple(solver.value(note) for note in melody_note),
-            bass=tuple(solver.value(note) for note in bass_note),
-            chord_degrees=tuple(solver.value(item) for item in chord),
-            target_tension=spec.expanded_tension(),
-            actual_tension=tuple(round(solver.value(value) / 3) for value in actual_tension),
-            objective_value=solver.objective_value,
-            solver_status=status_name,
-            wall_time_seconds=solver.wall_time,
-            rhythm=tuple(RhythmState(solver.value(item)) for item in rhythm),
-        )
-        report = verify_result(raw_result)
-        if not report.valid:
-            joined = "; ".join(report.issues[:5])
-            raise InternalVerificationError(f"Solver/verifier contract breach: {joined}")
-        return replace(raw_result, validation=report)
-
-    def generate_many(self, spec: GenerationSpec, count: int) -> tuple[GenerationResult, ...]:
-        if not 1 <= count <= 32:
-            raise ValueError("count must be in 1..32")
-        return tuple(
-            self.generate(replace(spec, seed=spec.seed + offset * 104729))
-            for offset in range(count)
-        )
+        differs: list[cp_model.IntVar] = []
+        for index, (variable, value) in enumerate(variables):
+            flag = problem.model.new_bool_var(f"nogood_{exclusion_index}_{index}")
+            problem.model.add(variable != value).only_enforce_if(flag)
+            problem.model.add(variable == value).only_enforce_if(flag.negated())
+            differs.append(flag)
+        problem.model.add(sum(differs) >= 1)
