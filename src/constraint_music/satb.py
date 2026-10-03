@@ -189,8 +189,10 @@ def add_satb_constraints(
     soprano_domain = key.pitches_in_range(spec.melody_low, spec.melody_high)
     inner_pitch_classes = set(key.pitch_classes)
     if spec.tonicization_enabled:
-        for target in key.applied_dominant_targets:
-            inner_pitch_classes.update(key.applied_dominant_seventh_pitch_classes(target))
+        for target_degree in key.applied_dominant_targets:
+            inner_pitch_classes.update(
+                key.applied_dominant_seventh_pitch_classes(target_degree)
+            )
     alto_domain = _pitches_for_pitch_classes(ALTO_LOW, ALTO_HIGH, inner_pitch_classes)
     tenor_domain = _pitches_for_pitch_classes(TENOR_LOW, TENOR_HIGH, inner_pitch_classes)
     bass_domain = key.pitches_in_range(spec.bass_low, spec.bass_high)
