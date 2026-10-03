@@ -2,9 +2,9 @@
 
 **Deterministic symbolic music synthesis with explicit hard constraints, CP-SAT optimization, and independent post-solve verification.**
 
-Constraint Music treats composition as a verifiable constraint problem. A YAML specification is compiled into an OR-Tools CP-SAT model; the solver produces melody, rhythm, bass, and harmony; a separate application-level verifier rechecks the declared musical contract from ordinary serialized values; only verified results are exported.
+Constraint Music treats composition as a verifiable constraint problem. A YAML specification is compiled into an OR-Tools CP-SAT model; the solver produces melody, rhythm, bass, harmony, and a solver-native SATB realization; a separate application-level verifier rechecks the declared musical contract from ordinary serialized values; only verified results are exported.
 
-> Current release: **2.3.0a1** — guaranteed distinct enumeration and independently auditable multi-objective search on top of the verified phrase-grammar foundation.
+> Current release: **2.4.0a1** — solver-native SATB harmony with independently verified voice-leading, chord-completeness, and provenance semantics.
 
 ## Pipeline
 
@@ -12,7 +12,7 @@ Constraint Music treats composition as a verifiable constraint problem. A YAML s
 YAML specification
       |
       v
-pitch + harmony + rhythm + motif + phrase grammar
+pitch + harmony + rhythm + motif + phrase grammar + SATB harmony
       |
       v
 OR-Tools CP-SAT compiler
@@ -21,10 +21,10 @@ OR-Tools CP-SAT compiler
 weighted solve / no-good enumeration / Pareto candidate search
       |
       v
-independent 26-rule verifier + objective-vector recomputation
+independent 32-rule verifier + objective-vector recomputation
       |
       +----> MIDI with real ties/rests
-      +----> JSON + contract/provenance/search digests
+      +----> JSON + SATB + contract/provenance/search digests
 ```
 
 A solver status of `OPTIMAL` or `FEASIBLE` is not sufficient. A solver assignment rejected by the independent verifier fails closed.
@@ -72,7 +72,7 @@ See [Phrase Grammar](docs/PHRASE_GRAMMAR.md) for exact executable semantics.
 
 ## v2.3: distinct enumeration and Pareto search
 
-`--count` now produces genuinely distinct alternatives. After each accepted composition, CP-SAT receives a no-good cut over the selected dimensions:
+`--count` produces genuinely distinct alternatives. After each accepted composition, CP-SAT receives a no-good cut over the selected dimensions:
 
 ```bash
 constraint-music generate examples/eight_bar_period.yaml \
@@ -84,7 +84,7 @@ constraint-music generate examples/eight_bar_period.yaml \
 
 Supported distinctness dimensions are `melody`, `rhythm`, `bass`, and `harmony`.
 
-The objective is also exposed as five minimized components:
+The objective is exposed as five minimized components:
 
 - `tension_deviation`
 - `melody_motion`
@@ -94,27 +94,28 @@ The objective is also exposed as five minimized components:
 
 The solver computes these components internally, then Constraint Music independently reconstructs the same vector from the finished musical values. A disagreement fails closed.
 
-Pareto mode explores deterministic weighted scalarizations, guarantees distinct candidates through no-good cuts, and filters dominated candidates from the explored pool:
+Pareto mode explores deterministic weighted scalarizations, guarantees distinct candidates through no-good cuts, and filters dominated candidates from the explored pool. This is a bounded Pareto-front approximation, not a proof that the complete feasible Pareto frontier has been enumerated. See [Distinct Enumeration and Pareto Search](docs/ENUMERATION_AND_PARETO.md).
 
-```bash
-constraint-music generate examples/eight_bar_period.yaml \
-  --pareto \
-  --count 4 \
-  --pareto-candidate-multiplier 3 \
-  --distinct-on melody,harmony \
-  --output build/pareto.mid \
-  --json build/pareto.json
-```
+## v2.4: solver-native SATB harmony
 
-This is a bounded Pareto-front approximation, not a proof that the complete feasible Pareto frontier has been enumerated. See [Distinct Enumeration and Pareto Search](docs/ENUMERATION_AND_PARETO.md).
+Every solved composition now includes a beat-level four-part harmonic skeleton:
+
+- soprano is an explicit solver variable anchored to the strong-grid melody;
+- alto is solved inside MIDI range `55..74`;
+- tenor is solved inside MIDI range `48..67`;
+- bass remains the existing configured solver-native bass voice.
+
+CP-SAT enforces strict `bass < tenor < alto < soprano` ordering, octave spacing between adjacent upper voices, complete diatonic triads, explicit root doubling, parallel-perfect avoidance for every pair involving an inner voice, and alto/tenor leading-tone resolution.
+
+The SATB layer is independently rechecked after solving and after JSON reload. `distinct_on=harmony` now includes alto/tenor realizations as well as chord degrees. See [Solver-Native SATB Harmony](docs/SATB_HARMONY.md).
 
 ## Hard-constraint contract
 
-v2.3 keeps the **26 stable hard-rule IDs** from v2.2. `CM001`–`CM021` cover tonal, rhythmic, motif, and articulation rules; `CM022`–`CM026` cover phrase spans, roles, relations, cadences, and antecedent/consequent structure.
+v2.4 extends the certification contract to **32 stable hard-rule IDs**. `CM001`–`CM021` cover tonal, rhythmic, motif, and articulation rules; `CM022`–`CM026` cover phrase structure; `CM027`–`CM032` cover SATB shape, ranges/order, spacing, chord completeness/root doubling, inner-voice parallel-perfect avoidance, and tendency-tone resolution.
 
-No new hard rule is introduced for search strategy. Feasibility certification remains separate from ranking and enumeration.
+Search strategy remains separate from feasibility certification.
 
-See [Rhythm and Motifs](docs/RHYTHM_AND_MOTIFS.md), [Phrase Grammar](docs/PHRASE_GRAMMAR.md), [Distinct Enumeration and Pareto Search](docs/ENUMERATION_AND_PARETO.md), and [Verification](docs/VERIFICATION.md).
+See [Rhythm and Motifs](docs/RHYTHM_AND_MOTIFS.md), [Phrase Grammar](docs/PHRASE_GRAMMAR.md), [Distinct Enumeration and Pareto Search](docs/ENUMERATION_AND_PARETO.md), [Solver-Native SATB Harmony](docs/SATB_HARMONY.md), and [Verification](docs/VERIFICATION.md).
 
 ## Install
 
@@ -143,7 +144,7 @@ constraint-music generate examples/eight_bar_period.yaml \
 constraint-music verify build/eight_bar_period.json
 ```
 
-The command rechecks all 26 hard rules, artifact schema, constraint-contract digest, semantic composition digest, full artifact-content digest, and v2.3 objective-vector metadata.
+The command rechecks all 32 hard rules, artifact schema, constraint-contract digest, semantic composition digest, full artifact-content digest, and objective-vector metadata. SATB voice arrays are committed by artifact schema `2.4`.
 
 ## Reproducibility
 
@@ -164,6 +165,6 @@ GitHub Actions requires all four gates independently on Python **3.11, 3.12, and
 
 ## Scope boundary
 
-“Independent verification” means a code path separate from the CP-SAT model checks the serialized result against the declared contract without trusting solver state. It is not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates rule compliance; it does not prove aesthetic quality or historical-style authenticity. Likewise, the v2.3 Pareto result is nondominated within the explored candidate pool, not a proof of the global Pareto frontier.
+“Independent verification” means a code path separate from the CP-SAT model checks the serialized result against the declared contract without trusting solver state. It is not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates rule compliance; it does not prove aesthetic quality or historical-style authenticity. The SATB contract is intentionally limited to diatonic triads and the explicit v2.4 voice-leading rules; it is not a complete species-counterpoint or common-practice-harmony model. Likewise, the Pareto result is nondominated within the explored candidate pool, not a proof of the global Pareto frontier.
 
 See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [History](docs/HISTORY.md), and [Roadmap](docs/ROADMAP.md).
