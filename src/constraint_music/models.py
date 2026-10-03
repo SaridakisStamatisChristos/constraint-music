@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from enum import IntEnum
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -214,7 +215,7 @@ class GenerationSpec:
                     f"phrase {phrase.id!r} extends beyond composition: "
                     f"end_bar={phrase.end_bar}, bars={self.bars}"
                 )
-        for left, right in zip(ordered, ordered[1:], strict=False):
+        for left, right in pairwise(ordered):
             if left.end_bar > right.start_bar:
                 raise ValueError(f"phrases {left.id!r} and {right.id!r} overlap")
 
@@ -250,7 +251,8 @@ class GenerationSpec:
                 )
             if phrase.relation == "sequence" and target_steps % fragment_steps != 0:
                 raise ValueError(
-                    f"phrase {phrase.id!r}: sequence target length must be divisible by relation_steps"
+                    f"phrase {phrase.id!r}: sequence target length must be divisible "
+                    "by relation_steps"
                 )
 
     def expanded_tension(self) -> tuple[int, ...]:
