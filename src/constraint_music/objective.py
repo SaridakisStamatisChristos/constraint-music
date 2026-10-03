@@ -126,8 +126,10 @@ def add_objective(
         components[name] = component
 
     weight_map = objective_mapping(normalize_objective_weights(weights))
-    scalarized = sum(weight_map[name] * components[name] for name in OBJECTIVE_COMPONENTS)
-    scalarized += sum(jitter_terms)
+    weighted_terms = [
+        weight_map[name] * components[name] for name in OBJECTIVE_COMPONENTS
+    ]
+    scalarized = cp_model.LinearExpr.sum([*weighted_terms, *jitter_terms])
     return ObjectiveBundle(components, actual_tensions, scalarized)
 
 
