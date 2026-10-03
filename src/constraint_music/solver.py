@@ -83,7 +83,8 @@ class ConstraintMusicSolver:
                 )
             except NoSolutionError as exc:
                 raise NoSolutionError(
-                    f"Only {len(results)} distinct compositions exist under distinct_on={dimensions}"
+                    f"Only {len(results)} distinct compositions exist under "
+                    f"distinct_on={dimensions}"
                 ) from exc
             results.append(result)
         return tuple(results)
