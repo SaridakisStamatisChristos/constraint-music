@@ -41,10 +41,11 @@ def normalize_distinct_on(value: object) -> tuple[str, ...]:
 
 def normalize_objective_weights(value: object) -> ObjectiveVector:
     weights = dict(DEFAULT_OBJECTIVE_WEIGHTS)
+    supplied: dict[str, int]
     if isinstance(value, Mapping):
         supplied = {str(name): int(weight) for name, weight in value.items()}
     elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-        supplied: dict[str, int] = {}
+        supplied = {}
         for item in value:
             if not isinstance(item, Sequence) or isinstance(item, (str, bytes)) or len(item) != 2:
                 raise ValueError("objective_weights entries must be [name, weight] pairs")
