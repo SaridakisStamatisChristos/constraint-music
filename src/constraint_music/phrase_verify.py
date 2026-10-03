@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from itertools import pairwise
+
 from .models import GenerationResult, RhythmState
 from .phrase import PhraseSpec, phrase_by_id
 
@@ -56,6 +58,25 @@ def phrase_verification_issues(result: GenerationResult) -> tuple[PhraseIssue, .
                 return False
         return True
 
+    def compare_fragment(
+        source_base: int,
+        target_base: int,
+        source_offset: int,
+        target_offset: int,
+        length: int,
+        interval: int,
+    ) -> bool:
+        for offset in range(length):
+            source_index = source_base + source_offset + offset
+            target_index = target_base + target_offset + offset
+            if not has_step(source_index) or not has_step(target_index):
+                return False
+            if melody[target_index] != melody[source_index] + interval:
+                return False
+            if rhythm[target_index] != rhythm[source_index]:
+                return False
+        return True
+
     ids = [phrase.id for phrase in spec.phrases]
     if len(ids) != len(set(ids)):
         fail("CM022", "Phrase ids are not unique")
@@ -63,15 +84,14 @@ def phrase_verification_issues(result: GenerationResult) -> tuple[PhraseIssue, .
     for phrase in ordered:
         if phrase.start_bar < 0 or phrase.end_bar > spec.bars:
             fail("CM022", f"Phrase {phrase.id!r} is outside the composition span")
-    for left, right in zip(ordered, ordered[1:], strict=False):
+    for left, right in pairwise(ordered):
         if left.end_bar > right.start_bar:
             fail("CM022", f"Phrases {left.id!r} and {right.id!r} overlap")
 
     by_id = phrase_by_id(spec.phrases)
     for phrase in spec.phrases:
-        start_beat, end_beat, _, end_step = _bounds(result, phrase)
+        start_beat, end_beat, _, _ = _bounds(result, phrase)
         final_beat = end_beat - 1
-        final_step = end_step - 1
 
         if phrase.role == "antecedent":
             if not has_beat(start_beat) or chords[start_beat] != 0:
@@ -101,31 +121,31 @@ def phrase_verification_issues(result: GenerationResult) -> tuple[PhraseIssue, .
         _, _, source_start, source_end = _bounds(result, source)
         _, _, target_start, target_end = _bounds(result, phrase)
 
-        def compare_fragment(
-            source_offset: int,
-            target_offset: int,
-            length: int,
-            interval: int,
-        ) -> bool:
-            for offset in range(length):
-                source_index = source_start + source_offset + offset
-                target_index = target_start + target_offset + offset
-                if not has_step(source_index) or not has_step(target_index):
-                    return False
-                if melody[target_index] != melody[source_index] + interval:
-                    return False
-                if rhythm[target_index] != rhythm[source_index]:
-                    return False
-            return True
-
         relation_ok = True
         if phrase.relation in {"repeat", "transpose"}:
             length = target_end - target_start
             interval = 0 if phrase.relation == "repeat" else phrase.transpose_semitones
-            relation_ok = source_end - source_start == length and compare_fragment(0, 0, length, interval)
+            relation_ok = (
+                source_end - source_start == length
+                and compare_fragment(
+                    source_start,
+                    target_start,
+                    0,
+                    0,
+                    length,
+                    interval,
+                )
+            )
         elif phrase.relation == "answer":
             length = phrase.relation_steps or spec.steps_per_bar
-            relation_ok = compare_fragment(0, 0, length, phrase.transpose_semitones)
+            relation_ok = compare_fragment(
+                source_start,
+                target_start,
+                0,
+                0,
+                length,
+                phrase.transpose_semitones,
+            )
         elif phrase.relation == "sequence":
             fragment = phrase.relation_steps or spec.steps_per_bar
             target_length = target_end - target_start
@@ -134,13 +154,24 @@ def phrase_verification_issues(result: GenerationResult) -> tuple[PhraseIssue, .
             else:
                 for copy in range(target_length // fragment):
                     interval = phrase.transpose_semitones + copy * phrase.sequence_step_semitones
-                    if not compare_fragment(0, copy * fragment, fragment, interval):
+                    if not compare_fragment(
+                        source_start,
+                        target_start,
+                        0,
+                        copy * fragment,
+                        fragment,
+                        interval,
+                    ):
                         relation_ok = False
                         break
         if not relation_ok:
             fail("CM024", f"Phrase {phrase.id!r} violates {phrase.relation} relation")
 
-        if phrase.role == "consequent" and source.role == "antecedent" and phrase.relation == "answer":
+        if (
+            phrase.role == "consequent"
+            and source.role == "antecedent"
+            and phrase.relation == "answer"
+        ):
             source_start_beat, source_end_beat, _, _ = _bounds(result, source)
             pair_ok = (
                 has_beat(source_start_beat)
@@ -159,9 +190,8 @@ def phrase_verification_issues(result: GenerationResult) -> tuple[PhraseIssue, .
             if not pair_ok:
                 fail(
                     "CM026",
-                    f"Antecedent/consequent pair {source.id!r}->{phrase.id!r} lacks open-to-strong closure",
+                    f"Antecedent/consequent pair {source.id!r}->{phrase.id!r} "
+                    "lacks open-to-strong closure",
                 )
-
-        _ = final_step
 
     return tuple(issues)
