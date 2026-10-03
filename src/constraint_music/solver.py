@@ -251,9 +251,11 @@ class ConstraintMusicSolver:
             variables.extend(zip(problem.bass_note, result.bass, strict=True))
         if "harmony" in distinct_on:
             variables.extend(zip(problem.chord, result.chord_degrees, strict=True))
-            if isinstance(result, SatbGenerationResult):
-                variables.extend(zip(problem.satb.alto, result.alto, strict=True))
-                variables.extend(zip(problem.satb.tenor, result.tenor, strict=True))
+        if "voicing" in distinct_on:
+            if not isinstance(result, SatbGenerationResult):
+                raise ValueError("voicing distinctness requires a SATB result")
+            variables.extend(zip(problem.satb.alto, result.alto, strict=True))
+            variables.extend(zip(problem.satb.tenor, result.tenor, strict=True))
 
         differs: list[cp_model.IntVar] = []
         for index, (variable, value) in enumerate(variables):
