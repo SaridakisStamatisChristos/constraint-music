@@ -17,7 +17,13 @@ DEFAULT_OBJECTIVE_WEIGHTS: tuple[tuple[str, int], ...] = (
     ("harmonic_repetition", 1),
     ("contour_mismatch", 4),
 )
-DISTINCT_DIMENSIONS: tuple[str, ...] = ("melody", "rhythm", "bass", "harmony")
+DISTINCT_DIMENSIONS: tuple[str, ...] = (
+    "melody",
+    "rhythm",
+    "bass",
+    "harmony",
+    "voicing",
+)
 
 ObjectiveVector: TypeAlias = tuple[tuple[str, int], ...]
 

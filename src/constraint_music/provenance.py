@@ -9,9 +9,10 @@ from typing import Any
 from .contract import CONTRACT_VERSION, contract_digest
 from .models import GenerationResult
 from .objective import evaluate_objective_vector
+from .satb import result_from_dict
 from .search import objective_mapping
 
-ARTIFACT_SCHEMA_VERSION = "2.3"
+ARTIFACT_SCHEMA_VERSION = "2.4"
 
 
 def _sha256_json(payload: object) -> str:
@@ -21,17 +22,19 @@ def _sha256_json(payload: object) -> str:
 
 def composition_digest(result: GenerationResult) -> str:
     payload = result.to_dict()
-    semantic = {
-        "spec": payload["spec"],
-        "music": {
-            "melody_midi": payload["music"]["melody_midi"],
-            "rhythm": payload["music"]["rhythm"],
-            "bass_midi": payload["music"]["bass_midi"],
-            "chord_degrees": payload["music"]["chord_degrees"],
-            "target_tension": payload["music"]["target_tension"],
-            "actual_tension": payload["music"]["actual_tension"],
-        },
+    music = payload["music"]
+    semantic_music = {
+        "melody_midi": music["melody_midi"],
+        "rhythm": music["rhythm"],
+        "bass_midi": music["bass_midi"],
+        "chord_degrees": music["chord_degrees"],
+        "target_tension": music["target_tension"],
+        "actual_tension": music["actual_tension"],
     }
+    for key in ("soprano_midi", "alto_midi", "tenor_midi"):
+        if key in music:
+            semantic_music[key] = music[key]
+    semantic = {"spec": payload["spec"], "music": semantic_music}
     return _sha256_json(semantic)
 
 
@@ -73,7 +76,7 @@ def load_result_json(path: str | Path) -> tuple[GenerationResult, Mapping[str, A
     payload = json.loads(source.read_text(encoding="utf-8"))
     if not isinstance(payload, Mapping):
         raise ValueError("Result JSON root must be an object")
-    return GenerationResult.from_dict(payload), payload
+    return result_from_dict(payload), payload
 
 
 def verify_artifact_integrity(

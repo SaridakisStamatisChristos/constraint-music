@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.2"
+CONTRACT_VERSION = "2.4"
 
 
 @dataclass(frozen=True, slots=True)
@@ -151,6 +151,51 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
             "An answer-linked antecedent/consequent pair opens stably, leaves the antecedent open, "
             "recalls source material, and closes the consequent more strongly."
         ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM027",
+        "satb_shape",
+        (
+            "Solver-native SATB output contains one soprano, alto, and tenor note per beat "
+            "and anchors soprano to the strong-step melody."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM028",
+        "satb_ranges_order",
+        (
+            "SATB voices remain inside their ranges and maintain strict "
+            "bass-tenor-alto-soprano ordering."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM029",
+        "satb_spacing",
+        "Adjacent upper SATB voices stay within octave spacing.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM030",
+        "satb_chord_completeness",
+        "Every SATB sonority contains the complete active triad and doubles its root.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM031",
+        "satb_inner_parallel_perfects",
+        (
+            "When enabled, voice pairs involving alto or tenor avoid parallel perfect fifths "
+            "and octaves."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM032",
+        "satb_tendency_resolution",
+        "When enabled, alto and tenor leading tones resolve upward by semitone.",
         conditional=True,
     ),
 )
