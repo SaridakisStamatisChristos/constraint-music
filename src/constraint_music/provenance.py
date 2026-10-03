@@ -12,7 +12,7 @@ from .objective import evaluate_objective_vector
 from .satb import result_from_dict
 from .search import objective_mapping
 
-ARTIFACT_SCHEMA_VERSION = "2.4"
+ARTIFACT_SCHEMA_VERSION = "2.5"
 
 
 def _sha256_json(payload: object) -> str:
@@ -31,7 +31,13 @@ def composition_digest(result: GenerationResult) -> str:
         "target_tension": music["target_tension"],
         "actual_tension": music["actual_tension"],
     }
-    for key in ("soprano_midi", "alto_midi", "tenor_midi"):
+    for key in (
+        "soprano_midi",
+        "alto_midi",
+        "tenor_midi",
+        "chord_kinds",
+        "chord_inversions",
+    ):
         if key in music:
             semantic_music[key] = music[key]
     semantic = {"spec": payload["spec"], "music": semantic_music}
