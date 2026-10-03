@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 from .contract import CONTRACT_VERSION, contract_digest
 from .models import GenerationResult
@@ -79,7 +80,7 @@ def verify_artifact_integrity(
         )
     provenance = payload.get("provenance")
     if not isinstance(provenance, Mapping):
-        return tuple(issues + ["missing provenance object"])
+        return (*issues, "missing provenance object")
     if provenance.get("constraint_contract_version") != CONTRACT_VERSION:
         issues.append("constraint contract version does not match this verifier")
     if provenance.get("constraint_contract_sha256") != contract_digest():

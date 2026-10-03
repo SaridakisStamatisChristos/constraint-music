@@ -8,13 +8,8 @@ from ortools.sat.python import cp_model
 
 from .contract import HARD_CONSTRAINT_IDS
 from .models import GenerationResult, GenerationSpec
-from .theory import (
-    CHORD_TENSION,
-    DEGREE_TENSION,
-    is_parallel_perfect,
-)
+from .theory import CHORD_TENSION, DEGREE_TENSION, is_parallel_perfect
 from .verifier import verify_result
-
 
 COMPILED_HARD_CONSTRAINT_IDS: tuple[str, ...] = HARD_CONSTRAINT_IDS
 

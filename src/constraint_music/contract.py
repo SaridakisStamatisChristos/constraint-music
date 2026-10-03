@@ -4,7 +4,6 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-
 CONTRACT_VERSION = "2.0"
 
 
