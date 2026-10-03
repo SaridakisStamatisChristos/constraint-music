@@ -48,6 +48,8 @@ The SATB harmonic skeleton operates at one sonority per beat. Soprano is an expl
 
 Pitch-class variables are linked to each SATB voice with modulo constraints. A compact allowed-assignment table jointly constrains chord degree and four voice pitch classes, guaranteeing that all voices are chord members, all three triad pitch classes are present, and the root is doubled. Ordering/spacing use direct integer constraints. Inner-voice parallel-perfect and leading-tone rules are compiled as transition tables over adjacent beats.
 
+The immutable chord-realization and parallel-motion tables are cached by tonal/domain inputs, so repeated solves reuse the same symbolic relation tables rather than rebuilding them in Python.
+
 ## Optimization
 
 All hard musical rules remain non-negotiable. The objective vector has five minimized components:
@@ -62,9 +64,16 @@ SATB feasibility is deliberately not converted into a soft objective in v2.4. Se
 
 ## Distinct enumeration
 
-Alternative generation uses exact no-good cuts over explicit dimensions (`melody`, `rhythm`, `bass`, `harmony`). Every previously accepted assignment contributes one cut requiring at least one selected variable to differ.
+Alternative generation uses exact no-good cuts over explicit dimensions. The v2.3 dimensions keep their established meanings:
 
-In v2.4, `harmony` includes chord degrees plus alto and tenor assignments, so alternative voicings can be enumerated without pretending that identical chord symbols are identical harmonic realizations.
+- `melody` — melody notes;
+- `rhythm` — onset/tie/rest states;
+- `bass` — bass notes;
+- `harmony` — chord-degree sequence.
+
+v2.4 adds `voicing`, which covers the independent alto and tenor assignments. Soprano is already determined by the melody's strong-grid notes. This preserves chord-plan distinctness while also allowing multiple verified SATB realizations of the same chord sequence.
+
+Every previously accepted assignment contributes one cut requiring at least one selected variable to differ. Dimensions can be combined, including `harmony,voicing`.
 
 ## Pareto approximation
 
