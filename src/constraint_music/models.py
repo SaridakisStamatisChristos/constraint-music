@@ -56,10 +56,14 @@ class GenerationSpec:
     progression_graph: tuple[tuple[int, ...], ...] = DEFAULT_PROGRESSION_GRAPH_ROWS
     tension_curve: tuple[float, ...] = (0.08, 0.20, 0.48, 0.82, 0.18, 0.02)
 
-    # v2.5 keeps the v2.4 triadic feasible set as the default. Expanded seventh-chord
-    # vocabulary is explicit so existing YAML specifications do not silently change meaning.
+    # Expanded harmony remains opt-in so pre-v2.5 specifications keep their feasible set.
     harmony_vocabulary: str = "triads"
     minimum_seventh_chords: int = 0
+
+    # v2.6 keeps tonicization orthogonal to chord vocabulary. Applied dominants are
+    # dominant-seventh forms with an explicit local target; generic chromaticism is not enabled.
+    tonicization_enabled: bool = False
+    minimum_applied_dominants: int = 0
 
     rhythm_enabled: bool = False
     min_onsets_per_bar: int = 1
@@ -174,7 +178,29 @@ class GenerationSpec:
             raise ValueError(
                 "minimum_seventh_chords cannot include the final beat because sevenths must resolve"
             )
+        if self.tonicization_enabled and not self.expanded_harmony_enabled:
+            raise ValueError(
+                "tonicization_enabled requires harmony_vocabulary='triads+sevenths'"
+            )
+        _between(
+            "minimum_applied_dominants",
+            self.minimum_applied_dominants,
+            0,
+            self.total_beats,
+        )
+        if not self.tonicization_enabled and self.minimum_applied_dominants != 0:
+            raise ValueError("minimum_applied_dominants requires tonicization_enabled=true")
+        if self.tonicization_enabled and self.minimum_applied_dominants > self.total_beats - 1:
+            raise ValueError(
+                "minimum_applied_dominants cannot include the final beat because tonicizations "
+                "must resolve"
+            )
         _ = self.tonal_key
+        if self.tonicization_enabled and not self.tonal_key.applied_dominant_targets:
+            raise ValueError(
+                "The selected key has no applied-dominant targets compatible with the current "
+                "outer-voice contract"
+            )
         if len(self.tonal_key.pitches_in_range(self.melody_low, self.melody_high)) < 8:
             raise ValueError("Melody range is too narrow for the selected key")
         if len(self.tonal_key.pitches_in_range(self.bass_low, self.bass_high)) < 5:

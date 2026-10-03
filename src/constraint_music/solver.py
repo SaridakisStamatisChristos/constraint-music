@@ -27,7 +27,7 @@ from .search import (
     pareto_indices,
     scalarization_profiles,
 )
-from .theory import ChordKind
+from .theory import NO_TONICIZATION_TARGET, ChordKind
 from .verifier import verify_result
 
 COMPILED_HARD_CONSTRAINT_IDS: tuple[str, ...] = HARD_CONSTRAINT_IDS
@@ -142,8 +142,8 @@ class ConstraintMusicSolver:
         if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
             raise NoSolutionError(
                 f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
-                "phrase, cadence, SATB voice-leading, expanded harmony, repetition, or "
-                "distinctness constraints."
+                "phrase, cadence, SATB voice-leading, expanded harmony, tonicization, "
+                "repetition, or distinctness constraints."
             )
 
         raw_result = SatbGenerationResult(
@@ -167,6 +167,12 @@ class ConstraintMusicSolver:
             ),
             chord_inversions=tuple(
                 solver.value(item) for item in problem.satb.chord_inversion
+            ),
+            tonicization_targets=tuple(
+                None if value == NO_TONICIZATION_TARGET else value
+                for value in (
+                    solver.value(item) for item in problem.satb.tonicization_target
+                )
             ),
         )
         report = verify_result(raw_result)
@@ -283,6 +289,22 @@ class ConstraintMusicSolver:
             )
             variables.extend(
                 zip(problem.satb.chord_inversion, result.chord_inversions, strict=True)
+            )
+        if "tonicization" in distinct_on:
+            if not isinstance(result, SatbGenerationResult):
+                raise ValueError("tonicization distinctness requires a SATB result")
+            if len(result.tonicization_targets) != len(problem.chord):
+                raise ValueError("tonicization distinctness requires explicit target metadata")
+            variables.extend(
+                (
+                    variable,
+                    NO_TONICIZATION_TARGET if target is None else int(target),
+                )
+                for variable, target in zip(
+                    problem.satb.tonicization_target,
+                    result.tonicization_targets,
+                    strict=True,
+                )
             )
 
         differs: list[cp_model.IntVar] = []

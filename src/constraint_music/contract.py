@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.5"
+CONTRACT_VERSION = "2.6"
 
 
 @dataclass(frozen=True, slots=True)
@@ -219,15 +219,52 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM035",
         "chordal_seventh_resolution",
-        "Every chordal seventh has a following sonority and resolves downward by diatonic step.",
+        "Every diatonic chordal seventh has a following sonority and resolves downward by step.",
         conditional=True,
     ),
     ConstraintRule(
         "CM036",
         "dominant_seventh_resolution",
         (
-            "Every dominant seventh resolves to tonic and each voice carrying its leading tone "
-            "resolves upward by semitone."
+            "Every global dominant seventh resolves to tonic and each voice carrying its leading "
+            "tone resolves upward by semitone."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM037",
+        "tonicization_context",
+        (
+            "When tonicization is enabled, every beat carries explicit nullable target metadata; "
+            "non-null targets are supported diatonic local tonics, use seventh form, and satisfy "
+            "the declared minimum applied-dominant count."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM038",
+        "applied_dominant_realization",
+        (
+            "Every applied dominant has the target-derived dominant-seventh pitch classes exactly "
+            "once, the correct global root degree, and an inversion matching the realized bass."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM039",
+        "applied_dominant_target_resolution",
+        (
+            "Every applied dominant resolves immediately to its declared untargeted diatonic "
+            "local tonic."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM040",
+        "applied_dominant_tendency_resolution",
+        (
+            "Each applied-dominant chordal seventh resolves downward by step and each voice "
+            "carrying the local leading tone resolves upward by semitone."
         ),
         conditional=True,
     ),

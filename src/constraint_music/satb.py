@@ -9,7 +9,13 @@ from typing import Any
 from ortools.sat.python import cp_model
 
 from .models import GenerationResult, GenerationSpec
-from .theory import ChordKind, Key, is_parallel_perfect, midi_note_name
+from .theory import (
+    NO_TONICIZATION_TARGET,
+    ChordKind,
+    Key,
+    is_parallel_perfect,
+    midi_note_name,
+)
 
 ALTO_LOW = 55
 ALTO_HIGH = 74
@@ -25,6 +31,7 @@ class SatbGenerationResult(GenerationResult):
     tenor: tuple[int, ...] = ()
     chord_kinds: tuple[ChordKind, ...] = ()
     chord_inversions: tuple[int, ...] = ()
+    tonicization_targets: tuple[int | None, ...] = ()
 
     @property
     def soprano_names(self) -> tuple[str, ...]:
@@ -46,16 +53,30 @@ class SatbGenerationResult(GenerationResult):
             == len(self.chord_degrees)
         ):
             return ()
+        targets = (
+            self.tonicization_targets
+            if self.tonicization_targets
+            else (None,) * len(self.chord_degrees)
+        )
+        if len(targets) != len(self.chord_degrees):
+            return ()
         key = self.spec.tonal_key
         names: list[str] = []
         try:
-            for degree, raw_kind, inversion in zip(
+            for degree, raw_kind, inversion, target in zip(
                 self.chord_degrees,
                 self.chord_kinds,
                 self.chord_inversions,
+                targets,
                 strict=True,
             ):
-                names.append(key.chord_form_name(degree, ChordKind.parse(raw_kind), inversion))
+                kind = ChordKind.parse(raw_kind)
+                if target is None:
+                    names.append(key.chord_form_name(degree, kind, inversion))
+                else:
+                    if kind is not ChordKind.SEVENTH:
+                        return ()
+                    names.append(key.applied_dominant_name(target, inversion))
         except (IndexError, ValueError):
             return ()
         return tuple(names)
@@ -73,6 +94,8 @@ class SatbGenerationResult(GenerationResult):
             music["chord_kinds"] = [ChordKind.parse(kind).label for kind in self.chord_kinds]
         if self.chord_inversions:
             music["chord_inversions"] = list(self.chord_inversions)
+        if self.tonicization_targets:
+            music["tonicization_targets"] = list(self.tonicization_targets)
         if self.chord_form_names:
             music["chord_form_names"] = list(self.chord_form_names)
         return payload
@@ -85,6 +108,7 @@ class SatbVariables:
     tenor: list[cp_model.IntVar]
     chord_kind: list[cp_model.IntVar]
     chord_inversion: list[cp_model.IntVar]
+    tonicization_target: list[cp_model.IntVar]
 
 
 def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
@@ -110,8 +134,29 @@ def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
                 raise ValueError(f"Result JSON music.{key} must contain integers") from exc
         return tuple(parsed)
 
+    def optional_integers(key: str) -> tuple[int | None, ...]:
+        parsed: list[int | None] = []
+        for item in values(key):
+            if item is None:
+                parsed.append(None)
+                continue
+            if not isinstance(item, (int, str)):
+                raise ValueError(f"Result JSON music.{key} must contain integers or null")
+            try:
+                parsed.append(int(item))
+            except ValueError as exc:
+                raise ValueError(
+                    f"Result JSON music.{key} must contain integers or null"
+                ) from exc
+        return tuple(parsed)
+
     raw_kinds = values("chord_kinds") if "chord_kinds" in raw_music else ()
     raw_inversions = integers("chord_inversions") if "chord_inversions" in raw_music else ()
+    raw_targets = (
+        optional_integers("tonicization_targets")
+        if "tonicization_targets" in raw_music
+        else ()
+    )
     return SatbGenerationResult(
         spec=base.spec,
         melody=base.melody,
@@ -129,6 +174,7 @@ def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
         tenor=integers("tenor_midi"),
         chord_kinds=tuple(ChordKind.parse(item) for item in raw_kinds),
         chord_inversions=raw_inversions,
+        tonicization_targets=raw_targets,
     )
 
 
@@ -141,12 +187,16 @@ def add_satb_constraints(
 ) -> SatbVariables:
     key = spec.tonal_key
     soprano_domain = key.pitches_in_range(spec.melody_low, spec.melody_high)
-    alto_domain = key.pitches_in_range(ALTO_LOW, ALTO_HIGH)
-    tenor_domain = key.pitches_in_range(TENOR_LOW, TENOR_HIGH)
+    inner_pitch_classes = set(key.pitch_classes)
+    if spec.tonicization_enabled:
+        for target in key.applied_dominant_targets:
+            inner_pitch_classes.update(key.applied_dominant_seventh_pitch_classes(target))
+    alto_domain = _pitches_for_pitch_classes(ALTO_LOW, ALTO_HIGH, inner_pitch_classes)
+    tenor_domain = _pitches_for_pitch_classes(TENOR_LOW, TENOR_HIGH, inner_pitch_classes)
     bass_domain = key.pitches_in_range(spec.bass_low, spec.bass_high)
 
     if not alto_domain or not tenor_domain:
-        raise ValueError("SATB inner-voice ranges contain no pitches in the selected key")
+        raise ValueError("SATB inner-voice ranges contain no pitches in the selected harmony")
 
     soprano = [
         model.new_int_var(spec.melody_low, spec.melody_high, f"soprano_{beat}")
@@ -167,6 +217,10 @@ def add_satb_constraints(
         model.new_int_var(0, 2, f"chord_inversion_{beat}")
         for beat in range(spec.total_beats)
     ]
+    tonicization_target = [
+        model.new_int_var(0, NO_TONICIZATION_TARGET, f"tonicization_target_{beat}")
+        for beat in range(spec.total_beats)
+    ]
 
     if spec.expanded_harmony_enabled:
         if spec.minimum_seventh_chords:
@@ -177,7 +231,25 @@ def add_satb_constraints(
         for kind in chord_kind:
             model.add(kind == int(ChordKind.TRIAD))
 
-    chord_rows = _satb_chord_rows(key, spec.expanded_harmony_enabled)
+    applied_flags: list[cp_model.IntVar] = []
+    if spec.tonicization_enabled:
+        for beat, target in enumerate(tonicization_target):
+            applied = model.new_bool_var(f"applied_dominant_{beat}")
+            model.add(target != NO_TONICIZATION_TARGET).only_enforce_if(applied)
+            model.add(target == NO_TONICIZATION_TARGET).only_enforce_if(applied.negated())
+            applied_flags.append(applied)
+        if spec.minimum_applied_dominants:
+            model.add(sum(applied_flags) >= spec.minimum_applied_dominants)
+        model.add(tonicization_target[-1] == NO_TONICIZATION_TARGET)
+    else:
+        for target in tonicization_target:
+            model.add(target == NO_TONICIZATION_TARGET)
+
+    chord_rows = _satb_chord_rows(
+        key,
+        spec.expanded_harmony_enabled,
+        spec.tonicization_enabled,
+    )
     pitch_classes: list[list[cp_model.IntVar]] = []
 
     for beat in range(spec.total_beats):
@@ -197,7 +269,13 @@ def add_satb_constraints(
         for pc, note_var in zip(pcs, voice_notes, strict=True):
             model.add_modulo_equality(pc, note_var, 12)
         model.add_allowed_assignments(
-            [chord[beat], chord_kind[beat], chord_inversion[beat], *pcs],
+            [
+                chord[beat],
+                chord_kind[beat],
+                chord_inversion[beat],
+                tonicization_target[beat],
+                *pcs,
+            ],
             chord_rows,
         )
 
@@ -243,8 +321,10 @@ def add_satb_constraints(
         _add_expanded_harmony_motion_constraints(
             model,
             key,
+            spec.tonicization_enabled,
             chord,
             chord_kind,
+            tonicization_target,
             pitch_classes,
             soprano,
             alto,
@@ -258,38 +338,56 @@ def add_satb_constraints(
         tenor=tenor,
         chord_kind=chord_kind,
         chord_inversion=chord_inversion,
+        tonicization_target=tonicization_target,
     )
 
 
 def _add_expanded_harmony_motion_constraints(
     model: cp_model.CpModel,
     key: Key,
+    tonicization_enabled: bool,
     chord: list[cp_model.IntVar],
     chord_kind: list[cp_model.IntVar],
+    tonicization_target: list[cp_model.IntVar],
     pitch_classes: list[list[cp_model.IntVar]],
     soprano: list[cp_model.IntVar],
     alto: list[cp_model.IntVar],
     tenor: list[cp_model.IntVar],
     bass: list[cp_model.IntVar],
 ) -> None:
-    seventh_rows = _chordal_seventh_flag_rows(key)
-    dominant_rows = _dominant_seventh_flag_rows()
-    leading_rows = _dominant_leading_flag_rows(key)
+    seventh_rows = _chordal_seventh_flag_rows(key, tonicization_enabled)
+    global_dominant_rows = _global_dominant_seventh_flag_rows()
+    leading_rows = _dominant_leading_flag_rows(key, tonicization_enabled)
     voices = (soprano, alto, tenor, bass)
 
     for beat in range(len(chord) - 1):
-        dominant = model.new_bool_var(f"dominant_seventh_{beat}")
-        model.add_allowed_assignments(
-            [chord[beat], chord_kind[beat], dominant],
-            dominant_rows,
+        target = tonicization_target[beat]
+        applied = model.new_bool_var(f"motion_applied_dominant_{beat}")
+        model.add(target != NO_TONICIZATION_TARGET).only_enforce_if(applied)
+        model.add(target == NO_TONICIZATION_TARGET).only_enforce_if(applied.negated())
+        model.add(chord[beat + 1] == target).only_enforce_if(applied)
+        model.add(tonicization_target[beat + 1] == NO_TONICIZATION_TARGET).only_enforce_if(
+            applied
         )
-        model.add(chord[beat + 1] == 0).only_enforce_if(dominant)
+
+        global_dominant = model.new_bool_var(f"global_dominant_seventh_{beat}")
+        model.add_allowed_assignments(
+            [chord[beat], chord_kind[beat], target, global_dominant],
+            global_dominant_rows,
+        )
+        model.add(chord[beat + 1] == 0).only_enforce_if(global_dominant)
 
         for voice_index, voice in enumerate(voices):
             current_pc = pitch_classes[beat][voice_index]
             carries_seventh = model.new_bool_var(f"chordal_seventh_{beat}_{voice_index}")
             model.add_allowed_assignments(
-                [chord[beat], chord_kind[beat], current_pc, carries_seventh],
+                [
+                    chord[beat],
+                    chord_kind[beat],
+                    target,
+                    current_pc,
+                    carries_seventh,
+                ],
                 seventh_rows,
             )
             model.add(voice[beat + 1] <= voice[beat] - 1).only_enforce_if(carries_seventh)
@@ -299,7 +397,13 @@ def _add_expanded_harmony_motion_constraints(
                 f"dominant_leading_{beat}_{voice_index}"
             )
             model.add_allowed_assignments(
-                [chord[beat], chord_kind[beat], current_pc, carries_dominant_leading],
+                [
+                    chord[beat],
+                    chord_kind[beat],
+                    target,
+                    current_pc,
+                    carries_dominant_leading,
+                ],
                 leading_rows,
             )
             model.add(voice[beat + 1] == voice[beat] + 1).only_enforce_if(
@@ -364,6 +468,44 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
     elif spec.expanded_harmony_enabled:
         issues.append(("CM033", "Expanded harmony requires explicit chord kind/inversion metadata"))
 
+    targets_present = bool(result.tonicization_targets)
+    targets: tuple[int | None, ...] = (None,) * spec.total_beats
+    context_valid = False
+    if targets_present:
+        if len(result.tonicization_targets) != spec.total_beats:
+            issues.append(
+                ("CM037", "Tonicization target metadata must contain one value per beat")
+            )
+        else:
+            targets = result.tonicization_targets
+            context_valid = True
+    elif spec.tonicization_enabled:
+        issues.append(("CM037", "Enabled tonicization requires explicit target metadata"))
+    else:
+        context_valid = True
+
+    supported_targets = set(key.applied_dominant_targets)
+    applied_count = 0
+    if context_valid:
+        for beat, target in enumerate(targets):
+            if target is None:
+                continue
+            applied_count += 1
+            if not spec.tonicization_enabled:
+                issues.append(("CM037", f"Beat {beat}: tonicization is not enabled by the spec"))
+                continue
+            if target not in supported_targets:
+                issues.append(
+                    ("CM037", f"Beat {beat}: unsupported tonicization target degree {target}")
+                )
+                continue
+            if metadata_valid and kinds[beat] is not ChordKind.SEVENTH:
+                issues.append(("CM037", f"Beat {beat}: applied dominant must be a seventh chord"))
+        if applied_count < spec.minimum_applied_dominants:
+            issues.append(
+                ("CM037", "Serialized harmony does not meet minimum_applied_dominants")
+            )
+
     for beat, (sv, av, tv, bv) in enumerate(
         zip(soprano, alto, tenor, bass, strict=True)
     ):
@@ -380,44 +522,69 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
         if sv - av > MAX_UPPER_SPACING or av - tv > MAX_UPPER_SPACING:
             issues.append(("CM029", f"Beat {beat}: adjacent upper voices exceed octave spacing"))
 
-        if beat < len(result.chord_degrees) and 0 <= result.chord_degrees[beat] <= 6:
-            degree = result.chord_degrees[beat]
-            pcs = (sv % 12, av % 12, tv % 12, bv % 12)
-            kind = kinds[beat] if metadata_valid else ChordKind.TRIAD
-            if kind is ChordKind.TRIAD:
-                triad = key.triad_pitch_classes(degree)
-                root = triad[0]
-                if (
-                    any(pc not in triad for pc in pcs)
-                    or set(pcs) != set(triad)
-                    or pcs.count(root) < 2
-                ):
-                    issues.append(
-                        (
-                            "CM030",
-                            f"Beat {beat}: SATB chord is incomplete or does not double the root",
-                        )
-                    )
-            elif metadata_valid:
-                seventh = key.seventh_pitch_classes(degree)
-                if set(pcs) != set(seventh) or len(set(pcs)) != 4:
-                    issues.append(
-                        ("CM034", f"Beat {beat}: seventh chord does not contain four chord tones")
-                    )
+        if beat >= len(result.chord_degrees) or not 0 <= result.chord_degrees[beat] <= 6:
+            continue
+        degree = result.chord_degrees[beat]
+        pcs = (sv % 12, av % 12, tv % 12, bv % 12)
+        kind = kinds[beat] if metadata_valid else ChordKind.TRIAD
+        target = targets[beat] if context_valid else None
 
-            if metadata_valid:
-                chord_tones = (
-                    key.triad_pitch_classes(degree)
-                    if kind is ChordKind.TRIAD
-                    else key.seventh_pitch_classes(degree)
-                )
-                inversion = inversions[beat]
-                if not 0 <= inversion <= 2:
-                    continue
-                if bv % 12 != chord_tones[inversion]:
-                    issues.append(
-                        ("CM034", f"Beat {beat}: serialized inversion does not match the bass")
+        if target is not None:
+            if target not in supported_targets or not metadata_valid:
+                continue
+            expected_degree = key.applied_dominant_root_degree(target)
+            applied_pcs = key.applied_dominant_seventh_pitch_classes(target)
+            if degree != expected_degree:
+                issues.append(
+                    (
+                        "CM038",
+                        f"Beat {beat}: applied-dominant root degree does not match target {target}",
                     )
+                )
+            if kind is not ChordKind.SEVENTH or set(pcs) != set(applied_pcs) or len(set(pcs)) != 4:
+                issues.append(
+                    ("CM038", f"Beat {beat}: applied dominant is not a complete dominant seventh")
+                )
+            if 0 <= inversions[beat] <= 2 and bv % 12 != applied_pcs[inversions[beat]]:
+                issues.append(
+                    ("CM038", f"Beat {beat}: applied-dominant inversion does not match the bass")
+                )
+            continue
+
+        if kind is ChordKind.TRIAD:
+            triad = key.triad_pitch_classes(degree)
+            root = triad[0]
+            if (
+                any(pc not in triad for pc in pcs)
+                or set(pcs) != set(triad)
+                or pcs.count(root) < 2
+            ):
+                issues.append(
+                    (
+                        "CM030",
+                        f"Beat {beat}: SATB chord is incomplete or does not double the root",
+                    )
+                )
+        elif metadata_valid:
+            seventh = key.seventh_pitch_classes(degree)
+            if set(pcs) != set(seventh) or len(set(pcs)) != 4:
+                issues.append(
+                    ("CM034", f"Beat {beat}: seventh chord does not contain four chord tones")
+                )
+
+        if metadata_valid:
+            chord_tones = (
+                key.triad_pitch_classes(degree)
+                if kind is ChordKind.TRIAD
+                else key.seventh_pitch_classes(degree)
+            )
+            inversion = inversions[beat]
+            if not 0 <= inversion <= 2:
+                continue
+            if bv % 12 != chord_tones[inversion]:
+                issues.append(
+                    ("CM034", f"Beat {beat}: serialized inversion does not match the bass")
+                )
 
     if spec.avoid_parallel_perfects:
         named = (
@@ -447,8 +614,8 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                         ("CM032", f"{label} beat {beat}: leading tone does not resolve upward")
                     )
 
-    if metadata_valid:
-        _verify_expanded_harmony_motion(result, kinds, issues)
+    if metadata_valid and context_valid:
+        _verify_expanded_harmony_motion(result, kinds, targets, issues)
 
     return tuple(issues)
 
@@ -456,6 +623,7 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
 def _verify_expanded_harmony_motion(
     result: SatbGenerationResult,
     kinds: tuple[ChordKind, ...],
+    targets: tuple[int | None, ...],
     issues: list[tuple[str, str]],
 ) -> None:
     key = result.spec.tonal_key
@@ -465,10 +633,50 @@ def _verify_expanded_harmony_motion(
         ("tenor", result.tenor),
         ("bass", result.bass),
     )
-    beats = min(len(result.chord_degrees), len(kinds))
+    supported_targets = set(key.applied_dominant_targets)
+    beats = min(len(result.chord_degrees), len(kinds), len(targets))
     for beat in range(beats):
         if kinds[beat] is not ChordKind.SEVENTH:
             continue
+        target = targets[beat]
+        if target is not None:
+            if target not in supported_targets:
+                continue
+            if beat + 1 >= beats:
+                issues.append(("CM039", f"Beat {beat}: applied dominant has no target resolution"))
+                continue
+            if (
+                result.chord_degrees[beat + 1] != target
+                or targets[beat + 1] is not None
+            ):
+                issues.append(
+                    (
+                        "CM039",
+                        f"Beat {beat}: applied dominant does not resolve to its declared target",
+                    )
+                )
+            applied_pcs = key.applied_dominant_seventh_pitch_classes(target)
+            seventh_pc = applied_pcs[3]
+            leading_pc = applied_pcs[1]
+            for label, voice in voices:
+                if voice[beat] % 12 == seventh_pc:
+                    delta = voice[beat + 1] - voice[beat]
+                    if delta not in {-1, -2}:
+                        issues.append(
+                            (
+                                "CM040",
+                                f"{label} beat {beat}: applied chordal seventh does not resolve down",
+                            )
+                        )
+                if voice[beat] % 12 == leading_pc and voice[beat + 1] != voice[beat] + 1:
+                    issues.append(
+                        (
+                            "CM040",
+                            f"{label} beat {beat}: applied leading tone does not resolve upward",
+                        )
+                    )
+            continue
+
         if beat + 1 >= beats:
             issues.append(("CM035", f"Beat {beat}: chordal seventh has no following resolution"))
             continue
@@ -504,8 +712,9 @@ def _verify_expanded_harmony_motion(
 def _satb_chord_rows(
     key: Key,
     expanded_harmony: bool,
-) -> tuple[tuple[int, int, int, int, int, int, int], ...]:
-    rows: list[tuple[int, int, int, int, int, int, int]] = []
+    tonicization_enabled: bool,
+) -> tuple[tuple[int, int, int, int, int, int, int, int], ...]:
+    rows: list[tuple[int, int, int, int, int, int, int, int]] = []
     for degree in range(7):
         triad = key.triad_pitch_classes(degree)
         root = triad[0]
@@ -517,6 +726,7 @@ def _satb_chord_rows(
                         degree,
                         int(ChordKind.TRIAD),
                         inversion,
+                        NO_TONICIZATION_TARGET,
                         pcs[0],
                         pcs[1],
                         pcs[2],
@@ -530,7 +740,6 @@ def _satb_chord_rows(
             if set(pcs) != set(seventh):
                 continue
             # CM005/CM006 retain their v2.4 meanings: outer voices use the triadic core.
-            # The new seventh therefore enters through alto or tenor in v2.5.
             if pcs[0] not in triad or pcs[3] not in triad:
                 continue
             inversion = seventh.index(pcs[3])
@@ -541,64 +750,127 @@ def _satb_chord_rows(
                     degree,
                     int(ChordKind.SEVENTH),
                     inversion,
+                    NO_TONICIZATION_TARGET,
                     pcs[0],
                     pcs[1],
                     pcs[2],
                     pcs[3],
                 )
             )
+
+    if tonicization_enabled:
+        for target in key.applied_dominant_targets:
+            degree = key.applied_dominant_root_degree(target)
+            legacy_triad = key.triad_pitch_classes(degree)
+            applied = key.applied_dominant_seventh_pitch_classes(target)
+            for pcs in product(applied, repeat=4):
+                if set(pcs) != set(applied):
+                    continue
+                # Preserve CM005/CM006 exactly. Chromatic applied tones are carried by the
+                # inner voices; soprano and bass stay members of the established diatonic triad.
+                if pcs[0] not in legacy_triad or pcs[3] not in legacy_triad:
+                    continue
+                inversion = applied.index(pcs[3])
+                if inversion > 2:
+                    continue
+                rows.append(
+                    (
+                        degree,
+                        int(ChordKind.SEVENTH),
+                        inversion,
+                        target,
+                        pcs[0],
+                        pcs[1],
+                        pcs[2],
+                        pcs[3],
+                    )
+                )
     return tuple(rows)
 
 
 @cache
-def _chordal_seventh_flag_rows(key: Key) -> tuple[tuple[int, int, int, int], ...]:
-    rows: list[tuple[int, int, int, int]] = []
+def _chordal_seventh_flag_rows(
+    key: Key,
+    tonicization_enabled: bool,
+) -> tuple[tuple[int, int, int, int, int], ...]:
+    supported = set(key.applied_dominant_targets) if tonicization_enabled else set()
+    rows: list[tuple[int, int, int, int, int]] = []
     for degree in range(7):
-        seventh_pc = key.seventh_pitch_classes(degree)[3]
         for kind in ChordKind:
-            for pc in range(12):
-                flag = int(kind is ChordKind.SEVENTH and pc == seventh_pc)
-                rows.append((degree, int(kind), pc, flag))
+            for target in range(NO_TONICIZATION_TARGET + 1):
+                seventh_pc: int | None = None
+                if kind is ChordKind.SEVENTH:
+                    if target == NO_TONICIZATION_TARGET:
+                        seventh_pc = key.seventh_pitch_classes(degree)[3]
+                    elif target in supported and degree == key.applied_dominant_root_degree(target):
+                        seventh_pc = key.applied_dominant_seventh_pitch_classes(target)[3]
+                for pc in range(12):
+                    rows.append(
+                        (degree, int(kind), target, pc, int(seventh_pc is not None and pc == seventh_pc))
+                    )
     return tuple(rows)
 
 
 @cache
-def _dominant_seventh_flag_rows() -> tuple[tuple[int, int, int], ...]:
-    return tuple(
-        (degree, int(kind), int(degree == 4 and kind is ChordKind.SEVENTH))
-        for degree in range(7)
-        for kind in ChordKind
-    )
-
-
-@cache
-def _dominant_leading_flag_rows(key: Key) -> tuple[tuple[int, int, int, int], ...]:
+def _global_dominant_seventh_flag_rows() -> tuple[tuple[int, int, int, int], ...]:
     return tuple(
         (
             degree,
             int(kind),
-            pc,
+            target,
             int(
                 degree == 4
                 and kind is ChordKind.SEVENTH
-                and pc == key.leading_tone_pc
+                and target == NO_TONICIZATION_TARGET
             ),
         )
         for degree in range(7)
         for kind in ChordKind
-        for pc in range(12)
+        for target in range(NO_TONICIZATION_TARGET + 1)
     )
+
+
+@cache
+def _dominant_leading_flag_rows(
+    key: Key,
+    tonicization_enabled: bool,
+) -> tuple[tuple[int, int, int, int, int], ...]:
+    supported = set(key.applied_dominant_targets) if tonicization_enabled else set()
+    rows: list[tuple[int, int, int, int, int]] = []
+    for degree in range(7):
+        for kind in ChordKind:
+            for target in range(NO_TONICIZATION_TARGET + 1):
+                leading_pc: int | None = None
+                if kind is ChordKind.SEVENTH:
+                    if target == NO_TONICIZATION_TARGET and degree == 4:
+                        leading_pc = key.leading_tone_pc
+                    elif target in supported and degree == key.applied_dominant_root_degree(target):
+                        leading_pc = key.applied_dominant_seventh_pitch_classes(target)[1]
+                for pc in range(12):
+                    rows.append(
+                        (degree, int(kind), target, pc, int(leading_pc is not None and pc == leading_pc))
+                    )
+    return tuple(rows)
 
 
 @cache
 def _parallel_rows(
     left_domain: tuple[int, ...], right_domain: tuple[int, ...]
 ) -> tuple[tuple[int, int, int, int], ...]:
+    perfect_pairs = tuple(
+        (left, right)
+        for left in left_domain
+        for right in right_domain
+        if (left - right) % 12 in {0, 7}
+    )
     return tuple(
         (left_a, right_a, left_b, right_b)
-        for left_a in left_domain
-        for right_a in right_domain
-        for left_b in left_domain
-        for right_b in right_domain
+        for left_a, right_a in perfect_pairs
+        for left_b, right_b in perfect_pairs
         if is_parallel_perfect(left_a, right_a, left_b, right_b)
     )
+
+
+def _pitches_for_pitch_classes(low: int, high: int, pitch_classes: set[int]) -> tuple[int, ...]:
+    pcs = {pc % 12 for pc in pitch_classes}
+    return tuple(note for note in range(low, high + 1) if note % 12 in pcs)
