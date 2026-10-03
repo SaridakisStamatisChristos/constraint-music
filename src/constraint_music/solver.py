@@ -4,7 +4,11 @@ from dataclasses import replace
 
 from ortools.sat.python import cp_model
 
-from .compiler_structure import add_motif_constraints, add_phrase_constraints, add_rhythm_constraints
+from .compiler_structure import (
+    add_motif_constraints,
+    add_phrase_constraints,
+    add_rhythm_constraints,
+)
 from .compiler_tonal import (
     add_bass_constraints,
     add_harmony_constraints,
