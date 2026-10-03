@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.1"
+CONTRACT_VERSION = "2.2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,9 +69,11 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ),
     ConstraintRule(
         "CM016",
-        "authentic_cadence",
-        "When enabled, the phrase opens on tonic and closes dominant-function to tonic, "
-        "with tonic outer voices.",
+        "legacy_whole_piece_closure",
+        (
+            "When enabled, the piece opens on tonic and closes dominant-function to tonic "
+            "with tonic outer voices."
+        ),
         conditional=True,
     ),
     ConstraintRule(
@@ -106,7 +108,49 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM021",
         "cadential_articulation",
-        "An authentic cadence ends on a newly articulated tonic melody onset.",
+        "The legacy whole-piece closure ends on a newly articulated tonic melody onset.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM022",
+        "phrase_boundary",
+        "Declared phrase spans are in bounds, uniquely identified, and pairwise non-overlapping.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM023",
+        "phrase_role",
+        (
+            "Antecedent, consequent, and cadential roles impose explicit opening/closing "
+            "harmonic semantics."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM024",
+        "phrase_relation",
+        (
+            "Repeat, transpose, answer, and sequence relations reconstruct target melodic/rhythmic "
+            "material exactly from their declared source."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM025",
+        "phrase_cadence",
+        (
+            "Phrase cadence labels impose their exact tonic-close, dominant-open, "
+            "dominant-to-tonic, or leading-tone-to-tonic semantics."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM026",
+        "antecedent_consequent_structure",
+        (
+            "An answer-linked antecedent/consequent pair opens stably, leaves the antecedent open, "
+            "recalls source material, and closes the consequent more strongly."
+        ),
         conditional=True,
     ),
 )

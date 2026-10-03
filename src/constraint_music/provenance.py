@@ -9,7 +9,7 @@ from typing import Any
 from .contract import CONTRACT_VERSION, contract_digest
 from .models import GenerationResult
 
-ARTIFACT_SCHEMA_VERSION = "2.1"
+ARTIFACT_SCHEMA_VERSION = "2.2"
 
 
 def _sha256_json(payload: object) -> str:

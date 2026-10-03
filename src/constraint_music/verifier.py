@@ -4,6 +4,7 @@ from itertools import pairwise
 
 from .contract import HARD_CONSTRAINT_IDS
 from .models import GenerationResult, RhythmState, ValidationReport
+from .phrase_verify import phrase_verification_issues
 from .theory import is_parallel_perfect
 
 
@@ -114,7 +115,7 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         if chords[0] != 0:
             fail("CM016", "Opening chord is not tonic")
         if len(chords) < 2 or chords[-2] not in {4, 6} or chords[-1] != 0:
-            fail("CM016", "Phrase does not end with dominant-function to tonic")
+            fail("CM016", "Piece does not end with dominant-function to tonic")
         if not melody or melody[-1] % 12 != key.tonic_pc:
             fail("CM016", "Final melody note is not tonic")
         if not bass or bass[-1] % 12 != key.tonic_pc:
@@ -171,12 +172,11 @@ def verify_result(result: GenerationResult) -> ValidationReport:
             if rhythm[target + offset] != rhythm[source + offset]:
                 fail("CM020", f"Motif step {offset}: rhythm relation is violated")
 
-    if (
-        spec.require_authentic_cadence
-        and rhythm
-        and rhythm[-1] != RhythmState.ONSET
-    ):
+    if spec.require_authentic_cadence and rhythm and rhythm[-1] != RhythmState.ONSET:
         fail("CM021", "Final tonic must be a newly articulated onset")
+
+    for rule_id, message in phrase_verification_issues(result):
+        fail(rule_id, message)
 
     return ValidationReport(
         valid=not issues,

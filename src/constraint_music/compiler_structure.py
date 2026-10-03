@@ -5,6 +5,7 @@ from itertools import pairwise
 from ortools.sat.python import cp_model
 
 from .models import GenerationSpec, RhythmState
+from .phrase import PhraseSpec, phrase_by_id
 
 
 def _state_indicator(
@@ -17,6 +18,22 @@ def _state_indicator(
     model.add(variable == int(state)).only_enforce_if(flag)
     model.add(variable != int(state)).only_enforce_if(flag.negated())
     return flag
+
+
+def _require_tonic_pitch(
+    model: cp_model.CpModel,
+    variable: cp_model.IntVar,
+    allowed_notes: tuple[int, ...],
+) -> None:
+    model.add_allowed_assignments([variable], [(note,) for note in allowed_notes])
+
+
+def _phrase_bounds(spec: GenerationSpec, phrase: PhraseSpec) -> tuple[int, int, int, int]:
+    start_beat = phrase.start_bar * spec.beats_per_bar
+    end_beat = phrase.end_bar * spec.beats_per_bar
+    start_step = phrase.start_bar * spec.steps_per_bar
+    end_step = phrase.end_bar * spec.steps_per_bar
+    return start_beat, end_beat, start_step, end_step
 
 
 def add_rhythm_constraints(
@@ -101,3 +118,117 @@ def add_motif_constraints(
     for offset in range(spec.motif_length_steps):
         model.add(melody_note[target + offset] == melody_note[source + offset] + interval)
         model.add(rhythm[target + offset] == rhythm[source + offset])
+
+
+def add_phrase_constraints(
+    model: cp_model.CpModel,
+    spec: GenerationSpec,
+    rhythm: list[cp_model.IntVar],
+    melody_note: list[cp_model.IntVar],
+    bass_note: list[cp_model.IntVar],
+    chord: list[cp_model.IntVar],
+) -> None:
+    """Compile v2.2 phrase spans, roles, relations, and cadence semantics."""
+    if not spec.phrases:
+        return
+
+    onset = int(RhythmState.ONSET)
+    tonic_melody = tuple(
+        note
+        for note in spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
+        if note % 12 == spec.tonal_key.tonic_pc
+    )
+    tonic_bass = tuple(
+        note
+        for note in spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
+        if note % 12 == spec.tonal_key.tonic_pc
+    )
+    phrases = phrase_by_id(spec.phrases)
+
+    def require_phrase_close(phrase: PhraseSpec, *, strong: bool) -> None:
+        start_beat, end_beat, _, end_step = _phrase_bounds(spec, phrase)
+        final_beat = end_beat - 1
+        final_step = end_step - 1
+        model.add(chord[final_beat] == 0)
+        _require_tonic_pitch(model, melody_note[final_step], tonic_melody)
+        _require_tonic_pitch(model, bass_note[final_beat], tonic_bass)
+        model.add(rhythm[final_step] == onset)
+        if strong:
+            if end_beat - start_beat < 2:
+                raise ValueError(f"phrase {phrase.id!r}: strong cadence needs at least two beats")
+            model.add_allowed_assignments([chord[final_beat - 1]], [(4,), (6,)])
+
+    for phrase in spec.phrases:
+        start_beat, end_beat, _, _ = _phrase_bounds(spec, phrase)
+        final_beat = end_beat - 1
+
+        if phrase.role == "antecedent":
+            model.add(chord[start_beat] == 0)
+            model.add(chord[final_beat] == 4)
+        elif phrase.role in {"consequent", "cadential"}:
+            require_phrase_close(phrase, strong=False)
+
+        if phrase.cadence == "tonic_close":
+            require_phrase_close(phrase, strong=False)
+        elif phrase.cadence == "dominant_open":
+            model.add(chord[final_beat] == 4)
+        elif phrase.cadence == "dominant_to_tonic":
+            if end_beat - start_beat < 2:
+                raise ValueError(
+                    f"phrase {phrase.id!r}: dominant_to_tonic needs at least two beats"
+                )
+            model.add(chord[final_beat - 1] == 4)
+            require_phrase_close(phrase, strong=False)
+        elif phrase.cadence == "leading_tone_to_tonic":
+            if end_beat - start_beat < 2:
+                raise ValueError(
+                    f"phrase {phrase.id!r}: leading_tone_to_tonic needs at least two beats"
+                )
+            model.add(chord[final_beat - 1] == 6)
+            require_phrase_close(phrase, strong=False)
+
+        if phrase.relation == "independent":
+            continue
+        source = phrases[phrase.source or ""]
+        _, _, source_start, _ = _phrase_bounds(spec, source)
+        _, _, target_start, target_end = _phrase_bounds(spec, phrase)
+        if phrase.relation in {"repeat", "transpose"}:
+            interval = 0 if phrase.relation == "repeat" else phrase.transpose_semitones
+            for offset in range(target_end - target_start):
+                model.add(
+                    melody_note[target_start + offset]
+                    == melody_note[source_start + offset] + interval
+                )
+                model.add(rhythm[target_start + offset] == rhythm[source_start + offset])
+        elif phrase.relation == "answer":
+            length = phrase.relation_steps or spec.steps_per_bar
+            for offset in range(length):
+                model.add(
+                    melody_note[target_start + offset]
+                    == melody_note[source_start + offset] + phrase.transpose_semitones
+                )
+                model.add(rhythm[target_start + offset] == rhythm[source_start + offset])
+        elif phrase.relation == "sequence":
+            fragment = phrase.relation_steps or spec.steps_per_bar
+            copies = (target_end - target_start) // fragment
+            for copy in range(copies):
+                interval = phrase.transpose_semitones + copy * phrase.sequence_step_semitones
+                for offset in range(fragment):
+                    model.add(
+                        melody_note[target_start + copy * fragment + offset]
+                        == melody_note[source_start + offset] + interval
+                    )
+                    model.add(
+                        rhythm[target_start + copy * fragment + offset]
+                        == rhythm[source_start + offset]
+                    )
+
+        if (
+            phrase.role == "consequent"
+            and source.role == "antecedent"
+            and phrase.relation == "answer"
+        ):
+            source_start_beat, source_end_beat, _, _ = _phrase_bounds(spec, source)
+            model.add(chord[source_start_beat] == 0)
+            model.add(chord[source_end_beat - 1] == 4)
+            require_phrase_close(phrase, strong=True)

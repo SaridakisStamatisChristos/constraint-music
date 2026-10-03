@@ -4,7 +4,11 @@ from dataclasses import replace
 
 from ortools.sat.python import cp_model
 
-from .compiler_structure import add_motif_constraints, add_rhythm_constraints
+from .compiler_structure import (
+    add_motif_constraints,
+    add_phrase_constraints,
+    add_rhythm_constraints,
+)
 from .compiler_tonal import (
     add_bass_constraints,
     add_harmony_constraints,
@@ -69,6 +73,7 @@ class ConstraintMusicSolver:
         )
         add_rhythm_constraints(model, spec, rhythm, melody_note)
         add_motif_constraints(model, spec, rhythm, melody_note)
+        add_phrase_constraints(model, spec, rhythm, melody_note, bass_note, chord)
         objective_terms, actual_tension = add_objective(
             model,
             spec,
@@ -93,7 +98,7 @@ class ConstraintMusicSolver:
         if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
             raise NoSolutionError(
                 f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
-                "cadence, or repetition constraints."
+                "phrase, cadence, or repetition constraints."
             )
 
         raw_result = GenerationResult(
