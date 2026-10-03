@@ -18,6 +18,7 @@ from .compiler_tonal import (
 from .contract import HARD_CONSTRAINT_IDS
 from .models import GenerationResult, GenerationSpec, RhythmState
 from .objective import ObjectiveBundle, add_objective, evaluate_objective_vector
+from .satb import SatbGenerationResult, SatbVariables, add_satb_constraints
 from .search import (
     DEFAULT_OBJECTIVE_WEIGHTS,
     ObjectiveVector,
@@ -46,6 +47,7 @@ class _CompiledProblem:
     rhythm: list[cp_model.IntVar]
     bass_note: list[cp_model.IntVar]
     chord: list[cp_model.IntVar]
+    satb: SatbVariables
     objective: ObjectiveBundle
 
 
@@ -139,10 +141,10 @@ class ConstraintMusicSolver:
         if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
             raise NoSolutionError(
                 f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
-                "phrase, cadence, repetition, or distinctness constraints."
+                "phrase, cadence, SATB voice-leading, repetition, or distinctness constraints."
             )
 
-        raw_result = GenerationResult(
+        raw_result = SatbGenerationResult(
             spec=spec,
             melody=tuple(solver.value(note) for note in problem.melody_note),
             bass=tuple(solver.value(note) for note in problem.bass_note),
@@ -155,6 +157,9 @@ class ConstraintMusicSolver:
             solver_status=status_name,
             wall_time_seconds=solver.wall_time,
             rhythm=tuple(RhythmState(solver.value(item)) for item in problem.rhythm),
+            soprano=tuple(solver.value(item) for item in problem.satb.soprano),
+            alto=tuple(solver.value(item) for item in problem.satb.alto),
+            tenor=tuple(solver.value(item) for item in problem.satb.tenor),
         )
         report = verify_result(raw_result)
         if not report.valid:
@@ -209,6 +214,7 @@ class ConstraintMusicSolver:
         add_voice_leading_constraints(
             model, spec, melody_note, bass_note, melody_domain, bass_domain
         )
+        satb = add_satb_constraints(model, spec, chord, melody_note, bass_note)
         add_rhythm_constraints(model, spec, rhythm, melody_note)
         add_motif_constraints(model, spec, rhythm, melody_note)
         add_phrase_constraints(model, spec, rhythm, melody_note, bass_note, chord)
@@ -224,7 +230,7 @@ class ConstraintMusicSolver:
             weights,
         )
         model.minimize(objective.scalarized)
-        return _CompiledProblem(model, melody_note, rhythm, bass_note, chord, objective)
+        return _CompiledProblem(model, melody_note, rhythm, bass_note, chord, satb, objective)
 
     def _add_no_good(
         self,
@@ -245,6 +251,9 @@ class ConstraintMusicSolver:
             variables.extend(zip(problem.bass_note, result.bass, strict=True))
         if "harmony" in distinct_on:
             variables.extend(zip(problem.chord, result.chord_degrees, strict=True))
+            if isinstance(result, SatbGenerationResult):
+                variables.extend(zip(problem.satb.alto, result.alto, strict=True))
+                variables.extend(zip(problem.satb.tenor, result.tenor, strict=True))
 
         differs: list[cp_model.IntVar] = []
         for index, (variable, value) in enumerate(variables):
