@@ -80,12 +80,10 @@ def test_verifier_rejects_incomplete_satb_chord() -> None:
     assert "CM030" in report.failed_rules
 
 
-def test_harmony_distinctness_includes_inner_voices() -> None:
+def test_voicing_distinctness_includes_inner_voices() -> None:
     first, second = ConstraintMusicSolver().generate_many(
-        satb_spec(require_authentic_cadence=False), 2, distinct_on=("harmony",)
+        satb_spec(require_authentic_cadence=False), 2, distinct_on=("voicing",)
     )
     assert isinstance(first, SatbGenerationResult)
     assert isinstance(second, SatbGenerationResult)
-    first_signature = (first.chord_degrees, first.alto, first.tenor)
-    second_signature = (second.chord_degrees, second.alto, second.tenor)
-    assert first_signature != second_signature
+    assert (first.alto, first.tenor) != (second.alto, second.tenor)
