@@ -49,12 +49,24 @@
 - [x] `harmonic_form` distinctness without redefining legacy `harmony`.
 - [x] Schema 2.5 provenance for harmonic kind/inversion metadata.
 
+## v2.6 verified tonicization
+
+- [x] Explicit nullable local tonicization-target identity.
+- [x] Target-derived applied dominant seventh construction.
+- [x] Structural filtering of targets incompatible with preserved CM005/CM006 semantics.
+- [x] Complete SATB realization of root/first/second-inversion applied dominants.
+- [x] Immediate resolution to the declared local tonic.
+- [x] Applied chordal-seventh and local-leading-tone resolution.
+- [x] Independent CM037–CM040 verifier symmetry and adversarial tamper tests.
+- [x] `tonicization` distinctness without redefining `harmony` or `harmonic_form`.
+- [x] Schema/contract 2.6 provenance for tonicization target metadata.
+
 ## Later harmonic expansion
 
-- [ ] Applied / secondary dominants with structured target identity.
-- [ ] Modal mixture / borrowed-chord representation.
-- [ ] Explicit tonicization and local-key context.
-- [ ] Controlled modulation and pivot identity.
+- [ ] Modal mixture / borrowed-chord representation with explicit source-mode identity.
+- [ ] Secondary leading-tone chords with independent tendency-tone semantics.
+- [ ] Persistent local-key regions distinct from one-chord tonicization.
+- [ ] Controlled modulation with explicit pivot and destination-key identity.
 - [ ] Third-inversion seventh support if the outer-voice compatibility contract is explicitly revised rather than silently reinterpreted.
 
 ## Later general work
@@ -67,4 +79,4 @@
 
 ## Neuro-symbolic track
 
-A model may propose motifs, harmonic plans, rhythmic cells, phrase plans, or target curves, but only the symbolic layer is allowed to certify the final artifact. The intended boundary is `proposal -> compile/repair -> independent verify -> export`, not unconstrained model generation presented as verified composition.
+A model may propose motifs, harmonic plans, rhythmic cells, phrase plans, tonicization targets, or target curves, but only the symbolic layer is allowed to certify the final artifact. The intended boundary is `proposal -> compile/repair -> independent verify -> export`, not unconstrained model generation presented as verified composition.
