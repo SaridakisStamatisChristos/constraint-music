@@ -10,8 +10,9 @@
 - Added solver-native leading-tone resolution for alto and tenor.
 - Extended the independently verified hard contract from 26 to 32 rules (`CM001`–`CM032`).
 - Added `SatbGenerationResult` serialization and artifact schema 2.4; semantic digests now commit to SATB voices.
-- Extended harmony no-good cuts so distinct harmony alternatives can differ by inner-voice realization as well as chord degree.
+- Preserved v2.3 `harmony` distinctness as chord-sequence distinctness and added a separate `voicing` dimension for alto/tenor realizations.
 - Added positive SATB generation tests and adversarial verification tests for crossing and chord-completeness tampering.
+- Cached immutable SATB chord and parallel-motion tables to avoid rebuilding the same transition relations across repeated solves.
 
 ## 2.3.0a1 — distinct enumeration and Pareto search
 
