@@ -42,7 +42,7 @@ def build_parser() -> argparse.ArgumentParser:
         default="melody",
         help=(
             "Comma-separated no-good dimensions: "
-            "melody,rhythm,bass,harmony,voicing,harmonic_form,tonicization"
+            "melody,rhythm,bass,harmony,voicing,harmonic_form,tonicization,modal_source"
         ),
     )
     generate.add_argument(

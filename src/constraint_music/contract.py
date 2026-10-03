@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.6"
+CONTRACT_VERSION = "2.7"
 
 
 @dataclass(frozen=True, slots=True)
@@ -180,7 +180,7 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM030",
         "satb_chord_completeness",
-        "Every SATB sonority contains the complete active triad and doubles its root.",
+        "Every global SATB triad contains the complete active triad and doubles its root.",
         conditional=True,
     ),
     ConstraintRule(
@@ -212,7 +212,7 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "expanded_chord_realization",
         (
             "Seventh forms contain all four diatonic chord tones exactly once, while every "
-            "serialized inversion agrees with the realized bass pitch class."
+            "serialized global-form inversion agrees with the realized bass pitch class."
         ),
         conditional=True,
     ),
@@ -265,6 +265,26 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         (
             "Each applied-dominant chordal seventh resolves downward by step and each voice "
             "carrying the local leading tone resolves upward by semitone."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM041",
+        "modal_mixture_context",
+        (
+            "When modal mixture is enabled, every beat carries explicit nullable source-mode "
+            "metadata; borrowed beats use the canonical parallel source, remain triadic, do not "
+            "coincide with tonicization, stay outside the preserved global cadential boundary, "
+            "and satisfy the declared minimum borrowed-chord count."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM042",
+        "borrowed_chord_realization",
+        (
+            "Every borrowed beat contains the complete triad derived from its explicit parallel "
+            "source mode and degree, and its serialized inversion agrees with the realized bass."
         ),
         conditional=True,
     ),

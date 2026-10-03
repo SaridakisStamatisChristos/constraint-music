@@ -16,6 +16,7 @@ from .compiler_tonal import (
     add_voice_leading_constraints,
 )
 from .contract import HARD_CONSTRAINT_IDS
+from .modal_mixture import NO_MODAL_SOURCE, ModalSource
 from .models import GenerationResult, GenerationSpec, RhythmState
 from .objective import ObjectiveBundle, add_objective, evaluate_objective_vector
 from .satb import SatbGenerationResult, SatbVariables, add_satb_constraints
@@ -142,8 +143,8 @@ class ConstraintMusicSolver:
         if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
             raise NoSolutionError(
                 f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
-                "phrase, cadence, SATB voice-leading, expanded harmony, tonicization, "
-                "repetition, or distinctness constraints."
+                "phrase, cadence, SATB voice-leading, expanded harmony, tonicization, modal "
+                "mixture, repetition, or distinctness constraints."
             )
 
         raw_result = SatbGenerationResult(
@@ -173,6 +174,10 @@ class ConstraintMusicSolver:
                 for value in (
                     solver.value(item) for item in problem.satb.tonicization_target
                 )
+            ),
+            modal_sources=tuple(
+                None if value == NO_MODAL_SOURCE else ModalSource(value)
+                for value in (solver.value(item) for item in problem.satb.modal_source)
             ),
         )
         report = verify_result(raw_result)
@@ -303,6 +308,22 @@ class ConstraintMusicSolver:
                 for variable, target in zip(
                     problem.satb.tonicization_target,
                     result.tonicization_targets,
+                    strict=True,
+                )
+            )
+        if "modal_source" in distinct_on:
+            if not isinstance(result, SatbGenerationResult):
+                raise ValueError("modal_source distinctness requires a SATB result")
+            if len(result.modal_sources) != len(problem.chord):
+                raise ValueError("modal_source distinctness requires explicit source metadata")
+            variables.extend(
+                (
+                    variable,
+                    NO_MODAL_SOURCE if source is None else int(ModalSource.parse(source)),
+                )
+                for variable, source in zip(
+                    problem.satb.modal_source,
+                    result.modal_sources,
                     strict=True,
                 )
             )

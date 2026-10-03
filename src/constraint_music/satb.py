@@ -8,6 +8,14 @@ from typing import Any
 
 from ortools.sat.python import cp_model
 
+from .modal_mixture import (
+    NO_MODAL_SOURCE,
+    ModalSource,
+    borrowed_chord_name,
+    borrowed_triad_pitch_classes,
+    canonical_modal_source,
+    supported_borrowed_degrees,
+)
 from .models import GenerationResult, GenerationSpec
 from .theory import (
     NO_TONICIZATION_TARGET,
@@ -32,6 +40,7 @@ class SatbGenerationResult(GenerationResult):
     chord_kinds: tuple[ChordKind, ...] = ()
     chord_inversions: tuple[int, ...] = ()
     tonicization_targets: tuple[int | None, ...] = ()
+    modal_sources: tuple[ModalSource | None, ...] = ()
 
     @property
     def soprano_names(self) -> tuple[str, ...]:
@@ -58,25 +67,38 @@ class SatbGenerationResult(GenerationResult):
             if self.tonicization_targets
             else (None,) * len(self.chord_degrees)
         )
-        if len(targets) != len(self.chord_degrees):
+        sources = (
+            self.modal_sources if self.modal_sources else (None,) * len(self.chord_degrees)
+        )
+        if not (
+            len(targets) == len(sources) == len(self.chord_degrees)
+        ):
             return ()
         key = self.spec.tonal_key
         names: list[str] = []
         try:
-            for degree, raw_kind, inversion, target in zip(
+            for degree, raw_kind, inversion, target, raw_source in zip(
                 self.chord_degrees,
                 self.chord_kinds,
                 self.chord_inversions,
                 targets,
+                sources,
                 strict=True,
             ):
                 kind = ChordKind.parse(raw_kind)
-                if target is None:
-                    names.append(key.chord_form_name(degree, kind, inversion))
-                else:
+                source = None if raw_source is None else ModalSource.parse(raw_source)
+                if target is not None and source is not None:
+                    return ()
+                if target is not None:
                     if kind is not ChordKind.SEVENTH:
                         return ()
                     names.append(key.applied_dominant_name(target, inversion))
+                elif source is not None:
+                    if kind is not ChordKind.TRIAD:
+                        return ()
+                    names.append(borrowed_chord_name(key, degree, source, inversion))
+                else:
+                    names.append(key.chord_form_name(degree, kind, inversion))
         except (IndexError, ValueError):
             return ()
         return tuple(names)
@@ -96,6 +118,11 @@ class SatbGenerationResult(GenerationResult):
             music["chord_inversions"] = list(self.chord_inversions)
         if self.tonicization_targets:
             music["tonicization_targets"] = list(self.tonicization_targets)
+        if self.modal_sources:
+            music["modal_sources"] = [
+                None if source is None else ModalSource.parse(source).label
+                for source in self.modal_sources
+            ]
         if self.chord_form_names:
             music["chord_form_names"] = list(self.chord_form_names)
         return payload
@@ -109,6 +136,7 @@ class SatbVariables:
     chord_kind: list[cp_model.IntVar]
     chord_inversion: list[cp_model.IntVar]
     tonicization_target: list[cp_model.IntVar]
+    modal_source: list[cp_model.IntVar]
 
 
 def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
@@ -150,6 +178,15 @@ def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
                 ) from exc
         return tuple(parsed)
 
+    def optional_sources(key: str) -> tuple[ModalSource | None, ...]:
+        parsed: list[ModalSource | None] = []
+        for item in values(key):
+            if item is None:
+                parsed.append(None)
+            else:
+                parsed.append(ModalSource.parse(item))
+        return tuple(parsed)
+
     raw_kinds = values("chord_kinds") if "chord_kinds" in raw_music else ()
     raw_inversions = integers("chord_inversions") if "chord_inversions" in raw_music else ()
     raw_targets = (
@@ -157,6 +194,7 @@ def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
         if "tonicization_targets" in raw_music
         else ()
     )
+    raw_sources = optional_sources("modal_sources") if "modal_sources" in raw_music else ()
     return SatbGenerationResult(
         spec=base.spec,
         melody=base.melody,
@@ -175,6 +213,7 @@ def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
         chord_kinds=tuple(ChordKind.parse(item) for item in raw_kinds),
         chord_inversions=raw_inversions,
         tonicization_targets=raw_targets,
+        modal_sources=raw_sources,
     )
 
 
@@ -193,6 +232,10 @@ def add_satb_constraints(
             inner_pitch_classes.update(
                 key.applied_dominant_seventh_pitch_classes(target_degree)
             )
+    if spec.modal_mixture_enabled:
+        source = canonical_modal_source(key)
+        for degree in supported_borrowed_degrees(key):
+            inner_pitch_classes.update(borrowed_triad_pitch_classes(key, degree, source))
     alto_domain = _pitches_for_pitch_classes(ALTO_LOW, ALTO_HIGH, inner_pitch_classes)
     tenor_domain = _pitches_for_pitch_classes(TENOR_LOW, TENOR_HIGH, inner_pitch_classes)
     bass_domain = key.pitches_in_range(spec.bass_low, spec.bass_high)
@@ -223,6 +266,10 @@ def add_satb_constraints(
         model.new_int_var(0, NO_TONICIZATION_TARGET, f"tonicization_target_{beat}")
         for beat in range(spec.total_beats)
     ]
+    modal_source = [
+        model.new_int_var(NO_MODAL_SOURCE, int(ModalSource.PARALLEL_NATURAL_MINOR), f"modal_source_{beat}")
+        for beat in range(spec.total_beats)
+    ]
 
     if spec.expanded_harmony_enabled:
         if spec.minimum_seventh_chords:
@@ -247,10 +294,32 @@ def add_satb_constraints(
         for target in tonicization_target:
             model.add(target == NO_TONICIZATION_TARGET)
 
+    borrowed_flags: list[cp_model.IntVar] = []
+    if spec.modal_mixture_enabled:
+        canonical_source = int(canonical_modal_source(key))
+        for beat, source_var in enumerate(modal_source):
+            model.add_allowed_assignments(
+                [source_var],
+                [(NO_MODAL_SOURCE,), (canonical_source,)],
+            )
+            borrowed = model.new_bool_var(f"borrowed_chord_{beat}")
+            model.add(source_var == canonical_source).only_enforce_if(borrowed)
+            model.add(source_var == NO_MODAL_SOURCE).only_enforce_if(borrowed.negated())
+            borrowed_flags.append(borrowed)
+        if spec.minimum_borrowed_chords:
+            model.add(sum(borrowed_flags) >= spec.minimum_borrowed_chords)
+        model.add(modal_source[-1] == NO_MODAL_SOURCE)
+        if spec.require_authentic_cadence and spec.total_beats >= 2:
+            model.add(modal_source[-2] == NO_MODAL_SOURCE)
+    else:
+        for source_var in modal_source:
+            model.add(source_var == NO_MODAL_SOURCE)
+
     chord_rows = _satb_chord_rows(
         key,
         spec.expanded_harmony_enabled,
         spec.tonicization_enabled,
+        spec.modal_mixture_enabled,
     )
     pitch_classes: list[list[cp_model.IntVar]] = []
 
@@ -276,6 +345,7 @@ def add_satb_constraints(
                 chord_kind[beat],
                 chord_inversion[beat],
                 tonicization_target[beat],
+                modal_source[beat],
                 *pcs,
             ],
             chord_rows,
@@ -341,6 +411,7 @@ def add_satb_constraints(
         chord_kind=chord_kind,
         chord_inversion=chord_inversion,
         tonicization_target=tonicization_target,
+        modal_source=modal_source,
     )
 
 
@@ -508,6 +579,68 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                 ("CM037", "Serialized harmony does not meet minimum_applied_dominants")
             )
 
+    source_metadata_present = bool(result.modal_sources)
+    sources: tuple[ModalSource | None, ...] = (None,) * spec.total_beats
+    source_context_valid = False
+    if source_metadata_present:
+        if len(result.modal_sources) != spec.total_beats:
+            issues.append(("CM041", "Modal source metadata must contain one value per beat"))
+        else:
+            try:
+                sources = tuple(
+                    None if source is None else ModalSource.parse(source)
+                    for source in result.modal_sources
+                )
+            except ValueError:
+                issues.append(("CM041", "Modal source metadata contains an unknown source"))
+            else:
+                source_context_valid = True
+    elif spec.modal_mixture_enabled:
+        issues.append(("CM041", "Enabled modal mixture requires explicit source metadata"))
+    else:
+        source_context_valid = True
+
+    canonical_source = canonical_modal_source(key)
+    supported_borrowed = set(supported_borrowed_degrees(key))
+    borrowed_count = 0
+    if source_context_valid:
+        for beat, source in enumerate(sources):
+            if source is None:
+                continue
+            borrowed_count += 1
+            if not spec.modal_mixture_enabled:
+                issues.append(("CM041", f"Beat {beat}: modal mixture is not enabled by the spec"))
+                continue
+            if source is not canonical_source:
+                issues.append(
+                    (
+                        "CM041",
+                        f"Beat {beat}: modal source {source.label} is not canonical for {key}",
+                    )
+                )
+                continue
+            if beat == spec.total_beats - 1:
+                issues.append(("CM041", f"Beat {beat}: final chord must remain in global context"))
+            if spec.require_authentic_cadence and beat == spec.total_beats - 2:
+                issues.append(
+                    ("CM041", f"Beat {beat}: cadential dominant-function chord must remain global")
+                )
+            if beat < len(result.chord_degrees) and result.chord_degrees[beat] not in supported_borrowed:
+                issues.append(
+                    (
+                        "CM041",
+                        f"Beat {beat}: degree {result.chord_degrees[beat]} is not borrowable",
+                    )
+                )
+            if context_valid and targets[beat] is not None:
+                issues.append(("CM041", f"Beat {beat}: borrowing and tonicization cannot coexist"))
+            if metadata_valid and kinds[beat] is not ChordKind.TRIAD:
+                issues.append(("CM041", f"Beat {beat}: v2.7 borrowed harmony must be triadic"))
+        if borrowed_count < spec.minimum_borrowed_chords:
+            issues.append(
+                ("CM041", "Serialized harmony does not meet minimum_borrowed_chords")
+            )
+
     for beat, (sv, av, tv, bv) in enumerate(
         zip(soprano, alto, tenor, bass, strict=True)
     ):
@@ -530,6 +663,7 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
         pcs = (sv % 12, av % 12, tv % 12, bv % 12)
         kind = kinds[beat] if metadata_valid else ChordKind.TRIAD
         target = targets[beat] if context_valid else None
+        source = sources[beat] if source_context_valid else None
 
         if target is not None:
             if target not in supported_targets or not metadata_valid:
@@ -550,6 +684,24 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
             if 0 <= inversions[beat] <= 2 and bv % 12 != applied_pcs[inversions[beat]]:
                 issues.append(
                     ("CM038", f"Beat {beat}: applied-dominant inversion does not match the bass")
+                )
+            continue
+
+        if source is not None:
+            if (
+                not metadata_valid
+                or source is not canonical_source
+                or degree not in supported_borrowed
+            ):
+                continue
+            borrowed_pcs = borrowed_triad_pitch_classes(key, degree, source)
+            if kind is not ChordKind.TRIAD or set(pcs) != set(borrowed_pcs) or len(set(pcs)) != 3:
+                issues.append(
+                    ("CM042", f"Beat {beat}: borrowed chord is not the complete source-mode triad")
+                )
+            if 0 <= inversions[beat] <= 2 and bv % 12 != borrowed_pcs[inversions[beat]]:
+                issues.append(
+                    ("CM042", f"Beat {beat}: borrowed-chord inversion does not match the bass")
                 )
             continue
 
@@ -718,8 +870,9 @@ def _satb_chord_rows(
     key: Key,
     expanded_harmony: bool,
     tonicization_enabled: bool,
-) -> tuple[tuple[int, int, int, int, int, int, int, int], ...]:
-    rows: list[tuple[int, int, int, int, int, int, int, int]] = []
+    modal_mixture_enabled: bool,
+) -> tuple[tuple[int, int, int, int, int, int, int, int, int], ...]:
+    rows: list[tuple[int, int, int, int, int, int, int, int, int]] = []
     for degree in range(7):
         triad = key.triad_pitch_classes(degree)
         root = triad[0]
@@ -732,6 +885,7 @@ def _satb_chord_rows(
                         int(ChordKind.TRIAD),
                         inversion,
                         NO_TONICIZATION_TARGET,
+                        NO_MODAL_SOURCE,
                         pcs[0],
                         pcs[1],
                         pcs[2],
@@ -756,6 +910,7 @@ def _satb_chord_rows(
                     int(ChordKind.SEVENTH),
                     inversion,
                     NO_TONICIZATION_TARGET,
+                    NO_MODAL_SOURCE,
                     pcs[0],
                     pcs[1],
                     pcs[2],
@@ -784,6 +939,34 @@ def _satb_chord_rows(
                         int(ChordKind.SEVENTH),
                         inversion,
                         target,
+                        NO_MODAL_SOURCE,
+                        pcs[0],
+                        pcs[1],
+                        pcs[2],
+                        pcs[3],
+                    )
+                )
+
+    if modal_mixture_enabled:
+        source = canonical_modal_source(key)
+        for degree in supported_borrowed_degrees(key):
+            legacy_triad = key.triad_pitch_classes(degree)
+            borrowed = borrowed_triad_pitch_classes(key, degree, source)
+            for pcs in product(borrowed, repeat=4):
+                if set(pcs) != set(borrowed):
+                    continue
+                # Borrowed chromatic tones stay inside alto/tenor. Both outer voices preserve
+                # CM005/CM006 by remaining members of the global triadic core for this degree.
+                if pcs[0] not in legacy_triad or pcs[3] not in legacy_triad:
+                    continue
+                inversion = borrowed.index(pcs[3])
+                rows.append(
+                    (
+                        degree,
+                        int(ChordKind.TRIAD),
+                        inversion,
+                        NO_TONICIZATION_TARGET,
+                        int(source),
                         pcs[0],
                         pcs[1],
                         pcs[2],
