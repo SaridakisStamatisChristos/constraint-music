@@ -14,7 +14,7 @@ from constraint_music.theory import ChordKind, Key, Mode
 from constraint_music.verifier import verify_result
 
 FORCED_V_OF_V_GRAPH: tuple[tuple[int, ...], ...] = (
-    (1,),
+    (1, 4),
     (4,),
     (2,),
     (3,),
@@ -27,8 +27,8 @@ FORCED_V_OF_V_GRAPH: tuple[tuple[int, ...], ...] = (
 @cache
 def applied_dominant_piece() -> SatbGenerationResult:
     spec = GenerationSpec(
-        bars=1,
-        beats_per_bar=4,
+        bars=2,
+        beats_per_bar=3,
         subdivisions_per_beat=1,
         progression_graph=FORCED_V_OF_V_GRAPH,
         harmony_vocabulary="triads+sevenths",
@@ -38,7 +38,7 @@ def applied_dominant_piece() -> SatbGenerationResult:
         max_time_seconds=30,
         workers=1,
         seed=2606,
-        tension_curve=(0.05, 0.65, 0.9, 0.02),
+        tension_curve=(0.05, 0.65, 0.55, 0.15, 0.82, 0.02),
     )
     result = ConstraintMusicSolver().generate(spec)
     assert isinstance(result, SatbGenerationResult)
@@ -64,13 +64,10 @@ def test_solver_emits_verified_v7_of_v() -> None:
     result = applied_dominant_piece()
     assert result.validation.valid, result.validation.issues
     assert result.validation.checked_rules == HARD_CONSTRAINT_IDS
-    assert result.chord_degrees == (0, 1, 4, 0)
-    assert result.tonicization_targets == (None, 4, None, None)
+    assert result.chord_degrees == (0, 1, 4, 0, 4, 0)
+    assert result.tonicization_targets == (None, 4, None, None, None, None)
     assert result.chord_kinds[1] is ChordKind.SEVENTH
-    assert result.chord_form_names[1] == "V7/V" or result.chord_form_names[1] in {
-        "V65/V",
-        "V43/V",
-    }
+    assert result.chord_form_names[1] in {"V7/V", "V65/V", "V43/V"}
 
     applied = result.spec.tonal_key.applied_dominant_seventh_pitch_classes(4)
     pcs = {
@@ -143,11 +140,10 @@ def test_tonicization_tampering_breaks_semantic_provenance() -> None:
 
 
 def test_absent_tonicization_metadata_remains_loadable_when_feature_is_off() -> None:
-    result = applied_dominant_piece()
-    legacy_spec = replace(
-        result.spec,
-        tonicization_enabled=False,
-        minimum_applied_dominants=0,
+    legacy_spec = GenerationSpec(
+        bars=1,
+        beats_per_bar=4,
+        subdivisions_per_beat=1,
         progression_graph=(
             (0, 4),
             (1,),
@@ -157,6 +153,10 @@ def test_absent_tonicization_metadata_remains_loadable_when_feature_is_off() -> 
             (5,),
             (0,),
         ),
+        harmony_vocabulary="triads+sevenths",
+        max_time_seconds=30,
+        workers=1,
+        seed=2605,
     )
     legacy = ConstraintMusicSolver().generate(legacy_spec)
     assert isinstance(legacy, SatbGenerationResult)
