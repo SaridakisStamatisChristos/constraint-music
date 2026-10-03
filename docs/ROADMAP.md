@@ -17,20 +17,17 @@
 ## v2.2 phrase grammar
 
 - [x] Explicit non-overlapping phrase spans and stable phrase IDs.
-- [x] Phrase roles: statement, antecedent, consequent, transition, cadential.
+- [x] Phrase roles and precise phrase-local cadence semantics.
 - [x] Phrase relations: independent, repeat, transpose, answer, sequence.
-- [x] Precise phrase cadence labels instead of broad cadence terminology.
 - [x] Minimal answer-linked antecedent/consequent period grammar.
 - [x] Independent phrase verification and adversarial tamper tests.
-- [x] Eight-bar period example.
 
 ## v2.3 distinct enumeration and Pareto search
 
-- [x] Replace seed variation as the primary alternative-generation mechanism with CP-SAT no-good cuts.
-- [x] Allow explicit distinctness dimensions: melody, rhythm, bass, and harmony.
-- [x] Add named objective-vector metadata with independent recomputation.
-- [x] Add deterministic weighted scalarization profiles and Pareto-front approximation.
-- [x] Test deterministic enumeration, metadata integrity, and Pareto dominance independently.
+- [x] CP-SAT no-good cuts for genuinely distinct alternatives.
+- [x] Explicit distinctness dimensions: melody, rhythm, bass, and harmony.
+- [x] Named objective-vector metadata with independent recomputation.
+- [x] Deterministic scalarization profiles and Pareto-front approximation.
 
 ## v2.4 solver-native multi-voice harmony
 
@@ -38,11 +35,30 @@
 - [x] Voice ranges, ordering, spacing, chord completeness, and doubling policy.
 - [x] Inner-voice parallel-perfect and tendency-tone resolution rules.
 - [x] Independent SATB verification and artifact-provenance coverage.
-- [x] Add a separate SATB `voicing` no-good dimension while preserving v2.3 `harmony` semantics.
+- [x] Separate SATB `voicing` no-good dimension while preserving `harmony` semantics.
 
-## Later
+## v2.5 expanded harmonic vocabulary
 
-- [ ] Expanded harmonic vocabulary: sevenths, applied dominants, mixture, tonicization/modulation.
+- [x] Preserve triads as the default and make seventh-chord vocabulary opt-in.
+- [x] Structured chord kind and explicit inversion representation.
+- [x] Complete diatonic seventh chords in solver-native SATB.
+- [x] Root, first, and second inversions under the preserved outer-voice contract.
+- [x] Chordal-seventh downward-step resolution.
+- [x] Dominant-seventh-to-tonic and leading-tone resolution.
+- [x] Independent CM033–CM036 verifier symmetry and adversarial tests.
+- [x] `harmonic_form` distinctness without redefining legacy `harmony`.
+- [x] Schema 2.5 provenance for harmonic kind/inversion metadata.
+
+## Later harmonic expansion
+
+- [ ] Applied / secondary dominants with structured target identity.
+- [ ] Modal mixture / borrowed-chord representation.
+- [ ] Explicit tonicization and local-key context.
+- [ ] Controlled modulation and pivot identity.
+- [ ] Third-inversion seventh support if the outer-voice compatibility contract is explicitly revised rather than silently reinterpreted.
+
+## Later general work
+
 - [ ] Richer rhythmic syntax and motif transformations.
 - [ ] Binary/ternary/period/form grammar.
 - [ ] Transparent style profiles.

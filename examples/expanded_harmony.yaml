@@ -1,0 +1,23 @@
+key: C
+mode: major
+bars: 2
+beats_per_bar: 4
+subdivisions_per_beat: 1
+tempo_bpm: 104
+melody_low: 60
+melody_high: 81
+bass_low: 36
+bass_high: 55
+max_melody_leap: 12
+max_bass_leap: 7
+max_repeated_notes: 2
+require_authentic_cadence: true
+resolve_leading_tone: true
+avoid_parallel_perfects: true
+harmony_vocabulary: triads+sevenths
+minimum_seventh_chords: 1
+rhythm_enabled: false
+tension_curve: [0.08, 0.25, 0.55, 0.82, 0.18, 0.02]
+seed: 2505
+max_time_seconds: 20
+workers: 1
