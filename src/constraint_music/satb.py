@@ -99,11 +99,19 @@ def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
             raise ValueError(f"Result JSON music.{key} must be an array")
         return tuple(value)
 
-    def notes(key: str) -> tuple[int, ...]:
-        return tuple(int(item) for item in values(key))
+    def integers(key: str) -> tuple[int, ...]:
+        parsed: list[int] = []
+        for item in values(key):
+            if not isinstance(item, (int, str)):
+                raise ValueError(f"Result JSON music.{key} must contain integers")
+            try:
+                parsed.append(int(item))
+            except ValueError as exc:
+                raise ValueError(f"Result JSON music.{key} must contain integers") from exc
+        return tuple(parsed)
 
     raw_kinds = values("chord_kinds") if "chord_kinds" in raw_music else ()
-    raw_inversions = values("chord_inversions") if "chord_inversions" in raw_music else ()
+    raw_inversions = integers("chord_inversions") if "chord_inversions" in raw_music else ()
     return SatbGenerationResult(
         spec=base.spec,
         melody=base.melody,
@@ -116,11 +124,11 @@ def result_from_dict(payload: Mapping[str, Any]) -> GenerationResult:
         wall_time_seconds=base.wall_time_seconds,
         rhythm=base.rhythm,
         validation=base.validation,
-        soprano=notes("soprano_midi"),
-        alto=notes("alto_midi"),
-        tenor=notes("tenor_midi"),
+        soprano=integers("soprano_midi"),
+        alto=integers("alto_midi"),
+        tenor=integers("tenor_midi"),
         chord_kinds=tuple(ChordKind.parse(item) for item in raw_kinds),
-        chord_inversions=tuple(int(item) for item in raw_inversions),
+        chord_inversions=raw_inversions,
     )
 
 
