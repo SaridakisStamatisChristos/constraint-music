@@ -159,16 +159,13 @@ def add_phrase_constraints(
             model.add_allowed_assignments([chord[final_beat - 1]], [(4,), (6,)])
 
     for phrase in spec.phrases:
-        start_beat, end_beat, _, end_step = _phrase_bounds(spec, phrase)
+        start_beat, end_beat, _, _ = _phrase_bounds(spec, phrase)
         final_beat = end_beat - 1
-        final_step = end_step - 1
 
         if phrase.role == "antecedent":
             model.add(chord[start_beat] == 0)
             model.add(chord[final_beat] == 4)
-        elif phrase.role == "consequent":
-            require_phrase_close(phrase, strong=False)
-        elif phrase.role == "cadential":
+        elif phrase.role in {"consequent", "cadential"}:
             require_phrase_close(phrase, strong=False)
 
         if phrase.cadence == "tonic_close":
@@ -191,12 +188,15 @@ def add_phrase_constraints(
         if phrase.relation == "independent":
             continue
         source = phrases[phrase.source or ""]
-        _, _, source_start, source_end = _phrase_bounds(spec, source)
+        _, _, source_start, _ = _phrase_bounds(spec, source)
         _, _, target_start, target_end = _phrase_bounds(spec, phrase)
         if phrase.relation in {"repeat", "transpose"}:
             interval = 0 if phrase.relation == "repeat" else phrase.transpose_semitones
             for offset in range(target_end - target_start):
-                model.add(melody_note[target_start + offset] == melody_note[source_start + offset] + interval)
+                model.add(
+                    melody_note[target_start + offset]
+                    == melody_note[source_start + offset] + interval
+                )
                 model.add(rhythm[target_start + offset] == rhythm[source_start + offset])
         elif phrase.relation == "answer":
             length = phrase.relation_steps or spec.steps_per_bar
@@ -221,7 +221,11 @@ def add_phrase_constraints(
                         == rhythm[source_start + offset]
                     )
 
-        if phrase.role == "consequent" and source.role == "antecedent" and phrase.relation == "answer":
+        if (
+            phrase.role == "consequent"
+            and source.role == "antecedent"
+            and phrase.relation == "answer"
+        ):
             source_start_beat, source_end_beat, _, _ = _phrase_bounds(spec, source)
             model.add(chord[source_start_beat] == 0)
             model.add(chord[source_end_beat - 1] == 4)
