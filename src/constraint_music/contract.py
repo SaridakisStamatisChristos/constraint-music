@@ -1,0 +1,97 @@
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from hashlib import sha256
+
+CONTRACT_VERSION = "2.0"
+
+
+@dataclass(frozen=True, slots=True)
+class ConstraintRule:
+    rule_id: str
+    name: str
+    description: str
+    conditional: bool = False
+
+
+HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
+    ConstraintRule("CM001", "shape", "Melody, bass, and harmony lengths match the specification."),
+    ConstraintRule(
+        "CM002", "melody_domain", "Every melody pitch is in-key and inside the configured range."
+    ),
+    ConstraintRule(
+        "CM003", "bass_domain", "Every bass pitch is in-key and inside the configured range."
+    ),
+    ConstraintRule(
+        "CM004", "harmony_domain", "Every chord degree is a valid diatonic degree in 0..6."
+    ),
+    ConstraintRule(
+        "CM005",
+        "strong_beat_chord_tone",
+        "Every strong-beat melody pitch belongs to the active triad.",
+    ),
+    ConstraintRule("CM006", "bass_chord_member", "Every bass pitch belongs to the active triad."),
+    ConstraintRule(
+        "CM007",
+        "progression_graph",
+        "Every adjacent chord transition is allowed by the configured graph.",
+    ),
+    ConstraintRule(
+        "CM008", "melody_leap", "Adjacent melody motion stays within the configured leap bound."
+    ),
+    ConstraintRule("CM009", "melody_tritone", "Adjacent melody motion never forms a tritone."),
+    ConstraintRule(
+        "CM010",
+        "leading_tone_resolution",
+        "When enabled, a melodic leading tone resolves upward by semitone.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM011", "melody_repetition", "Repeated-note runs do not exceed the configured limit."
+    ),
+    ConstraintRule(
+        "CM012",
+        "large_leap_recovery",
+        "A melodic leap larger than a perfect fifth is followed by contrary stepwise motion.",
+    ),
+    ConstraintRule(
+        "CM013", "bass_leap", "Adjacent bass motion stays within the configured leap bound."
+    ),
+    ConstraintRule("CM014", "bass_tritone", "Adjacent bass motion never forms a tritone."),
+    ConstraintRule(
+        "CM015",
+        "parallel_perfects",
+        "When enabled, outer voices avoid parallel perfect fifths and octaves.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM016",
+        "authentic_cadence",
+        "When enabled, the phrase opens on tonic and closes dominant-function to tonic, "
+        "with tonic outer voices.",
+        conditional=True,
+    ),
+)
+
+HARD_CONSTRAINT_IDS: tuple[str, ...] = tuple(rule.rule_id for rule in HARD_CONSTRAINTS)
+
+
+def contract_payload() -> dict[str, object]:
+    return {
+        "version": CONTRACT_VERSION,
+        "hard_constraints": [
+            {
+                "id": rule.rule_id,
+                "name": rule.name,
+                "description": rule.description,
+                "conditional": rule.conditional,
+            }
+            for rule in HARD_CONSTRAINTS
+        ],
+    }
+
+
+def contract_digest() -> str:
+    canonical = json.dumps(contract_payload(), sort_keys=True, separators=(",", ":"))
+    return sha256(canonical.encode("utf-8")).hexdigest()
