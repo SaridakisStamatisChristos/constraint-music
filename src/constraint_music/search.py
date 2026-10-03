@@ -101,10 +101,11 @@ def scalarization_profiles(base: ObjectiveVector, count: int) -> tuple[Objective
         profile: list[tuple[str, int]] = []
         for name in OBJECTIVE_COMPONENTS:
             weight = base_map[name]
-            if name == component:
-                weight = max(1, weight) * multiplier
-            else:
-                weight = max(1, weight // 2)
+            weight = (
+                max(1, weight) * multiplier
+                if name == component
+                else max(1, weight // 2)
+            )
             profile.append((name, min(weight, 1000)))
         profiles.append(tuple(profile))
         cursor += 1
