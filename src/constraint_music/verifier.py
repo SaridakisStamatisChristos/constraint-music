@@ -171,9 +171,12 @@ def verify_result(result: GenerationResult) -> ValidationReport:
             if rhythm[target + offset] != rhythm[source + offset]:
                 fail("CM020", f"Motif step {offset}: rhythm relation is violated")
 
-    if spec.require_authentic_cadence and rhythm:
-        if rhythm[-1] != RhythmState.ONSET:
-            fail("CM021", "Final tonic must be a newly articulated onset")
+    if (
+        spec.require_authentic_cadence
+        and rhythm
+        and rhythm[-1] != RhythmState.ONSET
+    ):
+        fail("CM021", "Final tonic must be a newly articulated onset")
 
     return ValidationReport(
         valid=not issues,

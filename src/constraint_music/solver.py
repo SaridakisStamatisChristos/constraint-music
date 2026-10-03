@@ -92,8 +92,8 @@ class ConstraintMusicSolver:
         status_name = solver.status_name(status)
         if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
             raise NoSolutionError(
-                f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, cadence, "
-                "or repetition constraints."
+                f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
+                "cadence, or repetition constraints."
             )
 
         raw_result = GenerationResult(

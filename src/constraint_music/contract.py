@@ -88,13 +88,19 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM019",
         "rhythm_bar_density",
-        "When rhythm generation is enabled, each bar satisfies onset/rest/tie density and downbeat rules.",
+        (
+            "When rhythm generation is enabled, each bar satisfies onset/rest/tie density "
+            "and downbeat rules."
+        ),
         conditional=True,
     ),
     ConstraintRule(
         "CM020",
         "motif_relation",
-        "When configured, a target motif repeats or transposes the source motif exactly, including rhythm.",
+        (
+            "When configured, a target motif repeats or transposes the source motif exactly, "
+            "including rhythm."
+        ),
         conditional=True,
     ),
     ConstraintRule(
