@@ -56,6 +56,11 @@ class GenerationSpec:
     progression_graph: tuple[tuple[int, ...], ...] = DEFAULT_PROGRESSION_GRAPH_ROWS
     tension_curve: tuple[float, ...] = (0.08, 0.20, 0.48, 0.82, 0.18, 0.02)
 
+    # v2.5 keeps the v2.4 triadic feasible set as the default. Expanded seventh-chord
+    # vocabulary is explicit so existing YAML specifications do not silently change meaning.
+    harmony_vocabulary: str = "triads"
+    minimum_seventh_chords: int = 0
+
     rhythm_enabled: bool = False
     min_onsets_per_bar: int = 1
     max_onsets_per_bar: int = 16
@@ -85,6 +90,9 @@ class GenerationSpec:
             self, "progression_graph", _normalize_progression_graph(self.progression_graph)
         )
         object.__setattr__(self, "tension_curve", tuple(float(x) for x in self.tension_curve))
+        object.__setattr__(
+            self, "harmony_vocabulary", str(self.harmony_vocabulary).strip().lower()
+        )
         object.__setattr__(self, "motif_relation", str(self.motif_relation).strip().lower())
         object.__setattr__(self, "phrases", normalize_phrases(self.phrases))
         self.validate()
@@ -104,6 +112,10 @@ class GenerationSpec:
     @property
     def steps_per_bar(self) -> int:
         return self.beats_per_bar * self.subdivisions_per_beat
+
+    @property
+    def expanded_harmony_enabled(self) -> bool:
+        return self.harmony_vocabulary == "triads+sevenths"
 
     @property
     def progression_pairs(self) -> tuple[tuple[int, int], ...]:
@@ -151,6 +163,17 @@ class GenerationSpec:
             (4, 0) in self.progression_pairs or (6, 0) in self.progression_pairs
         ):
             raise ValueError("Authentic cadence requires progression_graph to allow 4->0 or 6->0")
+        if self.harmony_vocabulary not in {"triads", "triads+sevenths"}:
+            raise ValueError("harmony_vocabulary must be 'triads' or 'triads+sevenths'")
+        _between("minimum_seventh_chords", self.minimum_seventh_chords, 0, self.total_beats)
+        if not self.expanded_harmony_enabled and self.minimum_seventh_chords != 0:
+            raise ValueError(
+                "minimum_seventh_chords requires harmony_vocabulary='triads+sevenths'"
+            )
+        if self.expanded_harmony_enabled and self.minimum_seventh_chords > self.total_beats - 1:
+            raise ValueError(
+                "minimum_seventh_chords cannot include the final beat because sevenths must resolve"
+            )
         _ = self.tonal_key
         if len(self.tonal_key.pitches_in_range(self.melody_low, self.melody_high)) < 8:
             raise ValueError("Melody range is too narrow for the selected key")

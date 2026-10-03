@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import IntEnum, StrEnum
 
 NOTE_TO_PC: dict[str, int] = {
     "C": 0,
@@ -46,6 +46,31 @@ PC_TO_SHARP_NAME: tuple[str, ...] = (
 class Mode(StrEnum):
     MAJOR = "major"
     MINOR = "minor"
+
+
+class ChordKind(IntEnum):
+    TRIAD = 0
+    SEVENTH = 1
+
+    @classmethod
+    def parse(cls, value: object) -> ChordKind:
+        if isinstance(value, cls):
+            return value
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            names = {"triad": cls.TRIAD, "seventh": cls.SEVENTH, "7": cls.SEVENTH}
+            if normalized in names:
+                return names[normalized]
+        if isinstance(value, int):
+            try:
+                return cls(value)
+            except ValueError as exc:
+                raise ValueError(f"Unknown chord kind: {value!r}") from exc
+        raise ValueError(f"Unknown chord kind: {value!r}")
+
+    @property
+    def label(self) -> str:
+        return "triad" if self is ChordKind.TRIAD else "seventh"
 
 
 SCALE_INTERVALS: dict[Mode, tuple[int, ...]] = {
@@ -117,8 +142,24 @@ class Key:
         scale = self.pitch_classes
         return (scale[degree % 7], scale[(degree + 2) % 7], scale[(degree + 4) % 7])
 
+    def seventh_pitch_classes(self, degree: int) -> tuple[int, int, int, int]:
+        scale = self.pitch_classes
+        return (
+            scale[degree % 7],
+            scale[(degree + 2) % 7],
+            scale[(degree + 4) % 7],
+            scale[(degree + 6) % 7],
+        )
+
     def chord_name(self, degree: int) -> str:
         return ROMAN_NUMERALS[self.mode][degree]
+
+    def chord_form_name(self, degree: int, kind: ChordKind, inversion: int) -> str:
+        base = self.chord_name(degree)
+        figures = ("", "6", "64") if kind is ChordKind.TRIAD else ("7", "65", "43")
+        if not 0 <= inversion < len(figures):
+            raise ValueError(f"Unsupported inversion {inversion} for {kind.label}")
+        return f"{base}{figures[inversion]}"
 
     def pitches_in_range(self, low: int, high: int) -> tuple[int, ...]:
         pcs = set(self.pitch_classes)

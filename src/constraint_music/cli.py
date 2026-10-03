@@ -40,7 +40,10 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument(
         "--distinct-on",
         default="melody",
-        help="Comma-separated no-good dimensions: melody,rhythm,bass,harmony,voicing",
+        help=(
+            "Comma-separated no-good dimensions: "
+            "melody,rhythm,bass,harmony,voicing,harmonic_form"
+        ),
     )
     generate.add_argument(
         "--pareto",

@@ -27,6 +27,7 @@ from .search import (
     pareto_indices,
     scalarization_profiles,
 )
+from .theory import ChordKind
 from .verifier import verify_result
 
 COMPILED_HARD_CONSTRAINT_IDS: tuple[str, ...] = HARD_CONSTRAINT_IDS
@@ -141,7 +142,8 @@ class ConstraintMusicSolver:
         if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
             raise NoSolutionError(
                 f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
-                "phrase, cadence, SATB voice-leading, repetition, or distinctness constraints."
+                "phrase, cadence, SATB voice-leading, expanded harmony, repetition, or "
+                "distinctness constraints."
             )
 
         raw_result = SatbGenerationResult(
@@ -160,6 +162,12 @@ class ConstraintMusicSolver:
             soprano=tuple(solver.value(item) for item in problem.satb.soprano),
             alto=tuple(solver.value(item) for item in problem.satb.alto),
             tenor=tuple(solver.value(item) for item in problem.satb.tenor),
+            chord_kinds=tuple(
+                ChordKind(solver.value(item)) for item in problem.satb.chord_kind
+            ),
+            chord_inversions=tuple(
+                solver.value(item) for item in problem.satb.chord_inversion
+            ),
         )
         report = verify_result(raw_result)
         if not report.valid:
@@ -256,6 +264,26 @@ class ConstraintMusicSolver:
                 raise ValueError("voicing distinctness requires a SATB result")
             variables.extend(zip(problem.satb.alto, result.alto, strict=True))
             variables.extend(zip(problem.satb.tenor, result.tenor, strict=True))
+        if "harmonic_form" in distinct_on:
+            if not isinstance(result, SatbGenerationResult):
+                raise ValueError("harmonic_form distinctness requires a SATB result")
+            if not (
+                len(result.chord_kinds)
+                == len(result.chord_inversions)
+                == len(problem.chord)
+            ):
+                raise ValueError("harmonic_form distinctness requires explicit form metadata")
+            variables.extend(
+                (variable, int(ChordKind.parse(value)))
+                for variable, value in zip(
+                    problem.satb.chord_kind,
+                    result.chord_kinds,
+                    strict=True,
+                )
+            )
+            variables.extend(
+                zip(problem.satb.chord_inversion, result.chord_inversions, strict=True)
+            )
 
         differs: list[cp_model.IntVar] = []
         for index, (variable, value) in enumerate(variables):

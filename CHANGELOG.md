@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.5.0a1 — expanded harmonic vocabulary
+
+- Added an opt-in `triads+sevenths` harmonic vocabulary while preserving `triads` as the default for backward-compatible specifications.
+- Added structured `ChordKind` identity and explicit per-beat inversion metadata.
+- Added complete diatonic seventh-chord realization inside the SATB CP-SAT model.
+- Added root, first, and second inversion support while preserving the established CM005/CM006 triadic-core semantics for outer voices.
+- Added solver-native downward chordal-seventh resolution and explicit dominant-seventh-to-tonic behavior with leading-tone resolution in every SATB voice.
+- Extended the independent hard contract from 32 to 36 rules (`CM001`–`CM036`).
+- Added the `harmonic_form` distinctness dimension for chord kind/inversion while preserving `harmony` as chord-degree-sequence distinctness.
+- Versioned JSON artifacts to schema 2.5; semantic provenance now commits harmonic kind/inversion metadata when present.
+- Preserved loading and musical verification of older SATB artifacts without inventing missing harmonic-form metadata.
+- Added positive solver tests plus adversarial tests for inversion mismatch, unresolved sevenths, wrong dominant targets, and harmonic-form provenance tampering.
+- Kept chromatic applied dominants, modal mixture, tonicization/local-key contexts, and modulation outside the v2.5 boundary.
+
 ## 2.4.0a1 — solver-native SATB harmony
 
 - Added explicit beat-level soprano, alto, tenor, and bass SATB realization inside CP-SAT.
