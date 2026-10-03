@@ -70,7 +70,10 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM016",
         "legacy_whole_piece_closure",
-        "When enabled, the piece opens on tonic and closes dominant-function to tonic with tonic outer voices.",
+        (
+            "When enabled, the piece opens on tonic and closes dominant-function to tonic "
+            "with tonic outer voices."
+        ),
         conditional=True,
     ),
     ConstraintRule(
