@@ -8,6 +8,7 @@ from typing import Any
 
 import yaml
 
+from .phrase import PhraseSpec, normalize_phrases, phrase_by_id
 from .theory import DEFAULT_PROGRESSION_GRAPH_ROWS, Key, Mode, midi_note_name
 
 
@@ -71,6 +72,8 @@ class GenerationSpec:
     motif_length_steps: int = 4
     motif_transpose_semitones: int = 0
 
+    phrases: tuple[PhraseSpec, ...] = ()
+
     seed: int = 7
     max_time_seconds: float = 15.0
     workers: int = 8
@@ -82,6 +85,7 @@ class GenerationSpec:
         )
         object.__setattr__(self, "tension_curve", tuple(float(x) for x in self.tension_curve))
         object.__setattr__(self, "motif_relation", str(self.motif_relation).strip().lower())
+        object.__setattr__(self, "phrases", normalize_phrases(self.phrases))
         self.validate()
 
     @property
@@ -194,6 +198,60 @@ class GenerationSpec:
                 raise ValueError("motif_transpose_semitones must be in -24..24")
             if self.motif_relation == "repeat" and self.motif_transpose_semitones != 0:
                 raise ValueError("repeat motifs require motif_transpose_semitones=0")
+
+        self._validate_phrases()
+
+    def _validate_phrases(self) -> None:
+        if not self.phrases:
+            return
+        ids = [phrase.id for phrase in self.phrases]
+        if len(ids) != len(set(ids)):
+            raise ValueError("phrase ids must be unique")
+        ordered = sorted(self.phrases, key=lambda phrase: phrase.start_bar)
+        for phrase in ordered:
+            if phrase.end_bar > self.bars:
+                raise ValueError(
+                    f"phrase {phrase.id!r} extends beyond composition: "
+                    f"end_bar={phrase.end_bar}, bars={self.bars}"
+                )
+        for left, right in zip(ordered, ordered[1:], strict=False):
+            if left.end_bar > right.start_bar:
+                raise ValueError(f"phrases {left.id!r} and {right.id!r} overlap")
+
+        by_id = phrase_by_id(self.phrases)
+        for phrase in self.phrases:
+            if phrase.relation == "independent":
+                if phrase.relation_steps != 0:
+                    raise ValueError(
+                        f"phrase {phrase.id!r}: independent relation requires relation_steps=0"
+                    )
+                continue
+            source = by_id.get(phrase.source or "")
+            if source is None:
+                raise ValueError(f"phrase {phrase.id!r}: unknown source {phrase.source!r}")
+            if source.start_bar >= phrase.start_bar:
+                raise ValueError(f"phrase {phrase.id!r}: source must precede target phrase")
+            source_steps = source.bars * self.steps_per_bar
+            target_steps = phrase.bars * self.steps_per_bar
+            if phrase.relation in {"repeat", "transpose"}:
+                if source_steps != target_steps:
+                    raise ValueError(
+                        f"phrase {phrase.id!r}: {phrase.relation} requires equal phrase lengths"
+                    )
+                if phrase.relation_steps != 0:
+                    raise ValueError(
+                        f"phrase {phrase.id!r}: {phrase.relation} always spans the full phrase"
+                    )
+                continue
+            fragment_steps = phrase.relation_steps or self.steps_per_bar
+            if fragment_steps > source_steps or fragment_steps > target_steps:
+                raise ValueError(
+                    f"phrase {phrase.id!r}: relation fragment exceeds source/target span"
+                )
+            if phrase.relation == "sequence" and target_steps % fragment_steps != 0:
+                raise ValueError(
+                    f"phrase {phrase.id!r}: sequence target length must be divisible by relation_steps"
+                )
 
     def expanded_tension(self) -> tuple[int, ...]:
         """Linearly interpolate control points to one integer target per beat (0..100)."""
