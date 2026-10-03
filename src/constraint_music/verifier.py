@@ -5,6 +5,7 @@ from itertools import pairwise
 from .contract import HARD_CONSTRAINT_IDS
 from .models import GenerationResult, RhythmState, ValidationReport
 from .phrase_verify import phrase_verification_issues
+from .satb import satb_verification_issues
 from .theory import is_parallel_perfect
 
 
@@ -176,6 +177,8 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         fail("CM021", "Final tonic must be a newly articulated onset")
 
     for rule_id, message in phrase_verification_issues(result):
+        fail(rule_id, message)
+    for rule_id, message in satb_verification_issues(result):
         fail(rule_id, message)
 
     return ValidationReport(
