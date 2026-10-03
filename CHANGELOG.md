@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.2.0a1 — verified phrase grammar
+
+- Added explicit phrase spans with unique IDs and non-overlap/in-bounds validation.
+- Added phrase roles: `statement`, `antecedent`, `consequent`, `transition`, and `cadential`.
+- Added exact phrase relations: `independent`, `repeat`, `transpose`, `answer`, and `sequence`.
+- Added precise phrase-local cadence labels: `tonic_close`, `dominant_open`, `dominant_to_tonic`, and `leading_tone_to_tonic`.
+- Added a minimal answer-linked antecedent/consequent period grammar with open-to-strong closure semantics.
+- Extended the hard contract from 21 to 26 rules (`CM001`–`CM026`) with independent phrase verification.
+- Versioned JSON provenance to schema/contract 2.2; phrase declarations are committed by the semantic digest through the serialized specification.
+- Added Phase 0 stabilization regressions for old all-onset configs, malformed rhythm deserialization, deterministic single-worker generation, and tamper detection.
+- Added positive and adversarial phrase tests plus an eight-bar period example.
+- Kept the historical `require_authentic_cadence` field backward compatible while documenting it as the legacy whole-piece closure rule.
+
 ## 2.1.0a1 — rhythm and motif grammar
 
 - Promoted melody rhythm to an explicit CP-SAT dimension with `onset`, `tie`, and `rest` states.
