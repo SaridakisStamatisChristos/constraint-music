@@ -4,7 +4,7 @@
 
 Constraint Music treats composition as a verifiable constraint problem. A YAML specification is compiled into an OR-Tools CP-SAT model; the solver produces melody, rhythm, bass, and harmony; a separate application-level verifier rechecks the declared musical contract from ordinary serialized values; only verified results are exported.
 
-> Current release: **2.1.0a1** — expressive rhythm and motif grammar on top of the verified v2 foundation.
+> Current release: **2.2.0a1** — explicit, independently verified phrase grammar on top of the rhythm/motif v2 foundation.
 
 ## Pipeline
 
@@ -12,7 +12,7 @@ Constraint Music treats composition as a verifiable constraint problem. A YAML s
 YAML specification
       |
       v
-pitch + harmony + rhythm + motif grammar
+pitch + harmony + rhythm + motif + phrase grammar
       |
       v
 OR-Tools CP-SAT compiler
@@ -21,7 +21,7 @@ OR-Tools CP-SAT compiler
 optimized assignment
       |
       v
-independent 21-rule verifier
+independent 26-rule verifier
       |
       +----> MIDI with real ties/rests
       +----> JSON + contract/provenance digests
@@ -29,7 +29,7 @@ independent 21-rule verifier
 
 A solver status of `OPTIMAL` or `FEASIBLE` is not sufficient. A solver assignment rejected by the independent verifier fails closed.
 
-## v2.1: explicit rhythm
+## v2.1: explicit rhythm and motifs
 
 Rhythm generation is optional and uses three states per melody grid step:
 
@@ -37,50 +37,59 @@ Rhythm generation is optional and uses three states per melody grid step:
 - `tie` — sustain the previous sounding note at the same pitch;
 - `rest` — emit silence.
 
-The YAML can constrain exact per-bar ranges for onsets, rests, and ties, plus maximum consecutive rests/ties and bar-downbeat articulation.
+Motifs support exact repetition and exact semitone transposition with rhythm inheritance. When `rhythm_enabled` is false, every melody grid position is an onset, preserving v2.0 behavior.
+
+## v2.2: phrase grammar
+
+Phrases are explicit spans with roles, cadence semantics, and optional structural relations:
 
 ```yaml
-rhythm_enabled: true
-min_onsets_per_bar: 5
-max_onsets_per_bar: 6
-min_rests_per_bar: 1
-max_rests_per_bar: 2
-min_ties_per_bar: 1
-max_ties_per_bar: 1
-max_consecutive_rests: 1
-max_tie_steps: 1
-require_bar_downbeat_onset: true
+phrases:
+  - id: A
+    start_bar: 0
+    bars: 4
+    role: antecedent
+    cadence: dominant_open
+
+  - id: B
+    start_bar: 4
+    bars: 4
+    role: consequent
+    cadence: dominant_to_tonic
+    relation: answer
+    source: A
+    transpose_semitones: 7
+    relation_steps: 4
 ```
 
-When `rhythm_enabled` is false, every melody grid position is an onset, preserving v2.0 behavior.
+Supported roles are `statement`, `antecedent`, `consequent`, `transition`, and `cadential`.
 
-## v2.1: motif grammar
+Supported relations are `independent`, `repeat`, `transpose`, `sequence`, and `answer`. Repeat/transposition operate over a complete equal-length phrase; answer reconstructs a declared opening fragment; sequence repeats a source fragment across the target with an explicit semitone step per copy.
 
-A motif can be declared between two bar locations:
+Phrase-local cadence labels are precise symbolic contracts:
 
-```yaml
-motif_relation: transpose       # none | repeat | transpose
-motif_source_bar: 0
-motif_target_bar: 2
-motif_length_steps: 4
-motif_transpose_semitones: 12
-```
+- `tonic_close`;
+- `dominant_open`;
+- `dominant_to_tonic`;
+- `leading_tone_to_tonic`.
 
-`repeat` copies pitch and rhythm exactly. `transpose` copies rhythm exactly and constrains each target pitch to `source + motif_transpose_semitones`. The independent verifier rechecks the same relationship from the finished artifact.
+The older `require_authentic_cadence` field remains supported as a backward-compatible whole-piece closure rule.
+
+See [Phrase Grammar](docs/PHRASE_GRAMMAR.md) for exact executable semantics.
 
 ## Hard-constraint contract
 
-v2.1 declares **21 stable hard-rule IDs**. `CM001`–`CM016` cover shape, tonal domains, chord membership, progression legality, leap/tritone rules, leading-tone resolution, repetition, leap recovery, outer-voice parallels, and authentic cadence. v2.1 adds:
+v2.2 declares **26 stable hard-rule IDs**. `CM001`–`CM021` retain the tonal, rhythmic, motif, and articulation contract. v2.2 adds:
 
 | ID | Rule |
 |---|---|
-| CM017 | rhythm state domain |
-| CM018 | tie/rest transition grammar and run limits |
-| CM019 | per-bar rhythm density and downbeat structure |
-| CM020 | motif repetition/transposition including rhythm |
-| CM021 | cadential onset articulation |
+| CM022 | phrase spans are unique, in-bounds, and non-overlapping |
+| CM023 | phrase-role opening/closing semantics |
+| CM024 | exact repeat/transpose/answer/sequence reconstruction |
+| CM025 | exact phrase-cadence semantics |
+| CM026 | answer-linked antecedent/consequent open-to-strong structure |
 
-See [Rhythm and Motifs](docs/RHYTHM_AND_MOTIFS.md) and [Verification](docs/VERIFICATION.md).
+See [Rhythm and Motifs](docs/RHYTHM_AND_MOTIFS.md), [Phrase Grammar](docs/PHRASE_GRAMMAR.md), and [Verification](docs/VERIFICATION.md).
 
 ## Install
 
@@ -96,29 +105,33 @@ python -m pip install -e ".[dev]"
 
 ## Generate
 
+Generate the phrase-grammar example:
+
 ```bash
-constraint-music generate examples/rhythm_motif.yaml \
-  --output build/rhythm_motif.mid \
-  --json build/rhythm_motif.json \
+constraint-music generate examples/eight_bar_period.yaml \
+  --output build/eight_bar_period.mid \
+  --json build/eight_bar_period.json \
   --print-grid
 ```
 
 Generate seeded alternatives:
 
 ```bash
-constraint-music generate examples/rhythm_motif.yaml \
+constraint-music generate examples/eight_bar_period.yaml \
   --output build/variant.mid \
   --json build/variant.json \
   --count 4
 ```
 
+`--count` currently varies the seed; it does not yet guarantee unique solutions. Distinct no-good-cut enumeration is planned for v2.3.
+
 ## Verify without rerunning CP-SAT
 
 ```bash
-constraint-music verify build/rhythm_motif.json
+constraint-music verify build/eight_bar_period.json
 ```
 
-The command rechecks all 21 hard rules plus artifact schema, constraint-contract digest, semantic composition digest, and full artifact-content digest.
+The command rechecks all 26 hard rules plus artifact schema, constraint-contract digest, semantic composition digest, and full artifact-content digest.
 
 ## Reproducibility
 
@@ -139,6 +152,6 @@ GitHub Actions requires all four gates independently on Python **3.11, 3.12, and
 
 ## Scope boundary
 
-“Independent verification” means a code path separate from the CP-SAT model checks the serialized result against the declared contract without trusting solver state. It is not a formal proof of OR-Tools, Python, or the host machine.
+“Independent verification” means a code path separate from the CP-SAT model checks the serialized result against the declared contract without trusting solver state. It is not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates rule compliance; it does not prove aesthetic quality or historical-style authenticity.
 
 See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [History](docs/HISTORY.md), and [Roadmap](docs/ROADMAP.md).
