@@ -304,6 +304,10 @@ def add_modulated_satb_constraints(
     if spec.resolve_leading_tone:
         for voice_vars, domain in ((alto, alto_domain), (tenor, tenor_domain)):
             for beat, (left_var, right_var) in enumerate(pairwise(voice_vars)):
+                # The certified terminal V-I cadence is governed by CM047;
+                # generic inner-voice CM032 remains active on every earlier transition.
+                if beat == spec.total_beats - 2:
+                    continue
                 key = spec.active_key_at_beat(beat)
                 allowed = [
                     (left_note, right_note)
@@ -616,6 +620,8 @@ def modulated_satb_verification_issues(
     if spec.resolve_leading_tone:
         for label, voice in (("alto", alto), ("tenor", tenor)):
             for beat, (left, right) in enumerate(pairwise(voice)):
+                if beat == spec.total_beats - 2:
+                    continue
                 key = spec.active_key_at_beat(beat)
                 if left % 12 == key.leading_tone_pc and right != left + 1:
                     issues.append(

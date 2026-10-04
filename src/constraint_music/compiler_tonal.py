@@ -85,21 +85,37 @@ def add_melodic_constraints(
     melody_domain: tuple[int, ...],
 ) -> None:
     key = spec.tonal_key
-    allowed_pairs: list[tuple[int, int]] = []
-    for left_index, left_note in enumerate(melody_domain):
-        for right_index, right_note in enumerate(melody_domain):
-            leap = right_note - left_note
-            if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:
-                continue
-            if (
-                spec.resolve_leading_tone
-                and left_note % 12 == key.leading_tone_pc
-                and right_note != left_note + 1
-            ):
-                continue
-            allowed_pairs.append((left_index, right_index))
-    for left_var, right_var in pairwise(melody_choice):
-        model.add_allowed_assignments([left_var, right_var], allowed_pairs)
+    pair_rows_by_leading_pc: dict[int, list[tuple[int, int]]] = {}
+
+    def pair_rows(leading_tone_pc: int) -> list[tuple[int, int]]:
+        cached = pair_rows_by_leading_pc.get(leading_tone_pc)
+        if cached is not None:
+            return cached
+        rows: list[tuple[int, int]] = []
+        for left_index, left_note in enumerate(melody_domain):
+            for right_index, right_note in enumerate(melody_domain):
+                leap = right_note - left_note
+                if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:
+                    continue
+                if (
+                    spec.resolve_leading_tone
+                    and left_note % 12 == leading_tone_pc
+                    and right_note != left_note + 1
+                ):
+                    continue
+                rows.append((left_index, right_index))
+        pair_rows_by_leading_pc[leading_tone_pc] = rows
+        return rows
+
+    for step, (left_var, right_var) in enumerate(pairwise(melody_choice)):
+        active_key = (
+            spec.active_key_at_beat(step // spec.subdivisions_per_beat)
+            if spec.modulation_enabled
+            else key
+        )
+        model.add_allowed_assignments(
+            [left_var, right_var], pair_rows(active_key.leading_tone_pc)
+        )
 
     window = spec.max_repeated_notes + 1
     if window <= len(melody_choice):
