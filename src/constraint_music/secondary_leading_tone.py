@@ -7,7 +7,7 @@ from .theory import Key
 
 
 class SecondaryLeadingToneSeventhQuality(StrEnum):
-    """Certified seventh qualities for secondary leading-tone function."""
+    """Verifier-reconstructable qualities for secondary leading-tone sevenths."""
 
     FULLY_DIMINISHED = "fully_diminished"
     HALF_DIMINISHED = "half_diminished"
@@ -33,18 +33,32 @@ class SecondaryLeadingToneSeventhQuality(StrEnum):
         try:
             return aliases[normalized]
         except KeyError as exc:
-            raise ValueError(f"Unknown secondary leading-tone seventh quality: {value!r}") from exc
+            raise ValueError(
+                f"Unknown secondary leading-tone seventh quality: {value!r}"
+            ) from exc
 
     @property
     def symbol(self) -> str:
         return "°" if self is self.FULLY_DIMINISHED else "ø"
+
+    @property
+    def solver_id(self) -> int:
+        return 1 if self is self.FULLY_DIMINISHED else 2
+
+    @classmethod
+    def from_solver_id(cls, value: int) -> SecondaryLeadingToneSeventhQuality:
+        if value == 1:
+            return cls.FULLY_DIMINISHED
+        if value == 2:
+            return cls.HALF_DIMINISHED
+        raise ValueError(f"Unknown secondary leading-tone seventh solver id: {value}")
 
 
 @cache
 def secondary_leading_tone_triad_pitch_classes(
     key: Key,
     target_degree: int,
-) -> tuple[int, ...]:
+) -> tuple[int, int, int]:
     """Return the diminished leading-tone triad that tonicizes a diatonic target."""
     if not 1 <= target_degree <= 6:
         raise ValueError("Secondary leading-tone target degree must be in 1..6")
@@ -58,12 +72,12 @@ def secondary_leading_tone_seventh_qualities(
     key: Key,
     target_degree: int,
 ) -> tuple[SecondaryLeadingToneSeventhQuality, ...]:
-    """Return the common-practice seventh qualities eligible for a target.
+    """Return the common-practice qualities eligible for a diatonic target.
 
-    A fully diminished leading-tone seventh may tonicize either a major or minor
-    diatonic triad. The half-diminished form belongs to the temporary major-mode
-    leading-tone seventh vocabulary, so it is certified only for major targets.
-    Diminished and augmented targets remain outside secondary tonicization.
+    Fully diminished leading-tone sevenths are certified for temporary major and
+    minor targets. Half-diminished leading-tone sevenths are certified for temporary
+    major targets, where scale degree 6 of the temporary key is diatonic. Diminished
+    and augmented targets are not treated as local tonics by this subsystem.
     """
     if not 1 <= target_degree <= 6:
         raise ValueError("Secondary leading-tone target degree must be in 1..6")
@@ -86,9 +100,10 @@ def secondary_leading_tone_seventh_pitch_classes(
         SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
     ),
 ) -> tuple[int, int, int, int]:
-    """Return a certified target-derived secondary leading-tone seventh.
+    """Return one exact target-derived secondary leading-tone seventh.
 
-    The default remains fully diminished for source compatibility with v2.11.
+    The default quality remains fully diminished so existing v2.11 API calls keep
+    their meaning. v2.12's runtime explicitly enumerates all eligible qualities.
     """
     parsed = SecondaryLeadingToneSeventhQuality.parse(quality)
     if parsed not in secondary_leading_tone_seventh_qualities(key, target_degree):
@@ -99,7 +114,11 @@ def secondary_leading_tone_seventh_pitch_classes(
         key,
         target_degree,
     )
-    seventh_interval = 9 if parsed is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED else 10
+    seventh_interval = (
+        9
+        if parsed is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
+        else 10
+    )
     return (root, third, diminished_fifth, (root + seventh_interval) % 12)
 
 
@@ -110,13 +129,36 @@ def secondary_leading_tone_seventh_pitch_class_variants(
 ) -> tuple[
     tuple[SecondaryLeadingToneSeventhQuality, tuple[int, int, int, int]], ...
 ]:
+    """Enumerate every quality/pitch realization certified for one target."""
     return tuple(
         (
             quality,
-            secondary_leading_tone_seventh_pitch_classes(key, target_degree, quality),
+            secondary_leading_tone_seventh_pitch_classes(
+                key,
+                target_degree,
+                quality,
+            ),
         )
         for quality in secondary_leading_tone_seventh_qualities(key, target_degree)
     )
+
+
+def identify_secondary_leading_tone_seventh_quality(
+    key: Key,
+    target_degree: int,
+    pitch_classes: tuple[int, ...],
+) -> SecondaryLeadingToneSeventhQuality | None:
+    """Reconstruct quality from target and complete four-tone pitch content."""
+    if len(pitch_classes) != 4 or len(set(pitch_classes)) != 4:
+        return None
+    actual = set(pitch_classes)
+    for quality, expected in secondary_leading_tone_seventh_pitch_class_variants(
+        key,
+        target_degree,
+    ):
+        if actual == set(expected):
+            return quality
+    return None
 
 
 def _secondary_support_degree(
@@ -142,8 +184,8 @@ def _secondary_support_degree(
             candidates.append((overlap, support_degree))
     if not candidates:
         raise ValueError(
-            f"No CM005/CM006-compatible support degree for secondary leading-tone target "
-            f"{target_degree} in {key}"
+            "No progression-compatible support degree for secondary leading-tone "
+            f"target {target_degree} in {key}"
         )
     best_overlap = max(item[0] for item in candidates)
     return min(
@@ -158,13 +200,7 @@ def secondary_leading_tone_support_degree(
     target_degree: int,
     progression_graph: tuple[tuple[int, ...], ...],
 ) -> int:
-    """Choose the active-key support degree that preserves CM005/CM006.
-
-    The chromatic leading-tone triad has its own functional identity in target metadata.
-    ``chord_degrees`` continues to drive the legacy outer-voice and progression contract,
-    so the support degree is the best diatonic triad sharing at least two chord tones and
-    already permitted to progress directly to the declared target.
-    """
+    """Choose the deterministic support degree for a secondary diminished triad."""
     return _secondary_support_degree(
         key,
         target_degree,
@@ -181,12 +217,16 @@ def secondary_leading_tone_seventh_support_degree(
         SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
     ),
 ) -> int:
-    """Choose the CM005/CM006 support degree for a certified seventh quality."""
+    """Choose the deterministic support degree for one seventh quality."""
     return _secondary_support_degree(
         key,
         target_degree,
         progression_graph,
-        secondary_leading_tone_seventh_pitch_classes(key, target_degree, quality),
+        secondary_leading_tone_seventh_pitch_classes(
+            key,
+            target_degree,
+            quality,
+        ),
     )
 
 
@@ -199,22 +239,27 @@ def supported_secondary_leading_tone_targets(
         if key.triad_quality(target_degree) not in {"major", "minor"}:
             continue
         try:
-            secondary_leading_tone_support_degree(key, target_degree, progression_graph)
+            secondary_leading_tone_support_degree(
+                key,
+                target_degree,
+                progression_graph,
+            )
         except ValueError:
             continue
         supported.append(target_degree)
     return tuple(supported)
 
 
-def supported_secondary_leading_tone_seventh_targets(
+def supported_secondary_leading_tone_seventh_variants(
     key: Key,
     progression_graph: tuple[tuple[int, ...], ...],
-) -> tuple[int, ...]:
-    supported: list[int] = []
+) -> tuple[tuple[int, SecondaryLeadingToneSeventhQuality, int], ...]:
+    """Return (target, quality, support degree) for every certified variant."""
+    supported: list[tuple[int, SecondaryLeadingToneSeventhQuality, int]] = []
     for target_degree in range(1, 7):
         for quality in secondary_leading_tone_seventh_qualities(key, target_degree):
             try:
-                secondary_leading_tone_seventh_support_degree(
+                support = secondary_leading_tone_seventh_support_degree(
                     key,
                     target_degree,
                     progression_graph,
@@ -222,9 +267,26 @@ def supported_secondary_leading_tone_seventh_targets(
                 )
             except ValueError:
                 continue
-            supported.append(target_degree)
-            break
+            supported.append((target_degree, quality, support))
     return tuple(supported)
+
+
+def supported_secondary_leading_tone_seventh_targets(
+    key: Key,
+    progression_graph: tuple[tuple[int, ...], ...],
+) -> tuple[int, ...]:
+    """Return target degrees with at least one verifier-certified seventh quality."""
+    return tuple(
+        dict.fromkeys(
+            target
+            for target, _quality, _support in (
+                supported_secondary_leading_tone_seventh_variants(
+                    key,
+                    progression_graph,
+                )
+            )
+        )
+    )
 
 
 def secondary_leading_tone_name(
