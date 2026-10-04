@@ -1,117 +1,98 @@
 # Modal Mixture
 
-Constraint Music v2.7 adds **verified modal mixture** as an opt-in harmonic-context dimension. The release deliberately supports a narrow, explicit form of mixture: borrowed **triads** from one canonical parallel source mode.
+Constraint Music introduced verified modal mixture in v2.7 as an opt-in harmonic-context dimension. The core model remains explicit: each borrowed beat carries a canonical parallel-source identity, and chromatic pitch content is derived from that source rather than globally permitted.
 
-The goal is not to make every chromatic pitch globally legal. The goal is to make borrowed harmony typed, reconstructable, independently verifiable, and backward compatible with the existing tonal/SATB contract.
+v2.7 certified borrowed triads. v2.9 adds a narrow, separately verified borrowed-seventh extension when the existing seventh vocabulary is also enabled.
 
-## Enabling modal mixture
+## Enable
+
+Borrowed triads:
 
 ```yaml
 modal_mixture_enabled: true
 minimum_borrowed_chords: 1
 ```
 
-Modal mixture is independent of `harmony_vocabulary`. Borrowed triads therefore work with the default `triads` vocabulary and can also coexist in a piece that enables diatonic sevenths or v2.6 tonicization. A single beat cannot be both borrowed and tonicized.
+Borrowed sevenths additionally require:
+
+```yaml
+harmony_vocabulary: triads+sevenths
+minimum_seventh_chords: 1
+```
+
+A beat cannot be both borrowed and tonicized.
 
 ## Canonical source modes
 
-v2.7 admits exactly one parallel source for each global mode:
+The source is selected from the **exact active local key** at the beat:
 
-- global major -> **parallel natural minor**;
-- global minor -> **parallel major**.
+- active major -> parallel natural minor;
+- active minor -> parallel major.
 
-The existing global minor model remains harmonic minor. Borrowing from *parallel natural minor* is therefore a distinct, explicit source-mode operation rather than a silent mutation of the global scale.
+The repository's minor-key tonal model remains harmonic minor. Parallel natural minor is therefore a distinct source operation rather than a silent mutation of the active scale.
 
-Each beat carries nullable `modal_sources` metadata. `null` means ordinary global-key harmony. A borrowed beat stores either `parallel_natural_minor` or `parallel_major`, as determined by the global mode.
+Each beat carries nullable `modal_sources` metadata. `null` means ordinary active-key harmony. A borrowed beat stores `parallel_natural_minor` or `parallel_major` as determined by active mode.
+
+Before v2.8, active key and global key were identical. After a certified v2.8 modulation, source derivation uses the persistent destination active key, never stale global-key context.
 
 ## Harmonic identity
 
-A borrowed sonority is not stored as a Roman-numeral string. Its canonical identity remains decomposed:
+Borrowed harmony is not stored as an opaque Roman-numeral string. Identity remains decomposed into:
 
-1. global functional `chord_degree`;
-2. `ChordKind` (v2.7 borrowed forms are triads only);
-3. inversion;
-4. nullable tonicization target;
-5. nullable modal source;
-6. realized SATB pitches.
+1. immutable artifact/global key;
+2. active local key;
+3. functional `chord_degree`;
+4. `ChordKind`;
+5. inversion;
+6. nullable tonicization target;
+7. nullable modal source;
+8. SATB realization.
 
-Roman/source notation is derived presentation. In C major, degree 4 borrowed from the parallel natural minor is reconstructed as `iv[parallel_natural_minor]` (with `6` or `64` appended for first/second inversion).
+Roman/source notation is derived presentation only.
 
-## Source-derived realization
+## Borrowed triads
 
-For a borrowed beat, the theory layer derives the seven pitch classes of the explicit source mode, then constructs the source-mode triad on the stored degree. The SATB relation table admits only realizations containing the complete borrowed triad.
+For a source-bearing triad, the theory layer derives the seven pitch classes of the explicit source mode and constructs the source triad on the stored degree. CM042 independently requires complete source-derived triadic realization and inversion/bass agreement.
 
-For example, in C major:
+CM005 and CM006 retain their established active-key triadic-core meaning. Chromatic borrowed tones are therefore carried where necessary by inner voices. Only source degrees representable under that compatibility boundary are exposed.
 
-- global degree IV = F-A-C;
-- parallel-natural-minor degree iv = F-Ab-C;
-- the borrowed triad is therefore F-Ab-C.
+## Borrowed sevenths in v2.9
 
-The altered Ab is not granted global pitch-domain status. It exists because the beat explicitly carries the parallel-natural-minor source identity.
+When expanded harmony is enabled, a source-bearing seventh is routed to additive rules CM049–CM051 rather than being treated as a v2.7 triad.
 
-## Preserved outer-voice contract
+v2.9 admits only a structural whitelist that preserves CM005/CM006 and established seventh-resolution semantics. Complete four-tone source derivation, inversion/bass agreement, chordal-seventh motion, and any admitted parallel-major source leading tone are independently verified.
 
-v2.7 does **not** reinterpret `CM005` or `CM006`.
+See [Borrowed Seventh Chords](BORROWED_SEVENTHS.md) for the exact eligibility filter and tendency-tone contract.
 
-- Strong melody/soprano remains a member of the global triadic core identified by `chord_degree`.
-- Bass remains a member of that same global triadic core.
+## Certified anchor exclusions
 
-Borrowed chromatic tones are therefore carried by alto/tenor. The theory layer exposes only borrowed degrees whose source triad shares enough pitch-class structure to remain representable under this historical outer-voice boundary.
-
-This is a compatibility decision, not a music-theory claim that other borrowed chords are invalid.
-
-## Global cadence boundary
-
-Borrowing is forbidden on the final beat. When `require_authentic_cadence` is enabled, the penultimate beat is also forced to remain in the global context. The established whole-piece cadence therefore keeps exactly its previous meaning.
-
-`minimum_borrowed_chords` is validated against the number of beats available outside that preserved cadential boundary, so impossible declarations fail before CP-SAT construction.
-
-## Independent verification
-
-v2.7 extends the hard-rule contract to 42 IDs:
-
-- **CM041 — modal mixture context**: source metadata shape, feature enablement, canonical source identity, supported degree, triadic form, no tonicization overlap, global cadence boundary, and minimum borrowed-chord count.
-- **CM042 — borrowed chord realization**: source-derived triad completeness and inversion/bass agreement.
-
-The verifier reconstructs borrowed pitch classes from the serialized global key, degree, and modal source. It does not trust the display name or CP-SAT table membership.
+Borrowing remains excluded from certified cadence/context anchors. Under v2.8 modulation, this includes the common-chord pivot and terminal destination V-I. v2.9 borrowed sevenths cannot weaken the strict v2.8.0a2 terminal leading-tone contract.
 
 ## Search semantics
 
-`modal_source` is a new independent no-good dimension:
+`modal_source` remains an independent no-good dimension. Other meanings are unchanged:
 
-```bash
-constraint-music generate examples/modal_mixture.yaml \
-  --count 2 \
-  --distinct-on modal_source \
-  --output build/mixture.mid \
-  --json build/mixture.json
-```
-
-Existing meanings remain unchanged:
-
-- `harmony` = global chord-degree sequence;
+- `harmony` = functional degree sequence;
 - `harmonic_form` = chord kind + inversion;
 - `tonicization` = nullable local-target sequence;
 - `modal_source` = nullable source-mode sequence;
-- `voicing` = alto/tenor realization.
-
-Two outputs can therefore share the same global functional progression while differing only in whether a compatible beat is realized as global or borrowed harmony.
+- `key_context` = persistent active-key sequence;
+- `voicing` = SATB realization.
 
 ## Provenance and compatibility
 
-Artifact schema 2.7 commits `modal_sources` into the semantic composition digest. Changing a borrowed-source declaration without recomputing provenance is detected even when all note arrays are left untouched.
+Current schema 2.9 commits modal-source identity together with harmonic form and key contexts when present. Changing a source declaration without recomputing provenance is detectable even when note arrays remain untouched.
 
-Older artifacts do not receive invented modal-source metadata. Missing source metadata remains acceptable when the loaded specification has modal mixture disabled; a current modal-mixture-enabled artifact must serialize the source sequence explicitly.
+Older artifacts do not receive invented modal-source or key-context metadata. Existing v2.7/v2.8 borrowed-triad semantics remain loadable and unchanged when newer seventh behavior is not present.
 
-## Deliberate v2.7 exclusions
+## Deliberate exclusions
 
-v2.7 does not claim to implement:
+Current modal-mixture support does not imply:
 
-- borrowed seventh chords;
 - secondary leading-tone chords;
 - arbitrary altered chords;
-- persistent local-key regions;
-- pivot-chord analysis or modulation;
-- third-inversion sevenths.
-
-Borrowed sevenths are intentionally deferred because they require source-aware seventh and tendency-tone semantics rather than silently reusing the global CM035/CM036 rules.
+- third-inversion sevenths;
+- arbitrary modulation chains;
+- distant-key/enharmonic reinterpretation;
+- augmented-sixth or Neapolitan reinterpretation;
+- probabilistic/free key-center inference.
