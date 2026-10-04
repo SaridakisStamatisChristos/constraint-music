@@ -9,9 +9,12 @@ from .phrase import PhraseSpec
 from .satb import SatbGenerationResult
 from .search import dominates, pareto_indices
 from .secondary_leading_tone import (
+    SecondaryLeadingToneSeventhQuality,
     secondary_leading_tone_name,
     secondary_leading_tone_seventh_name,
+    secondary_leading_tone_seventh_pitch_class_variants,
     secondary_leading_tone_seventh_pitch_classes,
+    secondary_leading_tone_seventh_qualities,
     secondary_leading_tone_seventh_support_degree,
     secondary_leading_tone_support_degree,
     secondary_leading_tone_triad_pitch_classes,
@@ -34,6 +37,7 @@ __all__ = [
     "PhraseSpec",
     "RhythmState",
     "SatbGenerationResult",
+    "SecondaryLeadingToneSeventhQuality",
     "ValidationReport",
     "dominant_key",
     "dominates",
@@ -41,7 +45,9 @@ __all__ = [
     "pareto_indices",
     "secondary_leading_tone_name",
     "secondary_leading_tone_seventh_name",
+    "secondary_leading_tone_seventh_pitch_class_variants",
     "secondary_leading_tone_seventh_pitch_classes",
+    "secondary_leading_tone_seventh_qualities",
     "secondary_leading_tone_seventh_support_degree",
     "secondary_leading_tone_support_degree",
     "secondary_leading_tone_triad_pitch_classes",
@@ -50,4 +56,4 @@ __all__ = [
     "verify_result",
 ]
 
-__version__ = "2.11.0a1"
+__version__ = "2.12.0a1"
