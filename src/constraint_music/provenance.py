@@ -12,7 +12,7 @@ from .modulation_runtime import result_from_dict
 from .objective import evaluate_objective_vector
 from .search import objective_mapping
 
-ARTIFACT_SCHEMA_VERSION = "2.8"
+ARTIFACT_SCHEMA_VERSION = "2.9"
 
 
 def _sha256_json(payload: object) -> str:

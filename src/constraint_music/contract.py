@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.8"
+CONTRACT_VERSION = "2.9"
 
 
 @dataclass(frozen=True, slots=True)
@@ -277,9 +277,10 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "modal_mixture_context",
         (
             "When modal mixture is enabled, every beat carries explicit nullable source-mode "
-            "metadata; borrowed beats use the active-key canonical parallel source, remain "
-            "triadic, do not coincide with tonicization, stay outside certified cadential/context "
-            "anchors, and satisfy the declared minimum borrowed-chord count."
+            "metadata; borrowed beats use the active-key canonical parallel source, do not "
+            "coincide with tonicization, stay outside certified cadential/context anchors, and "
+            "satisfy the declared minimum borrowed-chord count. Borrowed triads are certified "
+            "by CM042; eligible borrowed sevenths are additionally certified by CM049-CM051."
         ),
         conditional=True,
     ),
@@ -287,7 +288,7 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM042",
         "borrowed_chord_realization",
         (
-            "Every borrowed beat contains the complete triad derived from its explicit parallel "
+            "Every borrowed triad contains the complete triad derived from its explicit parallel "
             "source mode, active key, and degree, with inversion agreeing with realized bass."
         ),
         conditional=True,
@@ -337,6 +338,35 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         (
             "Serialized key contexts equal the exact source-before/destination-after boundary "
             "sequence declared by the specification."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM049",
+        "borrowed_seventh_context_eligibility",
+        (
+            "A source-bearing seventh requires expanded harmony and modal mixture, uses the "
+            "active-key canonical parallel source and an explicitly supported degree, carries no "
+            "tonicization target, and stays outside certified modulation/cadence anchors."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM050",
+        "borrowed_seventh_realization",
+        (
+            "Every eligible borrowed seventh contains all four pitch classes derived from its "
+            "explicit source, active key, and degree exactly once, and its root/first/second "
+            "inversion agrees with the realized bass."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM051",
+        "borrowed_seventh_tendency_resolution",
+        (
+            "Every borrowed chordal seventh resolves downward by step; any admitted "
+            "parallel-source leading tone carried by a SATB voice resolves upward by semitone."
         ),
         conditional=True,
     ),

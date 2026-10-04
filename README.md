@@ -2,17 +2,22 @@
 
 **Deterministic symbolic music synthesis with explicit hard constraints, CP-SAT optimization, and independent post-solve verification.**
 
-Constraint Music treats composition as a verifiable constraint problem. A YAML specification is compiled into an OR-Tools CP-SAT model; the solver produces melody, rhythm, bass, harmonic identity, and a solver-native SATB realization; a separate application-level verifier rechecks the declared musical contract from ordinary serialized values; only verified results are exported.
+Constraint Music treats composition as a verifiable constraint problem. A YAML specification is compiled into an OR-Tools CP-SAT model; the solver produces melody, rhythm, bass, harmonic identity, and a solver-native SATB realization; a separate application-level verifier reconstructs the declared musical semantics from ordinary serialized values; only verified results are exported.
 
-> Current release line: **2.7.0a1** — verified modal mixture with explicit parallel-source identity, source-derived borrowed triads, and independently checked realization.
+> Current release line: **2.9.0a1** — source-aware borrowed seventh chords under explicit persistent active-key context.
 
 ## Pipeline
 
 ```text
-YAML specification
+YAML GenerationSpec
       |
       v
-pitch + rhythm + phrase grammar + harmonic form + tonicization + modal source
+pitch + rhythm + phrase grammar
+      |
+      +--> chord degree + harmonic form
+      +--> tonicization target
+      +--> modal source
+      +--> persistent key context / modulation identity
       |
       v
 OR-Tools CP-SAT compiler
@@ -21,66 +26,58 @@ OR-Tools CP-SAT compiler
 weighted solve / no-good enumeration / Pareto candidate search
       |
       v
-independent 42-rule verifier + objective-vector recomputation
+ordinary serialized musical values
+      |
+      +--> independent 51-rule verifier
+      +--> independent objective-vector recomputation
+      +--> semantic provenance digests
       |
       +----> MIDI with real ties/rests
-      +----> JSON + SATB + harmonic context + contract/provenance/search digests
+      +----> JSON + SATB + harmonic/context metadata
 ```
 
-A solver status of `OPTIMAL` or `FEASIBLE` is not sufficient. A solver assignment rejected by the independent verifier fails closed.
+A solver status of `OPTIMAL` or `FEASIBLE` is never sufficient. Solver/verifier or solver/objective disagreement fails closed.
 
-## v2.1: explicit rhythm and motifs
+## Release progression
 
-Rhythm generation is optional and uses three states per melody grid step: `onset`, `tie`, and `rest`. Motifs support exact repetition and exact semitone transposition with rhythm inheritance. When `rhythm_enabled` is false, every melody grid position is an onset, preserving v2.0 behavior.
+- **v2.1** — explicit rhythm CSP and motif grammar.
+- **v2.2** — phrase grammar and phrase-local cadence semantics.
+- **v2.3** — exact distinct enumeration and bounded Pareto search.
+- **v2.4** — solver-native SATB harmony.
+- **v2.5** — opt-in diatonic seventh vocabulary and structured inversions.
+- **v2.6** — verified applied-dominant tonicization.
+- **v2.7** — verified modal mixture with explicit parallel-source identity.
+- **v2.8** — persistent active local-key regions and one certified dominant-key modulation.
+- **v2.8.0a2** — strict modulation repair with context-union domains and no terminal tendency-tone exemption.
+- **v2.9** — source-aware borrowed seventh chords composed with active-key and modal-source semantics.
 
-## v2.2: phrase grammar
+## Harmonic identity stays decomposed
 
-Phrases are explicit spans with roles, cadence semantics, and optional structural relations. Supported roles are `statement`, `antecedent`, `consequent`, `transition`, and `cadential`; supported relations are `independent`, `repeat`, `transpose`, `sequence`, and `answer`.
+Constraint Music deliberately avoids a single opaque Roman-numeral field. Each beat may carry independent semantic axes:
 
-See [Phrase Grammar](docs/PHRASE_GRAMMAR.md) for exact executable semantics.
+- `harmony` — functional chord-degree sequence;
+- `harmonic_form` — chord kind + inversion;
+- `tonicization` — nullable applied/local target;
+- `modal_source` — nullable canonical parallel source;
+- `key_context` — persistent active local-key sequence / modulation identity;
+- `voicing` — SATB realization.
 
-## v2.3: distinct enumeration and Pareto search
-
-`--count` produces genuinely distinct alternatives through CP-SAT no-good cuts. The established `harmony` dimension means **chord-degree sequence** and remains backward compatible.
-
-```bash
-constraint-music generate examples/eight_bar_period.yaml \
-  --count 4 \
-  --distinct-on melody,harmony \
-  --output build/variant.mid \
-  --json build/variant.json
-```
-
-The objective exposes five minimized components: `tension_deviation`, `melody_motion`, `bass_motion`, `harmonic_repetition`, and `contour_mismatch`. Constraint Music independently reconstructs the vector from finished musical values and fails closed on disagreement.
-
-See [Distinct Enumeration and Pareto Search](docs/ENUMERATION_AND_PARETO.md).
-
-## v2.4: solver-native SATB harmony
-
-Every solved composition includes a beat-level four-part harmonic skeleton. Soprano is solver-native and anchored to the strong-grid melody; alto and tenor are independently solved; bass remains the configured solver-native bass voice. CP-SAT enforces ordering, spacing, complete triads/root doubling, inner-voice parallel-perfect avoidance, and inner leading-tone resolution.
-
-`--distinct-on voicing` enumerates different alto/tenor realizations without redefining `harmony`.
-
-See [Solver-Native SATB Harmony](docs/SATB_HARMONY.md).
+The global key is immutable for the artifact. Tonicization is a local applied event; modulation changes persistent active-key interpretation without rewriting the global key.
 
 ## v2.5: expanded harmonic vocabulary
 
-Expanded harmony is opt-in so existing specifications keep the v2.4 triadic feasible set:
+Expanded harmony is opt-in:
 
 ```yaml
 harmony_vocabulary: triads+sevenths
 minimum_seventh_chords: 1
 ```
 
-v2.5 adds structured chord kind (`triad` / `seventh`) and inversion metadata, complete diatonic seventh chords, root/first/second inversions, downward chordal-seventh resolution, and explicit `V7 -> I` behavior with leading-tone resolution in whichever SATB voice carries the tendency tone.
-
-The legacy `harmony` search dimension still means only the chord-degree sequence. `harmonic_form` distinguishes chord kind and inversion.
+The certified vocabulary includes complete diatonic seventh chords, root/first/second inversions, downward chordal-seventh resolution, and explicit dominant-seventh behavior. Third inversion remains intentionally deferred.
 
 See [Expanded Harmony](docs/EXPANDED_HARMONY.md).
 
-## v2.6: applied-dominant tonicization
-
-Tonicization is a separate, opt-in harmonic-context dimension layered on top of the v2.5 seventh vocabulary:
+## v2.6: verified tonicization
 
 ```yaml
 harmony_vocabulary: triads+sevenths
@@ -88,50 +85,77 @@ tonicization_enabled: true
 minimum_applied_dominants: 1
 ```
 
-Each applied dominant carries an explicit nullable `tonicization_target`. Constraint Music derives its dominant-seventh pitch classes from the declared global key and target degree, realizes the complete sonority in SATB, requires immediate resolution to the untargeted target chord, and verifies local leading-tone and chordal-seventh motion independently.
+Each applied dominant carries an explicit nullable `tonicization_target`. Exact pitch content, inversion, target resolution, chordal-seventh motion, and local leading-tone motion are reconstructed independently.
 
 See [Applied-Dominant Tonicization](docs/TONICIZATION.md).
 
 ## v2.7: verified modal mixture
-
-Modal mixture is opt-in and independent of the seventh vocabulary:
 
 ```yaml
 modal_mixture_enabled: true
 minimum_borrowed_chords: 1
 ```
 
-v2.7 gives every beat an explicit nullable **modal source**. Global-major pieces borrow triads from the parallel natural minor; global-minor pieces borrow from the parallel major. The source is canonical data, not a Roman-numeral label, and the borrowed pitch classes are reconstructed directly from the global tonic, source mode, and stored functional degree.
-
-For example, in C major, global degree IV is F-A-C while the parallel-natural-minor source yields borrowed `iv` = F-Ab-C. The altered Ab is legal only because that beat explicitly declares the source mode.
-
-The v2.7 compatibility boundary is strict: `CM005` and `CM006` retain their established global triadic-core meaning, so borrowed chromatic tones are carried by inner voices. Borrowing is forbidden on the final beat and, when authentic closure is required, on the penultimate beat. A beat cannot simultaneously be borrowed and tonicized.
-
-Search identity remains decomposed:
-
-- `harmony` — global chord-degree sequence;
-- `harmonic_form` — chord kind + inversion;
-- `tonicization` — nullable local-target sequence;
-- `modal_source` — nullable parallel-source sequence;
-- `voicing` — alto/tenor realization.
-
-```bash
-constraint-music generate examples/modal_mixture.yaml \
-  --count 2 \
-  --distinct-on modal_source \
-  --output build/mixture.mid \
-  --json build/mixture.json
-```
+Major active keys use the parallel natural minor as their canonical source; minor active keys use the parallel major. Borrowed triads are derived from the active tonic, explicit source, and stored functional degree. Modal source is explicit data, not permission for arbitrary chromatic pitches.
 
 See [Modal Mixture](docs/MODAL_MIXTURE.md).
 
+## v2.8: persistent local key and controlled modulation
+
+v2.8 distinguishes persistent modulation from tonicization. Its conservative certified model supports one same-mode modulation to the dominant key with:
+
+- an explicit destination key;
+- an explicit boundary;
+- source I as a common-chord pivot reinterpreted as destination IV;
+- persistent destination-key interpretation after the boundary;
+- destination V-I confirmation;
+- one serialized active key context per beat.
+
+The strict v2.8.0a2 repair uses union storage domains only as storage. Every melody/bass step is still admitted against its exact active key. The terminal destination cadence retains generic tendency-tone rules and independently requires every SATB carrier of the destination leading tone to resolve upward by semitone.
+
+## v2.9: source-aware borrowed seventh chords
+
+Borrowed sevenths are enabled by composing the existing modal-mixture and expanded-harmony switches:
+
+```yaml
+harmony_vocabulary: triads+sevenths
+modal_mixture_enabled: true
+minimum_borrowed_chords: 1
+minimum_seventh_chords: 1
+```
+
+v2.9 does **not** make every parallel-source seventh legal. The theory layer admits only a narrow source-derived subset that can preserve the established CM005/CM006 outer-voice contract and reuse certified seventh-resolution semantics. Each admitted borrowed seventh must:
+
+- use the canonical parallel source for the exact active local key;
+- be genuinely distinct from the active-key seventh;
+- contain all four source-derived chord members exactly once;
+- use only root, first, or second inversion;
+- keep soprano and bass compatible with the active-key triadic core;
+- carry no simultaneous tonicization target;
+- stay outside certified modulation pivot/cadence anchors;
+- resolve its chordal seventh downward by step;
+- resolve any admitted parallel-major source leading tone upward by semitone.
+
+After modulation, borrowing is derived from the **destination active key**, never from stale global-key context.
+
+See [Borrowed Seventh Chords](docs/BORROWED_SEVENTHS.md).
+
 ## Hard-constraint contract
 
-v2.7 extends the certification contract to **42 stable hard-rule IDs**. `CM001`–`CM021` cover tonal, rhythmic, motif, and articulation rules; `CM022`–`CM026` cover phrase structure; `CM027`–`CM032` preserve the SATB contract; `CM033`–`CM036` certify harmonic-form and seventh-chord behavior; `CM037`–`CM040` certify tonicization; `CM041`–`CM042` certify modal-source context and exact source-derived borrowed-triad realization.
+v2.9 exposes **51 stable hard-rule IDs**:
 
-Search strategy remains separate from feasibility certification.
+- `CM001–CM021` — tonal, rhythmic, motif, and articulation rules;
+- `CM022–CM026` — phrase structure;
+- `CM027–CM032` — SATB contract;
+- `CM033–CM036` — expanded harmonic form and seventh behavior;
+- `CM037–CM040` — tonicization;
+- `CM041–CM042` — modal-source context and borrowed-triad realization;
+- `CM043–CM048` — persistent key context and controlled modulation;
+- `CM049–CM051` — borrowed-seventh eligibility, source-derived realization, and tendency resolution.
 
-See [Rhythm and Motifs](docs/RHYTHM_AND_MOTIFS.md), [Phrase Grammar](docs/PHRASE_GRAMMAR.md), [Distinct Enumeration and Pareto Search](docs/ENUMERATION_AND_PARETO.md), [Solver-Native SATB Harmony](docs/SATB_HARMONY.md), [Expanded Harmony](docs/EXPANDED_HARMONY.md), [Applied-Dominant Tonicization](docs/TONICIZATION.md), [Modal Mixture](docs/MODAL_MIXTURE.md), and [Verification](docs/VERIFICATION.md).
+Search/ranking semantics cannot waive a hard rule.
+
+See [Verification](docs/VERIFICATION.md).
 
 ## Install
 
@@ -145,26 +169,28 @@ source .venv/bin/activate
 python -m pip install -e ".[dev]"
 ```
 
-## Generate one verified composition
+## Generate
 
 ```bash
 constraint-music generate examples/modal_mixture.yaml \
-  --output build/mixture.mid \
-  --json build/mixture.json \
+  --output build/composition.mid \
+  --json build/composition.json \
   --print-grid
 ```
 
 ## Verify without rerunning CP-SAT
 
 ```bash
-constraint-music verify build/mixture.json
+constraint-music verify build/composition.json
 ```
 
-The command rechecks all 42 hard rules plus artifact schema, contract digest, semantic composition digest, full artifact-content digest, and objective-vector metadata. Artifact schema `2.7` commits SATB voices, harmonic form, tonicization targets, and modal-source metadata when present. Older payloads remain loadable without inventing missing context metadata when the corresponding feature is disabled.
+The verifier rechecks the musical contract plus artifact schema, contract digest, semantic composition digest, full artifact-content digest, and objective-vector metadata. Current package version is `2.9.0a1`; artifact and constraint-contract versions are `2.9`.
+
+Older payloads remain loadable without inventing newer semantic metadata when the corresponding feature is disabled. `--allow-legacy` remains available for intentional inspection of older provenance versions.
 
 ## Reproducibility
 
-Use `workers: 1` with a fixed `seed` for deterministic regression work and deterministic enumeration order. Multi-worker CP-SAT search is intended for performance and should not be assumed to return an identical optimum or enumeration order on every platform/runtime combination.
+Use `workers: 1` with a fixed `seed` for deterministic regression work and deterministic enumeration order. Multi-worker CP-SAT search is for performance and should not be assumed to return an identical optimum or enumeration order on every runtime.
 
 ## Quality gates
 
@@ -177,12 +203,12 @@ pytest --cov=constraint_music --cov-report=term-missing
 python -m build
 ```
 
-GitHub Actions requires all four gates independently on Python **3.11, 3.12, and 3.13**.
+GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**.
 
 ## Scope boundary
 
-“Independent verification” means a code path separate from the CP-SAT model checks the serialized result against the declared contract without trusting solver state. It is not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates rule compliance; it does not prove aesthetic quality or complete historical-style authenticity.
+Independent verification is an application-level separation of trust, not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates conformance to the declared executable contract; it does not prove aesthetic quality or complete historical-style authenticity.
 
-v2.7 implements bounded modal mixture through source-identified borrowed triads only. Borrowed sevenths, secondary leading-tone chords, arbitrary altered harmony, persistent local-key regions, pivot-chord modulation, and third-inversion sevenths remain outside this release rather than being represented partially. Pareto results remain nondominated within the explored candidate pool, not a proof of the global Pareto frontier.
+v2.9 deliberately does not certify secondary leading-tone chords, third-inversion sevenths, arbitrary modulation chains, distant-key networks, enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, free key-center inference, or probabilistic harmony certification.
 
-See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [History](docs/HISTORY.md), and [Roadmap](docs/ROADMAP.md).
+See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [History](docs/HISTORY.md), [Roadmap](docs/ROADMAP.md), and [Changelog](CHANGELOG.md).

@@ -32,4 +32,4 @@ __all__ = [
     "verify_result",
 ]
 
-__version__ = "2.8.0a2"
+__version__ = "2.9.0a1"
