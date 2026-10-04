@@ -1,0 +1,31 @@
+name: Apply v2.8 implementation
+
+on:
+  push:
+    branches: ["release/v2.8-explicit-modulation"]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, 'feat(v2.8): explicit modulation') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python tools/v28_apply_part1.py
+      - run: python tools/v28_apply_part2.py
+      - name: Remove bootstrap files
+        run: rm -rf tools/v28_parts tools/v28_apply_part1.py tools/v28_apply_part2.py .github/workflows/v28_apply.yml
+      - name: Commit implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat(v2.8): explicit modulation and local key context"
+          git push origin HEAD:release/v2.8-explicit-modulation
