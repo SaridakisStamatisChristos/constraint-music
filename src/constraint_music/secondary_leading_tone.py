@@ -58,7 +58,7 @@ class SecondaryLeadingToneSeventhQuality(StrEnum):
 def secondary_leading_tone_triad_pitch_classes(
     key: Key,
     target_degree: int,
-) -> tuple[int, int, int]:
+) -> tuple[int, ...]:
     """Return the diminished leading-tone triad that tonicizes a diatonic target."""
     if not 1 <= target_degree <= 6:
         raise ValueError("Secondary leading-tone target degree must be in 1..6")
