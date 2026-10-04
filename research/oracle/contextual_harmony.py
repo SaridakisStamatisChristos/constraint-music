@@ -1,4 +1,4 @@
-"""Independent local oracle for borrowed sevenths and secondary diminished triads."""
+"""Independent pitch and tendency oracle for contextual and diatonic harmony."""
 
 from __future__ import annotations
 
@@ -14,6 +14,11 @@ class TonalMode(StrEnum):
 class ParallelSource(StrEnum):
     MAJOR = "parallel_major"
     NATURAL_MINOR = "parallel_natural_minor"
+
+
+class DiatonicKind(StrEnum):
+    TRIAD = "triad"
+    SEVENTH = "seventh"
 
 
 _ACTIVE_INTERVALS = {
@@ -48,6 +53,180 @@ def _scale(tonic_pc: int, intervals: tuple[int, ...]) -> tuple[int, ...]:
 def canonical_parallel_source(active_mode: str | TonalMode) -> ParallelSource:
     mode = active_mode if isinstance(active_mode, TonalMode) else TonalMode(active_mode)
     return ParallelSource.NATURAL_MINOR if mode is TonalMode.MAJOR else ParallelSource.MAJOR
+
+
+def diatonic_pitch_classes(
+    tonic_pc: int,
+    active_mode: str | TonalMode,
+    degree: int,
+    kind: str | DiatonicKind,
+) -> tuple[int, ...]:
+    mode = active_mode if isinstance(active_mode, TonalMode) else TonalMode(active_mode)
+    parsed_kind = kind if isinstance(kind, DiatonicKind) else DiatonicKind(kind)
+    scale = _scale(tonic_pc, _ACTIVE_INTERVALS[mode])
+    tones = 3 if parsed_kind is DiatonicKind.TRIAD else 4
+    return _stacked_thirds(scale, degree, tones)
+
+
+def adjudicate_diatonic_chord(
+    voices: tuple[int, int, int, int],
+    *,
+    tonic_pc: int,
+    active_mode: str | TonalMode,
+    degree: int,
+    kind: str | DiatonicKind,
+    inversion: int,
+) -> ContextualDecision:
+    parsed_kind = kind if isinstance(kind, DiatonicKind) else DiatonicKind(kind)
+    expected = diatonic_pitch_classes(tonic_pc, active_mode, degree, parsed_kind)
+    if inversion not in range(3):
+        return ContextualDecision(False, "diatonic inversion is outside 0..2", expected)
+    realized = tuple(pitch % 12 for pitch in voices)
+    if parsed_kind is DiatonicKind.TRIAD:
+        root = expected[0]
+        if set(realized) != set(expected) or realized.count(root) != 2:
+            return ContextualDecision(
+                False, "triad is incomplete or root doubling is not exact", expected
+            )
+    elif len(set(realized)) != 4 or set(realized) != set(expected):
+        return ContextualDecision(False, "seventh does not realize four distinct tones", expected)
+    if realized[3] != expected[inversion]:
+        return ContextualDecision(False, "bass does not realize the declared inversion", expected)
+    return ContextualDecision(True, "exact diatonic realization and inversion", expected)
+
+
+def adjudicate_diatonic_seventh_resolution(
+    current: tuple[int, int, int, int],
+    following: tuple[int, int, int, int],
+    *,
+    tonic_pc: int,
+    active_mode: str | TonalMode,
+    degree: int,
+    following_degree: int,
+) -> ContextualDecision:
+    mode = active_mode if isinstance(active_mode, TonalMode) else TonalMode(active_mode)
+    expected = diatonic_pitch_classes(tonic_pc, mode, degree, DiatonicKind.SEVENTH)
+    chordal_seventh = expected[3]
+    leading_tone = _scale(tonic_pc, _ACTIVE_INTERVALS[mode])[6]
+    for left, right in zip(current, following, strict=True):
+        if left % 12 == chordal_seventh and right - left not in {-1, -2}:
+            return ContextualDecision(False, "chordal seventh does not fall by step", expected)
+        if degree == 4 and left % 12 == leading_tone and right != left + 1:
+            return ContextualDecision(
+                False, "dominant leading tone does not rise by semitone", expected
+            )
+    if degree == 4 and following_degree != 0:
+        return ContextualDecision(False, "dominant seventh does not resolve to tonic", expected)
+    return ContextualDecision(True, "all diatonic-seventh tendencies resolve", expected)
+
+
+def applied_dominant_pitch_classes(
+    tonic_pc: int,
+    active_mode: str | TonalMode,
+    target_degree: int,
+) -> tuple[int, int, int, int]:
+    mode = active_mode if isinstance(active_mode, TonalMode) else TonalMode(active_mode)
+    if not 1 <= target_degree <= 6:
+        raise ValueError("applied-dominant target degree must be in 1..6")
+    scale = _scale(tonic_pc, _ACTIVE_INTERVALS[mode])
+    root = (scale[target_degree] + 7) % 12
+    return root, (root + 4) % 12, (root + 7) % 12, (root + 10) % 12
+
+
+def eligible_applied_dominant_targets(
+    tonic_pc: int,
+    active_mode: str | TonalMode,
+) -> tuple[int, ...]:
+    """Derive targets compatible with the retained diatonic outer-voice contract."""
+
+    mode = active_mode if isinstance(active_mode, TonalMode) else TonalMode(active_mode)
+    scale = _scale(tonic_pc, _ACTIVE_INTERVALS[mode])
+    eligible: list[int] = []
+    for target_degree in range(1, 7):
+        target = _stacked_thirds(scale, target_degree, 3)
+        quality = ((target[1] - target[0]) % 12, (target[2] - target[0]) % 12)
+        if quality not in {(4, 7), (3, 7)}:
+            continue
+        applied = applied_dominant_pitch_classes(tonic_pc, mode, target_degree)
+        if applied[0] not in scale:
+            continue
+        support_degree = scale.index(applied[0])
+        support = _stacked_thirds(scale, support_degree, 3)
+        if len(set(support) & set(applied)) >= 2:
+            eligible.append(target_degree)
+    return tuple(eligible)
+
+
+def applied_dominant_support_degree(
+    tonic_pc: int,
+    active_mode: str | TonalMode,
+    target_degree: int,
+) -> int:
+    mode = active_mode if isinstance(active_mode, TonalMode) else TonalMode(active_mode)
+    if target_degree not in eligible_applied_dominant_targets(tonic_pc, mode):
+        raise ValueError("target is outside the applied-dominant policy")
+    scale = _scale(tonic_pc, _ACTIVE_INTERVALS[mode])
+    root = applied_dominant_pitch_classes(tonic_pc, mode, target_degree)[0]
+    return scale.index(root)
+
+
+def adjudicate_applied_dominant(
+    voices: tuple[int, int, int, int],
+    *,
+    tonic_pc: int,
+    active_mode: str | TonalMode,
+    target_degree: int,
+    support_degree: int,
+    inversion: int,
+) -> ContextualDecision:
+    mode = active_mode if isinstance(active_mode, TonalMode) else TonalMode(active_mode)
+    expected = applied_dominant_pitch_classes(tonic_pc, mode, target_degree)
+    if target_degree not in eligible_applied_dominant_targets(tonic_pc, mode):
+        return ContextualDecision(False, "target is outside the applied-dominant policy", expected)
+    if support_degree != applied_dominant_support_degree(tonic_pc, mode, target_degree):
+        return ContextualDecision(
+            False, "support degree does not encode the applied root", expected
+        )
+    if inversion not in range(3):
+        return ContextualDecision(False, "applied-dominant inversion is outside 0..2", expected)
+    realized = tuple(pitch % 12 for pitch in voices)
+    if len(set(realized)) != 4 or set(realized) != set(expected):
+        return ContextualDecision(False, "realization is not the exact applied dominant", expected)
+    if realized[3] != expected[inversion]:
+        return ContextualDecision(False, "bass does not realize the declared inversion", expected)
+    return ContextualDecision(True, "exact target-derived applied dominant", expected)
+
+
+def adjudicate_applied_dominant_resolution(
+    current: tuple[int, int, int, int],
+    following: tuple[int, int, int, int],
+    *,
+    tonic_pc: int,
+    active_mode: str | TonalMode,
+    target_degree: int,
+    following_degree: int,
+    following_target: int | None,
+) -> ContextualDecision:
+    mode = active_mode if isinstance(active_mode, TonalMode) else TonalMode(active_mode)
+    expected = applied_dominant_pitch_classes(tonic_pc, mode, target_degree)
+    if target_degree not in eligible_applied_dominant_targets(tonic_pc, mode):
+        return ContextualDecision(False, "target is outside the applied-dominant policy", expected)
+    if following_degree != target_degree or following_target is not None:
+        return ContextualDecision(
+            False, "applied dominant misses its untargeted local tonic", expected
+        )
+    local_leading_tone = expected[1]
+    chordal_seventh = expected[3]
+    for left, right in zip(current, following, strict=True):
+        if left % 12 == chordal_seventh and right - left not in {-1, -2}:
+            return ContextualDecision(
+                False, "applied chordal seventh does not fall by step", expected
+            )
+        if left % 12 == local_leading_tone and right != left + 1:
+            return ContextualDecision(
+                False, "applied leading tone does not rise by semitone", expected
+            )
+    return ContextualDecision(True, "target and applied tendencies resolve", expected)
 
 
 def borrowed_seventh_pitch_classes(
