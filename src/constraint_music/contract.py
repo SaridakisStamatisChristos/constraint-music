@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.9"
+CONTRACT_VERSION = "2.10"
 
 
 @dataclass(frozen=True, slots=True)
@@ -239,9 +239,9 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM037",
         "tonicization_context",
         (
-            "When tonicization is enabled, every beat carries explicit nullable target metadata; "
-            "non-null targets are supported local tonics in the active key, use seventh form, and "
-            "satisfy the declared minimum applied-dominant count."
+            "When applied-dominant tonicization is enabled, target-bearing seventh chords use "
+            "supported local-tonic identities in the active key and satisfy the declared minimum "
+            "applied-dominant count. Target-bearing triads are separately governed by CM052-CM054."
         ),
         conditional=True,
     ),
@@ -249,8 +249,8 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM038",
         "applied_dominant_realization",
         (
-            "Every applied dominant has active-key target-derived dominant-seventh pitch classes "
-            "exactly once, the correct root degree, and an inversion matching the realized bass."
+            "Every target-bearing seventh has active-key target-derived dominant-seventh pitch "
+            "classes exactly once, the correct root degree, and an inversion matching the bass."
         ),
         conditional=True,
     ),
@@ -278,9 +278,9 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         (
             "When modal mixture is enabled, every beat carries explicit nullable source-mode "
             "metadata; borrowed beats use the active-key canonical parallel source, do not "
-            "coincide with tonicization, stay outside certified cadential/context anchors, and "
-            "satisfy the declared minimum borrowed-chord count. Borrowed triads are certified "
-            "by CM042; eligible borrowed sevenths are additionally certified by CM049-CM051."
+            "coincide with local-target metadata, stay outside certified cadential/context "
+            "anchors, and satisfy the declared minimum borrowed-chord count. Borrowed triads are "
+            "certified by CM042; eligible borrowed sevenths by CM049-CM051."
         ),
         conditional=True,
     ),
@@ -347,7 +347,7 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         (
             "A source-bearing seventh requires expanded harmony and modal mixture, uses the "
             "active-key canonical parallel source and an explicitly supported degree, carries no "
-            "tonicization target, and stays outside certified modulation/cadence anchors."
+            "local target, and stays outside certified modulation/cadence anchors."
         ),
         conditional=True,
     ),
@@ -367,6 +367,36 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         (
             "Every borrowed chordal seventh resolves downward by step; any admitted "
             "parallel-source leading tone carried by a SATB voice resolves upward by semitone."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM052",
+        "secondary_leading_tone_context",
+        (
+            "Every target-bearing triad used as a secondary leading-tone chord declares a "
+            "supported non-tonic active-key target, uses its deterministic CM005/CM006 support "
+            "degree, does not overlap modal borrowing, and stays outside certified anchors."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM053",
+        "secondary_leading_tone_realization",
+        (
+            "Every secondary leading-tone chord is the complete target-derived diminished triad, "
+            "with local leading tone and diminished fifth undoubled, stable third doubled, and "
+            "serialized inversion matching the realized bass."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM054",
+        "secondary_leading_tone_resolution",
+        (
+            "Every secondary leading-tone chord resolves immediately to its declared unaltered "
+            "triadic target; each local leading tone rises by semitone and each diminished fifth "
+            "resolves downward by step."
         ),
         conditional=True,
     ),
