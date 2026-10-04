@@ -6,123 +6,178 @@ Constraint Music is deliberately split into generation, search, serialization, a
 YAML GenerationSpec
        |
        v
- tonal/key-domain construction
+ global key + explicit active-key contexts
        |
-       +--> harmonic-form + tonicization + modal-source relation tables
+       +--> chord degree
+       +--> harmonic form (kind + inversion)
+       +--> nullable tonicization target
+       +--> nullable modal source
+       +--> nullable modulation destination/boundary
        |
        v
-CP-SAT compiler ------------------------------------+
-       |   \-> SATB + harmonic-context realization  |
-       v                                             |
- feasible + optimized assignment                     |
-       |                                             |
-       +--> no-good enumeration / scalarization      |
-       |                                             |
-       v                                             |
-ordinary Python musical values                       |
-       |                                             |
-       +--> independent objective recomputation      |
-       |                                             |
-       v                                             |
-independent verifier <------------- hard contract ---+
+CP-SAT compiler -----------------------------------------+
+       |   \-> SATB + harmonic/context realization       |
+       v                                                  |
+ feasible + optimized assignment                          |
+       |                                                  |
+       +--> no-good enumeration / scalarization           |
+       |                                                  |
+       v                                                  |
+ordinary Python musical values                            |
+       |                                                  |
+       +--> independent objective recomputation           |
+       |                                                  |
+       v                                                  |
+independent verifier <---------------- hard contract -----+
        |
        +--> MIDI
-       +--> verifiable JSON artifact
+       +--> schema-versioned, tamper-evident JSON
 ```
 
 ## Trust boundary
 
-The CP-SAT model is not accepted as evidence that an output is correct. A generated assignment is converted into ordinary Python values and passed to `verify_result`. The verifier does not inspect OR-Tools variables, constraints, solver state, or internal table membership. If verification fails, generation fails closed with `InternalVerificationError`.
+The CP-SAT model is not accepted as evidence that an output is correct. A generated assignment is converted into ordinary Python values and passed to `verify_result`. The verifier does not inspect OR-Tools variables, constraints, solver state, or internal relation-table membership. If verification fails, generation fails closed with `InternalVerificationError`.
 
-The same separation applies to objective metadata. Objective-component values produced inside the model are independently reconstructed from ordinary musical values; disagreement also fails closed.
+Objective metadata follows the same trust boundary. Solver-side objective components are independently reconstructed from finished musical values; disagreement also fails closed.
 
 ## Stable hard-rule contract
 
-`constraint_music.contract` defines stable IDs for every hard musical rule. v2.7 contains `CM001`–`CM042`.
+`constraint_music.contract` defines stable IDs for every hard musical rule. v2.9 contains `CM001–CM051`.
 
-New feasibility semantics are introduced as a synchronized change across contract metadata, CP-SAT compilation, independent post-solve verification, adversarial regression tests, and artifact/provenance representation whenever new state is serialized.
+New feasibility semantics are synchronized across:
 
-Search mechanisms cannot waive a `CM` rule. No-good cuts constrain which already-valid assignment may be returned next; weighted scalarization ranks feasible assignments; Pareto filtering compares independently reconstructed objective vectors.
+1. contract metadata;
+2. CP-SAT compilation;
+3. independent post-solve verification;
+4. hostile regression tests;
+5. serialization/provenance whenever semantic state is serialized.
+
+Search mechanisms cannot waive a `CM` rule. No-good cuts constrain which already-valid assignment may be returned next; scalarization ranks feasible assignments; Pareto filtering compares independently reconstructed objective vectors.
 
 ## Harmonic identity is decomposed
 
-Constraint Music intentionally does not collapse harmony into a display string. At v2.7, each beat can carry separate axes:
+Constraint Music never collapses harmony into one magic degree or display string. Each beat may carry independent axes:
 
-- global functional `chord_degree`;
+- immutable artifact/global key;
+- explicit active local key;
+- functional `chord_degree`;
 - `ChordKind` (`triad` or `seventh`);
 - inversion (`0`, `1`, or `2`);
 - nullable `tonicization_target`;
 - nullable `modal_source`;
+- modulation destination/boundary identity;
 - concrete SATB notes.
 
-Roman/slash/source notation is derived presentation rather than canonical identity. `V7/V` is reconstructed from global root degree, seventh kind, inversion, and target degree. A borrowed `iv[parallel_natural_minor]` is reconstructed from global functional degree, triad kind, inversion, and explicit source mode.
+Roman/slash/source notation is derived presentation. `V7/V`, a borrowed `iv`, and a borrowed seventh remain reconstructable from typed semantic values.
 
 ## SATB compiler
 
-The SATB harmonic skeleton operates at one sonority per beat. Soprano equals the melody at each beat's strong grid step; alto and tenor are independent solver variables; bass reuses the established beat-level bass variable.
+The SATB harmonic skeleton operates at one sonority per beat. Soprano is anchored to the strong-grid melody, alto and tenor are independent solver variables, and bass reuses the beat-level bass variable.
 
-Pitch-class variables are linked to note variables with modulo constraints. Cached allowed-assignment tables jointly constrain chord degree, chord kind, inversion, tonicization target, modal source, and four voice pitch classes. Global triads/sevenths, applied dominants, and borrowed triads therefore use the same typed relation-table architecture instead of post-processing exceptions.
+Pitch-class variables are linked to note variables with modulo constraints. Cached allowed-assignment tables jointly constrain degree, kind, inversion, tonicization target, modal source, and four SATB pitch classes. Diatonic harmony, applied dominants, borrowed triads, and v2.9 borrowed sevenths therefore use typed relation data rather than post-processing exceptions.
 
-Ordering/spacing use direct integer constraints. Parallel-perfect and seventh/tendency-tone behavior use adjacent-beat transition constraints.
+Ordering/spacing use direct integer constraints. Parallel-perfect and tendency-tone behavior use adjacent-beat transition constraints.
+
+## Outer-voice compatibility contract
+
+`CM005` and `CM006` retain their established meaning: strong melody/soprano and bass are members of the triadic core identified by the functional degree in the exact active local key.
+
+Chromatic context is not unrestricted pitch permission. Tonicization, mixture, and modulation expose only harmonic states representable under this invariant. Altered chord members may be carried by inner voices, while v2.9 borrowed sevenths are structurally filtered so the complete four-tone sonority still leaves compatible outer-voice members.
+
+This boundary is a compatibility decision, not a claim that excluded harmonies are invalid music theory.
 
 ## v2.6 tonicization model
 
-Tonicization remains opt-in and requires the seventh vocabulary. `NO_TONICIZATION_TARGET` is internal only; serialized artifacts expose `null` for global harmony and an integer scale degree for an applied target.
+Tonicization is an opt-in local applied event and requires expanded harmony. `NO_TONICIZATION_TARGET` is internal only; artifacts serialize `null` or an integer target degree.
 
-For each supported target, the tonal layer derives the applied dominant root and exact dominant-seventh pitch classes. The SATB relation table admits only complete realizations compatible with the preserved outer-voice contract. Motion constraints require immediate target resolution, downward applied-seventh resolution, and upward local-leading-tone resolution. The verifier reconstructs those consequences from serialized values.
+For each supported target, the tonal layer derives the applied dominant root and exact dominant-seventh pitch classes. The SATB layer admits only complete realizations compatible with CM005/CM006. Motion constraints require immediate target resolution, downward applied-seventh resolution, and upward local-leading-tone resolution. The verifier reconstructs those consequences independently.
+
+Tonicization does not change persistent active-key identity.
 
 ## v2.7 modal-mixture model
 
-Modal mixture is an independent opt-in context axis. `NO_MODAL_SOURCE` is an internal sentinel; serialized artifacts use `null` for global harmony and an explicit source label for borrowed harmony.
+Modal mixture is an independent context axis. `NO_MODAL_SOURCE` is internal; artifacts serialize `null` or an explicit source identity.
 
-The canonical source policy is deliberately small:
+Canonical source policy is deliberately small:
 
-- global major -> parallel natural minor;
-- global minor -> parallel major.
+- active major -> parallel natural minor;
+- active minor -> parallel major.
 
-For a borrowed beat, the theory layer derives the source scale from the global tonic, builds the source triad on the stored functional degree, and admits only complete SATB realizations of that triad. A borrowed beat is triadic in v2.7 and cannot also carry a tonicization target.
+Borrowed triads derive source pitch classes from the active tonic, explicit source, and functional degree. The source cannot coexist with tonicization on the same beat and cannot occupy certified context/cadence anchors.
 
-The final beat remains global. With authentic closure enabled, the penultimate beat remains global as well. This keeps earlier cadence semantics stable.
+## v2.8 persistent local-key and modulation model
 
-## Compatibility boundary
+v2.8 introduced true persistent active-key state while keeping the artifact/global key immutable.
 
-`CM005` and `CM006` continue to interpret strong melody and bass against the global diatonic triad identified by `chord_degree`. Neither tonicization nor mixture reinterprets these IDs. Chromatic applied or borrowed tones are therefore carried by inner voices.
+The first certified modulation model is intentionally narrow:
 
-The theory layer exposes only harmonic contexts representable under that invariant. This is an explicit compatibility decision rather than a claim that omitted harmonies are invalid in music theory.
+- exactly one event;
+- same-mode destination at the dominant key;
+- explicit destination identity;
+- explicit boundary;
+- fixed common-chord pivot: source I -> destination IV;
+- persistent destination context after the boundary;
+- destination V-I confirmation.
 
-Borrowed triads receive their own source-derived completeness rule (`CM042`) rather than weakening global-triad root-doubling (`CM030`). Borrowed sevenths are deferred because they need source-aware seventh/tendency semantics rather than silently inheriting global CM035/CM036 behavior.
+### Context-union storage is not chromatic permission
 
-## Optimization
+The strict v2.8.0a2 repair allows modulation-enabled storage domains to contain pitches admitted by any declared persistent local-key region. Every concrete melody/bass step is nevertheless gated against its exact active key. This permits destination accidentals in the destination region without leaking them backward into the source region.
 
-All hard musical rules remain non-negotiable. The minimized objective vector remains:
+The same active-key sequence drives objective tension scoring, CM002/CM003 verification, tonicization interpretation, and modal-source interpretation.
 
-- tension deviation;
-- melody motion;
-- bass motion;
-- harmonic repetition;
-- contour mismatch.
+### No terminal tendency-tone exemption
 
-v2.7 intentionally adds no reward or penalty for modal mixture. Mixture changes the feasible/contextual space when enabled while objective ranking remains comparable with earlier versions.
+The rejected early repair skipped a generic terminal tendency check to regain feasibility. v2.8.0a2 removed that exemption. The state/domain model was repaired instead, and destination confirmation independently requires the destination leading tone plus upward semitone resolution in every SATB carrier at the terminal dominant.
+
+## v2.9 borrowed-seventh model
+
+v2.9 composes three mature semantic layers rather than adding another opaque context:
+
+1. v2.5 seventh-form identity;
+2. v2.7 explicit modal-source identity;
+3. v2.8 explicit active local-key identity.
+
+A source-derived seventh is admitted only if it is genuinely different from the active-key seventh and can preserve existing outer-voice semantics. The current whitelist additionally requires its chordal seventh to coincide with the already-certified active-key seventh pitch class so the established downward-step machinery remains solver/verifier symmetric.
+
+A parallel-major source may introduce a true source leading tone. When such a leading tone occurs in an admitted borrowed seventh and is not the chordal seventh, every SATB carrier resolves upward by semitone.
+
+Borrowed sevenths are excluded from tonicization overlap, the modulation pivot, and certified destination-cadence anchors. After modulation, source derivation uses the destination active key; the original global key is never reused as stale borrowing context.
+
+The new semantics are additive hard rules:
+
+- `CM049` — context and eligibility;
+- `CM050` — exact source-derived four-tone realization and inversion;
+- `CM051` — borrowed seventh/source tendency resolution.
+
+## Serialization and provenance
+
+Artifact schema `2.9` commits semantic music separately from solver metadata. The semantic digest includes, when present:
+
+- melody/rhythm/bass/chord degrees;
+- SATB voices;
+- chord kinds and inversions;
+- tonicization targets;
+- modal sources;
+- key contexts.
+
+The contract version/digest, composition digest, complete artifact-content digest, verified rule IDs, and independently recomputable objective vector are stored in provenance/search metadata.
 
 ## Distinct enumeration
 
-Exact no-good dimensions are independent:
+Exact no-good dimensions remain orthogonal:
 
-- `melody` — melody MIDI sequence;
-- `rhythm` — onset/tie/rest sequence;
-- `bass` — bass MIDI sequence;
-- `harmony` — global chord-degree sequence;
+- `melody`;
+- `rhythm`;
+- `bass`;
+- `harmony` — functional degree sequence;
 - `voicing` — alto/tenor realization;
-- `harmonic_form` — chord kind + inversion;
-- `tonicization` — nullable local-target sequence;
-- `modal_source` — nullable parallel-source sequence.
+- `harmonic_form` — kind + inversion;
+- `tonicization` — nullable target sequence;
+- `modal_source` — nullable parallel-source sequence;
+- `key_context` — persistent active-key sequence.
 
-This decomposition allows two outputs to share functional roots while differing only in tonicization, borrowing, form, or voicing.
-
-## Pareto approximation
-
-Pareto mode explores a deterministic family of weighted scalarizations, applies exact no-good cuts to keep candidates distinct, independently reconstructs each objective vector, and removes dominated candidates from the explored pool. Because the pool is bounded, the result is an approximation of the global Pareto frontier.
+A feature never redefines an older dimension merely to fit new semantics.
 
 ## Extension boundary
 
-Future chromatic expansion should continue to add typed context rather than globally permitting altered pitch classes. Secondary leading-tone chords need explicit tendency semantics; persistent local-key regions need local-key identity; modulation needs destination and pivot identity. Third-inversion sevenths require an explicit revision of the preserved outer-voice contract rather than a silent reinterpretation.
+Future chromatic expansion should continue to add explicit typed state and independent verification. Current deferred boundaries include secondary leading-tone chords, third-inversion sevenths, richer voice-leading policy revisions, multi-modulation chains, distant-key/enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, and probabilistic key-center inference.
