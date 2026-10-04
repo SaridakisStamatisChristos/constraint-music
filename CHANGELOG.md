@@ -1,5 +1,43 @@
 # Changelog
 
+## 2.9.0a1 — source-aware borrowed seventh chords
+
+- Extended opt-in modal mixture to a deliberately filtered subset of source-derived borrowed seventh chords when `harmony_vocabulary: triads+sevenths` is also enabled.
+- Kept old borrowed-triad semantics unchanged; v2.9 composes existing harmonic-form, modal-source, and active-local-key identities instead of introducing an opaque chord label.
+- Added source-derived seventh pitch reconstruction from active local tonic, canonical parallel source, functional degree, and seventh kind.
+- Preserved CM005/CM006 outer-voice semantics by admitting only borrowed sevenths that can be completely realized while keeping soprano and bass in the active-key triadic core.
+- Preserved only root, first, and second inversions; third inversion remains outside the certified contract.
+- Added complete four-tone realization and inversion/bass verification for borrowed sevenths.
+- Added downward borrowed chordal-seventh resolution and explicit parallel-major source-leading-tone resolution.
+- Kept borrowing and tonicization mutually exclusive at a beat and excluded borrowed sevenths from certified modulation pivot and destination-cadence anchors.
+- Made post-modulation borrowed sevenths derive from the persistent destination active key rather than the original global key.
+- Extended the hard contract additively from 48 to 51 rules with `CM049` borrowed-seventh context/eligibility, `CM050` source-derived realization/inversion, and `CM051` tendency resolution.
+- Versioned the package to `2.9.0a1` and artifact/contract schema to `2.9`.
+- Preserved provenance commitment through the existing orthogonal `modal_sources`, `chord_kinds`, `chord_inversions`, and `key_contexts` fields; no synthetic replacement metadata was added.
+- Added adversarial tests for forged/missing seventh tones, inversion mismatch, wrong-direction resolution, tonicization overlap, ordinary-vs-borrowed identity forgery, provenance tampering, source-leading-tone behavior, and post-modulation stale-context interpretation.
+- Kept secondary leading-tone chords, third-inversion sevenths, arbitrary modulation chains, enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, and probabilistic key inference outside v2.9.
+
+## 2.8.0a2 — strict destination-cadence repair
+
+- Repaired the initial v2.8 modulation boundary by fixing the state/domain model instead of weakening terminal voice-leading rules.
+- Added context-union storage domains for modulation-enabled pieces so explicitly declared destination-key accidentals can appear in outer voices.
+- Added exact per-step active-key admission so the union storage domain cannot leak destination-only pitches into the source region or source-only pitches into the destination region.
+- Kept objective tension scoring and independent CM002/CM003 verification active-local-key aware.
+- Removed the temporary terminal CM032 exemption completely.
+- Strengthened destination confirmation so the certified terminal dominant contains the destination leading tone and every SATB voice carrying it resolves upward by semitone.
+- Preserved strict solver/verifier symmetry through the terminal transition and added hostile wrong-region and terminal-leading-tone tamper tests.
+
+## 2.8.0a1 — explicit persistent local key and controlled modulation
+
+- Added true persistent local-key state distinct from one-chord tonicization while keeping the artifact global key immutable.
+- Added one explicit same-mode modulation to the dominant key with declared destination identity and modulation boundary.
+- Added a fixed common-chord pivot: source tonic is reinterpreted as destination IV.
+- Interpreted all post-boundary harmony against the persistent destination key and required destination-key V-I confirmation.
+- Added one serialized key context per beat, provenance commitment, and a separate `key_context` no-good distinctness dimension.
+- Made tonicization, modal mixture, and objective tension semantics active-local-key aware after modulation.
+- Extended the hard contract from 42 to 48 rules (`CM043`–`CM048`) for key-context shape, boundary/destination, pivot, post-modulation interpretation, destination confirmation, and serialized context consistency.
+- Preserved non-modulating pieces on the established global-key path and retained older payload loading behavior when modulation is disabled.
+
 ## 2.7.0a1 — verified modal mixture
 
 - Added opt-in modal mixture through explicit per-beat parallel-source identity.
@@ -14,7 +52,6 @@
 - Versioned package to `2.7.0a1` and artifact/contract schema to 2.7; semantic provenance now commits modal-source metadata.
 - Preserved loading and musical verification of older payloads without inventing modal-source metadata when modal mixture is disabled.
 - Added deterministic positive generation plus adversarial tests for forged source identity, degree/inversion tampering, provenance tampering, legacy loading, and modal-source distinctness.
-- Kept borrowed sevenths, secondary leading-tone chords, persistent local-key regions, modulation, and third-inversion sevenths outside the v2.7 boundary.
 
 ## 2.6.0a1 — verified applied-dominant tonicization
 
@@ -30,7 +67,6 @@
 - Versioned JSON artifacts and the hard-rule contract to 2.6; semantic provenance now commits tonicization target metadata when present.
 - Preserved loading and musical verification of older SATB/harmonic-form payloads without inventing tonicization metadata when the feature is disabled.
 - Added positive forced `I -> V7/V -> V -> I -> V -> I` generation coverage and adversarial tests for forged targets, wrong target resolution, unresolved local tendency tones, and provenance tampering.
-- Kept modal mixture, secondary leading-tone chords, persistent local-key regions, modulation, and third-inversion sevenths outside the v2.6 boundary.
 
 ## 2.5.0a1 — expanded harmonic vocabulary
 
@@ -44,7 +80,6 @@
 - Versioned JSON artifacts to schema 2.5; semantic provenance now commits harmonic kind/inversion metadata when present.
 - Preserved loading and musical verification of older SATB artifacts without inventing missing harmonic-form metadata.
 - Added positive solver tests plus adversarial tests for inversion mismatch, unresolved sevenths, wrong dominant targets, and harmonic-form provenance tampering.
-- Kept chromatic applied dominants, modal mixture, tonicization/local-key contexts, and modulation outside the v2.5 boundary.
 
 ## 2.4.0a1 — solver-native SATB harmony
 
