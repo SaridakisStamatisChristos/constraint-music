@@ -31,6 +31,7 @@ from .search import (
     pareto_indices,
     scalarization_profiles,
 )
+from .secondary_leading_tone_runtime import add_secondary_leading_tone_satb_constraints
 from .theory import NO_TONICIZATION_TARGET, ChordKind
 from .verifier import verify_result
 
@@ -147,7 +148,8 @@ class ConstraintMusicSolver:
             raise NoSolutionError(
                 f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
                 "phrase, cadence, SATB voice-leading, expanded harmony, tonicization, modal "
-                "mixture, modulation, repetition, or distinctness constraints."
+                "mixture, secondary leading-tone, modulation, repetition, or distinctness "
+                "constraints."
             )
 
         common: dict[str, Any] = dict(
@@ -251,7 +253,11 @@ class ConstraintMusicSolver:
         add_voice_leading_constraints(
             model, spec, melody_note, bass_note, melody_domain, bass_domain
         )
-        if spec.modal_mixture_enabled and spec.expanded_harmony_enabled:
+        if spec.secondary_leading_tone_enabled:
+            satb = add_secondary_leading_tone_satb_constraints(
+                model, spec, chord, melody_note, bass_note
+            )
+        elif spec.modal_mixture_enabled and spec.expanded_harmony_enabled:
             satb = add_borrowed_seventh_satb_constraints(
                 model, spec, chord, melody_note, bass_note
             )
