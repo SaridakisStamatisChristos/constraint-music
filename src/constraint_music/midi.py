@@ -1,24 +1,81 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from os import replace as atomic_replace
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
 
+from .delivery import TICKS_PER_BEAT, RenderProfile, verify_delivery
 from .models import GenerationResult, RhythmState
+from .satb import SatbGenerationResult
 
-TICKS_PER_BEAT = 480
 
-
-def write_midi(result: GenerationResult, path: str | Path) -> Path:
+def write_midi(
+    result: GenerationResult,
+    path: str | Path,
+    *,
+    profile: str | RenderProfile | None = None,
+) -> Path:
+    selected = (
+        RenderProfile.CERTIFIED_SATB
+        if profile is None and isinstance(result, SatbGenerationResult)
+        else RenderProfile.LEGACY_PREVIEW
+        if profile is None
+        else RenderProfile.parse(profile)
+    )
+    satb_profile = selected in {
+        RenderProfile.CERTIFIED_SATB,
+        RenderProfile.MELODY_PLUS_SATB,
+    }
+    if satb_profile and not isinstance(result, SatbGenerationResult):
+        raise ValueError(f"{selected.value} requires complete SATB voices")
     destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
     midi = MidiFile(type=1, ticks_per_beat=TICKS_PER_BEAT)
     _add_conductor_track(midi, result)
-    _add_melody_track(midi, result)
-    _add_bass_track(midi, result)
-    _add_harmony_track(midi, result)
+    if selected in {RenderProfile.CERTIFIED_SATB, RenderProfile.MELODY_PLUS_SATB}:
+        assert isinstance(result, SatbGenerationResult)
+        _add_satb_track(midi, "Soprano", 0, 52, result.soprano, result)
+        _add_satb_track(midi, "Alto", 1, 48, result.alto, result)
+        _add_satb_track(midi, "Tenor", 2, 42, result.tenor, result)
+        _add_satb_track(midi, "Bass", 3, 43, result.bass, result)
+        if selected is RenderProfile.MELODY_PLUS_SATB:
+            _add_melody_track(midi, result, channel=4)
+    else:
+        _add_melody_track(midi, result)
+        _add_bass_track(midi, result)
+        _add_harmony_track(midi, result)
     midi.save(destination)
+    return destination
+
+
+def write_certified_midi(
+    result: GenerationResult,
+    path: str | Path,
+    *,
+    profile: str | RenderProfile = RenderProfile.CERTIFIED_SATB,
+) -> Path:
+    """Atomically publish MIDI only after independent parse-back equality."""
+
+    selected = RenderProfile.parse(profile)
+    if selected is RenderProfile.LEGACY_PREVIEW:
+        raise ValueError("legacy-preview is not a certifying render profile")
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with NamedTemporaryFile(
+        prefix=f".{destination.stem}.", suffix=".mid", dir=destination.parent, delete=False
+    ) as handle:
+        temporary = Path(handle.name)
+    try:
+        write_midi(result, temporary, profile=selected)
+        report = verify_delivery(result, temporary, selected)
+        if not report.accepted:
+            raise ValueError("MIDI delivery certification failed: " + "; ".join(report.issues))
+        atomic_replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
     return destination
 
 
@@ -37,14 +94,30 @@ def _add_conductor_track(midi: MidiFile, result: GenerationResult) -> None:
         )
     )
     track.append(MetaMessage("key_signature", key=_mido_key(result), time=0))
+    if result.spec.modulation_enabled:
+        destination = result.spec.modulation_destination
+        boundary = result.spec.modulation_boundary_beat
+        if destination is None or boundary is None:
+            raise ValueError("enabled modulation requires destination and boundary")
+        display = destination.tonic[0] + destination.tonic[1:].replace("B", "b")
+        key_name = display if destination.mode.value == "major" else display + "m"
+        track.append(
+            MetaMessage(
+                "key_signature",
+                key=key_name,
+                time=boundary * TICKS_PER_BEAT,
+            )
+        )
     track.append(MetaMessage("end_of_track", time=0))
 
 
-def _add_melody_track(midi: MidiFile, result: GenerationResult) -> None:
+def _add_melody_track(
+    midi: MidiFile, result: GenerationResult, *, channel: int = 0
+) -> None:
     track = MidiTrack()
     midi.tracks.append(track)
     track.append(MetaMessage("track_name", name="Melody", time=0))
-    track.append(Message("program_change", channel=0, program=0, time=0))
+    track.append(Message("program_change", channel=channel, program=0, time=0))
     step_ticks = TICKS_PER_BEAT // result.spec.subdivisions_per_beat
     rhythm = result.effective_rhythm
     events: list[tuple[int, int, Message]] = []
@@ -64,10 +137,38 @@ def _add_melody_track(midi: MidiFile, result: GenerationResult) -> None:
         accent = 12 if beat % result.spec.beats_per_bar == 0 else 0
         velocity = min(112, 78 + accent + result.actual_tension[beat] // 10)
         events.append(
-            (start, 1, Message("note_on", note=note, velocity=velocity, channel=0, time=0))
+            (start, 1, Message("note_on", note=note, velocity=velocity, channel=channel, time=0))
         )
-        events.append((end, 0, Message("note_off", note=note, velocity=0, channel=0, time=0)))
+        events.append(
+            (end, 0, Message("note_off", note=note, velocity=0, channel=channel, time=0))
+        )
         step = end_step
+    _append_absolute_events(track, events)
+
+
+def _add_satb_track(
+    midi: MidiFile,
+    name: str,
+    channel: int,
+    program: int,
+    pitches: tuple[int, ...],
+    result: GenerationResult,
+) -> None:
+    track = MidiTrack()
+    midi.tracks.append(track)
+    track.append(MetaMessage("track_name", name=name, time=0))
+    track.append(Message("program_change", channel=channel, program=program, time=0))
+    events: list[tuple[int, int, Message]] = []
+    for beat, pitch in enumerate(pitches):
+        start = beat * TICKS_PER_BEAT
+        end = (beat + 1) * TICKS_PER_BEAT
+        velocity = 72 + (8 if beat % result.spec.beats_per_bar == 0 else 0)
+        events.append(
+            (start, 1, Message("note_on", note=pitch, velocity=velocity, channel=channel, time=0))
+        )
+        events.append(
+            (end, 0, Message("note_off", note=pitch, velocity=0, channel=channel, time=0))
+        )
     _append_absolute_events(track, events)
 
 

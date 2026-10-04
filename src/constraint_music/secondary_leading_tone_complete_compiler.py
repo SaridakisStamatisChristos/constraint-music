@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from itertools import pairwise
 
-from ortools.sat.python import cp_model
-
+from ._optional_cp import cp_model
 from .models import GenerationSpec
 from .secondary_leading_tone import (
     secondary_leading_tone_seventh_pitch_class_variants,

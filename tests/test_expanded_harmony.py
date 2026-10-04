@@ -107,7 +107,7 @@ def test_harmonic_form_tampering_breaks_semantic_provenance() -> None:
     assert "artifact content digest mismatch" in issues
 
 
-def test_v24_satb_payload_without_harmonic_form_metadata_still_loads(
+def test_v24_satb_payload_without_harmonic_form_metadata_is_non_certifying(
     solved_piece: GenerationResult,
 ) -> None:
     assert isinstance(solved_piece, SatbGenerationResult)
@@ -122,7 +122,8 @@ def test_v24_satb_payload_without_harmonic_form_metadata_still_loads(
     assert legacy.chord_kinds == ()
     assert legacy.chord_inversions == ()
     report = verify_result(legacy)
-    assert report.valid, report.issues
+    assert not report.valid
+    assert "CM027" in report.failed_rules
 
 
 def test_harmonic_form_distinctness_changes_kind_or_inversion() -> None:

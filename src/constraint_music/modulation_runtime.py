@@ -5,8 +5,7 @@ from dataclasses import dataclass
 from itertools import pairwise
 from typing import Any
 
-from ortools.sat.python import cp_model
-
+from ._optional_cp import cp_model
 from .modal_mixture import (
     NO_MODAL_SOURCE,
     ModalSource,

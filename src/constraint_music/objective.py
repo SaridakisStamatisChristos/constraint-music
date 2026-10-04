@@ -4,8 +4,7 @@ import random
 from dataclasses import dataclass
 from itertools import pairwise
 
-from ortools.sat.python import cp_model
-
+from ._optional_cp import cp_model
 from .models import GenerationResult, GenerationSpec
 from .search import (
     DEFAULT_OBJECTIVE_WEIGHTS,

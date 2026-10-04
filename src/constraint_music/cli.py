@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from dataclasses import replace
 from pathlib import Path
 
-from .midi import write_midi
+from .certification import certify_delivery
+from .delivery import RenderProfile
+from .errors import InternalVerificationError, NoSolutionError
+from .midi import write_certified_midi
 from .models import GenerationSpec
 from .objective import evaluate_objective_vector
 from .provenance import (
@@ -16,7 +20,6 @@ from .provenance import (
 )
 from .render import render_grid
 from .search import objective_mapping
-from .solver import ConstraintMusicSolver, InternalVerificationError, NoSolutionError
 from .verifier import verify_result
 
 
@@ -57,20 +60,42 @@ def build_parser() -> argparse.ArgumentParser:
         help="Candidate-pool multiplier for Pareto approximation (1..8)",
     )
     generate.add_argument("--print-grid", action="store_true", help="Print the solved note grid")
+    generate.add_argument(
+        "--render-profile",
+        choices=(RenderProfile.CERTIFIED_SATB.value, RenderProfile.MELODY_PLUS_SATB.value),
+        default=RenderProfile.CERTIFIED_SATB.value,
+        help="Certified MIDI projection (default: certified-satb)",
+    )
 
     verify = subparsers.add_parser(
         "verify",
         help=(
-            "Verify hard musical constraints and current artifact provenance "
-            "without rerunning the solver"
+            "Inspect embedded-context musical constraints and current artifact integrity "
+            "without claiming original-request authentication"
         ),
     )
     verify.add_argument("artifact", type=Path, help="JSON artifact produced by constraint-music")
     verify.add_argument(
         "--allow-legacy",
         action="store_true",
-        help="Accept missing current provenance while still checking musical constraints",
+        help="Inspect a supported 2.12 artifact as explicitly non-certifying",
     )
+
+    certify = subparsers.add_parser(
+        "certify",
+        help="Strictly certify an artifact and delivered MIDI against an independent request",
+    )
+    certify.add_argument("artifact", type=Path)
+    certify.add_argument(
+        "--spec", required=True, type=Path, help="Independently fixed YAML request"
+    )
+    certify.add_argument("--midi", required=True, type=Path, help="Delivered MIDI to parse back")
+    certify.add_argument(
+        "--render-profile",
+        choices=(RenderProfile.CERTIFIED_SATB.value, RenderProfile.MELODY_PLUS_SATB.value),
+        default=RenderProfile.CERTIFIED_SATB.value,
+    )
+    certify.add_argument("--certificate", type=Path, help="Write the structured certificate JSON")
 
     demo = subparsers.add_parser("demo", help="Generate a built-in four-bar C-major example")
     demo.add_argument("--output", "-o", type=Path, default=Path("constraint_demo.mid"))
@@ -98,9 +123,18 @@ def main(argv: list[str] | None = None) -> None:
                 args.distinct_on,
                 args.pareto,
                 args.pareto_candidate_multiplier,
+                args.render_profile,
             )
         elif args.command == "verify":
             _run_verification(args.artifact, args.allow_legacy)
+        elif args.command == "certify":
+            _run_certification(
+                args.artifact,
+                args.spec,
+                args.midi,
+                args.render_profile,
+                args.certificate,
+            )
         elif args.command == "demo":
             _run_generation(
                 GenerationSpec(),
@@ -111,6 +145,7 @@ def main(argv: list[str] | None = None) -> None:
                 "melody",
                 False,
                 3,
+                RenderProfile.CERTIFIED_SATB.value,
             )
         else:
             parser.error(f"Unknown command {args.command}")
@@ -128,7 +163,16 @@ def _run_generation(
     distinct_on: str,
     pareto: bool,
     pareto_candidate_multiplier: int,
+    render_profile: str,
 ) -> None:
+    try:
+        from .solver import ConstraintMusicSolver
+    except ModuleNotFoundError as exc:
+        if exc.name and exc.name.startswith("ortools"):
+            raise ValueError(
+                "Generation requires: pip install 'constraint-music[generation]'"
+            ) from exc
+        raise
     solver = ConstraintMusicSolver()
     if pareto:
         results = solver.generate_pareto(
@@ -141,7 +185,7 @@ def _run_generation(
         results = solver.generate_many(spec, count, distinct_on)
     for index, result in enumerate(results, start=1):
         midi_path = _numbered_path(output, index, len(results))
-        write_midi(result, midi_path)
+        write_certified_midi(result, midi_path, profile=render_profile)
         if json_path is not None:
             report_path = _numbered_path(json_path, index, len(results))
             write_result_json(result, report_path)
@@ -157,18 +201,19 @@ def _run_generation(
 
 
 def _run_verification(path: Path, allow_legacy: bool) -> None:
-    result, payload = load_result_json(path)
+    result, payload = load_result_json(path, require_current=not allow_legacy)
     report = verify_result(result)
     integrity_issues = verify_artifact_integrity(result, payload)
-    if allow_legacy and payload.get("schema_version") != ARTIFACT_SCHEMA_VERSION:
-        integrity_issues = ()
 
     if report.valid and not integrity_issues:
         print(
-            f"PASS | {len(report.checked_rules)} hard constraints | "
+            f"PASS (EMBEDDED CONTEXT ONLY) | {len(report.evaluated_rule_ids)} evaluated rules | "
             f"artifact={path}"
         )
         return
+
+    if allow_legacy and payload.get("schema_version") != ARTIFACT_SCHEMA_VERSION:
+        print("LEGACY INSPECTION: NON-CERTIFYING", file=sys.stderr)
 
     if not report.valid:
         print("MUSICAL VERIFICATION: FAIL", file=sys.stderr)
@@ -177,6 +222,39 @@ def _run_verification(path: Path, allow_legacy: bool) -> None:
     if integrity_issues:
         print("ARTIFACT INTEGRITY: FAIL", file=sys.stderr)
         for issue in integrity_issues:
+            print(f"- {issue}", file=sys.stderr)
+    raise SystemExit(1)
+
+
+def _run_certification(
+    artifact_path: Path,
+    spec_path: Path,
+    midi_path: Path,
+    render_profile: str,
+    certificate_path: Path | None,
+) -> None:
+    _result, payload = load_result_json(artifact_path, require_current=True)
+    expected_spec = GenerationSpec.from_yaml(spec_path)
+    report = certify_delivery(
+        payload,
+        midi_path,
+        expected_spec=expected_spec,
+        render_profile=render_profile,
+    )
+    rendered = json.dumps(dict(report.certificate), indent=2) + "\n"
+    if certificate_path is not None:
+        certificate_path.parent.mkdir(parents=True, exist_ok=True)
+        certificate_path.write_text(rendered, encoding="utf-8")
+    if report.accepted:
+        print("PASS (EXTERNAL REQUEST + DELIVERY) | " + rendered.strip())
+        return
+    print("CERTIFICATION: FAIL", file=sys.stderr)
+    for issue in report.semantic.issues:
+        print(f"- {issue}", file=sys.stderr)
+    for issue in report.integrity_issues:
+        print(f"- {issue}", file=sys.stderr)
+    if report.delivery is not None:
+        for issue in report.delivery.issues:
             print(f"- {issue}", file=sys.stderr)
     raise SystemExit(1)
 

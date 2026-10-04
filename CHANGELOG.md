@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.13.0a1 — semantic-assurance repair and research infrastructure
+
+- Reject malformed/current artifacts before reconstruction; current SATB artifacts can no longer downgrade to a base result.
+- Added strict numeric/null/array validation and safe blocked-rule reporting.
+- Added request-bound `certify` with fresh validation, rule-claim reconciliation, and coordinated-forgery regressions.
+- Replaced reconstructed harmony delivery with exact four-track SATB export and independent MIDI parse-back.
+- Added `PASS`/`FAIL`/`NOT_APPLICABLE`/`BLOCKED` outcomes for all 57 stable rule IDs.
+- Made the checker importable without OR-Tools and moved CP-SAT to the optional `generation` extra.
+- Added an independent secondary-seventh oracle, bounded 27,648-case enumerator, deterministic corruption corpus, and reproducibility documentation.
+
 ## 2.12.0a1 — complete secondary leading-tone seventh certification
 
 - Completed the secondary leading-tone seventh family within the declared common-practice tonicization domain instead of leaving half-diminished quality or third inversion as deferred convenience cases.

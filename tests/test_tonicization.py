@@ -139,7 +139,7 @@ def test_tonicization_tampering_breaks_semantic_provenance() -> None:
     assert "artifact content digest mismatch" in issues
 
 
-def test_absent_tonicization_metadata_remains_loadable_when_feature_is_off() -> None:
+def test_absent_tonicization_metadata_is_non_certifying_when_feature_is_off() -> None:
     legacy_spec = GenerationSpec(
         bars=1,
         beats_per_bar=4,
@@ -166,4 +166,5 @@ def test_absent_tonicization_metadata_remains_loadable_when_feature_is_off() -> 
     assert isinstance(loaded, SatbGenerationResult)
     assert loaded.tonicization_targets == ()
     report = verify_result(loaded)
-    assert report.valid, report.issues
+    assert not report.valid
+    assert "CM027" in report.failed_rules
