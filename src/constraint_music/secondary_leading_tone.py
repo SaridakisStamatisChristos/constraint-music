@@ -166,13 +166,25 @@ def _secondary_support_degree(
     target_degree: int,
     progression_graph: tuple[tuple[int, ...], ...],
     chromatic_pitch_classes: tuple[int, ...],
+    *,
+    minimum_overlap: int,
 ) -> int:
+    """Choose a deterministic structural support degree for a chromatic function.
+
+    ``chord_degrees`` remains the structural axis used by the legacy progression
+    graph. The secondary function itself is reconstructed independently from target,
+    quality, inversion, and SATB pitch content. Triads retain the historical two-tone
+    overlap requirement; v2.12 sevenths no longer need that workaround because CM005
+    and CM006 admit exact reconstructed secondary-seventh chord members directly.
+    """
     if len(progression_graph) != 7:
         raise ValueError("progression_graph must contain exactly seven source rows")
     if not 1 <= target_degree <= 6:
         raise ValueError("Secondary leading-tone target degree must be in 1..6")
     if key.triad_quality(target_degree) not in {"major", "minor"}:
         raise ValueError("Secondary leading-tone target must be a major or minor triad")
+    if not 0 <= minimum_overlap <= 4:
+        raise ValueError("minimum_overlap must be in 0..4")
 
     chromatic = set(chromatic_pitch_classes)
     candidates: list[tuple[int, int]] = []
@@ -180,7 +192,7 @@ def _secondary_support_degree(
         if target_degree not in targets:
             continue
         overlap = len(chromatic & set(key.triad_pitch_classes(support_degree)))
-        if overlap >= 2:
+        if overlap >= minimum_overlap:
             candidates.append((overlap, support_degree))
     if not candidates:
         raise ValueError(
@@ -206,6 +218,7 @@ def secondary_leading_tone_support_degree(
         target_degree,
         progression_graph,
         secondary_leading_tone_triad_pitch_classes(key, target_degree),
+        minimum_overlap=2,
     )
 
 
@@ -217,7 +230,14 @@ def secondary_leading_tone_seventh_support_degree(
         SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
     ),
 ) -> int:
-    """Choose the deterministic support degree for one seventh quality."""
+    """Choose structural support for one complete v2.12 seventh variant.
+
+    Unlike v2.11, no diatonic-overlap threshold is required. The support degree only
+    preserves the configured progression graph; exact chord membership is certified
+    independently by CM055-CM057. Among all graph-compatible predecessors, the most
+    pitch-overlapping degree is selected deterministically, with the lowest degree as
+    a stable tie-breaker.
+    """
     return _secondary_support_degree(
         key,
         target_degree,
@@ -227,6 +247,7 @@ def secondary_leading_tone_seventh_support_degree(
             target_degree,
             quality,
         ),
+        minimum_overlap=0,
     )
 
 
