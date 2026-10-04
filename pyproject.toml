@@ -46,6 +46,9 @@ src = ["src", "tests"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 
+[tool.ruff.lint.per-file-ignores]
+"src/constraint_music/secondary_leading_tone_seventh_runtime.py" = ["SIM102"]
+
 [tool.mypy]
 strict = true
 packages = ["constraint_music"]
