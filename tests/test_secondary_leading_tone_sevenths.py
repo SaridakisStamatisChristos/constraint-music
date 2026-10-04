@@ -65,12 +65,7 @@ def _synthetic_vii7_v(
     quality: SecondaryLeadingToneSeventhQuality,
     inversion: int,
 ) -> SatbGenerationResult:
-    """Build a two-chord C-major vii(quality)7/V -> V artifact.
-
-    Every tendency tone resolves to its exact target member. The helper deliberately
-    constructs all four inversions so verifier acceptance is independent of solver
-    search preferences.
-    """
+    """Build a two-chord C-major vii(quality)7/V -> V artifact."""
     spec = GenerationSpec(
         bars=1,
         beats_per_bar=2,
@@ -93,28 +88,27 @@ def _synthetic_vii7_v(
     )
     tones = secondary_leading_tone_seventh_pitch_classes(key, target, quality)
 
-    # Exact closed-position SATB templates. Each beat-0 tuple is S/A/T/B.
-    # Beat 1 is always a complete G-major triad with doubled root.
+    # Exact SATB templates, S/A/T/B. The chromatic tendency members resolve to
+    # G-major target tones in the same voice and the stable third supplies the
+    # doubled target root. These fixtures deliberately cover every inversion.
     if quality is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED:
         beat0_by_inversion = {
-            0: (63, 60, 57, 54),  # Eb C A F#
+            0: (69, 63, 60, 54),  # A Eb C F#
             1: (66, 63, 60, 57),  # F# Eb C A
-            2: (69, 66, 63, 60),  # A F# Eb C
+            2: (69, 63, 54, 48),  # A Eb F# C
             3: (69, 60, 54, 51),  # A C F# Eb
         }
     else:
         beat0_by_inversion = {
-            0: (64, 60, 57, 54),  # E C A F#
+            0: (69, 64, 60, 54),  # A E C F#
             1: (66, 64, 60, 57),  # F# E C A
-            2: (69, 66, 64, 60),  # A F# E C
+            2: (69, 64, 54, 48),  # A E F# C
             3: (69, 60, 54, 52),  # A C F# E
         }
     beat0 = beat0_by_inversion[inversion]
 
-    # Resolve each voice by functional pitch class, choosing a target G-major member.
     root, third, diminished_fifth, chordal_seventh = tones
-    target_quality = key.triad_quality(target)
-    fifth_delta = -1 if target_quality == "major" else -2
+    fifth_delta = -1
     seventh_delta = (
         -1
         if quality is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
@@ -130,18 +124,17 @@ def _synthetic_vii7_v(
         elif pc == chordal_seventh:
             beat1.append(note + seventh_delta)
         elif pc == third:
-            # The stable third is free; use nearest downward target root.
             beat1.append(note - 2)
-        else:  # pragma: no cover - template invariant
+        else:  # pragma: no cover - fixture invariant
             raise AssertionError("Unexpected secondary-seventh pitch class")
 
     soprano = (beat0[0], beat1[0])
     alto = (beat0[1], beat1[1])
     tenor = (beat0[2], beat1[2])
     bass = (beat0[3], beat1[3])
+    target_triad = key.triad_pitch_classes(target)
 
-    target_triad = set(key.triad_pitch_classes(target))
-    assert set(note % 12 for note in beat1) == target_triad
+    assert set(note % 12 for note in beat1) == set(target_triad)
     assert all(bass[i] < tenor[i] < alto[i] < soprano[i] for i in range(2))
 
     return SatbGenerationResult(
@@ -159,7 +152,7 @@ def _synthetic_vii7_v(
         alto=alto,
         tenor=tenor,
         chord_kinds=(ChordKind.SEVENTH, ChordKind.TRIAD),
-        chord_inversions=(inversion, key.triad_pitch_classes(target).index(bass[1] % 12)),
+        chord_inversions=(inversion, target_triad.index(bass[1] % 12)),
         tonicization_targets=(target, None),
         modal_sources=(None, None),
     )
@@ -306,7 +299,7 @@ def test_verifier_rejects_wrong_quality_specific_seventh_resolution() -> None:
         3,
     )
     bass = list(result.bass)
-    bass[1] = bass[0] - 1  # Half-diminished chordal seventh requires -2.
+    bass[1] = bass[0] - 1
     report = verify_result(replace(result, bass=tuple(bass)))
     assert not report.valid
     assert "CM057" in report.failed_rules
@@ -346,5 +339,6 @@ def test_secondary_seventh_target_identity_is_committed_by_provenance() -> None:
     target = payload["music"]["tonicization_targets"][beat]
     assert target is not None
     payload["music"]["tonicization_targets"][beat] = (int(target) + 1) % 7
-    assert "composition digest mismatch" in verify_artifact_integrity(result, payload)
-    assert "artifact content digest mismatch" in verify_artifact_integrity(result, payload)
+    issues = verify_artifact_integrity(result, payload)
+    assert "composition digest mismatch" in issues
+    assert "artifact content digest mismatch" in issues
