@@ -82,23 +82,38 @@ def minor_source_leading_piece() -> SatbGenerationResult:
 
 @cache
 def modulated_borrowed_sevenths() -> ModulatedSatbGenerationResult:
+    # The graph forces 0,1,0,1,2,3,4,0. With boundary=3, beats 1/3/4/5 are
+    # the only borrowable beats. Requiring all four to be borrowed plus two sevenths
+    # forces beat 3 to be a destination-key borrowed seventh and beat 6 to be the
+    # ordinary destination V7. Beat 1 cannot be a borrowed seventh because its
+    # chordal seventh cannot resolve into the certified pivot on beat 2.
+    graph = (
+        (1,),
+        (0, 2),
+        (3,),
+        (4,),
+        (0,),
+        (5,),
+        (6,),
+    )
     spec = GenerationSpec(
         bars=1,
-        beats_per_bar=5,
+        beats_per_bar=8,
         subdivisions_per_beat=1,
         require_authentic_cadence=False,
+        progression_graph=graph,
         harmony_vocabulary="triads+sevenths",
         minimum_seventh_chords=2,
         modal_mixture_enabled=True,
-        minimum_borrowed_chords=1,
+        minimum_borrowed_chords=4,
         modulation_enabled=True,
         modulation_destination_key="G",
-        modulation_boundary_beat=2,
+        modulation_boundary_beat=3,
         avoid_parallel_perfects=False,
         workers=1,
         seed=2903,
         max_time_seconds=30,
-        tension_curve=(0.05, 0.15, 0.55, 0.9, 0.05),
+        tension_curve=(0.05, 0.25, 0.1, 0.55, 0.45, 0.6, 0.9, 0.05),
     )
     result = ConstraintMusicSolver().generate(spec)
     assert isinstance(result, ModulatedSatbGenerationResult)
@@ -116,7 +131,7 @@ def _borrowed_seventh_beat(result: SatbGenerationResult) -> int:
 def test_v29_supported_borrowed_seventh_policy_is_narrow_and_source_aware() -> None:
     major = Key("C", Mode.MAJOR)
     minor = Key("C", Mode.MINOR)
-    assert supported_borrowed_seventh_degrees(major) == (1, 4)
+    assert supported_borrowed_seventh_degrees(major) == (1,)
     assert supported_borrowed_seventh_degrees(minor) == (1, 2)
     assert modal_source_leading_tone_pc(
         major, ModalSource.PARALLEL_NATURAL_MINOR
@@ -128,6 +143,13 @@ def test_v29_supported_borrowed_seventh_policy_is_narrow_and_source_aware() -> N
         ModalSource.PARALLEL_NATURAL_MINOR,
         1,
     ) == "ii°65[parallel_natural_minor]"
+    with pytest.raises(ValueError, match="Unsupported borrowed seventh degree 4"):
+        borrowed_seventh_chord_name(
+            major,
+            4,
+            ModalSource.PARALLEL_NATURAL_MINOR,
+            0,
+        )
 
 
 def test_solver_emits_complete_verified_borrowed_seventh() -> None:
@@ -295,6 +317,7 @@ def test_search_axes_remain_orthogonal() -> None:
 
 def test_post_modulation_borrowed_sevenths_use_destination_active_key() -> None:
     result = modulated_borrowed_sevenths()
+    assert result.chord_degrees == (0, 1, 0, 1, 2, 3, 4, 0)
     borrowed = [
         beat
         for beat, (source, kind) in enumerate(
@@ -302,24 +325,24 @@ def test_post_modulation_borrowed_sevenths_use_destination_active_key() -> None:
         )
         if source is not None and ChordKind.parse(kind) is ChordKind.SEVENTH
     ]
-    assert borrowed == [2]
+    assert borrowed == [3]
     destination = result.spec.modulation_destination
     assert destination is not None
-    for beat in borrowed:
-        source = result.modal_sources[beat]
-        assert source is canonical_modal_source(destination)
-        expected = borrowed_seventh_pitch_classes(
-            destination,
-            result.chord_degrees[beat],
-            source,
-        )
-        pcs = {
-            result.soprano[beat] % 12,
-            result.alto[beat] % 12,
-            result.tenor[beat] % 12,
-            result.bass[beat] % 12,
-        }
-        assert pcs == set(expected)
+    beat = borrowed[0]
+    source = result.modal_sources[beat]
+    assert source is canonical_modal_source(destination)
+    expected = borrowed_seventh_pitch_classes(
+        destination,
+        result.chord_degrees[beat],
+        source,
+    )
+    pcs = {
+        result.soprano[beat] % 12,
+        result.alto[beat] % 12,
+        result.tenor[beat] % 12,
+        result.bass[beat] % 12,
+    }
+    assert pcs == set(expected)
     assert verify_result(result).valid
 
 
