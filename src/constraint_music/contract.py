@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.10"
+CONTRACT_VERSION = "2.11"
 
 
 @dataclass(frozen=True, slots=True)
@@ -239,9 +239,10 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM037",
         "tonicization_context",
         (
-            "When applied-dominant tonicization is enabled, target-bearing seventh chords use "
-            "supported local-tonic identities in the active key and satisfy the declared minimum "
-            "applied-dominant count. Target-bearing triads are separately governed by CM052-CM054."
+            "When applied-dominant tonicization is enabled, only target-bearing sevenths whose "
+            "active-key pitch content and support identity reconstruct exactly as applied V7/x "
+            "count toward the declared minimum. Target-bearing triads remain governed by "
+            "CM052-CM054; v2.11 secondary leading-tone sevenths by CM055-CM057."
         ),
         conditional=True,
     ),
@@ -249,8 +250,9 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM038",
         "applied_dominant_realization",
         (
-            "Every target-bearing seventh has active-key target-derived dominant-seventh pitch "
-            "classes exactly once, the correct root degree, and an inversion matching the bass."
+            "Every seventh certified as an applied dominant has active-key target-derived "
+            "dominant-seventh pitch classes exactly once, the correct root degree, and an "
+            "inversion matching the bass."
         ),
         conditional=True,
     ),
@@ -397,6 +399,37 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
             "Every secondary leading-tone chord resolves immediately to its declared unaltered "
             "triadic target; each local leading tone rises by semitone and each diminished fifth "
             "resolves downward by step."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM055",
+        "secondary_leading_tone_seventh_context",
+        (
+            "Every v2.11 target-bearing secondary leading-tone seventh declares a supported "
+            "non-tonic target in the exact active local key, uses the deterministic CM005/CM006 "
+            "support degree, is fully diminished, does not overlap modal borrowing or applied-"
+            "dominant identity, and stays outside certified cadence/modulation anchors."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM056",
+        "secondary_leading_tone_seventh_realization",
+        (
+            "Every certified secondary leading-tone seventh contains its four target-derived "
+            "fully diminished pitch classes exactly once; only root, first, and second inversion "
+            "are admitted and the serialized inversion must match the bass."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM057",
+        "secondary_leading_tone_seventh_resolution",
+        (
+            "Every certified secondary leading-tone seventh resolves immediately to its declared "
+            "untargeted, unborrowed triadic target; the local leading tone rises by semitone, "
+            "while the diminished fifth and chordal diminished seventh descend by step."
         ),
         conditional=True,
     ),
