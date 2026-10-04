@@ -89,6 +89,8 @@ The verifier checks:
 
 For a **major local target**, both fully diminished and half-diminished qualities are eligible. For a **minor local target**, the certified quality is fully diminished. Diminished and augmented target triads are outside this tonicization subsystem.
 
+The support degree is a structural progression-graph bridge, not a proxy for chord identity. v2.12 does not impose v2.11's old two-pitch diatonic-overlap threshold on secondary sevenths; exact target-derived pitch reconstruction determines the musical function.
+
 ### CM056 — exact realization and inversion
 
 The verifier derives each eligible pitch set from target + active key and requires:
@@ -162,11 +164,11 @@ The pre-merge v2.12 branch passes the full gate on Python 3.11, 3.12, and 3.13:
 
 - Ruff clean;
 - strict mypy clean across 27 source files;
-- 147 tests passing;
+- 197 tests passing;
 - 80% branch-aware coverage;
 - source distribution and wheel build successful.
 
-The adversarial suite covers both qualities across all four inversions, inversion-scope leakage, missing/duplicated tones, quality-specific tendency errors, applied-dominant count confusion, modal overlap, protected anchors, provenance tampering, destination-key reconstruction, and stale-key forgery.
+The validation matrix includes every chromatic tonic in both major and minor modes, every progression-reachable eligible local target under the default graph, each certified quality, and all four inversions. The adversarial suite additionally covers inversion-scope leakage, missing/duplicated tones, quality-specific tendency errors, applied-dominant count confusion, modal overlap, protected anchors, provenance tampering, destination-key reconstruction, stale-key forgery, and the former support-overlap exclusion.
 
 ## Historical payloads
 
