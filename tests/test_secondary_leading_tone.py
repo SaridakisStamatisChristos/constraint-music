@@ -93,7 +93,7 @@ def test_v210_target_policy_and_support_degree_are_deterministic() -> None:
     assert secondary_leading_tone_support_degree(key, 1, graph) == 0
     assert secondary_leading_tone_triad_pitch_classes(key, 1) == (1, 4, 7)
     assert secondary_leading_tone_name(key, 1, 1) == "vii°6/ii"
-    with pytest.raises(ValueError, match="target degree must be in 1..6"):
+    with pytest.raises(ValueError, match=r"target degree must be in 1\.\.6"):
         secondary_leading_tone_triad_pitch_classes(key, 0)
 
 
