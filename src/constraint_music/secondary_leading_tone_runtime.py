@@ -218,10 +218,10 @@ def add_secondary_leading_tone_satb_constraints(
 
     applied_flags: list[cp_model.IntVar] = []
     secondary_flags: list[cp_model.IntVar] = []
-    for beat, target in enumerate(tonicization_target):
+    for beat, target_var in enumerate(tonicization_target):
         has_target = model.new_bool_var(f"local_target_{beat}")
-        model.add(target != NO_TONICIZATION_TARGET).only_enforce_if(has_target)
-        model.add(target == NO_TONICIZATION_TARGET).only_enforce_if(has_target.negated())
+        model.add(target_var != NO_TONICIZATION_TARGET).only_enforce_if(has_target)
+        model.add(target_var == NO_TONICIZATION_TARGET).only_enforce_if(has_target.negated())
 
         applied = model.new_bool_var(f"applied_dominant_{beat}")
         model.add(applied <= has_target)
