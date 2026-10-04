@@ -87,7 +87,16 @@ def verify_result(result: GenerationResult) -> ValidationReport:
             fail("CM008", f"Melody steps {step}->{step + 1}: leap exceeds limit")
         if abs(delta) % 12 == 6:
             fail("CM009", f"Melody steps {step}->{step + 1}: tritone motion is forbidden")
-        if spec.resolve_leading_tone and left % 12 == key.leading_tone_pc and right != left + 1:
+        active_key = (
+            spec.active_key_at_beat(step // spec.subdivisions_per_beat)
+            if spec.modulation_enabled
+            else key
+        )
+        if (
+            spec.resolve_leading_tone
+            and left % 12 == active_key.leading_tone_pc
+            and right != left + 1
+        ):
             fail("CM010", f"Melody step {step}: leading tone does not resolve upward to tonic")
 
     run_length = 1

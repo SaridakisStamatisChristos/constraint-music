@@ -293,9 +293,13 @@ class GenerationSpec:
         )
         maximum_borrowed = max(0, self.total_beats - reserved_cadence_beats)
         if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:
+            boundary_name = (
+                "preserved cadential/context boundary"
+                if self.modulation_enabled
+                else "preserved global cadential boundary"
+            )
             raise ValueError(
-                "minimum_borrowed_chords exceeds beats available outside the preserved "
-                "cadential/context boundary"
+                "minimum_borrowed_chords exceeds beats available outside the " + boundary_name
             )
 
         _ = self.tonal_key
