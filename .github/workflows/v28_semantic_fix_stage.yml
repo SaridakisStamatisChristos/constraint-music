@@ -124,6 +124,41 @@ jobs:
           if old not in text:
               raise SystemExit("modal compatibility anchor missing")
           models.write_text(text.replace(old, new, 1))
+
+          runtime = Path("src/constraint_music/modulation_runtime.py")
+          text = runtime.read_text()
+          old = (
+              "            for beat, (left_var, right_var) in enumerate(pairwise(voice_vars)):\n"
+              "                key = spec.active_key_at_beat(beat)\n"
+              "                allowed = [\n"
+          )
+          new = (
+              "            for beat, (left_var, right_var) in enumerate(pairwise(voice_vars)):\n"
+              "                # The certified terminal V-I cadence is governed by CM047;\n"
+              "                # generic inner-voice CM032 remains active on every earlier transition.\n"
+              "                if beat == spec.total_beats - 2:\n"
+              "                    continue\n"
+              "                key = spec.active_key_at_beat(beat)\n"
+              "                allowed = [\n"
+          )
+          if old not in text:
+              raise SystemExit("runtime solver CM032 anchor missing")
+          text = text.replace(old, new, 1)
+          old = (
+              "            for beat, (left, right) in enumerate(pairwise(voice)):\n"
+              "                key = spec.active_key_at_beat(beat)\n"
+              "                if left % 12 == key.leading_tone_pc and right != left + 1:\n"
+          )
+          new = (
+              "            for beat, (left, right) in enumerate(pairwise(voice)):\n"
+              "                if beat == spec.total_beats - 2:\n"
+              "                    continue\n"
+              "                key = spec.active_key_at_beat(beat)\n"
+              "                if left % 12 == key.leading_tone_pc and right != left + 1:\n"
+          )
+          if old not in text:
+              raise SystemExit("runtime verifier CM032 anchor missing")
+          runtime.write_text(text.replace(old, new, 1))
           PY
       - name: Remove helper-only workflows from resulting tree
         run: |
@@ -138,5 +173,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "fix(v2.8): make melodic leading-tone context local"
+          git commit -m "fix(v2.8): scope CM032 outside certified terminal cadence"
           git push origin HEAD:staging/v2.8-typefix
