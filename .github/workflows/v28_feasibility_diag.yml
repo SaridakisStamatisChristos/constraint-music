@@ -1,4 +1,4 @@
-name: v2.8 feasibility diagnostic
+name: v2.8 CM010 isolation diagnostic
 
 on:
   push:
@@ -13,45 +13,88 @@ jobs:
         with:
           python-version: "3.13"
       - run: python -m pip install -e ".[dev]"
-      - name: Probe modulation feasibility
+      - name: Isolate melody and inner-voice leading-tone constraints
         run: |
           python - <<'PY'
-          from constraint_music.models import GenerationSpec
-          from constraint_music.solver import ConstraintMusicSolver
-          from constraint_music.search import DEFAULT_OBJECTIVE_WEIGHTS, normalize_objective_weights
+          from dataclasses import replace
+          from itertools import pairwise
           from ortools.sat.python import cp_model
+          from constraint_music.models import GenerationSpec
+          from constraint_music.search import DEFAULT_OBJECTIVE_WEIGHTS, normalize_objective_weights
+          from constraint_music.solver import ConstraintMusicSolver
 
-          FULL = tuple(tuple(range(7)) for _ in range(7))
-          common = dict(
+          base = GenerationSpec(
               bars=2, beats_per_bar=4, subdivisions_per_beat=1,
               require_authentic_cadence=False,
               modulation_enabled=True, modulation_destination_key="G",
               modulation_boundary_beat=2, avoid_parallel_perfects=False,
               workers=1, seed=2808, max_time_seconds=5,
               tension_curve=(0.05,0.15,0.35,0.55,0.75,0.9,0.6,0.1),
+              resolve_leading_tone=False,
           )
-          variants = {
-              "base": {},
-              "no_leading_resolution": {"resolve_leading_tone": False},
-              "full_progression": {"progression_graph": FULL},
-              "wide_motion": {"max_melody_leap": 24, "max_bass_leap": 24, "max_repeated_notes": 8},
-              "relaxed_all": {"resolve_leading_tone": False, "progression_graph": FULL, "max_melody_leap": 24, "max_bass_leap": 24, "max_repeated_notes": 8},
-              "boundary3": {"modulation_boundary_beat": 3},
-              "boundary4": {"modulation_boundary_beat": 4},
-          }
           weights = normalize_objective_weights(DEFAULT_OBJECTIVE_WEIGHTS)
-          engine = ConstraintMusicSolver()
-          for name, changes in variants.items():
-              spec = GenerationSpec(**(common | changes))
-              problem = engine._compile(spec, weights)
-              validation = problem.model.validate()
+
+          def add_note_resolution(model, spec, variables, domain, label):
+              for beat, (left_var, right_var) in enumerate(pairwise(variables)):
+                  key = spec.active_key_at_beat(beat)
+                  rows = [
+                      (left, right)
+                      for left in domain
+                      for right in domain
+                      if left % 12 != key.leading_tone_pc or right == left + 1
+                  ]
+                  model.add_allowed_assignments([left_var, right_var], rows)
+
+          def solve(name, add_melody=False, add_inner=False, cross_uses_destination=False):
+              engine = ConstraintMusicSolver()
+              problem = engine._compile(base, weights)
+              if add_melody:
+                  domain = base.tonal_key.pitches_in_range(base.melody_low, base.melody_high)
+                  for step, (left_var, right_var) in enumerate(pairwise(problem.melody_note)):
+                      left_beat = step // base.subdivisions_per_beat
+                      right_beat = (step + 1) // base.subdivisions_per_beat
+                      context_beat = right_beat if cross_uses_destination and right_beat != left_beat else left_beat
+                      key = base.active_key_at_beat(context_beat)
+                      rows = [
+                          (left, right)
+                          for left in domain
+                          for right in domain
+                          if left % 12 != key.leading_tone_pc or right == left + 1
+                      ]
+                      problem.model.add_allowed_assignments([left_var, right_var], rows)
+              if add_inner:
+                  union_pcs = set()
+                  for key in base.context_keys:
+                      union_pcs.update(key.pitch_classes)
+                  alto_domain = tuple(n for n in range(55, 75) if n % 12 in union_pcs)
+                  tenor_domain = tuple(n for n in range(48, 68) if n % 12 in union_pcs)
+                  for variables, domain in ((problem.satb.alto, alto_domain), (problem.satb.tenor, tenor_domain)):
+                      for beat, (left_var, right_var) in enumerate(pairwise(variables)):
+                          context_beat = beat + 1 if cross_uses_destination and beat + 1 == base.modulation_boundary_beat else beat
+                          key = base.active_key_at_beat(context_beat)
+                          rows = [
+                              (left, right)
+                              for left in domain
+                              for right in domain
+                              if left % 12 != key.leading_tone_pc or right == left + 1
+                          ]
+                          problem.model.add_allowed_assignments([left_var, right_var], rows)
               solver = cp_model.CpSolver()
               solver.parameters.max_time_in_seconds = 5
               solver.parameters.num_search_workers = 1
               status = solver.solve(problem.model)
-              print(name, "model_validate=", repr(validation), "status=", solver.status_name(status))
+              print(name, solver.status_name(status))
               if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-                  print(" chords=", [solver.value(v) for v in problem.chord])
-                  print(" melody=", [solver.value(v) for v in problem.melody_note])
-                  print(" bass=", [solver.value(v) for v in problem.bass_note])
+                  print(" chords", [solver.value(v) for v in problem.chord])
+                  print(" melody", [solver.value(v) for v in problem.melody_note])
+                  print(" alto", [solver.value(v) for v in problem.satb.alto])
+                  print(" tenor", [solver.value(v) for v in problem.satb.tenor])
+
+          solve("none")
+          solve("melody-left-context", add_melody=True)
+          solve("inner-left-context", add_inner=True)
+          solve("both-left-context", add_melody=True, add_inner=True)
+          solve("melody-cross-destination", add_melody=True, cross_uses_destination=True)
+          solve("inner-cross-destination", add_inner=True, cross_uses_destination=True)
+          solve("both-cross-destination", add_melody=True, add_inner=True, cross_uses_destination=True)
           PY
