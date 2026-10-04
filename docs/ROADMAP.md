@@ -64,31 +64,69 @@
 ## v2.7 verified modal mixture
 
 - [x] Explicit nullable per-beat source-mode identity.
-- [x] Canonical parallel source policy: natural minor for global major, major for global minor.
+- [x] Canonical parallel source policy: natural minor for active major, major for active minor.
 - [x] Source-derived borrowed triads with no unrestricted chromatic pitch permission.
 - [x] Structural filtering of borrowed degrees incompatible with preserved CM005/CM006 semantics.
-- [x] Preserve final/global authentic-cadence context while allowing borrowing earlier in the phrase.
+- [x] Preserve certified cadence/context anchors while allowing borrowing elsewhere.
 - [x] Make modal mixture and tonicization mutually exclusive at a beat.
 - [x] Independent CM041–CM042 verifier symmetry and adversarial tamper tests.
 - [x] `modal_source` distinctness without redefining existing search dimensions.
 - [x] Schema/contract 2.7 provenance for modal-source metadata.
 
+## v2.8 persistent local key and controlled modulation
+
+- [x] Persistent active local-key state distinct from one-chord tonicization.
+- [x] One explicit same-mode dominant-key modulation event.
+- [x] Explicit destination-key identity and modulation boundary.
+- [x] Fixed common-chord pivot: source I reinterpreted as destination IV.
+- [x] Persistent destination-key interpretation after the boundary.
+- [x] Destination-key V-I confirmation.
+- [x] Per-beat key-context serialization and provenance commitment.
+- [x] `key_context` distinctness without redefining earlier search axes.
+- [x] Active-key-aware tonicization, modal mixture, objective scoring, melody, and bass checks.
+- [x] Context-union storage domains plus exact per-step active-key admission.
+- [x] v2.8.0a2 strict cadence repair: no terminal CM032 exemption; every destination-leading-tone carrier resolves upward.
+- [x] Independent CM043–CM048 verification and hostile modulation tamper tests.
+
+## v2.9 source-aware borrowed seventh chords
+
+- [x] Compose expanded harmony, modal-source identity, and persistent active-key context.
+- [x] Admit only a narrow source-derived borrowed-seventh whitelist compatible with CM005/CM006.
+- [x] Preserve root, first, and second inversions; keep third inversion deferred.
+- [x] Require complete four-tone realization and inversion/bass agreement.
+- [x] Require source-aware chordal-seventh and source-leading-tone resolution.
+- [x] Keep borrowing and tonicization mutually exclusive on the same beat.
+- [x] Exclude certified modulation pivot and destination-cadence anchors.
+- [x] Reconstruct post-modulation borrowing from the destination active key, never stale global context.
+- [x] Preserve orthogonal `modal_source`, `harmonic_form`, and `key_context` search identities.
+- [x] Extend the hard contract additively with CM049–CM051 and schema/contract 2.9.
+- [x] Add hostile solver/verifier/provenance/cross-feature tests.
+
 ## Later harmonic expansion
 
-- [ ] Borrowed seventh chords with explicit source-aware seventh/tendency semantics.
 - [ ] Secondary leading-tone chords with independent tendency-tone semantics.
-- [ ] Persistent local-key regions distinct from one-chord tonicization.
-- [ ] Controlled modulation with explicit pivot and destination-key identity.
-- [ ] Third-inversion seventh support if the outer-voice compatibility contract is explicitly revised rather than silently reinterpreted.
+- [ ] Third-inversion seventh support only after an explicit outer-voice compatibility revision.
+- [ ] Richer voice-leading policy where justified by an explicit contract version.
+- [ ] Multi-modulation chains only after single-modulation invariants remain stable.
+- [ ] Distant-key networks and enharmonic reinterpretation.
+- [ ] Augmented-sixth and Neapolitan reinterpretation.
 
 ## Later general work
 
 - [ ] Richer rhythmic syntax and motif transformations.
-- [ ] Binary/ternary/period/form grammar.
+- [ ] Binary/ternary/larger form grammar.
 - [ ] Transparent style profiles.
 - [ ] Unsat explanations mapped back to musical rules and configuration fields.
 - [ ] MusicXML export and notation-level regression fixtures.
 
 ## Neuro-symbolic track
 
-A model may propose motifs, harmonic plans, rhythmic cells, phrase plans, tonicization targets, modal-source plans, or target curves, but only the symbolic layer is allowed to certify the final artifact. The intended boundary is `proposal -> compile/repair -> independent verify -> export`, not unconstrained model generation presented as verified composition.
+A model may propose motifs, harmonic plans, rhythmic cells, phrase plans, tonicization targets,
+modal-source plans, modulation plans, or target curves, but only the symbolic layer may certify
+the final artifact. The intended boundary remains:
+
+```text
+proposal -> compile / repair -> independent verify -> export
+```
+
+Unconstrained model generation is never presented as a verified composition.
