@@ -254,6 +254,19 @@ def verify_result(result: GenerationResult) -> ValidationReport:
     for rule_id, message in satb_issues:
         fail(rule_id, message)
 
+    if spec.secondary_leading_tone_seventh_enabled and hasattr(result, "chord_inversions"):
+        inversions = getattr(result, "chord_inversions")
+        if len(inversions) == spec.total_beats:
+            for beat, raw_inversion in enumerate(inversions):
+                inversion = int(raw_inversion)
+                maximum = 3 if beat in exact_secondary else 2
+                if not 0 <= inversion <= maximum:
+                    fail(
+                        "CM033",
+                        f"Beat {beat}: inversion {inversion} is outside 0..{maximum} "
+                        "for its independently reconstructed function",
+                    )
+
     if spec.secondary_leading_tone_seventh_enabled and spec.modulation_enabled:
         modulation_issues = secondary_leading_tone_seventh_modulation_verification_issues(result)
     elif spec.secondary_leading_tone_enabled and spec.modulation_enabled:
