@@ -165,7 +165,10 @@ class SatbGenerationResult(GenerationResult):
                         continue
 
                     if kind is ChordKind.TRIAD and self.spec.secondary_leading_tone_enabled:
-                        expected = secondary_leading_tone_triad_pitch_classes(key, target)
+                        expected_triad = secondary_leading_tone_triad_pitch_classes(
+                            key,
+                            target,
+                        )
                         support = secondary_leading_tone_support_degree(
                             key,
                             target,
@@ -173,9 +176,9 @@ class SatbGenerationResult(GenerationResult):
                         )
                         if (
                             degree == support
-                            and set(pcs) == set(expected)
+                            and set(pcs) == set(expected_triad)
                             and 0 <= inversion <= 2
-                            and self.bass[beat] % 12 == expected[inversion]
+                            and self.bass[beat] % 12 == expected_triad[inversion]
                         ):
                             names.append(secondary_leading_tone_name(key, target, inversion))
                             continue
@@ -666,8 +669,7 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                 continue
             if target not in supported_targets:
                 issues.append(
-                    ("CM037", f"Beat {beat}: unsupported tonicization target degree {target}")
-                )
+                    ("CM037", f"Beat {beat}: unsupported tonicization target degree {target}"))
                 continue
             if metadata_valid and kinds[beat] is not ChordKind.SEVENTH:
                 issues.append(("CM037", f"Beat {beat}: applied dominant must be a seventh chord"))
