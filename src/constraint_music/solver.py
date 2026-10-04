@@ -31,6 +31,11 @@ from .search import (
     pareto_indices,
     scalarization_profiles,
 )
+from .secondary_leading_tone_complete_compiler import (
+    add_complete_secondary_harmony_constraints,
+    add_complete_secondary_melodic_constraints,
+    secondary_seventh_outer_pitches_in_range,
+)
 from .secondary_leading_tone_runtime import add_secondary_leading_tone_satb_constraints
 from .secondary_leading_tone_seventh_runtime import (
     add_secondary_leading_tone_seventh_satb_constraints,
@@ -212,16 +217,28 @@ class ConstraintMusicSolver:
         return replace(raw_result, validation=report)
 
     def _compile(self, spec: GenerationSpec, weights: ObjectiveVector) -> _CompiledProblem:
-        melody_domain = (
-            spec.context_pitches_in_range(spec.melody_low, spec.melody_high)
-            if spec.modulation_enabled
-            else spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
-        )
-        bass_domain = (
-            spec.context_pitches_in_range(spec.bass_low, spec.bass_high)
-            if spec.modulation_enabled
-            else spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
-        )
+        if spec.secondary_leading_tone_seventh_enabled:
+            melody_domain = secondary_seventh_outer_pitches_in_range(
+                spec,
+                spec.melody_low,
+                spec.melody_high,
+            )
+            bass_domain = secondary_seventh_outer_pitches_in_range(
+                spec,
+                spec.bass_low,
+                spec.bass_high,
+            )
+        else:
+            melody_domain = (
+                spec.context_pitches_in_range(spec.melody_low, spec.melody_high)
+                if spec.modulation_enabled
+                else spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
+            )
+            bass_domain = (
+                spec.context_pitches_in_range(spec.bass_low, spec.bass_high)
+                if spec.modulation_enabled
+                else spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
+            )
         model = cp_model.CpModel()
 
         melody_choice = [
@@ -248,10 +265,33 @@ class ConstraintMusicSolver:
             model.add_element(choice, bass_domain, note)
         chord = [model.new_int_var(0, 6, f"chord_{beat}") for beat in range(spec.total_beats)]
 
-        add_harmony_constraints(
-            model, spec, chord, melody_choice, bass_choice, melody_domain, bass_domain
-        )
-        add_melodic_constraints(model, spec, melody_choice, melody_domain)
+        if spec.secondary_leading_tone_seventh_enabled:
+            add_complete_secondary_harmony_constraints(
+                model,
+                spec,
+                chord,
+                melody_choice,
+                bass_choice,
+                melody_domain,
+                bass_domain,
+            )
+            add_complete_secondary_melodic_constraints(
+                model,
+                spec,
+                melody_choice,
+                melody_domain,
+            )
+        else:
+            add_harmony_constraints(
+                model,
+                spec,
+                chord,
+                melody_choice,
+                bass_choice,
+                melody_domain,
+                bass_domain,
+            )
+            add_melodic_constraints(model, spec, melody_choice, melody_domain)
         add_bass_constraints(model, spec, bass_choice, bass_domain)
         add_voice_leading_constraints(
             model, spec, melody_note, bass_note, melody_domain, bass_domain
