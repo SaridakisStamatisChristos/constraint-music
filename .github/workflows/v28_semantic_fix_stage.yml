@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
       - name: Apply solver/verifier symmetric fix
         run: |
           python - <<'PY'
@@ -19,99 +22,105 @@ jobs:
 
           compiler = Path("src/constraint_music/compiler_tonal.py")
           text = compiler.read_text()
-          old = '''    key = spec.tonal_key
-    allowed_pairs: list[tuple[int, int]] = []
-    for left_index, left_note in enumerate(melody_domain):
-        for right_index, right_note in enumerate(melody_domain):
-            leap = right_note - left_note
-            if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:
-                continue
-            if (
-                spec.resolve_leading_tone
-                and left_note % 12 == key.leading_tone_pc
-                and right_note != left_note + 1
-            ):
-                continue
-            allowed_pairs.append((left_index, right_index))
-    for left_var, right_var in pairwise(melody_choice):
-        model.add_allowed_assignments([left_var, right_var], allowed_pairs)
-'''
-          new = '''    key = spec.tonal_key
-    pair_rows_by_leading_pc: dict[int, list[tuple[int, int]]] = {}
-
-    def pair_rows(leading_tone_pc: int) -> list[tuple[int, int]]:
-        cached = pair_rows_by_leading_pc.get(leading_tone_pc)
-        if cached is not None:
-            return cached
-        rows: list[tuple[int, int]] = []
-        for left_index, left_note in enumerate(melody_domain):
-            for right_index, right_note in enumerate(melody_domain):
-                leap = right_note - left_note
-                if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:
-                    continue
-                if (
-                    spec.resolve_leading_tone
-                    and left_note % 12 == leading_tone_pc
-                    and right_note != left_note + 1
-                ):
-                    continue
-                rows.append((left_index, right_index))
-        pair_rows_by_leading_pc[leading_tone_pc] = rows
-        return rows
-
-    for step, (left_var, right_var) in enumerate(pairwise(melody_choice)):
-        active_key = (
-            spec.active_key_at_beat(step // spec.subdivisions_per_beat)
-            if spec.modulation_enabled
-            else key
-        )
-        model.add_allowed_assignments(
-            [left_var, right_var], pair_rows(active_key.leading_tone_pc)
-        )
-'''
+          old = (
+              "    key = spec.tonal_key\n"
+              "    allowed_pairs: list[tuple[int, int]] = []\n"
+              "    for left_index, left_note in enumerate(melody_domain):\n"
+              "        for right_index, right_note in enumerate(melody_domain):\n"
+              "            leap = right_note - left_note\n"
+              "            if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:\n"
+              "                continue\n"
+              "            if (\n"
+              "                spec.resolve_leading_tone\n"
+              "                and left_note % 12 == key.leading_tone_pc\n"
+              "                and right_note != left_note + 1\n"
+              "            ):\n"
+              "                continue\n"
+              "            allowed_pairs.append((left_index, right_index))\n"
+              "    for left_var, right_var in pairwise(melody_choice):\n"
+              "        model.add_allowed_assignments([left_var, right_var], allowed_pairs)\n"
+          )
+          new = (
+              "    key = spec.tonal_key\n"
+              "    pair_rows_by_leading_pc: dict[int, list[tuple[int, int]]] = {}\n"
+              "\n"
+              "    def pair_rows(leading_tone_pc: int) -> list[tuple[int, int]]:\n"
+              "        cached = pair_rows_by_leading_pc.get(leading_tone_pc)\n"
+              "        if cached is not None:\n"
+              "            return cached\n"
+              "        rows: list[tuple[int, int]] = []\n"
+              "        for left_index, left_note in enumerate(melody_domain):\n"
+              "            for right_index, right_note in enumerate(melody_domain):\n"
+              "                leap = right_note - left_note\n"
+              "                if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:\n"
+              "                    continue\n"
+              "                if (\n"
+              "                    spec.resolve_leading_tone\n"
+              "                    and left_note % 12 == leading_tone_pc\n"
+              "                    and right_note != left_note + 1\n"
+              "                ):\n"
+              "                    continue\n"
+              "                rows.append((left_index, right_index))\n"
+              "        pair_rows_by_leading_pc[leading_tone_pc] = rows\n"
+              "        return rows\n"
+              "\n"
+              "    for step, (left_var, right_var) in enumerate(pairwise(melody_choice)):\n"
+              "        active_key = (\n"
+              "            spec.active_key_at_beat(step // spec.subdivisions_per_beat)\n"
+              "            if spec.modulation_enabled\n"
+              "            else key\n"
+              "        )\n"
+              "        model.add_allowed_assignments(\n"
+              "            [left_var, right_var], pair_rows(active_key.leading_tone_pc)\n"
+              "        )\n"
+          )
           if old not in text:
               raise SystemExit("compiler melodic anchor missing")
           compiler.write_text(text.replace(old, new, 1))
 
           verifier = Path("src/constraint_music/verifier.py")
           text = verifier.read_text()
-          old = '''        if spec.resolve_leading_tone and left % 12 == key.leading_tone_pc and right != left + 1:
-            fail("CM010", f"Melody step {step}: leading tone does not resolve upward to tonic")
-'''
-          new = '''        active_key = (
-            spec.active_key_at_beat(step // spec.subdivisions_per_beat)
-            if spec.modulation_enabled
-            else key
-        )
-        if (
-            spec.resolve_leading_tone
-            and left % 12 == active_key.leading_tone_pc
-            and right != left + 1
-        ):
-            fail("CM010", f"Melody step {step}: leading tone does not resolve upward to tonic")
-'''
+          old = (
+              "        if spec.resolve_leading_tone and left % 12 == key.leading_tone_pc and right != left + 1:\n"
+              "            fail(\"CM010\", f\"Melody step {step}: leading tone does not resolve upward to tonic\")\n"
+          )
+          new = (
+              "        active_key = (\n"
+              "            spec.active_key_at_beat(step // spec.subdivisions_per_beat)\n"
+              "            if spec.modulation_enabled\n"
+              "            else key\n"
+              "        )\n"
+              "        if (\n"
+              "            spec.resolve_leading_tone\n"
+              "            and left % 12 == active_key.leading_tone_pc\n"
+              "            and right != left + 1\n"
+              "        ):\n"
+              "            fail(\"CM010\", f\"Melody step {step}: leading tone does not resolve upward to tonic\")\n"
+          )
           if old not in text:
               raise SystemExit("verifier CM010 anchor missing")
           verifier.write_text(text.replace(old, new, 1))
 
           models = Path("src/constraint_music/models.py")
           text = models.read_text()
-          old = '''        if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:
-            raise ValueError(
-                "minimum_borrowed_chords exceeds beats available outside the preserved "
-                "cadential/context boundary"
-            )
-'''
-          new = '''        if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:
-            boundary_name = (
-                "preserved cadential/context boundary"
-                if self.modulation_enabled
-                else "preserved global cadential boundary"
-            )
-            raise ValueError(
-                "minimum_borrowed_chords exceeds beats available outside the " + boundary_name
-            )
-'''
+          old = (
+              "        if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:\n"
+              "            raise ValueError(\n"
+              "                \"minimum_borrowed_chords exceeds beats available outside the preserved \"\n"
+              "                \"cadential/context boundary\"\n"
+              "            )\n"
+          )
+          new = (
+              "        if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:\n"
+              "            boundary_name = (\n"
+              "                \"preserved cadential/context boundary\"\n"
+              "                if self.modulation_enabled\n"
+              "                else \"preserved global cadential boundary\"\n"
+              "            )\n"
+              "            raise ValueError(\n"
+              "                \"minimum_borrowed_chords exceeds beats available outside the \" + boundary_name\n"
+              "            )\n"
+          )
           if old not in text:
               raise SystemExit("modal compatibility anchor missing")
           models.write_text(text.replace(old, new, 1))
