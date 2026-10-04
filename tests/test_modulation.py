@@ -73,6 +73,123 @@ def test_solver_emits_verified_persistent_destination_context() -> None:
     assert result.bass[-1] % 12 == Key("G", Mode.MAJOR).tonic_pc
 
 
+def test_modulation_domains_include_destination_accidental_and_strict_resolution() -> None:
+    spec = base_spec()
+    destination = spec.modulation_destination
+    assert destination is not None
+    source_domain = spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
+    destination_only = next(
+        note
+        for note in range(spec.melody_low, spec.melody_high + 1)
+        if note % 12 == destination.leading_tone_pc and note not in source_domain
+    )
+    assert destination_only in spec.context_pitches_in_range(
+        spec.melody_low, spec.melody_high
+    )
+
+    result = modulated_piece()
+    cadence_beat = spec.total_beats - 2
+    voices = (
+        ("soprano", result.soprano),
+        ("alto", result.alto),
+        ("tenor", result.tenor),
+        ("bass", result.bass),
+    )
+    carriers = [
+        (label, voice)
+        for label, voice in voices
+        if voice[cadence_beat] % 12 == destination.leading_tone_pc
+    ]
+    assert carriers
+    assert any(label in {"soprano", "bass"} for label, _ in carriers)
+    for _, voice in carriers:
+        assert voice[cadence_beat + 1] == voice[cadence_beat] + 1
+
+
+def test_every_melody_step_stays_inside_its_persistent_local_key() -> None:
+    spec = base_spec(subdivisions_per_beat=2, seed=2814)
+    result = ConstraintMusicSolver().generate(spec)
+    assert isinstance(result, ModulatedSatbGenerationResult)
+    for step, note in enumerate(result.melody):
+        beat = step // spec.subdivisions_per_beat
+        assert note % 12 in spec.active_key_at_beat(beat).pitch_classes
+
+
+def test_verifier_rejects_melody_pitch_from_wrong_persistent_key_region() -> None:
+    spec = base_spec(subdivisions_per_beat=2, seed=2815)
+    result = ConstraintMusicSolver().generate(spec)
+    assert isinstance(result, ModulatedSatbGenerationResult)
+    destination = spec.modulation_destination
+    assert destination is not None
+
+    pre_step = 1
+    destination_only = next(
+        note
+        for note in range(spec.melody_low, spec.melody_high + 1)
+        if note % 12 in destination.pitch_classes
+        and note % 12 not in spec.tonal_key.pitch_classes
+    )
+    forged = list(result.melody)
+    forged[pre_step] = destination_only
+    report = verify_result(replace(result, melody=tuple(forged)))
+    assert not report.valid
+    assert "CM002" in report.failed_rules
+
+    post_step = spec.modulation_boundary_beat * spec.subdivisions_per_beat + 1
+    source_only = next(
+        note
+        for note in range(spec.melody_low, spec.melody_high + 1)
+        if note % 12 in spec.tonal_key.pitch_classes
+        and note % 12 not in destination.pitch_classes
+    )
+    forged = list(result.melody)
+    forged[post_step] = source_only
+    report = verify_result(replace(result, melody=tuple(forged)))
+    assert not report.valid
+    assert "CM002" in report.failed_rules
+
+
+def test_verifier_rejects_bass_pitch_from_wrong_destination_region() -> None:
+    result = modulated_piece()
+    spec = result.spec
+    destination = spec.modulation_destination
+    assert destination is not None
+    source_only = next(
+        note
+        for note in range(spec.bass_low, spec.bass_high + 1)
+        if note % 12 in spec.tonal_key.pitch_classes
+        and note % 12 not in destination.pitch_classes
+    )
+    forged = list(result.bass)
+    forged[spec.modulation_boundary_beat] = source_only
+    report = verify_result(replace(result, bass=tuple(forged)))
+    assert not report.valid
+    assert "CM003" in report.failed_rules
+
+
+def test_terminal_destination_leading_tone_tampering_is_rejected_by_cm047() -> None:
+    result = modulated_piece()
+    destination = result.spec.modulation_destination
+    assert destination is not None
+    cadence_beat = result.spec.total_beats - 2
+    for label in ("soprano", "alto", "tenor", "bass"):
+        voice = getattr(result, label)
+        if voice[cadence_beat] % 12 != destination.leading_tone_pc:
+            continue
+        forged = list(voice)
+        forged[cadence_beat + 1] = forged[cadence_beat] + 2
+        report = verify_result(replace(result, **{label: tuple(forged)}))
+        assert not report.valid
+        assert "CM047" in report.failed_rules
+        assert any(
+            "destination leading tone fails upward resolution" in issue
+            for issue in report.issues
+        )
+        break
+    else:
+        pytest.fail("Certified destination dominant must contain a leading-tone carrier")
+
+
 def test_shifted_or_forged_key_context_is_rejected() -> None:
     result = modulated_piece()
     contexts = list(result.key_contexts)

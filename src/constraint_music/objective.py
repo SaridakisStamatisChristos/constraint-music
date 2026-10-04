@@ -35,10 +35,8 @@ def add_objective(
     melody_domain: tuple[int, ...],
     weights: ObjectiveVector = DEFAULT_OBJECTIVE_WEIGHTS,
 ) -> ObjectiveBundle:
-    key = spec.tonal_key
     target = spec.expanded_tension()
     chord_tension_table = CHORD_TENSION[spec.mode]
-    melody_tension_table = [DEGREE_TENSION[key.degree_of_pc(note % 12)] for note in melody_domain]
     component_terms: dict[str, list[cp_model.LinearExpr]] = {
         name: [] for name in OBJECTIVE_COMPONENTS
     }
@@ -51,8 +49,17 @@ def add_objective(
         actual = model.new_int_var(0, 300, f"actual_tension_{beat}")
         deviation = model.new_int_var(0, 300, f"tension_deviation_{beat}")
         model.add_element(chord[beat], chord_tension_table, chord_tension)
+        active_key = spec.active_key_at_beat(beat)
+        melody_tension_table = [
+            DEGREE_TENSION[active_key.degree_of_pc(note % 12)]
+            if note % 12 in active_key.pitch_classes
+            else 0
+            for note in melody_domain
+        ]
         model.add_element(
-            melody_choice[beat * spec.subdivisions_per_beat], melody_tension_table, melody_tension
+            melody_choice[beat * spec.subdivisions_per_beat],
+            melody_tension_table,
+            melody_tension,
         )
         model.add(actual == 2 * chord_tension + melody_tension)
         model.add_abs_equality(deviation, actual - target[beat] * 3)
@@ -135,15 +142,15 @@ def add_objective(
 
 def evaluate_objective_vector(result: GenerationResult) -> ObjectiveVector:
     spec = result.spec
-    key = spec.tonal_key
     target = spec.expanded_tension()
 
     tension_deviation = 0
     for beat, chord in enumerate(result.chord_degrees):
         strong_step = beat * spec.subdivisions_per_beat
         melody = result.melody[strong_step]
+        active_key = spec.active_key_at_beat(beat)
         chord_tension = CHORD_TENSION[spec.mode][chord]
-        melody_tension = DEGREE_TENSION[key.degree_of_pc(melody % 12)]
+        melody_tension = DEGREE_TENSION[active_key.degree_of_pc(melody % 12)]
         actual = 2 * chord_tension + melody_tension
         tension_deviation += abs(actual - target[beat] * 3)
 
