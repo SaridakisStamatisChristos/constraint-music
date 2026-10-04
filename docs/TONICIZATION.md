@@ -20,22 +20,33 @@ minimum_applied_dominants: 1
 
 An applied dominant cannot occupy the final beat because immediate target resolution is part of the hard contract.
 
-## v2.11 classification boundary
+## Exact classification boundary
 
-In v2.10, target-bearing triads were separated from applied dominants by harmonic form. v2.11 adds a second target-bearing **seventh** family, so form alone is no longer sufficient to classify every target-bearing seventh.
+Since v2.11, target-bearing seventh form alone is insufficient to classify function. v2.12 completes the second target-bearing seventh family, so the verifier now separates three exact cases rather than trusting a generic target flag:
 
-`minimum_applied_dominants` now counts only beats whose serialized musical values reconstruct exactly as active-key `V7/x`:
+```text
+target + triad + exact diminished-triad identity
+    -> secondary leading-tone triad (CM052-CM054)
+
+target + seventh + exact active-key V7/x identity
+    -> applied dominant (CM037-CM040)
+
+target + seventh + exact eligible vii°7/x or viiø7/x identity
+    -> secondary leading-tone seventh (CM055-CM057)
+```
+
+`minimum_applied_dominants` counts only beats whose serialized musical values reconstruct exactly as active-key `V7/x`:
 
 1. non-null supported local target;
 2. `ChordKind.SEVENTH`;
-3. correct active-key applied-dominant root/support degree;
+3. correct active-key applied-dominant root/support identity;
 4. exact target-derived dominant-seventh pitch set;
 5. four distinct chord tones;
-6. supported inversion whose bass agrees with the reconstructed chord.
+6. supported applied-dominant inversion whose bass agrees with the reconstructed chord.
 
-A v2.11 fully diminished `vii°7/x` therefore cannot counterfeit the applied-dominant minimum merely because it carries a target and seventh form.
+A fully diminished or eligible half-diminished secondary leading-tone seventh therefore cannot counterfeit the applied-dominant minimum merely because it carries a target and seventh form.
 
-The verifier independently reconstructs this distinction; no serialized `function_type` flag is trusted.
+No serialized `function_type` or trusted quality label is required.
 
 ## Semantic representation
 
@@ -44,7 +55,7 @@ Ordinary harmony:
 ```text
 chord_degree = d
 chord_kind = triad | seventh
-inversion = 0 | 1 | 2
+inversion = family-supported value
 tonicization_target = null
 ```
 
@@ -58,15 +69,7 @@ tonicization_target = target scale degree
 SATB pitch set = exact active-key V7/x
 ```
 
-The same target field also participates in two separate secondary leading-tone families:
-
-```text
-target + triad + exact diminished-triad identity
-    -> CM052-CM054
-
-target + seventh + exact fully diminished identity
-    -> CM055-CM057
-```
+A certified v2.12 secondary leading-tone seventh uses the same target field but is reconstructed from its target-derived diminished sonority and may use inversion `0 | 1 | 2 | 3` under CM055-CM057.
 
 Roman/slash strings remain derived presentation, never canonical solver state.
 
@@ -83,15 +86,15 @@ In C major, target degree 5 is G. Its applied dominant is D7: D-F#-A-C, displaye
 
 When persistent modulation is enabled, `K` is the exact active local key at that beat. Post-boundary tonicization is derived from the destination key, never stale global-key context.
 
-## Target support and backward compatibility
+## Support and compatibility boundaries
 
-CM005 and CM006 predate chromatic harmony and retain their established meanings: strong melody/soprano and bass must belong to the active-key diatonic triadic core identified by the stored degree.
+Applied dominants continue to use the established support/outer-voice policy certified by CM037-CM040. v2.12 does **not** broaden applied-dominant inversions merely because secondary leading-tone sevenths gained genuine `42` support.
 
-The applied-dominant model therefore exposes only targets representable under that outer-voice contract. A missing target is a certified-representation limitation, not a general music-theory claim.
+Secondary leading-tone triads and sevenths use their deterministic support-degree bridge rather than pretending a chromatic diminished root is an ordinary diatonic degree. For the secondary-seventh path only, v2.12 scopes the chromatic outer-voice exception required to certify an actual seventh-in-bass `42`; ordinary and applied-dominant beats do not inherit that exception.
 
-Secondary leading-tone triads and sevenths use their own deterministic support-degree policy rather than pretending a chromatic diminished root is an ordinary diatonic degree. See [Secondary Leading-Tone Triads](SECONDARY_LEADING_TONE.md) and [Secondary Leading-Tone Seventh Chords](SECONDARY_LEADING_TONE_SEVENTHS.md).
+See [Secondary Leading-Tone Triads](SECONDARY_LEADING_TONE.md) and [Secondary Leading-Tone Seventh Chords](SECONDARY_LEADING_TONE_SEVENTHS.md).
 
-## Resolution contract
+## Applied-dominant resolution contract
 
 Every applied dominant resolves on the immediately following beat:
 
@@ -103,6 +106,8 @@ beat n + 1: chord_degree = x
 
 The applied chordal seventh resolves downward by one or two semitones. The applied dominant's major third is the local leading tone and resolves upward by exactly one semitone. The solver constrains these tendencies and the verifier checks whichever SATB voice carries them.
 
+Secondary leading-tone sevenths use their own exact target-/quality-dependent CM057 tendency semantics.
+
 ## Hard-rule IDs
 
 - `CM037` — exact applied-dominant context, identity, and minimum-count semantics;
@@ -110,7 +115,7 @@ The applied chordal seventh resolves downward by one or two semitones. The appli
 - `CM039` — immediate resolution to the declared untargeted local tonic;
 - `CM040` — applied chordal-seventh and local-leading-tone resolution.
 
-v2.11 narrows CM037/CM038 classification to exact `V7/x` identity rather than silently weakening those rules to absorb secondary leading-tone sevenths.
+CM037/CM038 classify only exact `V7/x` identity; they are not weakened to absorb other target-bearing seventh functions.
 
 ## Distinct enumeration
 
@@ -118,7 +123,7 @@ v2.11 narrows CM037/CM038 classification to exact `V7/x` identity rather than si
 
 ## Provenance
 
-Artifact schema/contract `2.11` commits local targets together with harmonic form, voicing, modal source, key context, and the generation specification. Changing only a target can therefore invalidate semantic provenance even before musical verification determines whether altered metadata matches the notes.
+Artifact schema/contract `2.12` commits local targets together with harmonic form, voicing, modal source, key context, and the generation specification. Changing only a target can therefore invalidate semantic provenance even before musical verification determines whether altered metadata matches the notes.
 
 Historical payloads without target metadata remain loadable only when their specification does not require a feature that depends on target reconstruction.
 
@@ -126,4 +131,4 @@ Historical payloads without target metadata remain loadable only when their spec
 
 Applied dominants, secondary leading-tone triads, and secondary leading-tone sevenths are local target events, not persistent key changes. Persistent local-key regions remain the v2.8 modulation subsystem.
 
-v2.11 still does not certify arbitrary chromatic sonorities, half-diminished secondary leading-tone sevenths, third-inversion seventh handling, arbitrary modulation chains, distant/enharmonic modulation, augmented-sixth/Neapolitan reinterpretation, or probabilistic key inference.
+v2.12 completes the secondary leading-tone seventh family claimed by CM055-CM057. Arbitrary modulation chains, distant/enharmonic modulation, augmented-sixth/Neapolitan reinterpretation, unrestricted chromatic-function inference, and probabilistic key inference remain separate domains.
