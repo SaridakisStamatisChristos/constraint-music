@@ -42,12 +42,13 @@ The verifier independently performs the same derivation from serialized values. 
 v2.9 intentionally does not certify every source-mode seventh. An admitted borrowed seventh must satisfy all of the following:
 
 1. it differs from the active-key seventh on the same functional degree;
-2. its complete source-derived four-tone set remains compatible with the historical CM005/CM006 outer-voice triadic core;
-3. at least two distinct source-chord tones are available to that active-key triadic core so soprano and bass can remain distinct SATB outer voices;
-4. its source-derived chordal seventh equals the already-certified active-key chordal-seventh pitch class, preserving solver/verifier symmetry for downward seventh resolution;
-5. when the canonical source is parallel major, the source leading tone is not simultaneously treated as the chordal seventh.
+2. it is not functional degree V: the historical source-null `CM036` active-dominant identity remains reserved for the ordinary active-key V7 and is not silently reinterpreted by v2.9;
+3. its complete source-derived four-tone set remains compatible with the historical CM005/CM006 outer-voice triadic core;
+4. at least two distinct source-chord tones are available to that active-key triadic core so soprano and bass can remain distinct SATB outer voices;
+5. its source-derived chordal seventh equals the already-certified active-key chordal-seventh pitch class, preserving solver/verifier symmetry for downward seventh resolution;
+6. when the canonical source is parallel major, the source leading tone is not simultaneously treated as the chordal seventh.
 
-Under the current major/harmonic-minor theory model this yields a small deterministic whitelist rather than unrestricted source-mode seventh permission.
+Under the current major/harmonic-minor theory model this yields a small deterministic whitelist rather than unrestricted source-mode seventh permission. Excluding a borrowed functional-dominant seventh is an explicit compatibility boundary: broader source-aware dominant semantics require their own future contract revision rather than changing the meaning of CM036 inside v2.9.
 
 ## Realization
 
@@ -92,7 +93,7 @@ The v2.8.0a2 strict modulation model is unchanged:
 - the terminal CM032 path is not skipped;
 - CM047 still requires destination-leading-tone presence and upward resolution in every carrier.
 
-Borrowed sevenths are excluded from the pivot and terminal destination V-I, so v2.9 cannot weaken the certified modulation closure.
+Borrowed sevenths are excluded from the pivot and terminal destination V-I, so v2.9 cannot weaken the certified modulation closure. A valid destination-region borrowed seventh may resolve through additional destination-region harmony before the certified V7-I; v2.9 does not force it directly into the terminal cadence.
 
 ## Search and provenance
 
@@ -116,6 +117,7 @@ The pre-existing CM041/CM042 borrowed-triad meaning remains intact; v2.9 routes 
 
 v2.9 does not add:
 
+- borrowed functional-dominant sevenths whose semantics would require contextualizing CM036;
 - secondary leading-tone chords;
 - third-inversion sevenths;
 - arbitrary modulation chains;
