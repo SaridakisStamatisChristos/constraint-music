@@ -168,7 +168,7 @@ Certification requires:
 - no modal-source overlap and no contamination of certified cadence/modulation anchors;
 - post-modulation reconstruction against the persistent destination active key, never the stale global key.
 
-The chromatic outer-voice expansion needed for genuine third inversion is routed only when this feature is enabled. Ordinary harmony retains the earlier domain and inversion contract.
+The chromatic outer-voice expansion needed for genuine third inversion is routed only when this feature is enabled. Ordinary harmony retains the earlier domain and inversion contract. Structural support for secondary sevenths is progression-graph compatible but no longer requires the obsolete v2.11 two-tone diatonic-overlap workaround; exact target/quality/pitch reconstruction carries the musical identity.
 
 See [Secondary Leading-Tone Seventh Chords](docs/SECONDARY_LEADING_TONE_SEVENTHS.md) and [v2.12 Release Notes](docs/V2_12_RELEASE_NOTES.md).
 
@@ -237,7 +237,7 @@ pytest --cov=constraint_music --cov-report=term-missing
 python -m build
 ```
 
-GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**. The v2.12 pre-merge baseline is **147 tests passing**, **80% branch-aware coverage**, strict mypy clean across **27 source files**, and successful package builds on all three interpreters.
+GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**. The v2.12 pre-merge baseline is **197 tests passing**, **80% branch-aware coverage**, strict mypy clean across **27 source files**, and successful package builds on all three interpreters. The exhaustive secondary-seventh matrix spans all 12 chromatic tonics in both major and minor modes, every progression-reachable eligible target, both certified quality classes where applicable, and all four inversions.
 
 ## Scope boundary
 
