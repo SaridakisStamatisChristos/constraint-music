@@ -18,6 +18,10 @@ from .secondary_leading_tone_runtime import (
     secondary_leading_tone_modulation_verification_issues,
     secondary_leading_tone_satb_verification_issues,
 )
+from .secondary_leading_tone_seventh_runtime import (
+    secondary_leading_tone_seventh_modulation_verification_issues,
+    secondary_leading_tone_seventh_satb_verification_issues,
+)
 from .theory import is_parallel_perfect
 
 
@@ -218,7 +222,9 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         fail(rule_id, message)
 
     v29_borrowed_sevenths = spec.modal_mixture_enabled and spec.expanded_harmony_enabled
-    if spec.secondary_leading_tone_enabled:
+    if spec.secondary_leading_tone_seventh_enabled:
+        satb_issues = secondary_leading_tone_seventh_satb_verification_issues(result)
+    elif spec.secondary_leading_tone_enabled:
         satb_issues = secondary_leading_tone_satb_verification_issues(result)
     elif v29_borrowed_sevenths:
         satb_issues = borrowed_seventh_satb_verification_issues(result)
@@ -229,7 +235,9 @@ def verify_result(result: GenerationResult) -> ValidationReport:
     for rule_id, message in satb_issues:
         fail(rule_id, message)
 
-    if spec.secondary_leading_tone_enabled and spec.modulation_enabled:
+    if spec.secondary_leading_tone_seventh_enabled and spec.modulation_enabled:
+        modulation_issues = secondary_leading_tone_seventh_modulation_verification_issues(result)
+    elif spec.secondary_leading_tone_enabled and spec.modulation_enabled:
         modulation_issues = secondary_leading_tone_modulation_verification_issues(result)
     elif v29_borrowed_sevenths and spec.modulation_enabled:
         modulation_issues = borrowed_seventh_modulation_verification_issues(result)

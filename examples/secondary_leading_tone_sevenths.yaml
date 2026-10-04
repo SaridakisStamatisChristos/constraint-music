@@ -1,0 +1,21 @@
+key: C
+mode: major
+bars: 1
+beats_per_bar: 4
+subdivisions_per_beat: 1
+tempo_bpm: 96
+
+require_authentic_cadence: false
+avoid_parallel_perfects: false
+
+harmony_vocabulary: triads+sevenths
+minimum_seventh_chords: 1
+
+secondary_leading_tone_seventh_enabled: true
+minimum_secondary_leading_tone_seventh_chords: 1
+
+seed: 3110
+workers: 1
+max_time_seconds: 30
+
+tension_curve: [0.75, 0.50, 0.25, 0.05]

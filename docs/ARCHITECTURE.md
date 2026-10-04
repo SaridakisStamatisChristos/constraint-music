@@ -1,206 +1,179 @@
 # Architecture
 
-Constraint Music is deliberately split into generation, search, serialization, and independent verification paths.
+Constraint Music is a deterministic symbolic-composition system built around a strict separation between **proposal/solve** and **independent certification**.
+
+## Core pipeline
 
 ```text
-YAML GenerationSpec
-       |
-       v
- global key + explicit active-key contexts
-       |
-       +--> chord degree / support degree
-       +--> harmonic form (kind + inversion)
-       +--> nullable local target identity
-       +--> nullable modal source
-       +--> nullable modulation destination/boundary
-       |
-       v
-CP-SAT compiler -----------------------------------------+
-       |   \-> SATB + harmonic/context realization       |
-       v                                                  |
- feasible + optimized assignment                          |
-       |                                                  |
-       +--> no-good enumeration / scalarization           |
-       |                                                  |
-       v                                                  |
-ordinary Python musical values                            |
-       |                                                  |
-       +--> independent objective recomputation           |
-       |                                                  |
-       v                                                  |
-independent verifier <---------------- hard contract -----+
-       |
-       +--> MIDI
-       +--> schema-versioned, tamper-evident JSON
+GenerationSpec / YAML
+        |
+        v
+configuration validation
+        |
+        v
+CP-SAT compiler
+  tonal + rhythm + phrase
+  SATB + harmonic identity
+  local target / modal source
+  persistent active key
+        |
+        v
+OR-Tools solve
+        |
+        v
+ordinary result values
+        |
+        +--> independent CM001-CM057 verifier
+        +--> independent objective recomputation
+        +--> provenance / artifact digests
+        |
+        v
+verified JSON + MIDI
 ```
 
-## Trust boundary
+A feasible solver assignment is never equivalent to a verified composition. Export occurs only after the application-level verifier reconstructs the declared semantics from serialized musical values.
 
-The CP-SAT model is not accepted as evidence that an output is correct. A generated assignment is converted into ordinary Python values and passed to `verify_result`. The verifier does not inspect OR-Tools variables, constraints, solver state, or internal relation-table membership. If verification fails, generation fails closed with `InternalVerificationError`.
+## Orthogonal semantic axes
 
-Objective metadata follows the same trust boundary. Solver-side objective components are independently reconstructed from finished musical values; disagreement also fails closed.
+The architecture avoids a monolithic Roman-numeral or chord-label state. Harmonic meaning is decomposed into independent axes:
 
-## Stable hard-rule contract
+- functional/support degree;
+- harmonic kind (`TRIAD` / `SEVENTH`);
+- inversion;
+- nullable local target identity;
+- nullable modal-source identity;
+- persistent active-key context;
+- SATB realization.
 
-`constraint_music.contract` defines stable IDs for every hard musical rule. v2.10 contains `CM001–CM054`.
+This decomposition is the main compatibility mechanism across v2.5-v2.11. New harmonic families are admitted by adding narrowly versioned reconstruction rules instead of replacing older axes.
 
-New feasibility semantics are synchronized across:
+## Global key vs. active local key
 
-1. contract metadata;
-2. CP-SAT compilation;
-3. independent post-solve verification;
-4. hostile regression tests;
-5. serialization/provenance whenever semantic state is serialized.
+The artifact-global key remains immutable. v2.8 introduced explicit persistent active-key contexts for one certified same-mode modulation to the dominant key.
 
-Search mechanisms cannot waive a `CM` rule. No-good cuts constrain which already-valid assignment may be returned next; scalarization ranks feasible assignments; Pareto filtering compares independently reconstructed objective vectors.
+Before the declared boundary, the active key is the source key. From the boundary onward, the active key is the destination key. Theory, pitch admission, harmonic reconstruction, local-target functions, modal borrowing, and objective tension all use the exact active key at the beat.
 
-## Harmonic identity is decomposed
+The solver may use a union storage domain to hold source- and destination-key pitches, but every musical use is gated by the exact local context. The verifier independently enforces the same distinction.
 
-Constraint Music never collapses harmony into one magic degree or display string. Each beat may carry independent axes:
+## Preserved outer-voice contract
 
-- immutable artifact/global key;
-- explicit active local key;
-- functional `chord_degree` or compatibility support degree;
-- `ChordKind` (`triad` or `seventh`);
-- inversion (`0`, `1`, or `2`);
-- nullable local `tonicization_target` / target identity;
-- nullable `modal_source`;
-- modulation destination/boundary identity;
-- concrete SATB notes.
+CM005 and CM006 historically bind the strong melody/soprano and bass to the active-key triadic core represented by the stored degree. Later chromatic features preserve that contract rather than silently redefining it.
 
-Roman/slash/source notation is derived presentation. A target-bearing seventh is an applied dominant; a target-bearing triad under the v2.10 feature is a secondary leading-tone chord. Borrowed harmony remains source-bearing instead. The serialized primitives are sufficient for independent reconstruction.
+For chromatic secondary leading-tone families, the stored degree is therefore a deterministic **support degree**. The actual chromatic sonority is reconstructed from active key + target identity + harmonic form + voicing.
 
-## SATB compiler
+This lets CM005/CM006/CM007 keep their historical meaning while the inner harmonic function can be chromatic.
 
-The SATB harmonic skeleton operates at one sonority per beat. Soprano is anchored to the strong-grid melody, alto and tenor are independent solver variables, and bass reuses the beat-level bass variable.
+## Harmonic-family routing
 
-Pitch-class variables are linked to note variables with modulo constraints. Cached allowed-assignment tables jointly constrain degree/support degree, kind, inversion, local target, modal source, and four SATB pitch classes. Diatonic harmony, applied dominants, borrowed triads, v2.9 borrowed sevenths, and v2.10 secondary leading-tone triads therefore use typed relation data rather than post-processing exceptions.
+### Diatonic triads and sevenths
 
-Ordering/spacing use direct integer constraints. Parallel-perfect and tendency-tone behavior use adjacent-beat transition constraints.
+The v2.5 harmonic-form layer supports diatonic triads and complete seventh chords, with root/first/second inversion under the preserved outer-voice contract.
 
-## Outer-voice compatibility contract
+### Applied dominants
 
-`CM005` and `CM006` retain their established meaning: strong melody/soprano and bass are members of the triadic core identified by the stored degree in the exact active local key.
+v2.6 adds explicit nullable target identity. An applied dominant is reconstructed as exact active-key `V7/x` pitch/support identity and immediate target resolution.
 
-Chromatic context is not unrestricted pitch permission. Tonicization, mixture, modulation, and secondary leading-tone harmony expose only states representable under this invariant.
+### Modal mixture and borrowed sevenths
 
-For v2.10, a chromatic diminished root is never forged into a diatonic degree. The stored degree is a deterministic support degree selected from the active key. It must share at least two pitch classes with the diminished triad and already permit the support-to-target transition under the configured progression graph. The actual chromatic sonority is reconstructed independently from active key + target.
+v2.7 adds explicit canonical parallel-source identity. v2.9 composes source identity with seventh form and active-key context for a narrow verified borrowed-seventh subset.
 
-This boundary is a compatibility decision, not a claim that excluded harmonies are invalid music theory.
+### Secondary leading-tone triads
 
-## v2.6 applied-dominant tonicization model
+v2.10 reuses target identity for `vii°/x` triads. The chromatic diminished root is never stored as a fake diatonic degree; a support-degree bridge preserves historical outer-voice/progression semantics.
 
-Applied-dominant tonicization is an opt-in local target event and requires expanded harmony. `NO_TONICIZATION_TARGET` is internal only; artifacts serialize `null` or an integer target degree.
+### Secondary leading-tone sevenths
 
-For each supported target, the tonal layer derives the applied dominant root and exact dominant-seventh pitch classes. The SATB layer admits only complete realizations compatible with CM005/CM006. Motion constraints require immediate target resolution, downward applied-seventh resolution, and upward local-leading-tone resolution. The verifier reconstructs those consequences independently.
+v2.11 adds a separate opt-in fully diminished seventh family. It does not introduce a new serialized function axis.
 
-A target-bearing seventh remains the certified applied-dominant form in v2.10.
+A target-bearing seventh is classified from exact active-key musical identity:
 
-## v2.7 modal-mixture model
+```text
+exact active-key V7/x support + pitch set + inversion
+    -> applied dominant
 
-Modal mixture is an independent context axis. `NO_MODAL_SOURCE` is internal; artifacts serialize `null` or an explicit source identity.
+exact active-key fully diminished vii°7/x support + pitch set + inversion
+    -> secondary leading-tone seventh
+```
 
-Canonical source policy is deliberately small:
+The two families therefore share target and seventh-form axes but remain disjoint by reconstructed pitch/support identity.
 
-- active major -> parallel natural minor;
-- active minor -> parallel major.
+## v2.11 quality boundary
 
-Borrowed triads derive source pitch classes from the active tonic, explicit source, and functional degree. Source-bearing harmony cannot carry a local target on the same beat and cannot occupy certified context/cadence anchors.
+The certified v2.11 secondary-leading-tone-seventh family supports:
 
-## v2.8 persistent local-key and modulation model
+- fully diminished quality only;
+- root, first, and second inversion only;
+- all four target-derived pitch classes exactly once;
+- immediate resolution to the declared untargeted, unborrowed triadic target;
+- local leading tone up by semitone;
+- diminished fifth down by step;
+- chordal diminished seventh down by step.
 
-v2.8 introduced true persistent active-key state while keeping the artifact/global key immutable.
+Half-diminished quality and third inversion remain outside the contract.
 
-The first certified modulation model is intentionally narrow:
+## Solver-side identity flags are not artifact identity
 
-- exactly one event;
-- same-mode destination at the dominant key;
-- explicit destination identity;
-- explicit boundary;
-- fixed common-chord pivot: source I -> destination IV;
-- persistent destination context after the boundary;
-- destination V-I confirmation.
+The v2.11 compiler may derive internal Boolean flags to count exact applied dominants, secondary-leading-tone triads, and secondary-leading-tone sevenths. Those flags are solver implementation details only.
 
-### Context-union storage is not chromatic permission
+They are **not serialized provenance** and are not trusted by the verifier. The verifier independently re-derives the same classification from the result's ordinary musical values.
 
-The strict v2.8.0a2 repair allows modulation-enabled storage domains to contain pitches admitted by any declared persistent local-key region. Every concrete melody/bass step is nevertheless gated against its exact active key. This permits destination accidentals in the destination region without leaking them backward into the source region.
+This keeps the artifact representation decomposed and prevents an opaque label from becoming a source of truth.
 
-The same active-key sequence drives objective tension scoring, CM002/CM003 verification, target interpretation, and modal-source interpretation.
+## Protected anchors
 
-### No terminal tendency-tone exemption
+The v2.8.0a2 modulation repair remains a protected architecture boundary. Certified chromatic functions cannot contaminate anchors where that would undermine:
 
-The rejected early repair skipped a generic terminal tendency check to regain feasibility. v2.8.0a2 removed that exemption. The state/domain model was repaired instead, and destination confirmation independently requires the destination leading tone plus upward semitone resolution in every SATB carrier at the terminal dominant.
+- source-I/destination-IV pivot identity;
+- destination V-I confirmation;
+- exact destination-leading-tone presence;
+- upward destination-leading-tone resolution;
+- strict active-key pitch admission.
 
-## v2.9 borrowed-seventh model
+v2.11 secondary leading-tone sevenths are excluded from those protected positions.
 
-v2.9 composes three mature semantic layers rather than adding another opaque context:
+## Verification routing
 
-1. v2.5 seventh-form identity;
-2. v2.7 explicit modal-source identity;
-3. v2.8 explicit active local-key identity.
+The independent verifier routes from the declared feature set while preserving earlier contracts:
 
-A source-derived seventh is admitted only if it is genuinely different from the active-key seventh and can preserve existing outer-voice semantics. The current whitelist additionally requires its chordal seventh to coincide with the already-certified active-key seventh pitch class so the established downward-step machinery remains solver/verifier symmetric.
+- ordinary SATB verification;
+- modulation-aware SATB verification;
+- borrowed-seventh verification when source-aware sevenths are enabled;
+- secondary-leading-tone-triad verification for the v2.10 feature;
+- secondary-leading-tone-seventh verification for the v2.11 feature.
 
-A parallel-major source may introduce a true source leading tone. When such a leading tone occurs in an admitted borrowed seventh and is not the chordal seventh, every SATB carrier resolves upward by semitone.
+The v2.11 verifier explicitly separates exact applied-dominant beats from secondary-seventh candidates before applying CM055–CM057.
 
-Borrowed sevenths are excluded from local-target overlap, the modulation pivot, and certified destination-cadence anchors. After modulation, source derivation uses the destination active key; the original global key is never reused as stale borrowing context.
+## Provenance
 
-The additive hard rules are CM049–CM051.
+Artifact schema and constraint-contract version are both `2.11`.
 
-## v2.10 secondary leading-tone model
+Semantic provenance commits:
 
-v2.10 introduces target-derived diminished triads without adding a separate opaque chord-name state.
-
-For a supported target degree, the theory layer obtains the target root from the exact active key, places a chromatic leading-tone root one semitone below it, and constructs the diminished triad with minor-third and diminished-fifth intervals.
-
-The form/target pairing is semantic:
-
-- target + `SEVENTH` -> applied dominant;
-- target + `TRIAD` -> secondary leading-tone chord.
-
-A deterministic support degree preserves CM005/CM006/CM007. The four SATB voices then realize the actual diminished sonority with the local leading tone and diminished fifth undoubled and the stable third doubled. Root/first/second inversion remain the certified inversion range.
-
-Motion is independently explicit: the local leading tone rises by one semitone, the diminished fifth falls by one or two semitones, and the next beat must be the declared untargeted, unborrowed triadic target.
-
-Secondary leading-tone chords cannot occupy certified modulation/cadence anchors or overlap modal source identity. After modulation, both compiler and verifier derive them from the persistent destination active key.
-
-The additive hard rules are:
-
-- `CM052` — secondary context, supported target, support-degree identity, and protected boundaries;
-- `CM053` — target-derived diminished realization, doubling, and inversion;
-- `CM054` — immediate target and tendency-tone resolution.
-
-## Serialization and provenance
-
-Artifact schema `2.10` commits semantic music separately from solver metadata. The semantic digest includes, when present:
-
-- melody/rhythm/bass/chord degrees;
+- the full generation specification;
+- melody, rhythm, bass, and chord/support degrees;
 - SATB voices;
-- chord kinds and inversions;
-- local target identities;
-- modal sources;
-- key contexts.
+- harmonic kind and inversion;
+- local target metadata;
+- modal-source metadata;
+- persistent key contexts;
+- objective-vector metadata.
 
-Because v2.10 composes existing target/form/context fields, no synthetic secondary-chord metadata is required. Changing the target or form changes semantic provenance.
+Because v2.11 function identity is reconstructable from those values, no synthetic secondary-function metadata is needed.
 
-The contract version/digest, composition digest, complete artifact-content digest, verified rule IDs, and independently recomputable objective vector are stored in provenance/search metadata.
+## Search and optimization remain separate
 
-## Distinct enumeration
+No-good distinctness and objective scalarization do not define musical validity. The verifier checks the hard contract independently of how a candidate was discovered or ranked.
 
-Exact no-good dimensions remain orthogonal:
+Distinctness dimensions remain orthogonal: melody, rhythm, bass, harmony, voicing, harmonic form, tonicization target, modal source, and key context.
 
-- `melody`;
-- `rhythm`;
-- `bass`;
-- `harmony` — stored functional/support degree sequence;
-- `voicing` — alto/tenor realization;
-- `harmonic_form` — kind + inversion;
-- `tonicization` — nullable local target sequence;
-- `modal_source` — nullable parallel-source sequence;
-- `key_context` — persistent active-key sequence.
+## Version boundaries
 
-A feature never redefines an older dimension merely to fit new semantics.
+Current package: `2.11.0a1`
 
-## Extension boundary
+Current artifact schema: `2.11`
 
-Future chromatic expansion should continue to add explicit typed state and independent verification. Current deferred boundaries include secondary leading-tone seventh chords, third-inversion sevenths, richer voice-leading policy revisions, multi-modulation chains, distant-key/enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, and probabilistic key-center inference.
+Current constraint contract: `2.11`
+
+Current hard-rule range: `CM001-CM057`
+
+Deliberately deferred: half-diminished secondary leading-tone sevenths, third-inversion seventh semantics, arbitrary modulation chains, distant/enharmonic modulation, broad enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, and probabilistic key/function inference.

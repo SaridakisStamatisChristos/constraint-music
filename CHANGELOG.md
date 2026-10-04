@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.11.0a1 — verified secondary leading-tone seventh chords
+
+- Added a separate opt-in `secondary_leading_tone_seventh_enabled` feature and `minimum_secondary_leading_tone_seventh_chords`, preserving the v2.10 triad feature and its feasible set unless the new seventh feature is explicitly enabled.
+- Certified only fully diminished secondary leading-tone sevenths (`vii°7/x`, `vii°65/x`, `vii°43/x`) in v2.11; half-diminished quality and third inversion remain outside the contract.
+- Derived all four secondary-seventh pitch classes from the exact active local key and declared non-tonic target.
+- Reused the deterministic support-degree compatibility bridge rather than forging a chromatic diminished root into a diatonic degree.
+- Refined target-bearing seventh classification: applied dominants now count only when active-key support/root identity, exact four-note pitch content, and inversion reconstruct as `V7/x`; fully diminished target-bearing sevenths are independently certified by CM055–CM057.
+- Prevented secondary leading-tone sevenths from satisfying `minimum_applied_dominants` accidentally while preserving exact applied-dominant counts when both features coexist.
+- Required complete four-tone fully diminished realization with all pitch classes exactly once and root/first/second inversion agreement with the bass.
+- Required immediate resolution to the declared untargeted, unborrowed triadic target.
+- Added independent tendency rules: local leading tone rises by semitone; diminished fifth and chordal diminished seventh descend by one or two semitones.
+- Kept secondary leading-tone sevenths disjoint from modal borrowing and excluded them from certified modulation/cadence anchors.
+- Made post-modulation secondary-seventh reconstruction use the persistent destination active key, never stale global-key context.
+- Extended the hard contract additively from 54 to 57 rules with CM055 context/quality eligibility, CM056 exact realization/inversion, and CM057 target/tendency resolution.
+- Versioned the package to `2.11.0a1` and artifact/contract schema to `2.11`.
+- Preserved provenance through existing target, harmonic-form, voicing, modal-source, key-context, and specification data; no opaque secondary-function metadata was added.
+- Added hostile tests for unsupported quality, forged/missing/duplicated tones, inversion and third-inversion forgery, wrong target/support identity, all tendency directions, modal overlap, applied-dominant count confusion, provenance tampering, cadence contamination, and stale post-modulation context.
+- Validation baseline: 139 tests passing with branch coverage enabled, strict mypy clean across 26 source files, and successful builds on Python 3.11, 3.12, and 3.13.
+
 ## 2.10.0a1 — verified secondary leading-tone chords
 
 - Added opt-in secondary leading-tone triads through `secondary_leading_tone_enabled` and `minimum_secondary_leading_tone_chords`.
