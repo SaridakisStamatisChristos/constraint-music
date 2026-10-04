@@ -1,0 +1,55 @@
+name: Stage v2.8 strict typing fix
+
+on:
+  push:
+    branches: ["staging/v2.8-typefix"]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, 'fix(v2.8): satisfy strict typing') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply narrow type fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          runtime = Path("src/constraint_music/modulation_runtime.py")
+          text = runtime.read_text()
+          old = """            for target in key.applied_dominant_targets:\n                inner_pitch_classes.update(key.applied_dominant_seventh_pitch_classes(target))\n"""
+          new = """            for target_degree in key.applied_dominant_targets:\n                inner_pitch_classes.update(\n                    key.applied_dominant_seventh_pitch_classes(target_degree)\n                )\n"""
+          if old not in text:
+              raise SystemExit("target loop replacement anchor missing")
+          text = text.replace(old, new, 1)
+          old = """        if kind is ChordKind.TRIAD:\n            triad = key.triad_pitch_classes(degree)\n"""
+          new = """        tones: tuple[int, ...]\n        if kind is ChordKind.TRIAD:\n            triad = key.triad_pitch_classes(degree)\n"""
+          if old not in text:
+              raise SystemExit("tones annotation anchor missing")
+          runtime.write_text(text.replace(old, new, 1))
+
+          solver = Path("src/constraint_music/solver.py")
+          text = solver.read_text()
+          old = "from dataclasses import dataclass, replace\n\nfrom ortools.sat.python import cp_model\n"
+          new = "from dataclasses import dataclass, replace\nfrom typing import Any\n\nfrom ortools.sat.python import cp_model\n"
+          if old not in text:
+              raise SystemExit("typing import anchor missing")
+          text = text.replace(old, new, 1)
+          old = "        common = dict(\n"
+          new = "        common: dict[str, Any] = dict(\n"
+          if old not in text:
+              raise SystemExit("common kwargs anchor missing")
+          solver.write_text(text.replace(old, new, 1))
+          PY
+      - name: Remove staging workflow from resulting tree
+        run: rm .github/workflows/v28_typefix_stage.yml
+      - name: Commit fixed tree
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(v2.8): satisfy strict typing"
+          git push origin HEAD:staging/v2.8-typefix
