@@ -39,6 +39,12 @@ from .secondary_leading_tone import (
     secondary_leading_tone_triad_pitch_classes,
     supported_secondary_leading_tone_targets,
 )
+from .semantic_dispatch import (
+    ContextualHarmony,
+    ContextualHarmonyFamily,
+    SemanticDispatch,
+    merge_semantic_dispatch,
+)
 from .theory import NO_TONICIZATION_TARGET, ChordKind, Key
 
 
@@ -511,68 +517,115 @@ def _add_secondary_tendency_constraints(
             model.add(voice[beat + 1] >= voice[beat] - 2).only_enforce_if(fifth_flag)
 
 
-def _secondary_candidate_beats(result: GenerationResult) -> set[int]:
+def reconstruct_secondary_leading_tone_triad(
+    result: GenerationResult,
+    beat: int,
+) -> ContextualHarmony | None:
+    """Reconstruct an exact local secondary leading-tone triad."""
+
     if not isinstance(result, SatbGenerationResult):
-        return set()
+        return None
     spec = result.spec
-    if not result.tonicization_targets or not result.chord_kinds:
-        return set()
-    if not (
-        len(result.tonicization_targets) == len(result.chord_kinds) == spec.total_beats
+    if not spec.secondary_leading_tone_enabled or not 0 <= beat < spec.total_beats:
+        return None
+    sequences = (
+        result.tonicization_targets,
+        result.chord_degrees,
+        result.chord_kinds,
+        result.chord_inversions,
+        result.soprano,
+        result.alto,
+        result.tenor,
+        result.bass,
+    )
+    if any(len(sequence) <= beat for sequence in sequences):
+        return None
+    target = result.tonicization_targets[beat]
+    if target is None:
+        return None
+    if result.modal_sources and (
+        len(result.modal_sources) <= beat or result.modal_sources[beat] is not None
     ):
-        return set()
-    beats: set[int] = set()
-    for beat, (target, raw_kind) in enumerate(
-        zip(result.tonicization_targets, result.chord_kinds, strict=True)
+        return None
+    try:
+        kind = ChordKind.parse(result.chord_kinds[beat])
+    except ValueError:
+        return None
+    key = spec.active_key_at_beat(beat)
+    supported = supported_secondary_leading_tone_targets(key, spec.progression_graph)
+    if kind is not ChordKind.TRIAD or target not in supported:
+        return None
+    support = secondary_leading_tone_support_degree(key, target, spec.progression_graph)
+    expected = secondary_leading_tone_triad_pitch_classes(key, target)
+    pcs = (
+        result.soprano[beat] % 12,
+        result.alto[beat] % 12,
+        result.tenor[beat] % 12,
+        result.bass[beat] % 12,
+    )
+    root, third, diminished_fifth = expected
+    inversion = result.chord_inversions[beat]
+    if (
+        result.chord_degrees[beat] != support
+        or set(pcs) != set(expected)
+        or pcs.count(root) != 1
+        or pcs.count(diminished_fifth) != 1
+        or pcs.count(third) != 2
+        or not 0 <= inversion <= 2
+        or result.bass[beat] % 12 != expected[inversion]
     ):
-        if target is None:
-            continue
-        try:
-            parsed_kind = ChordKind.parse(raw_kind)
-        except ValueError:
-            continue
-        if parsed_kind is ChordKind.TRIAD:
-            beats.add(beat)
-    return beats
+        return None
+    return ContextualHarmony(
+        beat=beat,
+        family=ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+        active_key=key,
+        support_degree=support,
+        pitch_classes=expected,
+        inversion=inversion,
+        target_degree=target,
+    )
 
 
-def _is_applied_false_positive(
-    rule_id: str,
-    message: str,
-    secondary_beats: set[int],
-) -> bool:
-    if rule_id not in {"CM037", "CM038"}:
-        return False
-    return any(message.startswith(f"Beat {beat}:") for beat in secondary_beats)
+def _secondary_leading_tone_dispatch(
+    result: GenerationResult,
+    inherited: SemanticDispatch | None,
+) -> SemanticDispatch:
+    interpretations = (
+        interpretation
+        for beat in range(result.spec.total_beats)
+        if (
+            interpretation := reconstruct_secondary_leading_tone_triad(result, beat)
+        )
+        is not None
+    )
+    return merge_semantic_dispatch(inherited, interpretations)
 
 
 def secondary_leading_tone_satb_verification_issues(
     result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> tuple[tuple[str, str], ...]:
-    base = borrowed_seventh_satb_verification_issues(result)
-    candidate_beats = _secondary_candidate_beats(result)
-    issues = [
-        issue
-        for issue in base
-        if not _is_applied_false_positive(issue[0], issue[1], candidate_beats)
-    ]
+    dispatch = _secondary_leading_tone_dispatch(result, semantic_dispatch)
+    base = borrowed_seventh_satb_verification_issues(
+        result,
+        semantic_dispatch=dispatch,
+    )
+    issues = list(base)
     issues.extend(_secondary_leading_tone_verification_issues(result))
     return tuple(issues)
 
 
 def secondary_leading_tone_modulation_verification_issues(
     result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> tuple[tuple[str, str], ...]:
-    base = borrowed_seventh_modulation_verification_issues(result)
-    candidate_beats = _secondary_candidate_beats(result)
-    filtered: list[tuple[str, str]] = []
-    for rule_id, message in base:
-        if rule_id == "CM046" and any(
-            message.startswith(f"Beat {beat}:") for beat in candidate_beats
-        ):
-            continue
-        filtered.append((rule_id, message))
-    return tuple(filtered)
+    dispatch = _secondary_leading_tone_dispatch(result, semantic_dispatch)
+    return borrowed_seventh_modulation_verification_issues(
+        result,
+        semantic_dispatch=dispatch,
+    )
 
 
 def _secondary_leading_tone_verification_issues(

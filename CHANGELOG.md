@@ -8,6 +8,7 @@
 - Replaced reconstructed harmony delivery with exact four-track SATB export and independent MIDI parse-back.
 - Added `PASS`/`FAIL`/`NOT_APPLICABLE`/`BLOCKED` outcomes for all 57 stable rule IDs.
 - Made the checker importable without OR-Tools and moved CP-SAT to the optional `generation` extra.
+- Replaced message-text diagnostic suppression with typed, exact semantic dispatch for borrowed and secondary leading-tone harmony; invalid labels and third inversions now fail closed while tendency resolution remains independently enforced.
 - Added an independent secondary-seventh oracle, bounded 27,648-case enumerator, deterministic corruption corpus, and reproducibility documentation.
 
 ## 2.12.0a1 — complete secondary leading-tone seventh certification
