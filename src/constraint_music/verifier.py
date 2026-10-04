@@ -13,7 +13,7 @@ from .modulation_runtime import (
     modulation_verification_issues,
 )
 from .phrase_verify import phrase_verification_issues
-from .satb import satb_verification_issues
+from .satb import SatbGenerationResult, satb_verification_issues
 from .secondary_leading_tone_runtime import (
     secondary_leading_tone_modulation_verification_issues,
     secondary_leading_tone_satb_verification_issues,
@@ -254,8 +254,10 @@ def verify_result(result: GenerationResult) -> ValidationReport:
     for rule_id, message in satb_issues:
         fail(rule_id, message)
 
-    if spec.secondary_leading_tone_seventh_enabled and hasattr(result, "chord_inversions"):
-        inversions = getattr(result, "chord_inversions")
+    if spec.secondary_leading_tone_seventh_enabled and isinstance(
+        result, SatbGenerationResult
+    ):
+        inversions = result.chord_inversions
         if len(inversions) == spec.total_beats:
             for beat, raw_inversion in enumerate(inversions):
                 inversion = int(raw_inversion)
