@@ -23,11 +23,7 @@ jobs:
           cache: pip
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e ".[dev]"
-      - name: Diagnostic Ruff auto-fix diff
-        run: |
-          ruff check --fix src tests || true
-          git diff -- src/constraint_music/secondary_leading_tone_seventh_runtime.py
-          exit 1
+      - run: ruff check src tests
       - run: mypy --python-version "${{ matrix.python-version }}" src
       - run: pytest --cov=constraint_music --cov-report=term-missing
       - run: python -m build
