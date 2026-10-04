@@ -1,8 +1,6 @@
-# Secondary Leading-Tone Seventh Chords — v2.11
+# Secondary Leading-Tone Seventh Chords — v2.12
 
-v2.11 extends Constraint Music's target-bearing chromatic-function model with independently certified **fully diminished secondary leading-tone seventh chords**.
-
-The extension is deliberately narrow. It is additive to v2.10 secondary leading-tone triads and does not silently widen older seventh-chord semantics.
+v2.12 completes Constraint Music's verifier-certified secondary leading-tone seventh subsystem within the declared common-practice tonicization domain. The implementation no longer treats half-diminished quality or third inversion as deferred convenience cases.
 
 ## Enable the feature
 
@@ -12,128 +10,136 @@ secondary_leading_tone_seventh_enabled: true
 minimum_secondary_leading_tone_seventh_chords: 1
 ```
 
-The v2.10 triad switch remains separate:
+The secondary-leading-tone triad switch remains independent:
 
 ```yaml
 secondary_leading_tone_enabled: true
 ```
 
-Enabling the v2.11 seventh feature does not implicitly enable v2.10 triads.
+When the seventh feature is disabled, the pre-v2.12 feasible set and verifier path remain unchanged.
 
-## Certified quality policy
+## Certified family
 
-v2.11 certifies only the **fully diminished seventh** family:
+For a major target triad, v2.12 certifies both:
 
 ```text
-vii°7/x
-vii°65/x
-vii°43/x
+vii°7/x   vii°65/x   vii°43/x   vii°42/x
+viiø7/x   viiø65/x   viiø43/x   viiø42/x
 ```
 
-Half-diminished secondary leading-tone sevenths are intentionally outside the v2.11 contract. Third inversion is also outside the contract.
+For a minor target triad, v2.12 certifies the fully diminished family only:
 
-For a declared target pitch class `T`, the certified pitch-class set is reconstructed as:
+```text
+vii°7/x   vii°65/x   vii°43/x   vii°42/x
+```
+
+Diminished and augmented targets remain outside secondary tonicization.
+
+For target pitch class `T`, the common lower structure is:
 
 ```text
 root              = T - 1 semitone
 minor third       = root + 3 semitones
 diminished fifth  = root + 6 semitones
-diminished seventh= root + 9 semitones
 ```
 
-All arithmetic is modulo 12 and uses the **active local key** at the beat.
+The seventh is quality-specific:
 
-## Identity is decomposed, not opaque
+```text
+fully diminished: root + 9 semitones
+half diminished:  root + 10 semitones
+```
 
-No serialized `secondary_chord_name` field exists. Identity is reconstructed from existing orthogonal fields:
+All arithmetic is modulo 12 and is evaluated against the active local key at the beat.
 
-- active key context;
-- local target identity;
-- chord kind (`SEVENTH`);
-- support degree;
-- inversion;
-- modal source;
-- realized SATB pitch classes.
+## Identity is reconstructed, never trusted
 
-This matters because target-bearing sevenths now have two possible certified families:
+No opaque function label is serialized. The verifier independently reconstructs identity from:
 
-1. exact applied dominant `V7/x`;
-2. exact fully diminished secondary leading-tone seventh `vii°7/x`.
+- the active local key;
+- the declared tonicization target;
+- chord kind;
+- deterministic progression-support degree;
+- SATB pitch classes;
+- bass/inversion agreement;
+- modal-source absence.
 
-A beat counts as an applied dominant only when its active-key root/support identity, exact four pitch classes, and inversion reconstruct as `V7/x`. Merely carrying a target and `ChordKind.SEVENTH` is not sufficient.
+A target-bearing seventh is therefore not automatically classified as an applied dominant or a secondary leading-tone seventh. Exact musical identity decides the function.
+
+Applied `V7/x`, fully diminished `vii°7/x`, and eligible half-diminished `viiø7/x` remain disjoint certified families.
+
+## Chromatic outer voices
+
+v2.11 still inherited a diatonic outer-voice shortcut from CM005/CM006. That shortcut prevented a genuinely chromatic member from appearing in the soprano or bass and made `42` impossible to certify correctly.
+
+v2.12 replaces that shortcut only on the secondary-seventh execution path:
+
+- ordinary beats retain the historical diatonic outer-voice domains;
+- a strong secondary-seventh beat may admit one of the exact target-derived chromatic chord tones;
+- CM005/CM006 use the deterministic support degree for progression compatibility while the realized seventh supplies the exact chord-member set;
+- the independent verifier grants the chromatic exception only after exact secondary-seventh reconstruction.
+
+A malformed target-bearing chord therefore does not inherit a broad chromatic exemption. It falls back under CM002/CM003/CM005/CM006 and also fails CM055/CM056 as applicable.
 
 ## Support-degree compatibility bridge
 
-The actual diminished root is chromatic and is not represented as a fake diatonic chord degree.
+The chromatic functional root is not encoded as a fake diatonic degree. A deterministic support degree is chosen from the active key such that it:
 
-Instead, v2.11 derives a deterministic active-key **support degree** that:
+- is already allowed to progress to the target by the configured progression graph;
+- shares at least two pitch classes with the chromatic sonority;
+- maximizes pitch-class overlap;
+- breaks ties deterministically.
 
-- is already allowed to progress to the declared target by the configured progression graph;
-- shares at least two pitch classes with the chromatic seventh sonority;
-- maximizes overlap, with deterministic tie-breaking.
+CM007 thus retains its historical progression-graph meaning while target metadata and exact SATB realization carry the chromatic function.
 
-This preserves the established meanings of CM005, CM006, and CM007 while target metadata and SATB voicing carry the chromatic functional identity.
+## Realization — CM056
 
-## Realization
+Every certified secondary leading-tone seventh must contain exactly one instance of each of its four target-derived pitch classes.
 
-CM056 requires:
+The verifier admits all four inversion figures:
 
-- all four fully diminished pitch classes exactly once;
-- no duplicated unstable tone;
-- root, first, or second inversion only;
-- serialized inversion agreeing with the realized bass;
-- no arbitrary extra chromatic pitch.
+```text
+0 -> 7
+1 -> 65
+2 -> 43
+3 -> 42
+```
 
-The outer soprano/bass compatibility policy remains tied to the support triad so historical CM005/CM006 semantics are not silently redefined.
+The serialized inversion must agree with the actual bass pitch class. Third inversion is not merely a metadata value: the chordal seventh must actually be in the bass.
 
-## Resolution
+## Resolution — CM057
 
-CM057 requires immediate resolution to the declared target. The destination chord must be:
+Every certified secondary leading-tone seventh resolves immediately to its declared target. The destination must be:
 
 - untargeted;
 - unborrowed;
 - triadic;
-- consistent with the active local key.
+- interpreted in the same active local-key context.
 
-Tendency tones are reconstructed independently in every SATB voice:
+The tendency rules are exact rather than range-based:
 
-- local leading tone: **up by semitone**;
-- diminished fifth: **down by one or two semitones**;
-- chordal diminished seventh: **down by one or two semitones**.
+- local leading tone/root: `+1` semitone;
+- diminished fifth: `-1` semitone for a major target, `-2` for a minor target;
+- fully diminished chordal seventh: `-1` semitone;
+- half-diminished chordal seventh: `-2` semitones.
 
-These requirements are compiler constraints and independent verifier checks.
+These deltas are compiled into CP-SAT and independently recomputed by the verifier. They apply to whichever SATB voice carries the tendency tone, including the bass in `vii°42/x` and `viiø42/x`.
 
-## Interaction with applied dominants
+## Applied-dominant separation
 
-`minimum_applied_dominants` counts only exact applied `V7/x` realizations.
+`minimum_applied_dominants` counts only exact reconstructed `V7/x` chords. A secondary leading-tone seventh cannot satisfy that minimum merely because it carries a target and has seventh form.
 
-A v2.11 secondary leading-tone seventh cannot satisfy that minimum even though it is target-bearing and seventh-form. Conversely, a valid applied dominant is not reclassified as a secondary leading-tone seventh.
+Conversely, an exact applied dominant is excluded from secondary-leading-tone classification before quality reconstruction.
 
-The distinction is reconstructed from musical values, not a synthetic function flag stored in the artifact.
+## Modal mixture and protected anchors
 
-## Interaction with modal mixture
+A secondary leading-tone seventh cannot simultaneously carry modal-source identity. Certified cadence and modulation anchors remain protected from local chromatic-function substitution.
 
-A certified secondary leading-tone seventh cannot simultaneously carry modal-source identity.
-
-Target identity, modal source, harmonic form, persistent key context, and voicing remain independent axes. The verifier rejects overlap rather than treating one metadata field as permission to reinterpret another.
-
-## Interaction with modulation
-
-After a v2.8 modulation boundary, v2.11 reconstructs secondary leading-tone sevenths from the persistent **destination active key**.
-
-It never falls back to the immutable artifact-global key.
-
-The feature is excluded from protected modulation/cadence anchors, preserving:
-
-- the common-chord pivot invariant;
-- strict destination V-I confirmation;
-- destination leading-tone presence;
-- upward semitone destination-leading-tone resolution;
-- exact active-key pitch admission.
+After a modulation boundary, every secondary seventh is reconstructed against the persistent destination active key. The immutable source key is never used as a stale fallback.
 
 ## Provenance
 
-v2.11 introduces no opaque provenance field. The semantic digest already commits the values needed to reconstruct identity:
+No new opaque quality/function field is required in the artifact. The existing semantic digest commits the data from which the function is reconstructed:
 
 - target identity;
 - harmonic form;
@@ -141,30 +147,28 @@ v2.11 introduces no opaque provenance field. The semantic digest already commits
 - SATB voicing;
 - modal source;
 - persistent key context;
-- specification feature flags and minima.
+- feature flags and minima.
 
-Changing any of those values invalidates semantic/artifact integrity and/or musical verification.
+Tampering with any of those values changes the semantic/artifact digest and/or fails musical verification.
 
-## Hard rules
+## Hard-rule contract
 
-v2.11 adds three hard rules after CM054:
+v2.12 keeps the 57-rule surface but strengthens CM002/CM003/CM005/CM006 and CM055–CM057 rather than inventing redundant rule IDs.
 
-- **CM055 — secondary leading-tone seventh context**: supported target, active-key support identity, fully diminished quality policy, no modal overlap, no protected-anchor contamination, and independent applied-dominant classification.
-- **CM056 — secondary leading-tone seventh realization**: exact four-tone fully diminished realization and root/first/second inversion agreement.
-- **CM057 — secondary leading-tone seventh resolution**: immediate target resolution plus local leading-tone, diminished-fifth, and diminished-seventh tendencies.
+- **CM055 — secondary leading-tone seventh context**: exact active-key target/support identity, quality eligibility, no applied/modal overlap, and protected-anchor exclusion.
+- **CM056 — secondary leading-tone seventh realization**: exact four-tone fully diminished or eligible half-diminished realization, with all four inversions and bass agreement.
+- **CM057 — secondary leading-tone seventh resolution**: immediate target resolution plus exact target- and quality-dependent tendency motion in every SATB voice.
 
-The certified contract is therefore `CM001–CM057`.
+The certified contract remains `CM001–CM057`, versioned as **2.12**.
 
-## Explicit non-goals
+## Deliberate boundaries that remain
 
-v2.11 does not certify:
+v2.12 does not claim arbitrary chromatic harmony. It still excludes:
 
-- half-diminished `viiø7/x`;
-- third-inversion seventh chords;
-- arbitrary enharmonic reinterpretation;
+- diminished or augmented tonicization targets;
+- enharmonic respelling as a substitute for functional identity;
 - augmented-sixth or Neapolitan reinterpretation;
-- distant/enharmonic modulation;
-- arbitrary modulation chains;
-- probabilistic or inferred chromatic-function labels.
+- distant/enharmonic modulation and arbitrary modulation chains;
+- probabilistic or inferred function labels.
 
-Those require separate explicitly versioned boundaries rather than silent widening of v2.11.
+Those are separate harmonic domains. They are not omissions from the secondary leading-tone seventh family certified here.
