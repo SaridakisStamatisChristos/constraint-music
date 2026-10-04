@@ -46,7 +46,6 @@ from .secondary_leading_tone_runtime import (
 )
 from .theory import NO_TONICIZATION_TARGET, ChordKind, Key
 
-
 ChordRow = tuple[int, int, int, int, int, int, int, int, int]
 FunctionRow = tuple[int, int, int, int, int, int, int, int, int, int, int, int]
 
@@ -680,7 +679,10 @@ def _add_secondary_seventh_tendency_constraints(
             )
 
 
-def _voice_pitch_classes(result: SatbGenerationResult, beat: int) -> tuple[int, int, int, int]:
+def _voice_pitch_classes(
+    result: SatbGenerationResult,
+    beat: int,
+) -> tuple[int, int, int, int]:
     return (
         result.soprano[beat] % 12,
         result.alto[beat] % 12,
@@ -691,9 +693,18 @@ def _voice_pitch_classes(result: SatbGenerationResult, beat: int) -> tuple[int, 
 
 def _exact_applied_dominant(result: SatbGenerationResult, beat: int) -> bool:
     spec = result.spec
-    if not spec.tonicization_enabled or beat >= spec.total_beats:
+    if not spec.tonicization_enabled or not 0 <= beat < spec.total_beats:
         return False
-    if not result.tonicization_targets or not result.chord_kinds:
+    if not (
+        len(result.tonicization_targets) > beat
+        and len(result.chord_kinds) > beat
+        and len(result.chord_degrees) > beat
+        and len(result.chord_inversions) > beat
+        and len(result.soprano) > beat
+        and len(result.alto) > beat
+        and len(result.tenor) > beat
+        and len(result.bass) > beat
+    ):
         return False
     target = result.tonicization_targets[beat]
     if target is None:
@@ -713,9 +724,10 @@ def _exact_applied_dominant(result: SatbGenerationResult, beat: int) -> bool:
     pcs = _voice_pitch_classes(result, beat)
     if set(pcs) != set(expected) or len(set(pcs)) != 4:
         return False
-    if not result.chord_inversions or not 0 <= result.chord_inversions[beat] <= 2:
+    inversion = result.chord_inversions[beat]
+    if not 0 <= inversion <= 2:
         return False
-    return result.bass[beat] % 12 == expected[result.chord_inversions[beat]]
+    return result.bass[beat] % 12 == expected[inversion]
 
 
 def _secondary_seventh_candidate_beats(result: GenerationResult) -> set[int]:
@@ -723,8 +735,6 @@ def _secondary_seventh_candidate_beats(result: GenerationResult) -> set[int]:
         return set()
     spec = result.spec
     if not spec.secondary_leading_tone_seventh_enabled:
-        return set()
-    if not result.tonicization_targets or not result.chord_kinds:
         return set()
     if not (
         len(result.tonicization_targets)
@@ -879,7 +889,8 @@ def secondary_leading_tone_seventh_satb_verification_issues(
                 issues.append(
                     (
                         "CM055",
-                        f"Beat {beat}: seventh support degree does not match target {target} in {key}",
+                        f"Beat {beat}: seventh support degree does not match target "
+                        f"{target} in {key}",
                     )
                 )
                 context_ok = False
