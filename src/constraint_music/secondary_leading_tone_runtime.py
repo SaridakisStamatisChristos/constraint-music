@@ -72,11 +72,8 @@ def _v210_chord_rows(
         for pcs in product(secondary, repeat=4):
             if set(pcs) != set(secondary):
                 continue
-            # Avoid doubling either tendency tone; the stable third is doubled instead.
             if pcs.count(root) != 1 or pcs.count(diminished_fifth) != 1 or pcs.count(third) != 2:
                 continue
-            # CM005/CM006 remain unchanged. Chromatic material is admitted only when the
-            # outer voices can still be certified against the active-key support triad.
             if pcs[0] not in support_triad or pcs[3] not in support_triad:
                 continue
             inversion = secondary.index(pcs[3])
@@ -216,8 +213,8 @@ def add_secondary_leading_tone_satb_constraints(
             model.add(sum(chord_kind) >= spec.minimum_seventh_chords)
         model.add(chord_kind[-1] == int(ChordKind.TRIAD))
     else:
-        for kind in chord_kind:
-            model.add(kind == int(ChordKind.TRIAD))
+        for kind_var in chord_kind:
+            model.add(kind_var == int(ChordKind.TRIAD))
 
     applied_flags: list[cp_model.IntVar] = []
     secondary_flags: list[cp_model.IntVar] = []
@@ -244,9 +241,7 @@ def add_secondary_leading_tone_satb_constraints(
     if spec.minimum_applied_dominants:
         model.add(sum(applied_flags) >= spec.minimum_applied_dominants)
     if spec.minimum_secondary_leading_tone_chords:
-        model.add(
-            sum(secondary_flags) >= spec.minimum_secondary_leading_tone_chords
-        )
+        model.add(sum(secondary_flags) >= spec.minimum_secondary_leading_tone_chords)
     model.add(tonicization_target[-1] == NO_TONICIZATION_TARGET)
 
     borrowed_flags: list[cp_model.IntVar] = []
@@ -346,8 +341,7 @@ def add_secondary_leading_tone_satb_constraints(
                     (left_note, right_note)
                     for left_note in domain
                     for right_note in domain
-                    if left_note % 12 != key.leading_tone_pc
-                    or right_note == left_note + 1
+                    if left_note % 12 != key.leading_tone_pc or right_note == left_note + 1
                 ]
                 model.add_allowed_assignments([left_var, right_var], allowed)
 
@@ -489,15 +483,13 @@ def _add_secondary_tendency_constraints(
         key = spec.active_key_at_beat(beat)
         rows = _secondary_root_flag_rows(key, spec.progression_graph)
         is_secondary = model.new_bool_var(f"secondary_resolution_{beat}")
-        model.add(
-            tonicization_target[beat] != NO_TONICIZATION_TARGET
-        ).only_enforce_if(is_secondary)
+        model.add(tonicization_target[beat] != NO_TONICIZATION_TARGET).only_enforce_if(
+            is_secondary
+        )
         model.add(chord_kind[beat] == int(ChordKind.TRIAD)).only_enforce_if(is_secondary)
-        model.add(
-            tonicization_target[beat] == NO_TONICIZATION_TARGET
-        ).only_enforce_if(is_secondary.negated(), chord_kind[beat].negated())
-        # The generic local-target motion constraint already forces chord[next] == target and
-        # clears target[next]. v2.10 additionally requires an unaltered triadic target.
+        model.add(tonicization_target[beat] == NO_TONICIZATION_TARGET).only_enforce_if(
+            is_secondary.negated(), chord_kind[beat].negated()
+        )
         model.add(chord_kind[beat + 1] == int(ChordKind.TRIAD)).only_enforce_if(is_secondary)
         model.add(modal_source[beat + 1] == NO_MODAL_SOURCE).only_enforce_if(is_secondary)
 
@@ -527,9 +519,7 @@ def _secondary_candidate_beats(result: GenerationResult) -> set[int]:
     if not result.tonicization_targets or not result.chord_kinds:
         return set()
     if not (
-        len(result.tonicization_targets)
-        == len(result.chord_kinds)
-        == spec.total_beats
+        len(result.tonicization_targets) == len(result.chord_kinds) == spec.total_beats
     ):
         return set()
     beats: set[int] = set()
@@ -539,10 +529,10 @@ def _secondary_candidate_beats(result: GenerationResult) -> set[int]:
         if target is None:
             continue
         try:
-            kind = ChordKind.parse(raw_kind)
+            parsed_kind = ChordKind.parse(raw_kind)
         except ValueError:
             continue
-        if kind is ChordKind.TRIAD:
+        if parsed_kind is ChordKind.TRIAD:
             beats.add(beat)
     return beats
 
@@ -612,23 +602,23 @@ def _secondary_leading_tone_verification_issues(
         return (("CM052", "Secondary leading-tone metadata/voices must match total_beats"),)
 
     try:
-        kinds = tuple(ChordKind.parse(kind) for kind in result.chord_kinds)
+        kinds = tuple(ChordKind.parse(item) for item in result.chord_kinds)
     except ValueError:
         return ()
 
     applied_count = sum(
-        target is not None and kind is ChordKind.SEVENTH
-        for target, kind in zip(result.tonicization_targets, kinds, strict=True)
+        target is not None and chord_kind_value is ChordKind.SEVENTH
+        for target, chord_kind_value in zip(result.tonicization_targets, kinds, strict=True)
     )
     if applied_count < spec.minimum_applied_dominants:
         issues.append(("CM037", "Serialized harmony misses minimum_applied_dominants"))
 
     secondary_beats = [
         beat
-        for beat, (target, kind) in enumerate(
+        for beat, (target, chord_kind_value) in enumerate(
             zip(result.tonicization_targets, kinds, strict=True)
         )
-        if target is not None and kind is ChordKind.TRIAD
+        if target is not None and chord_kind_value is ChordKind.TRIAD
     ]
     if len(secondary_beats) < spec.minimum_secondary_leading_tone_chords:
         issues.append(
@@ -649,9 +639,7 @@ def _secondary_leading_tone_verification_issues(
         if target is None:
             continue
         key = spec.active_key_at_beat(beat)
-        supported = set(
-            supported_secondary_leading_tone_targets(key, spec.progression_graph)
-        )
+        supported = set(supported_secondary_leading_tone_targets(key, spec.progression_graph))
         context_ok = True
         if target not in supported:
             issues.append(
@@ -695,9 +683,7 @@ def _secondary_leading_tone_verification_issues(
         if not context_ok:
             continue
 
-        support = secondary_leading_tone_support_degree(
-            key, target, spec.progression_graph
-        )
+        support = secondary_leading_tone_support_degree(key, target, spec.progression_graph)
         if result.chord_degrees[beat] != support:
             issues.append(
                 (
