@@ -152,8 +152,10 @@ def add_modulated_satb_constraints(
     for key in spec.context_keys:
         inner_pitch_classes.update(key.pitch_classes)
         if spec.tonicization_enabled:
-            for target in key.applied_dominant_targets:
-                inner_pitch_classes.update(key.applied_dominant_seventh_pitch_classes(target))
+            for target_degree in key.applied_dominant_targets:
+                inner_pitch_classes.update(
+                    key.applied_dominant_seventh_pitch_classes(target_degree)
+                )
         if spec.modal_mixture_enabled:
             source = canonical_modal_source(key)
             for degree in supported_borrowed_degrees(key):
@@ -574,6 +576,7 @@ def modulated_satb_verification_issues(
                 issues.append(("CM042", f"Beat {beat}: borrowed inversion mismatches bass"))
             continue
 
+        tones: tuple[int, ...]
         if kind is ChordKind.TRIAD:
             triad = key.triad_pitch_classes(degree)
             root = triad[0]

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from typing import Any
 
 from ortools.sat.python import cp_model
 
@@ -148,7 +149,7 @@ class ConstraintMusicSolver:
                 "mixture, modulation, repetition, or distinctness constraints."
             )
 
-        common = dict(
+        common: dict[str, Any] = dict(
             spec=spec,
             melody=tuple(solver.value(note) for note in problem.melody_note),
             bass=tuple(solver.value(note) for note in problem.bass_note),
