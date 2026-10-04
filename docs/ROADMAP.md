@@ -102,9 +102,24 @@
 - [x] Extend the hard contract additively with CM049–CM051 and schema/contract 2.9.
 - [x] Add hostile solver/verifier/provenance/cross-feature tests.
 
+## v2.10 verified secondary leading-tone chords
+
+- [x] Add explicit opt-in secondary leading-tone harmony without a new opaque chord identity axis.
+- [x] Reuse local target identity and disambiguate applied dominants vs. leading-tone chords by harmonic form.
+- [x] Derive diminished triads from the exact active local key and declared non-tonic target.
+- [x] Preserve CM005/CM006/CM007 through a deterministic active-key support degree instead of forging a diatonic chromatic root.
+- [x] Require complete diminished-triad realization with tendency tones undoubled and the stable third doubled.
+- [x] Require immediate resolution to the declared unaltered triadic target.
+- [x] Require local leading tone up by semitone and diminished fifth down by step.
+- [x] Keep secondary chords disjoint from modal borrowing and certified modulation/cadence anchors.
+- [x] Reconstruct post-modulation secondary harmony from the destination active key, never stale global context.
+- [x] Prevent target-bearing triads from satisfying the applied-dominant minimum.
+- [x] Extend the hard contract additively with CM052–CM054 and schema/contract 2.10.
+- [x] Add hostile solver/verifier/provenance/post-modulation tests.
+
 ## Later harmonic expansion
 
-- [ ] Secondary leading-tone chords with independent tendency-tone semantics.
+- [ ] Secondary leading-tone seventh chords only after an explicit seventh-form/tendency contract revision.
 - [ ] Third-inversion seventh support only after an explicit outer-voice compatibility revision.
 - [ ] Richer voice-leading policy where justified by an explicit contract version.
 - [ ] Multi-modulation chains only after single-modulation invariants remain stable.
@@ -121,7 +136,7 @@
 
 ## Neuro-symbolic track
 
-A model may propose motifs, harmonic plans, rhythmic cells, phrase plans, tonicization targets,
+A model may propose motifs, harmonic plans, rhythmic cells, phrase plans, local targets,
 modal-source plans, modulation plans, or target curves, but only the symbolic layer may certify
 the final artifact. The intended boundary remains:
 
