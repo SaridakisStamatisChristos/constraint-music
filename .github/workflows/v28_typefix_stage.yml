@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   apply:
-    if: ${{ !contains(github.event.head_commit.message, 'fix(v2.8): satisfy strict typing') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
