@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.7"
+CONTRACT_VERSION = "2.8"
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,9 +31,13 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM005",
         "strong_beat_chord_tone",
-        "Every strong-beat melody pitch belongs to the active triad.",
+        "Every strong-beat melody pitch belongs to the active local-key triad.",
     ),
-    ConstraintRule("CM006", "bass_chord_member", "Every bass pitch belongs to the active triad."),
+    ConstraintRule(
+        "CM006",
+        "bass_chord_member",
+        "Every bass pitch belongs to the active local-key triad.",
+    ),
     ConstraintRule(
         "CM007",
         "progression_graph",
@@ -180,7 +184,7 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM030",
         "satb_chord_completeness",
-        "Every global SATB triad contains the complete active triad and doubles its root.",
+        "Every SATB triad contains the complete active-key triad and doubles its root.",
         conditional=True,
     ),
     ConstraintRule(
@@ -195,7 +199,7 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM032",
         "satb_tendency_resolution",
-        "When enabled, alto and tenor leading tones resolve upward by semitone.",
+        "When enabled, alto and tenor active-key leading tones resolve upward by semitone.",
         conditional=True,
     ),
     ConstraintRule(
@@ -211,8 +215,8 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM034",
         "expanded_chord_realization",
         (
-            "Seventh forms contain all four diatonic chord tones exactly once, while every "
-            "serialized global-form inversion agrees with the realized bass pitch class."
+            "Seventh forms contain all four active-key chord tones exactly once, while every "
+            "serialized inversion agrees with the realized bass pitch class."
         ),
         conditional=True,
     ),
@@ -226,8 +230,8 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM036",
         "dominant_seventh_resolution",
         (
-            "Every global dominant seventh resolves to tonic and each voice carrying its leading "
-            "tone resolves upward by semitone."
+            "Every active-key dominant seventh resolves to tonic and each voice carrying its "
+            "leading tone resolves upward by semitone."
         ),
         conditional=True,
     ),
@@ -236,8 +240,8 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "tonicization_context",
         (
             "When tonicization is enabled, every beat carries explicit nullable target metadata; "
-            "non-null targets are supported diatonic local tonics, use seventh form, and satisfy "
-            "the declared minimum applied-dominant count."
+            "non-null targets are supported local tonics in the active key, use seventh form, and "
+            "satisfy the declared minimum applied-dominant count."
         ),
         conditional=True,
     ),
@@ -245,8 +249,8 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM038",
         "applied_dominant_realization",
         (
-            "Every applied dominant has the target-derived dominant-seventh pitch classes exactly "
-            "once, the correct global root degree, and an inversion matching the realized bass."
+            "Every applied dominant has active-key target-derived dominant-seventh pitch classes "
+            "exactly once, the correct root degree, and an inversion matching the realized bass."
         ),
         conditional=True,
     ),
@@ -273,9 +277,9 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "modal_mixture_context",
         (
             "When modal mixture is enabled, every beat carries explicit nullable source-mode "
-            "metadata; borrowed beats use the canonical parallel source, remain triadic, do not "
-            "coincide with tonicization, stay outside the preserved global cadential boundary, "
-            "and satisfy the declared minimum borrowed-chord count."
+            "metadata; borrowed beats use the active-key canonical parallel source, remain "
+            "triadic, do not coincide with tonicization, stay outside certified cadential/context "
+            "anchors, and satisfy the declared minimum borrowed-chord count."
         ),
         conditional=True,
     ),
@@ -284,7 +288,55 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "borrowed_chord_realization",
         (
             "Every borrowed beat contains the complete triad derived from its explicit parallel "
-            "source mode and degree, and its serialized inversion agrees with the realized bass."
+            "source mode, active key, and degree, with inversion agreeing with realized bass."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM043",
+        "key_context_shape",
+        "Enabled modulation serializes exactly one explicit local-key identity per beat.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM044",
+        "modulation_boundary_destination",
+        "The single modulation boundary targets the declared same-mode dominant key.",
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM045",
+        "modulation_pivot",
+        (
+            "The pre-boundary source-tonic triad is an unaltered common chord reinterpretable "
+            "as destination IV."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM046",
+        "post_modulation_interpretation",
+        (
+            "All post-boundary harmony is independently reconstructed against the persistent "
+            "destination-key context."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM047",
+        "destination_confirmation",
+        (
+            "The destination region closes with an unborrowed, untargeted destination V-I "
+            "and destination-tonic outer voices."
+        ),
+        conditional=True,
+    ),
+    ConstraintRule(
+        "CM048",
+        "serialized_key_context_consistency",
+        (
+            "Serialized key contexts equal the exact source-before/destination-after boundary "
+            "sequence declared by the specification."
         ),
         conditional=True,
     ),

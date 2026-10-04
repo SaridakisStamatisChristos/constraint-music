@@ -17,23 +17,23 @@ def add_harmony_constraints(
     melody_domain: tuple[int, ...],
     bass_domain: tuple[int, ...],
 ) -> None:
-    key = spec.tonal_key
     for left, right in pairwise(chord):
         model.add_allowed_assignments([left, right], spec.progression_pairs)
 
-    chord_melody_pairs = [
-        (degree, note_index)
-        for degree in range(7)
-        for note_index, note in enumerate(melody_domain)
-        if note % 12 in key.triad_pitch_classes(degree)
-    ]
-    chord_bass_pairs = [
-        (degree, note_index)
-        for degree in range(7)
-        for note_index, note in enumerate(bass_domain)
-        if note % 12 in key.triad_pitch_classes(degree)
-    ]
     for beat in range(spec.total_beats):
+        key = spec.active_key_at_beat(beat)
+        chord_melody_pairs = [
+            (degree, note_index)
+            for degree in range(7)
+            for note_index, note in enumerate(melody_domain)
+            if note % 12 in key.triad_pitch_classes(degree)
+        ]
+        chord_bass_pairs = [
+            (degree, note_index)
+            for degree in range(7)
+            for note_index, note in enumerate(bass_domain)
+            if note % 12 in key.triad_pitch_classes(degree)
+        ]
         strong_step = beat * spec.subdivisions_per_beat
         model.add_allowed_assignments(
             [chord[beat], melody_choice[strong_step]], chord_melody_pairs
@@ -41,6 +41,7 @@ def add_harmony_constraints(
         model.add_allowed_assignments([chord[beat], bass_choice[beat]], chord_bass_pairs)
 
     if spec.require_authentic_cadence:
+        key = spec.tonal_key
         tonic_melody_indices = [
             i for i, note in enumerate(melody_domain) if note % 12 == key.tonic_pc
         ]
@@ -53,6 +54,29 @@ def add_harmony_constraints(
         model.add_allowed_assignments([melody_choice[-1]], [(i,) for i in tonic_melody_indices])
         model.add_allowed_assignments([bass_choice[-1]], [(i,) for i in tonic_bass_indices])
 
+    if spec.modulation_enabled:
+        destination = spec.modulation_destination
+        boundary = spec.modulation_boundary_beat
+        if destination is None or boundary is None:
+            raise ValueError("Validated modulation spec lost destination/boundary")
+        pivot = boundary - 1
+        tonic_melody_indices = [
+            i for i, note in enumerate(melody_domain) if note % 12 == destination.tonic_pc
+        ]
+        tonic_bass_indices = [
+            i for i, note in enumerate(bass_domain) if note % 12 == destination.tonic_pc
+        ]
+        model.add(chord[0] == 0)
+        model.add(chord[pivot] == 0)
+        model.add(chord[-2] == 4)
+        model.add(chord[-1] == 0)
+        final_strong = (spec.total_beats - 1) * spec.subdivisions_per_beat
+        model.add_allowed_assignments(
+            [melody_choice[final_strong]], [(i,) for i in tonic_melody_indices]
+        )
+        model.add_allowed_assignments([melody_choice[-1]], [(i,) for i in tonic_melody_indices])
+        model.add_allowed_assignments([bass_choice[-1]], [(i,) for i in tonic_bass_indices])
+
 
 def add_melodic_constraints(
     model: cp_model.CpModel,
@@ -61,21 +85,37 @@ def add_melodic_constraints(
     melody_domain: tuple[int, ...],
 ) -> None:
     key = spec.tonal_key
-    allowed_pairs: list[tuple[int, int]] = []
-    for left_index, left_note in enumerate(melody_domain):
-        for right_index, right_note in enumerate(melody_domain):
-            leap = right_note - left_note
-            if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:
-                continue
-            if (
-                spec.resolve_leading_tone
-                and left_note % 12 == key.leading_tone_pc
-                and right_note != left_note + 1
-            ):
-                continue
-            allowed_pairs.append((left_index, right_index))
-    for left_var, right_var in pairwise(melody_choice):
-        model.add_allowed_assignments([left_var, right_var], allowed_pairs)
+    pair_rows_by_leading_pc: dict[int, list[tuple[int, int]]] = {}
+
+    def pair_rows(leading_tone_pc: int) -> list[tuple[int, int]]:
+        cached = pair_rows_by_leading_pc.get(leading_tone_pc)
+        if cached is not None:
+            return cached
+        rows: list[tuple[int, int]] = []
+        for left_index, left_note in enumerate(melody_domain):
+            for right_index, right_note in enumerate(melody_domain):
+                leap = right_note - left_note
+                if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:
+                    continue
+                if (
+                    spec.resolve_leading_tone
+                    and left_note % 12 == leading_tone_pc
+                    and right_note != left_note + 1
+                ):
+                    continue
+                rows.append((left_index, right_index))
+        pair_rows_by_leading_pc[leading_tone_pc] = rows
+        return rows
+
+    for step, (left_var, right_var) in enumerate(pairwise(melody_choice)):
+        active_key = (
+            spec.active_key_at_beat(step // spec.subdivisions_per_beat)
+            if spec.modulation_enabled
+            else key
+        )
+        model.add_allowed_assignments(
+            [left_var, right_var], pair_rows(active_key.leading_tone_pc)
+        )
 
     window = spec.max_repeated_notes + 1
     if window <= len(melody_choice):

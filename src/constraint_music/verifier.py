@@ -4,6 +4,10 @@ from itertools import pairwise
 
 from .contract import HARD_CONSTRAINT_IDS
 from .models import GenerationResult, RhythmState, ValidationReport
+from .modulation_runtime import (
+    modulated_satb_verification_issues,
+    modulation_verification_issues,
+)
 from .phrase_verify import phrase_verification_issues
 from .satb import satb_verification_issues
 from .theory import is_parallel_perfect
@@ -55,13 +59,22 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         chord = chords[beat]
         if not 0 <= chord <= 6:
             continue
+        active_key = spec.active_key_at_beat(beat)
         strong_step = beat * spec.subdivisions_per_beat
         if strong_step < len(melody):
             strong_note = melody[strong_step]
-            if strong_note % 12 not in key.triad_pitch_classes(chord):
-                fail("CM005", f"Beat {beat}: strong melody note is not in {key.chord_name(chord)}")
-        if beat < len(bass) and bass[beat] % 12 not in key.triad_pitch_classes(chord):
-            fail("CM006", f"Bass beat {beat}: note {bass[beat]} is not in {key.chord_name(chord)}")
+            if strong_note % 12 not in active_key.triad_pitch_classes(chord):
+                fail(
+                    "CM005",
+                    f"Beat {beat}: strong melody note is not in active-key "
+                    f"{active_key.chord_name(chord)}",
+                )
+        if beat < len(bass) and bass[beat] % 12 not in active_key.triad_pitch_classes(chord):
+            fail(
+                "CM006",
+                f"Bass beat {beat}: note {bass[beat]} is not in active-key "
+                f"{active_key.chord_name(chord)}",
+            )
 
     allowed_pairs = set(spec.progression_pairs)
     for beat, pair in enumerate(pairwise(chords)):
@@ -74,7 +87,16 @@ def verify_result(result: GenerationResult) -> ValidationReport:
             fail("CM008", f"Melody steps {step}->{step + 1}: leap exceeds limit")
         if abs(delta) % 12 == 6:
             fail("CM009", f"Melody steps {step}->{step + 1}: tritone motion is forbidden")
-        if spec.resolve_leading_tone and left % 12 == key.leading_tone_pc and right != left + 1:
+        active_key = (
+            spec.active_key_at_beat(step // spec.subdivisions_per_beat)
+            if spec.modulation_enabled
+            else key
+        )
+        if (
+            spec.resolve_leading_tone
+            and left % 12 == active_key.leading_tone_pc
+            and right != left + 1
+        ):
             fail("CM010", f"Melody step {step}: leading tone does not resolve upward to tonic")
 
     run_length = 1
@@ -178,7 +200,14 @@ def verify_result(result: GenerationResult) -> ValidationReport:
 
     for rule_id, message in phrase_verification_issues(result):
         fail(rule_id, message)
-    for rule_id, message in satb_verification_issues(result):
+    satb_issues = (
+        modulated_satb_verification_issues(result)
+        if spec.modulation_enabled
+        else satb_verification_issues(result)
+    )
+    for rule_id, message in satb_issues:
+        fail(rule_id, message)
+    for rule_id, message in modulation_verification_issues(result):
         fail(rule_id, message)
 
     return ValidationReport(

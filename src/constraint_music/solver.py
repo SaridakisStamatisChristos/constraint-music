@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from typing import Any
 
 from ortools.sat.python import cp_model
 
@@ -18,6 +19,7 @@ from .compiler_tonal import (
 from .contract import HARD_CONSTRAINT_IDS
 from .modal_mixture import NO_MODAL_SOURCE, ModalSource
 from .models import GenerationResult, GenerationSpec, RhythmState
+from .modulation_runtime import ModulatedSatbGenerationResult, add_modulated_satb_constraints
 from .objective import ObjectiveBundle, add_objective, evaluate_objective_vector
 from .satb import SatbGenerationResult, SatbVariables, add_satb_constraints
 from .search import (
@@ -144,10 +146,10 @@ class ConstraintMusicSolver:
             raise NoSolutionError(
                 f"No feasible composition found ({status_name}). Relax pitch, rhythm, motif, "
                 "phrase, cadence, SATB voice-leading, expanded harmony, tonicization, modal "
-                "mixture, repetition, or distinctness constraints."
+                "mixture, modulation, repetition, or distinctness constraints."
             )
 
-        raw_result = SatbGenerationResult(
+        common: dict[str, Any] = dict(
             spec=spec,
             melody=tuple(solver.value(note) for note in problem.melody_note),
             bass=tuple(solver.value(note) for note in problem.bass_note),
@@ -180,14 +182,21 @@ class ConstraintMusicSolver:
                 for value in (solver.value(item) for item in problem.satb.modal_source)
             ),
         )
+        if spec.modulation_enabled:
+            raw_result: SatbGenerationResult = ModulatedSatbGenerationResult(
+                **common,
+                key_contexts=spec.expected_key_contexts,
+            )
+        else:
+            raw_result = SatbGenerationResult(**common)
+
         report = verify_result(raw_result)
         if not report.valid:
             joined = "; ".join(report.issues[:5])
             raise InternalVerificationError(f"Solver/verifier contract breach: {joined}")
 
         solver_vector = tuple(
-            (name, solver.value(problem.objective.components[name]))
-            for name, _ in weights
+            (name, solver.value(problem.objective.components[name])) for name, _ in weights
         )
         independent_vector = evaluate_objective_vector(raw_result)
         if solver_vector != independent_vector:
@@ -233,7 +242,11 @@ class ConstraintMusicSolver:
         add_voice_leading_constraints(
             model, spec, melody_note, bass_note, melody_domain, bass_domain
         )
-        satb = add_satb_constraints(model, spec, chord, melody_note, bass_note)
+        satb = (
+            add_modulated_satb_constraints(model, spec, chord, melody_note, bass_note)
+            if spec.modulation_enabled
+            else add_satb_constraints(model, spec, chord, melody_note, bass_note)
+        )
         add_rhythm_constraints(model, spec, rhythm, melody_note)
         add_motif_constraints(model, spec, rhythm, melody_note)
         add_phrase_constraints(model, spec, rhythm, melody_note, bass_note, chord)
@@ -327,6 +340,11 @@ class ConstraintMusicSolver:
                     strict=True,
                 )
             )
+        if "key_context" in distinct_on:
+            if not isinstance(result, ModulatedSatbGenerationResult):
+                raise ValueError("key_context distinctness requires a modulated SATB result")
+            if len(result.key_contexts) != len(problem.chord):
+                raise ValueError("key_context distinctness requires explicit context metadata")
 
         differs: list[cp_model.IntVar] = []
         for index, (variable, value) in enumerate(variables):
