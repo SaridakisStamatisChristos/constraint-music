@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from itertools import pairwise
 
+from .borrowed_seventh_runtime import (
+    borrowed_seventh_modulation_verification_issues,
+    borrowed_seventh_satb_verification_issues,
+)
 from .contract import HARD_CONSTRAINT_IDS
 from .models import GenerationResult, RhythmState, ValidationReport
 from .modulation_runtime import (
@@ -208,14 +212,23 @@ def verify_result(result: GenerationResult) -> ValidationReport:
 
     for rule_id, message in phrase_verification_issues(result):
         fail(rule_id, message)
-    satb_issues = (
-        modulated_satb_verification_issues(result)
-        if spec.modulation_enabled
-        else satb_verification_issues(result)
-    )
+
+    v29_borrowed_sevenths = spec.modal_mixture_enabled and spec.expanded_harmony_enabled
+    if v29_borrowed_sevenths:
+        satb_issues = borrowed_seventh_satb_verification_issues(result)
+    elif spec.modulation_enabled:
+        satb_issues = modulated_satb_verification_issues(result)
+    else:
+        satb_issues = satb_verification_issues(result)
     for rule_id, message in satb_issues:
         fail(rule_id, message)
-    for rule_id, message in modulation_verification_issues(result):
+
+    modulation_issues = (
+        borrowed_seventh_modulation_verification_issues(result)
+        if v29_borrowed_sevenths and spec.modulation_enabled
+        else modulation_verification_issues(result)
+    )
+    for rule_id, message in modulation_issues:
         fail(rule_id, message)
 
     return ValidationReport(
