@@ -145,9 +145,8 @@ def add_modulated_satb_constraints(
     melody_note: list[cp_model.IntVar],
     bass_note: list[cp_model.IntVar],
 ) -> SatbVariables:
-    global_key = spec.tonal_key
-    soprano_domain = global_key.pitches_in_range(spec.melody_low, spec.melody_high)
-    bass_domain = global_key.pitches_in_range(spec.bass_low, spec.bass_high)
+    soprano_domain = spec.context_pitches_in_range(spec.melody_low, spec.melody_high)
+    bass_domain = spec.context_pitches_in_range(spec.bass_low, spec.bass_high)
     inner_pitch_classes: set[int] = set()
     for key in spec.context_keys:
         inner_pitch_classes.update(key.pitch_classes)
@@ -304,10 +303,6 @@ def add_modulated_satb_constraints(
     if spec.resolve_leading_tone:
         for voice_vars, domain in ((alto, alto_domain), (tenor, tenor_domain)):
             for beat, (left_var, right_var) in enumerate(pairwise(voice_vars)):
-                # The certified terminal V-I cadence is governed by CM047;
-                # generic inner-voice CM032 remains active on every earlier transition.
-                if beat == spec.total_beats - 2:
-                    continue
                 key = spec.active_key_at_beat(beat)
                 allowed = [
                     (left_note, right_note)
@@ -317,6 +312,27 @@ def add_modulated_satb_constraints(
                     or right_note == left_note + 1
                 ]
                 model.add_allowed_assignments([left_var, right_var], allowed)
+
+        destination = spec.modulation_destination
+        if destination is None:
+            raise ValueError("Validated modulation spec lost destination identity")
+        cadence_beat = spec.total_beats - 2
+        for voice_vars, domain in (
+            (soprano, soprano_domain),
+            (alto, alto_domain),
+            (tenor, tenor_domain),
+            (bass_note, bass_domain),
+        ):
+            terminal_rows = [
+                (left_note, right_note)
+                for left_note in domain
+                for right_note in domain
+                if left_note % 12 != destination.leading_tone_pc
+                or right_note == left_note + 1
+            ]
+            model.add_allowed_assignments(
+                [voice_vars[cadence_beat], voice_vars[cadence_beat + 1]], terminal_rows
+            )
 
     if spec.expanded_harmony_enabled:
         _add_modulated_harmony_motion_constraints(
@@ -620,8 +636,6 @@ def modulated_satb_verification_issues(
     if spec.resolve_leading_tone:
         for label, voice in (("alto", alto), ("tenor", tenor)):
             for beat, (left, right) in enumerate(pairwise(voice)):
-                if beat == spec.total_beats - 2:
-                    continue
                 key = spec.active_key_at_beat(beat)
                 if left % 12 == key.leading_tone_pc and right != left + 1:
                     issues.append(
@@ -819,4 +833,21 @@ def modulation_verification_issues(
         issues.append(("CM047", "Destination cadence cannot be borrowed"))
     if result.effective_rhythm[-1] is not RhythmState.ONSET:
         issues.append(("CM047", "Destination tonic must be a newly articulated onset"))
+    cadence_beat = spec.total_beats - 2
+    terminal_voices = (
+        ("soprano", result.soprano),
+        ("alto", result.alto),
+        ("tenor", result.tenor),
+        ("bass", result.bass),
+    )
+    terminal_pcs = {voice[cadence_beat] % 12 for _, voice in terminal_voices}
+    if destination.leading_tone_pc not in terminal_pcs:
+        issues.append(("CM047", "Destination dominant omits its leading tone"))
+    for label, voice in terminal_voices:
+        left = voice[cadence_beat]
+        right = voice[cadence_beat + 1]
+        if left % 12 == destination.leading_tone_pc and right != left + 1:
+            issues.append(
+                ("CM047", f"{label} destination leading tone fails upward resolution")
+            )
     return tuple(issues)

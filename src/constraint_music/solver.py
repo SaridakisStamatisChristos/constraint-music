@@ -206,8 +206,16 @@ class ConstraintMusicSolver:
         return replace(raw_result, validation=report)
 
     def _compile(self, spec: GenerationSpec, weights: ObjectiveVector) -> _CompiledProblem:
-        melody_domain = spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
-        bass_domain = spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
+        melody_domain = (
+            spec.context_pitches_in_range(spec.melody_low, spec.melody_high)
+            if spec.modulation_enabled
+            else spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
+        )
+        bass_domain = (
+            spec.context_pitches_in_range(spec.bass_low, spec.bass_high)
+            if spec.modulation_enabled
+            else spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
+        )
         model = cp_model.CpModel()
 
         melody_choice = [
