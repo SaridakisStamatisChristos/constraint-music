@@ -12,11 +12,20 @@ from .modal_mixture import (
     NO_MODAL_SOURCE,
     ModalSource,
     borrowed_chord_name,
+    borrowed_seventh_chord_name,
     borrowed_triad_pitch_classes,
     canonical_modal_source,
     supported_borrowed_degrees,
 )
 from .models import GenerationResult, GenerationSpec
+from .secondary_leading_tone import (
+    secondary_leading_tone_name,
+    secondary_leading_tone_seventh_name,
+    secondary_leading_tone_seventh_pitch_class_variants,
+    secondary_leading_tone_seventh_support_degree,
+    secondary_leading_tone_support_degree,
+    secondary_leading_tone_triad_pitch_classes,
+)
 from .theory import (
     NO_TONICIZATION_TARGET,
     ChordKind,
@@ -56,49 +65,133 @@ class SatbGenerationResult(GenerationResult):
 
     @property
     def chord_form_names(self) -> tuple[str, ...]:
+        beat_count = len(self.chord_degrees)
         if not (
             len(self.chord_kinds)
             == len(self.chord_inversions)
-            == len(self.chord_degrees)
+            == beat_count
+            == len(self.soprano)
+            == len(self.alto)
+            == len(self.tenor)
+            == len(self.bass)
         ):
             return ()
         targets = (
             self.tonicization_targets
             if self.tonicization_targets
-            else (None,) * len(self.chord_degrees)
+            else (None,) * beat_count
         )
-        sources = (
-            self.modal_sources if self.modal_sources else (None,) * len(self.chord_degrees)
-        )
-        if not (
-            len(targets) == len(sources) == len(self.chord_degrees)
-        ):
+        sources = self.modal_sources if self.modal_sources else (None,) * beat_count
+        if not (len(targets) == len(sources) == beat_count):
             return ()
-        key = self.spec.tonal_key
+
         names: list[str] = []
         try:
-            for degree, raw_kind, inversion, target, raw_source in zip(
-                self.chord_degrees,
-                self.chord_kinds,
-                self.chord_inversions,
-                targets,
-                sources,
-                strict=True,
+            for beat, (degree, raw_kind, inversion, target, raw_source) in enumerate(
+                zip(
+                    self.chord_degrees,
+                    self.chord_kinds,
+                    self.chord_inversions,
+                    targets,
+                    sources,
+                    strict=True,
+                )
             ):
+                key = self.spec.active_key_at_beat(beat)
                 kind = ChordKind.parse(raw_kind)
                 source = None if raw_source is None else ModalSource.parse(raw_source)
+                pcs = (
+                    self.soprano[beat] % 12,
+                    self.alto[beat] % 12,
+                    self.tenor[beat] % 12,
+                    self.bass[beat] % 12,
+                )
                 if target is not None and source is not None:
                     return ()
                 if target is not None:
-                    if kind is not ChordKind.SEVENTH:
+                    if kind is ChordKind.SEVENTH:
+                        is_applied = False
+                        if (
+                            self.spec.tonicization_enabled
+                            and target in key.applied_dominant_targets
+                            and degree == key.applied_dominant_root_degree(target)
+                            and 0 <= inversion <= 2
+                        ):
+                            applied = key.applied_dominant_seventh_pitch_classes(target)
+                            is_applied = (
+                                set(pcs) == set(applied)
+                                and len(set(pcs)) == 4
+                                and self.bass[beat] % 12 == applied[inversion]
+                            )
+                        if is_applied:
+                            names.append(key.applied_dominant_name(target, inversion))
+                            continue
+                        if not self.spec.secondary_leading_tone_seventh_enabled:
+                            return ()
+                        matched = False
+                        for quality, expected in secondary_leading_tone_seventh_pitch_class_variants(
+                            key,
+                            target,
+                        ):
+                            try:
+                                support = secondary_leading_tone_seventh_support_degree(
+                                    key,
+                                    target,
+                                    self.spec.progression_graph,
+                                    quality,
+                                )
+                            except ValueError:
+                                continue
+                            if (
+                                degree == support
+                                and set(pcs) == set(expected)
+                                and len(set(pcs)) == 4
+                                and 0 <= inversion <= 3
+                                and self.bass[beat] % 12 == expected[inversion]
+                            ):
+                                names.append(
+                                    secondary_leading_tone_seventh_name(
+                                        key,
+                                        target,
+                                        inversion,
+                                        quality,
+                                    )
+                                )
+                                matched = True
+                                break
+                        if not matched:
+                            return ()
+                        continue
+
+                    if kind is ChordKind.TRIAD and self.spec.secondary_leading_tone_enabled:
+                        expected = secondary_leading_tone_triad_pitch_classes(key, target)
+                        support = secondary_leading_tone_support_degree(
+                            key,
+                            target,
+                            self.spec.progression_graph,
+                        )
+                        if (
+                            degree == support
+                            and set(pcs) == set(expected)
+                            and 0 <= inversion <= 2
+                            and self.bass[beat] % 12 == expected[inversion]
+                        ):
+                            names.append(secondary_leading_tone_name(key, target, inversion))
+                            continue
+                    return ()
+
+                if source is not None:
+                    if kind is ChordKind.TRIAD:
+                        names.append(borrowed_chord_name(key, degree, source, inversion))
+                    elif kind is ChordKind.SEVENTH:
+                        names.append(
+                            borrowed_seventh_chord_name(key, degree, source, inversion)
+                        )
+                    else:
                         return ()
-                    names.append(key.applied_dominant_name(target, inversion))
-                elif source is not None:
-                    if kind is not ChordKind.TRIAD:
-                        return ()
-                    names.append(borrowed_chord_name(key, degree, source, inversion))
-                else:
-                    names.append(key.chord_form_name(degree, kind, inversion))
+                    continue
+
+                names.append(key.chord_form_name(degree, kind, inversion))
         except (IndexError, ValueError):
             return ()
         return tuple(names)
@@ -573,8 +666,7 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                 continue
             if target not in supported_targets:
                 issues.append(
-                    ("CM037", f"Beat {beat}: unsupported tonicization target degree {target}")
-                )
+                    ("CM037", f"Beat {beat}: unsupported tonicization target degree {target}"))
                 continue
             if metadata_valid and kinds[beat] is not ChordKind.SEVENTH:
                 issues.append(("CM037", f"Beat {beat}: applied dominant must be a seventh chord"))
