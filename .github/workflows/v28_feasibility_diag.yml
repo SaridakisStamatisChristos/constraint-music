@@ -1,4 +1,4 @@
-name: v2.8 CM010 isolation diagnostic
+name: v2.8 inner-leading diagnostic
 
 on:
   push:
@@ -13,17 +13,15 @@ jobs:
         with:
           python-version: "3.13"
       - run: python -m pip install -e ".[dev]"
-      - name: Isolate melody and inner-voice leading-tone constraints
+      - name: Pinpoint inner-voice leading-tone conflicts
         run: |
           python - <<'PY'
-          from dataclasses import replace
-          from itertools import pairwise
           from ortools.sat.python import cp_model
           from constraint_music.models import GenerationSpec
           from constraint_music.search import DEFAULT_OBJECTIVE_WEIGHTS, normalize_objective_weights
           from constraint_music.solver import ConstraintMusicSolver
 
-          base = GenerationSpec(
+          spec = GenerationSpec(
               bars=2, beats_per_bar=4, subdivisions_per_beat=1,
               require_authentic_cadence=False,
               modulation_enabled=True, modulation_destination_key="G",
@@ -33,68 +31,43 @@ jobs:
               resolve_leading_tone=False,
           )
           weights = normalize_objective_weights(DEFAULT_OBJECTIVE_WEIGHTS)
+          pcs = set()
+          for key in spec.context_keys:
+              pcs.update(key.pitch_classes)
+          domains = {
+              "alto": tuple(n for n in range(55, 75) if n % 12 in pcs),
+              "tenor": tuple(n for n in range(48, 68) if n % 12 in pcs),
+          }
 
-          def add_note_resolution(model, spec, variables, domain, label):
-              for beat, (left_var, right_var) in enumerate(pairwise(variables)):
+          def solve(label, constraints):
+              problem = ConstraintMusicSolver()._compile(spec, weights)
+              for voice_name, beat in constraints:
+                  variables = getattr(problem.satb, voice_name)
                   key = spec.active_key_at_beat(beat)
                   rows = [
                       (left, right)
-                      for left in domain
-                      for right in domain
+                      for left in domains[voice_name]
+                      for right in domains[voice_name]
                       if left % 12 != key.leading_tone_pc or right == left + 1
                   ]
-                  model.add_allowed_assignments([left_var, right_var], rows)
-
-          def solve(name, add_melody=False, add_inner=False, cross_uses_destination=False):
-              engine = ConstraintMusicSolver()
-              problem = engine._compile(base, weights)
-              if add_melody:
-                  domain = base.tonal_key.pitches_in_range(base.melody_low, base.melody_high)
-                  for step, (left_var, right_var) in enumerate(pairwise(problem.melody_note)):
-                      left_beat = step // base.subdivisions_per_beat
-                      right_beat = (step + 1) // base.subdivisions_per_beat
-                      context_beat = right_beat if cross_uses_destination and right_beat != left_beat else left_beat
-                      key = base.active_key_at_beat(context_beat)
-                      rows = [
-                          (left, right)
-                          for left in domain
-                          for right in domain
-                          if left % 12 != key.leading_tone_pc or right == left + 1
-                      ]
-                      problem.model.add_allowed_assignments([left_var, right_var], rows)
-              if add_inner:
-                  union_pcs = set()
-                  for key in base.context_keys:
-                      union_pcs.update(key.pitch_classes)
-                  alto_domain = tuple(n for n in range(55, 75) if n % 12 in union_pcs)
-                  tenor_domain = tuple(n for n in range(48, 68) if n % 12 in union_pcs)
-                  for variables, domain in ((problem.satb.alto, alto_domain), (problem.satb.tenor, tenor_domain)):
-                      for beat, (left_var, right_var) in enumerate(pairwise(variables)):
-                          context_beat = beat + 1 if cross_uses_destination and beat + 1 == base.modulation_boundary_beat else beat
-                          key = base.active_key_at_beat(context_beat)
-                          rows = [
-                              (left, right)
-                              for left in domain
-                              for right in domain
-                              if left % 12 != key.leading_tone_pc or right == left + 1
-                          ]
-                          problem.model.add_allowed_assignments([left_var, right_var], rows)
+                  problem.model.add_allowed_assignments(
+                      [variables[beat], variables[beat + 1]], rows
+                  )
               solver = cp_model.CpSolver()
               solver.parameters.max_time_in_seconds = 5
               solver.parameters.num_search_workers = 1
               status = solver.solve(problem.model)
-              print(name, solver.status_name(status))
+              print(label, solver.status_name(status))
               if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
                   print(" chords", [solver.value(v) for v in problem.chord])
-                  print(" melody", [solver.value(v) for v in problem.melody_note])
                   print(" alto", [solver.value(v) for v in problem.satb.alto])
                   print(" tenor", [solver.value(v) for v in problem.satb.tenor])
 
-          solve("none")
-          solve("melody-left-context", add_melody=True)
-          solve("inner-left-context", add_inner=True)
-          solve("both-left-context", add_melody=True, add_inner=True)
-          solve("melody-cross-destination", add_melody=True, cross_uses_destination=True)
-          solve("inner-cross-destination", add_inner=True, cross_uses_destination=True)
-          solve("both-cross-destination", add_melody=True, add_inner=True, cross_uses_destination=True)
+          all_constraints = []
+          for voice in ("alto", "tenor"):
+              for beat in range(spec.total_beats - 1):
+                  solve(f"{voice}-beat{beat}", [(voice, beat)])
+                  all_constraints.append((voice, beat))
+          for cutoff in range(1, len(all_constraints) + 1):
+              solve(f"cumulative-{cutoff}-{all_constraints[cutoff-1]}", all_constraints[:cutoff])
           PY
