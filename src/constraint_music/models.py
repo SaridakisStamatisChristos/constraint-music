@@ -168,6 +168,17 @@ class GenerationSpec:
             keys.append(destination)
         return tuple(keys)
 
+    def context_pitches_in_range(self, low: int, high: int) -> tuple[int, ...]:
+        """Return pitches admitted by any declared persistent local-key region."""
+        pitch_classes = {
+            pitch_class
+            for key in self.context_keys
+            for pitch_class in key.pitch_classes
+        }
+        return tuple(
+            note for note in range(low, high + 1) if note % 12 in pitch_classes
+        )
+
     @property
     def progression_pairs(self) -> tuple[tuple[int, int], ...]:
         return tuple(

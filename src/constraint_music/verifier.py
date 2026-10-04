@@ -38,16 +38,24 @@ def verify_result(result: GenerationResult) -> ValidationReport:
     if len(chords) != spec.total_beats:
         fail("CM001", f"Expected {spec.total_beats} chords, got {len(chords)}")
 
-    key_pcs = set(key.pitch_classes)
     for index, note in enumerate(melody):
-        if note % 12 not in key_pcs:
-            fail("CM002", f"Melody step {index}: note {note} is outside {key}")
+        active_key = (
+            spec.active_key_at_beat(index // spec.subdivisions_per_beat)
+            if spec.modulation_enabled
+            else key
+        )
+        if note % 12 not in active_key.pitch_classes:
+            fail(
+                "CM002",
+                f"Melody step {index}: note {note} is outside {active_key}",
+            )
         if not spec.melody_low <= note <= spec.melody_high:
             fail("CM002", f"Melody step {index}: note {note} is outside the configured range")
 
     for beat, note in enumerate(bass):
-        if note % 12 not in key_pcs:
-            fail("CM003", f"Bass beat {beat}: note {note} is outside {key}")
+        active_key = spec.active_key_at_beat(beat) if spec.modulation_enabled else key
+        if note % 12 not in active_key.pitch_classes:
+            fail("CM003", f"Bass beat {beat}: note {note} is outside {active_key}")
         if not spec.bass_low <= note <= spec.bass_high:
             fail("CM003", f"Bass beat {beat}: note {note} is outside the configured range")
 

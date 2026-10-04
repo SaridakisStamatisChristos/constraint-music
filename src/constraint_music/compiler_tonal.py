@@ -85,6 +85,16 @@ def add_melodic_constraints(
     melody_domain: tuple[int, ...],
 ) -> None:
     key = spec.tonal_key
+    if spec.modulation_enabled:
+        for step, choice in enumerate(melody_choice):
+            active_key = spec.active_key_at_beat(step // spec.subdivisions_per_beat)
+            allowed_indices = [
+                (index,)
+                for index, note in enumerate(melody_domain)
+                if note % 12 in active_key.pitch_classes
+            ]
+            model.add_allowed_assignments([choice], allowed_indices)
+
     pair_rows_by_leading_pc: dict[int, list[tuple[int, int]]] = {}
 
     def pair_rows(leading_tone_pc: int) -> list[tuple[int, int]]:
