@@ -26,6 +26,7 @@ DISTINCT_DIMENSIONS: tuple[str, ...] = (
     "harmonic_form",
     "tonicization",
     "modal_source",
+    "key_context",
 )
 
 ObjectiveVector: TypeAlias = tuple[tuple[str, int], ...]

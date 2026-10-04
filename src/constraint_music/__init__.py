@@ -2,6 +2,8 @@
 
 from .modal_mixture import ModalSource
 from .models import GenerationResult, GenerationSpec, RhythmState, ValidationReport
+from .modulation import dominant_key
+from .modulation_runtime import ModulatedSatbGenerationResult
 from .objective import evaluate_objective_vector
 from .phrase import PhraseSpec
 from .satb import SatbGenerationResult
@@ -17,15 +19,17 @@ __all__ = [
     "GenerationSpec",
     "InternalVerificationError",
     "ModalSource",
+    "ModulatedSatbGenerationResult",
     "NoSolutionError",
     "PhraseSpec",
     "RhythmState",
     "SatbGenerationResult",
     "ValidationReport",
+    "dominant_key",
     "dominates",
     "evaluate_objective_vector",
     "pareto_indices",
     "verify_result",
 ]
 
-__version__ = "2.7.0a1"
+__version__ = "2.8.0a1"

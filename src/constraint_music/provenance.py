@@ -8,11 +8,11 @@ from typing import Any
 
 from .contract import CONTRACT_VERSION, contract_digest
 from .models import GenerationResult
+from .modulation_runtime import result_from_dict
 from .objective import evaluate_objective_vector
-from .satb import result_from_dict
 from .search import objective_mapping
 
-ARTIFACT_SCHEMA_VERSION = "2.7"
+ARTIFACT_SCHEMA_VERSION = "2.8"
 
 
 def _sha256_json(payload: object) -> str:
@@ -39,6 +39,7 @@ def composition_digest(result: GenerationResult) -> str:
         "chord_inversions",
         "tonicization_targets",
         "modal_sources",
+        "key_contexts",
     ):
         if key in music:
             semantic_music[key] = music[key]
