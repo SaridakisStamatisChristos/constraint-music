@@ -365,8 +365,8 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM051",
         "borrowed_seventh_tendency_resolution",
         (
-            "Every borrowed chordal seventh resolves downward by step; any admitted parallel-source "
-            "leading tone carried by a SATB voice resolves upward by semitone."
+            "Every borrowed chordal seventh resolves downward by step; any admitted "
+            "parallel-source leading tone carried by a SATB voice resolves upward by semitone."
         ),
         conditional=True,
     ),
