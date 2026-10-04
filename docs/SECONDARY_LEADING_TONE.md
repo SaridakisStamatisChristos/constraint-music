@@ -1,33 +1,32 @@
-# Secondary Leading-Tone Chords
+# Secondary Leading-Tone Triads — v2.10 semantics
 
-Constraint Music v2.10 adds a deliberately narrow, independently verifiable model of secondary leading-tone triads (`vii°/x`). The feature is opt-in and does not enable unrestricted chromatic harmony.
+v2.10 introduced independently certified target-bearing diminished triads (`vii°/x`). v2.11 preserves these triad semantics unchanged and adds a separate opt-in seventh family documented in [Secondary Leading-Tone Seventh Chords](SECONDARY_LEADING_TONE_SEVENTHS.md).
+
+## Configuration
 
 ```yaml
 secondary_leading_tone_enabled: true
 minimum_secondary_leading_tone_chords: 1
 ```
 
-## Semantic identity
+The v2.10 triad switch remains independent from the v2.11 seventh switch. Enabling one does not implicitly enable the other.
 
-v2.10 does not add an opaque Roman-numeral or chromatic-root field. It composes existing typed state:
+## Decomposed identity
 
-- the exact active local key;
-- a nullable local target degree;
+A secondary leading-tone triad is reconstructed from:
+
+- exact active local key;
+- explicit non-tonic target identity;
 - `ChordKind.TRIAD`;
+- deterministic support degree;
 - inversion;
-- a functional/support degree retained for the legacy progression/outer-voice contract;
-- the concrete SATB realization.
+- SATB realization.
 
-The same target field remains used by applied dominants. Harmonic form separates the two certified functions:
+No opaque secondary-chord-name field exists.
 
-- target + `ChordKind.SEVENTH` -> applied dominant (`V7/x`);
-- target + `ChordKind.TRIAD` -> secondary leading-tone chord (`vii°/x`).
+## Pitch construction
 
-This keeps target identity orthogonal to harmonic form and avoids synthetic replacement metadata.
-
-## Target-derived pitch content
-
-For a supported target degree `x`, let `T` be the target root pitch class in the exact active local key. The secondary leading-tone triad is reconstructed as:
+For target pitch class `T`:
 
 ```text
 root              = T - 1 semitone
@@ -35,97 +34,63 @@ minor third       = root + 3 semitones
 diminished fifth  = root + 6 semitones
 ```
 
-The target must be a non-tonic diatonic major or minor triad. Targets that cannot coexist with the established functional progression and outer-voice contract are structurally excluded.
+The exact active key is used. After a modulation boundary, that means the persistent destination key rather than the artifact-global source key.
 
-## Why there is a support degree
+## Support-degree compatibility bridge
 
-A chromatic secondary leading-tone root is not necessarily a diatonic scale degree. Constraint Music therefore does **not** pretend that the chromatic root is an ordinary diatonic chord degree.
+The chromatic diminished root is often not an ordinary diatonic root. v2.10 therefore stores a deterministic active-key support degree chosen to preserve historical CM005/CM006/CM007 semantics.
 
-The serialized `chord_degree` is instead a deterministic active-key **support degree**. A support degree must:
+The verifier independently recomputes that support degree from active key, target, and progression graph. It then separately verifies the actual target-derived diminished triad.
 
-1. already be permitted by the configured progression graph to move to the declared target;
-2. share at least two pitch classes with the target-derived diminished triad;
-3. maximize that shared pitch content, with deterministic lowest-degree tie breaking.
+The support degree is therefore a compatibility representation, not a claim that the chromatic diminished root is diatonic.
 
-This support identity preserves the established meanings of:
+## Realization
 
-- `CM005` — strong melody/soprano belongs to the active-key triadic core;
-- `CM006` — bass belongs to the active-key triadic core;
-- `CM007` — the functional degree transition is admitted by the configured progression graph.
+CM053 requires:
 
-It is a compatibility bridge, not the theoretical root of the chromatic sonority. The verifier independently reconstructs the real diminished chord from active key + target.
+- the complete diminished-triad pitch set;
+- local leading tone exactly once;
+- diminished fifth exactly once;
+- stable third doubled;
+- root, first, or second inversion only;
+- inversion/bass agreement;
+- no arbitrary extra chromatic tone.
 
-## Certified SATB realization
+## Resolution
 
-A secondary leading-tone chord must contain exactly the three target-derived pitch classes. In the four SATB voices:
+CM054 requires immediate resolution to the declared target. The destination target chord must be untargeted, unborrowed, triadic, and active-key consistent.
 
-- the local leading-tone root appears exactly once;
-- the diminished fifth appears exactly once;
-- the stable minor third is doubled;
-- root, first, and second inversion are supported;
-- the serialized inversion must agree with the realized bass pitch class.
+Tendency tones are independent:
 
-The tendency tones are intentionally not doubled so their required motion remains explicit and independently checkable.
+- local leading tone rises by exactly one semitone;
+- diminished fifth descends by one or two semitones.
 
-## Resolution semantics
+## Interaction with applied dominants and v2.11
 
-The chord resolves immediately to its declared target. The target sonority must be:
+In v2.10, target + triad distinguished `vii°/x` from target + seventh applied dominants.
 
-- the declared diatonic target degree;
-- `ChordKind.TRIAD`;
-- untargeted on the resolution beat;
-- unborrowed on the resolution beat.
+v2.11 adds target-bearing fully diminished sevenths, so **seventh form alone no longer proves applied-dominant identity**. Applied `V7/x` and secondary `vii°7/x` are now separated by exact active-key pitch/support reconstruction.
 
-Every SATB voice carrying the local leading tone must rise by exactly one semitone. Every voice carrying the diminished fifth must descend by one or two semitones.
-
-These are solver-native constraints and independent verifier checks.
-
-## Interaction with applied dominants
-
-Secondary leading-tone chords reuse target identity but do not count as applied dominants. `minimum_applied_dominants` counts target-bearing sevenths only. Conversely, `minimum_secondary_leading_tone_chords` counts target-bearing triads only.
-
-This means a target-bearing triad cannot counterfeit the applied-dominant requirement merely because both functions point to the same local tonic.
+This does not alter v2.10 triad classification: a target-bearing triad under the v2.10 feature remains governed by CM052–CM054 and cannot satisfy `minimum_applied_dominants`.
 
 ## Interaction with modal mixture
 
-A secondary leading-tone chord cannot simultaneously carry modal-source identity. The target chord on the following beat must also be unborrowed.
-
-This prevents a single beat from acquiring two incompatible chromatic explanations and keeps source identity independent from target identity.
+A certified secondary leading-tone triad cannot simultaneously carry modal-source identity. Target identity, source identity, active key, harmonic form, and voicing remain separate axes.
 
 ## Interaction with modulation
 
-Persistent local-key context remains authoritative. Before the modulation boundary, the diminished triad is derived from the source active key. From the boundary onward, it is derived from the destination active key.
+Secondary leading-tone triads are excluded from protected cadence/modulation anchors. After the boundary, pitch construction and support-degree reconstruction use the persistent destination active key.
 
-The original artifact/global key is never reused as stale post-modulation context.
-
-Secondary leading-tone chords are excluded from the certified source/pivot anchor and the terminal destination cadence anchors. v2.10 therefore does not weaken the v2.8.0a2 strict destination-cadence guarantee.
-
-## Hard rules
-
-v2.10 adds three rules:
-
-- `CM052` — secondary leading-tone context: supported target, deterministic support degree, no modal overlap, no protected-anchor overlap;
-- `CM053` — exact diminished realization: complete pitch content, tendency tones undoubled, stable third doubled, inversion/bass agreement;
-- `CM054` — target/tendency resolution: immediate unaltered target, leading tone up by semitone, diminished fifth down by step.
-
-The solver and verifier implement these semantics separately. Any disagreement fails closed.
+The v2.8.0a2 destination cadence invariants remain untouched.
 
 ## Provenance
 
-No new opaque semantic field is required. Artifact schema/contract 2.10 commits the existing specification and musical metadata, including target identity, harmonic form, inversion, SATB voicing, modal source, and persistent key context where present.
+Target identity, harmonic form, inversion, SATB voicing, modal source, active key context, and the generation specification are already committed by semantic provenance. No synthetic secondary-triad function field is required.
 
-Changing a secondary target or any other committed semantic identity changes the composition/artifact digest and is detectable during offline verification.
+## Hard rules
 
-## Explicit non-goals
+- **CM052** — target/context/support eligibility and protected-anchor/modal-source separation.
+- **CM053** — exact diminished-triad realization, multiplicities, and inversion.
+- **CM054** — immediate target resolution and local tendency-tone motion.
 
-v2.10 does not certify:
-
-- secondary leading-tone seventh chords;
-- third-inversion sevenths;
-- free chromatic roots outside the supported target model;
-- arbitrary modulation chains;
-- distant/enharmonic reinterpretation;
-- augmented-sixth or Neapolitan reinterpretation;
-- probabilistic key inference.
-
-Those require explicit future contract versions rather than silent reinterpretation of v2.10 semantics.
+These rules remain part of the v2.11 `CM001–CM057` contract without semantic weakening.
