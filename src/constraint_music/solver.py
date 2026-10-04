@@ -18,6 +18,7 @@ from .compiler_tonal import (
     add_voice_leading_constraints,
 )
 from .contract import HARD_CONSTRAINT_IDS
+from .errors import InternalVerificationError, NoSolutionError
 from .modal_mixture import NO_MODAL_SOURCE, ModalSource
 from .models import GenerationResult, GenerationSpec, RhythmState
 from .modulation_runtime import ModulatedSatbGenerationResult, add_modulated_satb_constraints
@@ -44,14 +45,6 @@ from .theory import NO_TONICIZATION_TARGET, ChordKind
 from .verifier import verify_result
 
 COMPILED_HARD_CONSTRAINT_IDS: tuple[str, ...] = HARD_CONSTRAINT_IDS
-
-
-class NoSolutionError(RuntimeError):
-    pass
-
-
-class InternalVerificationError(RuntimeError):
-    """Raised when solver output disagrees with an independent application-level check."""
 
 
 @dataclass(slots=True)

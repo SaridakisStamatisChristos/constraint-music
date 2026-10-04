@@ -9,6 +9,7 @@ from typing import Any
 
 import yaml
 
+from .contract import RuleOutcome, RuleStatus
 from .modal_mixture import supported_borrowed_degrees
 from .modulation import dominant_key
 from .phrase import PhraseSpec, normalize_phrases, phrase_by_id
@@ -558,6 +559,31 @@ class ValidationReport:
     issues: tuple[str, ...] = ()
     checked_rules: tuple[str, ...] = ()
     failed_rules: tuple[str, ...] = ()
+    rule_outcomes: tuple[RuleOutcome, ...] = ()
+
+    @property
+    def evaluated_rule_ids(self) -> tuple[str, ...]:
+        return tuple(
+            outcome.rule_id
+            for outcome in self.rule_outcomes
+            if outcome.status in {RuleStatus.PASS, RuleStatus.FAIL}
+        )
+
+    @property
+    def not_applicable_rule_ids(self) -> tuple[str, ...]:
+        return tuple(
+            outcome.rule_id
+            for outcome in self.rule_outcomes
+            if outcome.status is RuleStatus.NOT_APPLICABLE
+        )
+
+    @property
+    def blocked_rule_ids(self) -> tuple[str, ...]:
+        return tuple(
+            outcome.rule_id
+            for outcome in self.rule_outcomes
+            if outcome.status is RuleStatus.BLOCKED
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -619,6 +645,9 @@ class GenerationResult:
                 "issues": list(self.validation.issues),
                 "checked_rules": list(self.validation.checked_rules),
                 "failed_rules": list(self.validation.failed_rules),
+                "rule_outcomes": [
+                    outcome.to_dict() for outcome in self.validation.rule_outcomes
+                ],
             },
             "music": {
                 "melody_midi": list(self.melody),
@@ -656,6 +685,10 @@ class GenerationResult:
             tuple(str(x) for x in raw_validation.get("issues", ())),
             tuple(str(x) for x in raw_validation.get("checked_rules", ())),
             tuple(str(x) for x in raw_validation.get("failed_rules", ())),
+            tuple(
+                RuleOutcome.from_mapping(item)
+                for item in raw_validation.get("rule_outcomes", ())
+            ),
         )
         raw_rhythm = raw_music.get("rhythm", ())
         if not isinstance(raw_rhythm, Sequence) or isinstance(raw_rhythm, (str, bytes)):

@@ -161,7 +161,7 @@ def test_modal_source_tampering_breaks_semantic_provenance() -> None:
     assert "artifact content digest mismatch" in issues
 
 
-def test_absent_modal_source_metadata_remains_loadable_when_feature_is_off() -> None:
+def test_absent_modal_source_metadata_is_non_certifying_when_feature_is_off() -> None:
     legacy_spec = GenerationSpec(
         bars=1,
         beats_per_bar=4,
@@ -179,7 +179,8 @@ def test_absent_modal_source_metadata_remains_loadable_when_feature_is_off() -> 
     assert isinstance(loaded, SatbGenerationResult)
     assert loaded.modal_sources == ()
     report = verify_result(loaded)
-    assert report.valid, report.issues
+    assert not report.valid
+    assert "CM027" in report.failed_rules
 
 
 def test_modal_source_distinctness_changes_only_the_new_context_axis() -> None:

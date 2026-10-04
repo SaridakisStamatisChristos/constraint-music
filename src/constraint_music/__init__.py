@@ -1,5 +1,12 @@
 """Deterministic, verifiable constraint-programming music synthesis."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from .certification import CertificationReport, certify_delivery, verify_artifact
+from .delivery import DeliveryReport, RenderProfile, verify_delivery
+from .errors import InternalVerificationError, NoSolutionError
 from .modal_mixture import ModalSource
 from .models import GenerationResult, GenerationSpec, RhythmState, ValidationReport
 from .modulation import dominant_key
@@ -21,13 +28,17 @@ from .secondary_leading_tone import (
     supported_secondary_leading_tone_seventh_targets,
     supported_secondary_leading_tone_targets,
 )
-from .solver import ConstraintMusicSolver, InternalVerificationError, NoSolutionError
 from .theory import ChordKind
 from .verifier import verify_result
 
+if TYPE_CHECKING:
+    from .solver import ConstraintMusicSolver
+
 __all__ = [
+    "CertificationReport",
     "ChordKind",
     "ConstraintMusicSolver",
+    "DeliveryReport",
     "GenerationResult",
     "GenerationSpec",
     "InternalVerificationError",
@@ -35,10 +46,12 @@ __all__ = [
     "ModulatedSatbGenerationResult",
     "NoSolutionError",
     "PhraseSpec",
+    "RenderProfile",
     "RhythmState",
     "SatbGenerationResult",
     "SecondaryLeadingToneSeventhQuality",
     "ValidationReport",
+    "certify_delivery",
     "dominant_key",
     "dominates",
     "evaluate_objective_vector",
@@ -53,7 +66,17 @@ __all__ = [
     "secondary_leading_tone_triad_pitch_classes",
     "supported_secondary_leading_tone_seventh_targets",
     "supported_secondary_leading_tone_targets",
+    "verify_artifact",
+    "verify_delivery",
     "verify_result",
 ]
 
-__version__ = "2.12.0a1"
+__version__ = "2.13.0a1"
+
+
+def __getattr__(name: str) -> Any:
+    if name == "ConstraintMusicSolver":
+        from .solver import ConstraintMusicSolver
+
+        return ConstraintMusicSolver
+    raise AttributeError(name)

@@ -4,7 +4,7 @@
 
 Constraint Music treats composition as a verifiable constraint problem. A YAML specification is compiled into an OR-Tools CP-SAT model; the solver produces melody, rhythm, bass, harmonic identity, and a solver-native SATB realization; a separate application-level verifier reconstructs the declared musical semantics from ordinary serialized values; only verified results are exported.
 
-> Current release line: **2.12.0a1** — complete verifier-certified secondary leading-tone seventh support within the declared common-practice tonicization domain, including eligible fully diminished and half-diminished qualities and all four inversions.
+> Current release line: **2.13.0a1** — fail-closed artifacts, request-bound strict certification, executable rule outcomes, solver-optional checking, and exact SATB MIDI delivery verification.
 
 ## Pipeline
 
@@ -29,11 +29,11 @@ weighted solve / no-good enumeration / Pareto candidate search
       v
 ordinary serialized musical values
       |
-      +--> independent 57-rule verifier
+      +--> independent 57-rule verifier + executable applicability ledger
       +--> independent objective-vector recomputation
-      +--> semantic provenance digests
+      +--> externally fixed request + semantic provenance digests
       |
-      +----> MIDI with real ties/rests
+      +----> certified SATB MIDI + independent parse-back
       +----> JSON + SATB + harmonic/context metadata
 ```
 
@@ -54,6 +54,7 @@ A solver status of `OPTIMAL` or `FEASIBLE` is never sufficient. Solver/verifier 
 - **v2.10** — target-derived secondary leading-tone triads.
 - **v2.11** — fully diminished secondary leading-tone sevenths with exact functional disambiguation.
 - **v2.12** — complete secondary leading-tone seventh certification: eligible `°7`/`ø7` qualities, all four inversions, exact quality-specific tendency behavior, and scoped chromatic outer-voice support.
+- **v2.13** — fail-closed artifact shape, request binding, honest per-rule outcomes, solver-optional checking, and certified SATB delivery round trips.
 
 ## Harmonic identity stays decomposed
 
@@ -200,7 +201,8 @@ python -m venv .venv
 # Linux/macOS
 source .venv/bin/activate
 # Windows PowerShell: .venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[generation]"  # generation + checking
+python -m pip install -e ".[dev]"         # contributors
 ```
 
 ## Generate
@@ -212,15 +214,31 @@ constraint-music generate examples/secondary_leading_tone_sevenths.yaml \
   --print-grid
 ```
 
-## Verify without rerunning CP-SAT
+The default `certified-satb` profile writes conductor plus exact S/A/T/B tracks. Use
+`--render-profile melody-plus-satb` when the separately specified rhythmic melody
+projection is also required.
+
+## Inspect or certify without rerunning CP-SAT
 
 ```bash
 constraint-music verify build/composition.json
+
+# Strict release gate: independently fixed request + exact delivered MIDI
+constraint-music certify build/composition.json \
+  --spec examples/secondary_leading_tone_sevenths.yaml \
+  --midi build/composition.mid \
+  --certificate build/composition.certificate.json
 ```
 
-The verifier rechecks the musical contract plus artifact schema, contract digest, semantic composition digest, full artifact-content digest, and objective-vector metadata. Current package version is `2.12.0a1`; artifact and constraint-contract versions are `2.12`.
+`verify` is explicitly an embedded-context consistency inspection. `certify` is the
+strict release gate: it validates shape before reconstruction, binds an independently
+supplied request and contract, recomputes every semantic/claim digest, and parses the
+delivered MIDI independently. `--allow-legacy` only inspects supported 2.12 artifacts
+and never bypasses arbitrary integrity errors.
 
-Older payloads remain loadable without inventing newer semantic metadata when the corresponding feature is disabled. `--allow-legacy` remains available for intentional inspection of older provenance versions.
+See [Assurance Boundary](docs/ASSURANCE_BOUNDARY.md),
+[Executable Contract](docs/EXECUTABLE_CONTRACT.md), and
+[Reproducibility](docs/REPRODUCIBILITY.md).
 
 ## Reproducibility
 
@@ -243,6 +261,10 @@ GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**
 
 Independent verification is an application-level separation of trust, not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates conformance to the declared executable contract; it does not prove aesthetic quality or complete historical-style authenticity.
 
-v2.12 completes the secondary leading-tone seventh family claimed by this subsystem. Separate future domains include arbitrary modulation chains, distant/enharmonic modulation, broad enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, unrestricted chromatic-harmony inference, free key-center inference, and probabilistic harmony certification.
+The v2.12 harmonic subsystem remains the boundary for secondary leading-tone
+sevenths in v2.13. Separate future domains include arbitrary modulation chains,
+distant/enharmonic modulation, broad enharmonic reinterpretation,
+augmented-sixth/Neapolitan reinterpretation, unrestricted chromatic-harmony
+inference, free key-center inference, and probabilistic harmony certification.
 
 See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [History](docs/HISTORY.md), [Roadmap](docs/ROADMAP.md), and [Changelog](CHANGELOG.md).

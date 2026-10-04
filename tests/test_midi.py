@@ -5,7 +5,7 @@ from constraint_music.models import GenerationSpec
 from constraint_music.solver import ConstraintMusicSolver
 
 
-def test_midi_export_has_conductor_and_three_music_tracks(tmp_path) -> None:
+def test_midi_export_has_conductor_and_four_certified_voice_tracks(tmp_path) -> None:
     spec = GenerationSpec(
         bars=2,
         subdivisions_per_beat=1,
@@ -16,5 +16,11 @@ def test_midi_export_has_conductor_and_three_music_tracks(tmp_path) -> None:
     result = ConstraintMusicSolver().generate(spec)
     path = write_midi(result, tmp_path / "piece.mid")
     parsed = MidiFile(path)
-    assert len(parsed.tracks) == 4
+    assert len(parsed.tracks) == 5
+    assert {track.name for track in parsed.tracks[1:]} == {
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass",
+    }
     assert path.stat().st_size > 100

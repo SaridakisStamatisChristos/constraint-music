@@ -3,8 +3,7 @@ from __future__ import annotations
 from functools import cache
 from itertools import pairwise, product
 
-from ortools.sat.python import cp_model
-
+from ._optional_cp import cp_model
 from .modal_mixture import (
     NO_MODAL_SOURCE,
     ModalSource,

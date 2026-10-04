@@ -6,7 +6,7 @@ from .borrowed_seventh_runtime import (
     borrowed_seventh_modulation_verification_issues,
     borrowed_seventh_satb_verification_issues,
 )
-from .contract import HARD_CONSTRAINT_IDS
+from .contract import HARD_CONSTRAINT_IDS, build_rule_outcomes
 from .models import GenerationResult, RhythmState, ValidationReport
 from .modulation_runtime import (
     modulated_satb_verification_issues,
@@ -37,17 +37,20 @@ def verify_result(result: GenerationResult) -> ValidationReport:
     issues: list[str] = []
     failed: list[str] = []
 
-    exact_secondary = {
-        beat: reconstruction
-        for beat in range(spec.total_beats)
-        if (reconstruction := reconstruct_secondary_leading_tone_seventh(result, beat))
-        is not None
-    }
-
     def fail(rule_id: str, message: str) -> None:
         issues.append(f"[{rule_id}] {message}")
         if rule_id not in failed:
             failed.append(rule_id)
+
+    def finish(*, blocked: tuple[str, ...] = ()) -> ValidationReport:
+        outcomes = build_rule_outcomes(spec, tuple(failed), blocked_rules=blocked)
+        return ValidationReport(
+            valid=not issues,
+            issues=tuple(issues),
+            checked_rules=HARD_CONSTRAINT_IDS,
+            failed_rules=tuple(failed),
+            rule_outcomes=outcomes,
+        )
 
     if len(melody) != spec.total_steps:
         fail("CM001", f"Expected {spec.total_steps} melody steps, got {len(melody)}")
@@ -57,6 +60,39 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         fail("CM001", f"Expected {spec.total_beats} bass notes, got {len(bass)}")
     if len(chords) != spec.total_beats:
         fail("CM001", f"Expected {spec.total_beats} chords, got {len(chords)}")
+
+    if "CM001" in failed:
+        blocked = tuple(rule_id for rule_id in HARD_CONSTRAINT_IDS if rule_id != "CM001")
+        return finish(blocked=blocked)
+
+    satb_complete = isinstance(result, SatbGenerationResult) and all(
+        len(values) == spec.total_beats
+        for values in (
+            result.soprano,
+            result.alto,
+            result.tenor,
+            result.chord_kinds,
+            result.chord_inversions,
+            result.tonicization_targets,
+            result.modal_sources,
+        )
+    )
+    if not satb_complete:
+        fail(
+            "CM027",
+            "Current SATB certification requires complete voices and per-beat form/context arrays",
+        )
+
+    exact_secondary = (
+        {
+            beat: reconstruction
+            for beat in range(spec.total_beats)
+            if (reconstruction := reconstruct_secondary_leading_tone_seventh(result, beat))
+            is not None
+        }
+        if satb_complete
+        else {}
+    )
 
     for index, note in enumerate(melody):
         beat = index // spec.subdivisions_per_beat
@@ -280,12 +316,7 @@ def verify_result(result: GenerationResult) -> ValidationReport:
     for rule_id, message in modulation_issues:
         fail(rule_id, message)
 
-    return ValidationReport(
-        valid=not issues,
-        issues=tuple(issues),
-        checked_rules=HARD_CONSTRAINT_IDS,
-        failed_rules=tuple(failed),
-    )
+    return finish()
 
 
 validate_result = verify_result

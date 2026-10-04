@@ -6,8 +6,7 @@ from functools import cache
 from itertools import pairwise, product
 from typing import Any
 
-from ortools.sat.python import cp_model
-
+from ._optional_cp import cp_model
 from .modal_mixture import (
     NO_MODAL_SOURCE,
     ModalSource,
@@ -209,17 +208,13 @@ class SatbGenerationResult(GenerationResult):
         music["alto_names"] = list(self.alto_names)
         music["tenor_midi"] = list(self.tenor)
         music["tenor_names"] = list(self.tenor_names)
-        if self.chord_kinds:
-            music["chord_kinds"] = [ChordKind.parse(kind).label for kind in self.chord_kinds]
-        if self.chord_inversions:
-            music["chord_inversions"] = list(self.chord_inversions)
-        if self.tonicization_targets:
-            music["tonicization_targets"] = list(self.tonicization_targets)
-        if self.modal_sources:
-            music["modal_sources"] = [
-                None if source is None else ModalSource.parse(source).label
-                for source in self.modal_sources
-            ]
+        music["chord_kinds"] = [ChordKind.parse(kind).label for kind in self.chord_kinds]
+        music["chord_inversions"] = list(self.chord_inversions)
+        music["tonicization_targets"] = list(self.tonicization_targets)
+        music["modal_sources"] = [
+            None if source is None else ModalSource.parse(source).label
+            for source in self.modal_sources
+        ]
         if self.chord_form_names:
             music["chord_form_names"] = list(self.chord_form_names)
         return payload
