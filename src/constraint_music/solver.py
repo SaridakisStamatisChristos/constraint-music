@@ -5,6 +5,7 @@ from typing import Any
 
 from ortools.sat.python import cp_model
 
+from .borrowed_seventh_runtime import add_borrowed_seventh_satb_constraints
 from .compiler_structure import (
     add_motif_constraints,
     add_phrase_constraints,
@@ -250,11 +251,14 @@ class ConstraintMusicSolver:
         add_voice_leading_constraints(
             model, spec, melody_note, bass_note, melody_domain, bass_domain
         )
-        satb = (
-            add_modulated_satb_constraints(model, spec, chord, melody_note, bass_note)
-            if spec.modulation_enabled
-            else add_satb_constraints(model, spec, chord, melody_note, bass_note)
-        )
+        if spec.modal_mixture_enabled and spec.expanded_harmony_enabled:
+            satb = add_borrowed_seventh_satb_constraints(
+                model, spec, chord, melody_note, bass_note
+            )
+        elif spec.modulation_enabled:
+            satb = add_modulated_satb_constraints(model, spec, chord, melody_note, bass_note)
+        else:
+            satb = add_satb_constraints(model, spec, chord, melody_note, bass_note)
         add_rhythm_constraints(model, spec, rhythm, melody_note)
         add_motif_constraints(model, spec, rhythm, melody_note)
         add_phrase_constraints(model, spec, rhythm, melody_note, bass_note, chord)
