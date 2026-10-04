@@ -129,10 +129,11 @@ class SatbGenerationResult(GenerationResult):
                         if not self.spec.secondary_leading_tone_seventh_enabled:
                             return ()
                         matched = False
-                        for quality, expected in secondary_leading_tone_seventh_pitch_class_variants(
+                        variants = secondary_leading_tone_seventh_pitch_class_variants(
                             key,
                             target,
-                        ):
+                        )
+                        for quality, expected in variants:
                             try:
                                 support = secondary_leading_tone_seventh_support_degree(
                                     key,
@@ -371,7 +372,6 @@ def add_satb_constraints(
     if spec.expanded_harmony_enabled:
         if spec.minimum_seventh_chords:
             model.add(sum(chord_kind) >= spec.minimum_seventh_chords)
-        # A chordal seventh must always have a following sonority in which to resolve.
         model.add(chord_kind[-1] == int(ChordKind.TRIAD))
     else:
         for kind in chord_kind:
@@ -666,7 +666,8 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                 continue
             if target not in supported_targets:
                 issues.append(
-                    ("CM037", f"Beat {beat}: unsupported tonicization target degree {target}"))
+                    ("CM037", f"Beat {beat}: unsupported tonicization target degree {target}")
+                )
                 continue
             if metadata_valid and kinds[beat] is not ChordKind.SEVENTH:
                 issues.append(("CM037", f"Beat {beat}: applied dominant must be a seventh chord"))
@@ -997,7 +998,6 @@ def _satb_chord_rows(
         for pcs in product(seventh, repeat=4):
             if set(pcs) != set(seventh):
                 continue
-            # CM005/CM006 retain their v2.4 meanings: outer voices use the triadic core.
             if pcs[0] not in triad or pcs[3] not in triad:
                 continue
             inversion = seventh.index(pcs[3])
@@ -1025,8 +1025,6 @@ def _satb_chord_rows(
             for pcs in product(applied, repeat=4):
                 if set(pcs) != set(applied):
                     continue
-                # Preserve CM005/CM006 exactly. Chromatic applied tones are carried by the
-                # inner voices; soprano and bass stay members of the established diatonic triad.
                 if pcs[0] not in legacy_triad or pcs[3] not in legacy_triad:
                     continue
                 inversion = applied.index(pcs[3])
@@ -1054,8 +1052,6 @@ def _satb_chord_rows(
             for pcs in product(borrowed, repeat=4):
                 if set(pcs) != set(borrowed):
                     continue
-                # Borrowed chromatic tones stay inside alto/tenor. Both outer voices preserve
-                # CM005/CM006 by remaining members of the global triadic core for this degree.
                 if pcs[0] not in legacy_triad or pcs[3] not in legacy_triad:
                     continue
                 inversion = borrowed.index(pcs[3])
