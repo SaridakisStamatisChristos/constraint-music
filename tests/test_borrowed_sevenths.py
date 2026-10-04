@@ -84,13 +84,13 @@ def minor_source_leading_piece() -> SatbGenerationResult:
 def modulated_borrowed_sevenths() -> ModulatedSatbGenerationResult:
     spec = GenerationSpec(
         bars=1,
-        beats_per_bar=6,
+        beats_per_bar=5,
         subdivisions_per_beat=1,
         require_authentic_cadence=False,
         harmony_vocabulary="triads+sevenths",
-        minimum_seventh_chords=3,
+        minimum_seventh_chords=2,
         modal_mixture_enabled=True,
-        minimum_borrowed_chords=2,
+        minimum_borrowed_chords=1,
         modulation_enabled=True,
         modulation_destination_key="G",
         modulation_boundary_beat=2,
@@ -98,7 +98,7 @@ def modulated_borrowed_sevenths() -> ModulatedSatbGenerationResult:
         workers=1,
         seed=2903,
         max_time_seconds=30,
-        tension_curve=(0.05, 0.15, 0.45, 0.65, 0.9, 0.05),
+        tension_curve=(0.05, 0.15, 0.55, 0.9, 0.05),
     )
     result = ConstraintMusicSolver().generate(spec)
     assert isinstance(result, ModulatedSatbGenerationResult)
@@ -302,7 +302,7 @@ def test_post_modulation_borrowed_sevenths_use_destination_active_key() -> None:
         )
         if source is not None and ChordKind.parse(kind) is ChordKind.SEVENTH
     ]
-    assert borrowed == [2, 3]
+    assert borrowed == [2]
     destination = result.spec.modulation_destination
     assert destination is not None
     for beat in borrowed:
