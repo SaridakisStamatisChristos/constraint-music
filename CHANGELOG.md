@@ -9,7 +9,7 @@
 - Added `PASS`/`FAIL`/`NOT_APPLICABLE`/`BLOCKED` outcomes for all 57 stable rule IDs.
 - Made the checker importable without OR-Tools and moved CP-SAT to the optional `generation` extra.
 - Replaced message-text diagnostic suppression with typed, exact semantic dispatch for borrowed and secondary leading-tone harmony; invalid labels and third inversions now fail closed while tendency resolution remains independently enforced.
-- Added independent secondary-seventh, borrowed-seventh, and secondary-triad oracles, a bounded 27,648-case enumerator, deterministic corruption corpus, and reproducibility documentation.
+- Added independent diatonic, applied-dominant, secondary-seventh, borrowed-seventh, and secondary-triad oracles, including exhaustive key/mode policy comparisons and hostile realization/resolution fixtures; retained the bounded 27,648-case enumerator, deterministic corruption corpus, and reproducibility documentation.
 
 ## 2.12.0a1 — complete secondary leading-tone seventh certification
 
