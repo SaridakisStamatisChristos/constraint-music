@@ -32,6 +32,11 @@ from .satb import (
     _satb_chord_rows,
 )
 from .satb import result_from_dict as legacy_result_from_dict
+from .semantic_dispatch import (
+    ContextualHarmonyFamily,
+    SemanticDispatch,
+    has_family,
+)
 from .theory import NO_TONICIZATION_TARGET, ChordKind, Key, Mode, is_parallel_perfect
 
 
@@ -423,6 +428,8 @@ def _add_modulated_harmony_motion_constraints(
 
 def modulated_satb_verification_issues(
     result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> tuple[tuple[str, str], ...]:
     if not isinstance(result, ModulatedSatbGenerationResult):
         return (("CM043", "Enabled modulation requires modulated SATB result metadata"),)
@@ -450,7 +457,18 @@ def modulated_satb_verification_issues(
         issues.append(("CM033", "Harmonic form contains an unknown chord kind"))
         return tuple(issues)
     inversions = tuple(int(item) for item in result.chord_inversions)
-    if any(not 0 <= inversion <= 2 for inversion in inversions):
+    if any(
+        not 0 <= inversion <= 2
+        and not (
+            inversion == 3
+            and has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+            )
+        )
+        for beat, inversion in enumerate(inversions)
+    ):
         issues.append(("CM033", "Chord inversions must be encoded in 0..2"))
     if not spec.expanded_harmony_enabled and any(
         kind is ChordKind.SEVENTH for kind in kinds
@@ -480,6 +498,13 @@ def modulated_satb_verification_issues(
         for beat, target in enumerate(targets):
             if target is None:
                 continue
+            if has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+            ):
+                continue
             applied_count += 1
             key = spec.active_key_at_beat(beat)
             if not spec.tonicization_enabled:
@@ -489,7 +514,11 @@ def modulated_satb_verification_issues(
                 issues.append(
                     ("CM037", f"Beat {beat}: target {target} is unsupported in {key}")
                 )
-            if kinds[beat] is not ChordKind.SEVENTH:
+            if kinds[beat] is not ChordKind.SEVENTH and not has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+            ):
                 issues.append(("CM037", f"Beat {beat}: applied dominant must be seventh"))
         if applied_count < spec.minimum_applied_dominants:
             issues.append(("CM037", "Serialized harmony misses minimum_applied_dominants"))
@@ -541,7 +570,11 @@ def modulated_satb_verification_issues(
                 )
             if targets_valid and targets[beat] is not None:
                 issues.append(("CM041", f"Beat {beat}: borrowing and tonicization overlap"))
-            if kinds[beat] is not ChordKind.TRIAD:
+            if kinds[beat] is not ChordKind.TRIAD and not has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.BORROWED_SEVENTH,
+            ):
                 issues.append(("CM041", f"Beat {beat}: borrowed harmony must be triadic"))
         if borrowed_count < spec.minimum_borrowed_chords:
             issues.append(("CM041", "Serialized harmony misses minimum_borrowed_chords"))
@@ -571,6 +604,13 @@ def modulated_satb_verification_issues(
         source = sources[beat] if sources_valid else None
 
         if target is not None:
+            if has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+            ):
+                continue
             if target not in key.applied_dominant_targets:
                 continue
             expected_degree = key.applied_dominant_root_degree(target)
@@ -584,6 +624,12 @@ def modulated_satb_verification_issues(
             continue
 
         if source is not None:
+            if has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.BORROWED_SEVENTH,
+            ):
+                continue
             if source is not canonical_modal_source(key):
                 continue
             if degree not in supported_borrowed_degrees(key):
@@ -642,7 +688,13 @@ def modulated_satb_verification_issues(
                     )
 
     if targets_valid:
-        _verify_modulated_harmony_motion(result, kinds, targets, issues)
+        _verify_modulated_harmony_motion(
+            result,
+            kinds,
+            targets,
+            issues,
+            semantic_dispatch=semantic_dispatch,
+        )
     return tuple(issues)
 
 
@@ -651,6 +703,8 @@ def _verify_modulated_harmony_motion(
     kinds: tuple[ChordKind, ...],
     targets: tuple[int | None, ...],
     issues: list[tuple[str, str]],
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> None:
     voices = (
         ("soprano", result.soprano),
@@ -665,6 +719,13 @@ def _verify_modulated_harmony_motion(
         key = result.spec.active_key_at_beat(beat)
         target = targets[beat]
         if target is not None:
+            if has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+            ):
+                continue
             if target not in key.applied_dominant_targets:
                 continue
             if beat + 1 >= beats:
@@ -714,6 +775,8 @@ def _verify_modulated_harmony_motion(
 
 def modulation_verification_issues(
     result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> tuple[tuple[str, str], ...]:
     spec = result.spec
     if not spec.modulation_enabled:
@@ -801,6 +864,15 @@ def modulation_verification_issues(
             kind = ChordKind.parse(result.chord_kinds[beat])
             target = targets[beat]
             source = sources[beat]
+            interpretation = (
+                None if semantic_dispatch is None else semantic_dispatch.get(beat)
+            )
+            if interpretation is not None:
+                if interpretation.active_key != destination:
+                    issues.append(
+                        ("CM046", f"Beat {beat}: contextual harmony uses the wrong active key")
+                    )
+                continue
             if target is not None:
                 if target not in destination.applied_dominant_targets:
                     issues.append(("CM046", f"Beat {beat}: target invalid in destination key"))

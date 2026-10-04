@@ -49,6 +49,12 @@ from .secondary_leading_tone_runtime import (
     secondary_leading_tone_modulation_verification_issues,
     secondary_leading_tone_satb_verification_issues,
 )
+from .semantic_dispatch import (
+    ContextualHarmony,
+    ContextualHarmonyFamily,
+    SemanticDispatch,
+    merge_semantic_dispatch,
+)
 from .theory import NO_TONICIZATION_TARGET, ChordKind, Key
 
 ChordRow = tuple[int, int, int, int, int, int, int, int, int]
@@ -934,10 +940,68 @@ def reconstruct_secondary_leading_tone_seventh(
     return None
 
 
+def _secondary_seventh_interpretation(
+    result: GenerationResult,
+    beat: int,
+) -> ContextualHarmony | None:
+    reconstruction = reconstruct_secondary_leading_tone_seventh(result, beat)
+    if reconstruction is None or not isinstance(result, SatbGenerationResult):
+        return None
+    _quality, expected = reconstruction
+    target = result.tonicization_targets[beat]
+    if target is None:
+        return None
+    key = result.spec.active_key_at_beat(beat)
+    qualities: set[str] = set()
+    for quality, candidate in secondary_leading_tone_seventh_pitch_class_variants(
+        key,
+        target,
+    ):
+        try:
+            support = secondary_leading_tone_seventh_support_degree(
+                key,
+                target,
+                result.spec.progression_graph,
+                quality,
+            )
+        except ValueError:
+            continue
+        if support == result.chord_degrees[beat] and set(candidate) == set(expected):
+            qualities.add(quality.value)
+    return ContextualHarmony(
+        beat=beat,
+        family=ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+        active_key=key,
+        support_degree=result.chord_degrees[beat],
+        pitch_classes=expected,
+        inversion=result.chord_inversions[beat],
+        target_degree=target,
+        qualities=frozenset(qualities),
+    )
+
+
+def _secondary_seventh_dispatch(
+    result: GenerationResult,
+    inherited: SemanticDispatch | None,
+) -> SemanticDispatch:
+    interpretations = (
+        interpretation
+        for beat in range(result.spec.total_beats)
+        if (interpretation := _secondary_seventh_interpretation(result, beat)) is not None
+    )
+    return merge_semantic_dispatch(inherited, interpretations)
+
+
 def secondary_leading_tone_seventh_satb_verification_issues(
     result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> tuple[tuple[str, str], ...]:
-    base = secondary_leading_tone_satb_verification_issues(result)
+    dispatch = _secondary_seventh_dispatch(result, semantic_dispatch)
+    base = secondary_leading_tone_satb_verification_issues(
+        result,
+        semantic_dispatch=dispatch,
+    )
     if not isinstance(result, SatbGenerationResult):
         return base
     spec = result.spec
@@ -945,20 +1009,7 @@ def secondary_leading_tone_seventh_satb_verification_issues(
         return base
 
     candidates = _secondary_seventh_candidate_beats(result)
-    issues: list[tuple[str, str]] = []
-    for rule_id, message in base:
-        if rule_id in {"CM037", "CM038", "CM039", "CM040"} and any(
-            message.startswith(f"Beat {beat}:")
-            or message.startswith(f"soprano beat {beat}:")
-            or message.startswith(f"alto beat {beat}:")
-            or message.startswith(f"tenor beat {beat}:")
-            or message.startswith(f"bass beat {beat}:")
-            for beat in candidates
-        ):
-            continue
-        if rule_id == "CM033" and message == "Chord inversions must be encoded in 0..2":
-            continue
-        issues.append((rule_id, message))
+    issues = list(base)
 
     if not result.tonicization_targets:
         issues.append(
@@ -985,17 +1036,6 @@ def secondary_leading_tone_seventh_satb_verification_issues(
         kinds = tuple(ChordKind.parse(item) for item in result.chord_kinds)
     except ValueError:
         return tuple(issues)
-
-    for beat, inversion in enumerate(result.chord_inversions):
-        if beat in candidates:
-            if not 0 <= inversion <= 3:
-                issues.append(
-                    ("CM056", f"Beat {beat}: secondary seventh inversion is outside 0..3")
-                )
-        elif not 0 <= inversion <= 2:
-            issues.append(
-                ("CM033", f"Beat {beat}: non-secondary inversion must remain in 0..2")
-            )
 
     applied_count = sum(
         _exact_applied_dominant(result, beat) for beat in range(spec.total_beats)
@@ -1137,14 +1177,9 @@ def secondary_leading_tone_seventh_satb_verification_issues(
         inversion = result.chord_inversions[beat]
         inversion_ok = 0 <= inversion <= 3
         if not inversion_ok:
-            if not any(
-                rule_id == "CM056"
-                and message == f"Beat {beat}: secondary seventh inversion is outside 0..3"
-                for rule_id, message in issues
-            ):
-                issues.append(
-                    ("CM056", f"Beat {beat}: secondary seventh inversion is outside 0..3")
-                )
+            issues.append(
+                ("CM056", f"Beat {beat}: secondary seventh inversion is outside 0..3")
+            )
         elif expected is not None and result.bass[beat] % 12 != expected[inversion]:
             issues.append(
                 (
@@ -1233,14 +1268,11 @@ def secondary_leading_tone_seventh_satb_verification_issues(
 
 def secondary_leading_tone_seventh_modulation_verification_issues(
     result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> tuple[tuple[str, str], ...]:
-    base = secondary_leading_tone_modulation_verification_issues(result)
-    candidates = _secondary_seventh_candidate_beats(result)
-    filtered: list[tuple[str, str]] = []
-    for rule_id, message in base:
-        if rule_id == "CM046" and any(
-            message.startswith(f"Beat {beat}:") for beat in candidates
-        ):
-            continue
-        filtered.append((rule_id, message))
-    return tuple(filtered)
+    dispatch = _secondary_seventh_dispatch(result, semantic_dispatch)
+    return secondary_leading_tone_modulation_verification_issues(
+        result,
+        semantic_dispatch=dispatch,
+    )

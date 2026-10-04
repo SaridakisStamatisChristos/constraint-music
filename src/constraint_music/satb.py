@@ -25,6 +25,11 @@ from .secondary_leading_tone import (
     secondary_leading_tone_support_degree,
     secondary_leading_tone_triad_pitch_classes,
 )
+from .semantic_dispatch import (
+    ContextualHarmonyFamily,
+    SemanticDispatch,
+    has_family,
+)
 from .theory import (
     NO_TONICIZATION_TARGET,
     ChordKind,
@@ -579,7 +584,11 @@ def _add_expanded_harmony_motion_constraints(
             )
 
 
-def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str], ...]:
+def satb_verification_issues(
+    result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
+) -> tuple[tuple[str, str], ...]:
     if not isinstance(result, SatbGenerationResult):
         return ()
     spec = result.spec
@@ -621,7 +630,18 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
             else:
                 inversions = tuple(int(item) for item in result.chord_inversions)
                 metadata_valid = True
-                if any(not 0 <= inversion <= 2 for inversion in inversions):
+                if any(
+                    not 0 <= inversion <= 2
+                    and not (
+                        inversion == 3
+                        and has_family(
+                            semantic_dispatch,
+                            beat,
+                            ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+                        )
+                    )
+                    for beat, inversion in enumerate(inversions)
+                ):
                     issues.append(("CM033", "Chord inversions must be encoded in 0..2"))
                 if not spec.expanded_harmony_enabled and any(
                     kind is ChordKind.SEVENTH for kind in kinds
@@ -658,6 +678,13 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
         for beat, target in enumerate(targets):
             if target is None:
                 continue
+            if has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+            ):
+                continue
             applied_count += 1
             if not spec.tonicization_enabled:
                 issues.append(("CM037", f"Beat {beat}: tonicization is not enabled by the spec"))
@@ -666,7 +693,15 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                 issues.append(
                     ("CM037", f"Beat {beat}: unsupported tonicization target degree {target}"))
                 continue
-            if metadata_valid and kinds[beat] is not ChordKind.SEVENTH:
+            if (
+                metadata_valid
+                and kinds[beat] is not ChordKind.SEVENTH
+                and not has_family(
+                    semantic_dispatch,
+                    beat,
+                    ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+                )
+            ):
                 issues.append(("CM037", f"Beat {beat}: applied dominant must be a seventh chord"))
         if applied_count < spec.minimum_applied_dominants:
             issues.append(
@@ -731,7 +766,15 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                 )
             if context_valid and targets[beat] is not None:
                 issues.append(("CM041", f"Beat {beat}: borrowing and tonicization cannot coexist"))
-            if metadata_valid and kinds[beat] is not ChordKind.TRIAD:
+            if (
+                metadata_valid
+                and kinds[beat] is not ChordKind.TRIAD
+                and not has_family(
+                    semantic_dispatch,
+                    beat,
+                    ContextualHarmonyFamily.BORROWED_SEVENTH,
+                )
+            ):
                 issues.append(("CM041", f"Beat {beat}: v2.7 borrowed harmony must be triadic"))
         if borrowed_count < spec.minimum_borrowed_chords:
             issues.append(
@@ -763,6 +806,13 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
         source = sources[beat] if source_context_valid else None
 
         if target is not None:
+            if has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+            ):
+                continue
             if target not in supported_targets or not metadata_valid:
                 continue
             expected_degree = key.applied_dominant_root_degree(target)
@@ -785,6 +835,12 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
             continue
 
         if source is not None:
+            if has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.BORROWED_SEVENTH,
+            ):
+                continue
             if (
                 not metadata_valid
                 or source is not canonical_source
@@ -866,7 +922,13 @@ def satb_verification_issues(result: GenerationResult) -> tuple[tuple[str, str],
                     )
 
     if metadata_valid and context_valid:
-        _verify_expanded_harmony_motion(result, kinds, targets, issues)
+        _verify_expanded_harmony_motion(
+            result,
+            kinds,
+            targets,
+            issues,
+            semantic_dispatch=semantic_dispatch,
+        )
 
     return tuple(issues)
 
@@ -876,6 +938,8 @@ def _verify_expanded_harmony_motion(
     kinds: tuple[ChordKind, ...],
     targets: tuple[int | None, ...],
     issues: list[tuple[str, str]],
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> None:
     key = result.spec.tonal_key
     voices = (
@@ -891,6 +955,13 @@ def _verify_expanded_harmony_motion(
             continue
         target = targets[beat]
         if target is not None:
+            if has_family(
+                semantic_dispatch,
+                beat,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_TRIAD,
+                ContextualHarmonyFamily.SECONDARY_LEADING_TONE_SEVENTH,
+            ):
+                continue
             if target not in supported_targets:
                 continue
             if beat + 1 >= beats:

@@ -34,6 +34,12 @@ from .satb import (
     _satb_chord_rows,
     satb_verification_issues,
 )
+from .semantic_dispatch import (
+    ContextualHarmony,
+    ContextualHarmonyFamily,
+    SemanticDispatch,
+    merge_semantic_dispatch,
+)
 from .theory import NO_TONICIZATION_TARGET, ChordKind, Key
 
 
@@ -410,103 +416,109 @@ def _add_source_leading_tone_constraints(
             model.add(voice[beat + 1] == voice[beat] + 1).only_enforce_if(carries)
 
 
-def _candidate_borrowed_seventh_beats(result: GenerationResult) -> set[int]:
+def reconstruct_borrowed_seventh(
+    result: GenerationResult,
+    beat: int,
+) -> ContextualHarmony | None:
+    """Reconstruct an exact local borrowed seventh without considering its resolution."""
+
     if not isinstance(result, SatbGenerationResult):
-        return set()
+        return None
     spec = result.spec
-    if not _feature_enabled(spec):
-        return set()
-    if not (
-        len(result.chord_degrees)
-        == len(result.chord_kinds)
-        == len(result.tonicization_targets)
-        == len(result.modal_sources)
-        == spec.total_beats
+    if not _feature_enabled(spec) or not 0 <= beat < spec.total_beats:
+        return None
+    sequences = (
+        result.chord_degrees,
+        result.chord_kinds,
+        result.chord_inversions,
+        result.tonicization_targets,
+        result.modal_sources,
+        result.soprano,
+        result.alto,
+        result.tenor,
+        result.bass,
+    )
+    if any(len(sequence) <= beat for sequence in sequences):
+        return None
+    raw_source = result.modal_sources[beat]
+    if raw_source is None or result.tonicization_targets[beat] is not None:
+        return None
+    try:
+        kind = ChordKind.parse(result.chord_kinds[beat])
+        source = ModalSource.parse(raw_source)
+    except ValueError:
+        return None
+    key = spec.active_key_at_beat(beat)
+    degree = result.chord_degrees[beat]
+    if (
+        kind is not ChordKind.SEVENTH
+        or source is not canonical_modal_source(key)
+        or degree not in supported_borrowed_seventh_degrees(key)
     ):
-        return set()
-    beats: set[int] = set()
-    for beat, (degree, raw_kind, target, raw_source) in enumerate(
-        zip(
-            result.chord_degrees,
-            result.chord_kinds,
-            result.tonicization_targets,
-            result.modal_sources,
-            strict=True,
-        )
+        return None
+    expected = borrowed_seventh_pitch_classes(key, degree, source)
+    pcs = (
+        result.soprano[beat] % 12,
+        result.alto[beat] % 12,
+        result.tenor[beat] % 12,
+        result.bass[beat] % 12,
+    )
+    inversion = result.chord_inversions[beat]
+    if (
+        set(pcs) != set(expected)
+        or len(set(pcs)) != 4
+        or not 0 <= inversion <= 2
+        or result.bass[beat] % 12 != expected[inversion]
     ):
-        if raw_source is None or target is not None:
-            continue
-        try:
-            kind = ChordKind.parse(raw_kind)
-            source = ModalSource.parse(raw_source)
-        except ValueError:
-            continue
-        key = spec.active_key_at_beat(beat)
-        if (
-            kind is ChordKind.SEVENTH
-            and source is canonical_modal_source(key)
-            and degree in supported_borrowed_seventh_degrees(key)
-        ):
-            beats.add(beat)
-    return beats
+        return None
+    return ContextualHarmony(
+        beat=beat,
+        family=ContextualHarmonyFamily.BORROWED_SEVENTH,
+        active_key=key,
+        support_degree=degree,
+        pitch_classes=expected,
+        inversion=inversion,
+        modal_source=int(source),
+    )
 
 
-def _is_legacy_triad_false_positive(
-    rule_id: str,
-    message: str,
-    candidate_beats: set[int],
-) -> bool:
-    for beat in candidate_beats:
-        prefix = f"Beat {beat}:"
-        if not message.startswith(prefix):
-            continue
-        if rule_id == "CM041" and (
-            "borrowed harmony must be triadic" in message
-            or "v2.7 borrowed harmony must be triadic" in message
-        ):
-            return True
-        if rule_id == "CM042" and (
-            "borrowed chord is not the complete source-mode triad" in message
-            or "incomplete active-key borrowed triad" in message
-        ):
-            return True
-    return False
+def _borrowed_seventh_dispatch(
+    result: GenerationResult,
+    inherited: SemanticDispatch | None,
+) -> SemanticDispatch:
+    interpretations = (
+        interpretation
+        for beat in range(result.spec.total_beats)
+        if (interpretation := reconstruct_borrowed_seventh(result, beat)) is not None
+    )
+    return merge_semantic_dispatch(inherited, interpretations)
 
 
 def borrowed_seventh_satb_verification_issues(
     result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> tuple[tuple[str, str], ...]:
     """Preserve legacy SATB checks and independently certify borrowed sevenths."""
+    dispatch = _borrowed_seventh_dispatch(result, semantic_dispatch)
     base = (
-        modulated_satb_verification_issues(result)
+        modulated_satb_verification_issues(result, semantic_dispatch=dispatch)
         if result.spec.modulation_enabled
-        else satb_verification_issues(result)
+        else satb_verification_issues(result, semantic_dispatch=dispatch)
     )
-    candidate_beats = _candidate_borrowed_seventh_beats(result)
-    issues = [
-        issue
-        for issue in base
-        if not _is_legacy_triad_false_positive(issue[0], issue[1], candidate_beats)
-    ]
+    issues = list(base)
     issues.extend(_borrowed_seventh_verification_issues(result))
     return tuple(issues)
 
 
 def borrowed_seventh_modulation_verification_issues(
     result: GenerationResult,
+    *,
+    semantic_dispatch: SemanticDispatch | None = None,
 ) -> tuple[tuple[str, str], ...]:
     """Preserve CM043-CM048 while replacing only the old triad-only CM046 interpretation."""
-    base = modulation_verification_issues(result)
-    candidate_beats = _candidate_borrowed_seventh_beats(result)
-    filtered: list[tuple[str, str]] = []
-    for rule_id, message in base:
-        if rule_id == "CM046" and any(
-            message == f"Beat {beat}: harmony is not destination-key derived"
-            for beat in candidate_beats
-        ):
-            continue
-        filtered.append((rule_id, message))
-    return tuple(filtered)
+    dispatch = _borrowed_seventh_dispatch(result, semantic_dispatch)
+    return modulation_verification_issues(result, semantic_dispatch=dispatch)
 
 
 def _borrowed_seventh_verification_issues(
