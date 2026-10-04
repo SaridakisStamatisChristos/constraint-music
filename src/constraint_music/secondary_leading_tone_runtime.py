@@ -657,7 +657,10 @@ def _secondary_leading_tone_verification_issues(
             issues.append(
                 (
                     "CM052",
-                    f"Beat {beat}: target {target} is not a supported secondary leading-tone target",
+                    (
+                        f"Beat {beat}: target {target} is not a supported "
+                        "secondary leading-tone target"
+                    ),
                 )
             )
             context_ok = False
@@ -673,7 +676,10 @@ def _secondary_leading_tone_verification_issues(
                 spec.total_beats - 1,
             }:
                 issues.append(
-                    ("CM052", f"Beat {beat}: secondary leading-tone chord occupies a certified anchor")
+                    (
+                        "CM052",
+                        f"Beat {beat}: secondary leading-tone chord occupies a certified anchor",
+                    )
                 )
                 context_ok = False
         elif spec.require_authentic_cadence and beat in {0, spec.total_beats - 2}:
@@ -717,7 +723,10 @@ def _secondary_leading_tone_verification_issues(
             issues.append(
                 (
                     "CM053",
-                    f"Beat {beat}: secondary leading-tone triad is incomplete or doubles a tendency tone",
+                    (
+                        f"Beat {beat}: secondary leading-tone triad is incomplete or "
+                        "doubles a tendency tone"
+                    ),
                 )
             )
         inversion = result.chord_inversions[beat]
@@ -736,7 +745,12 @@ def _secondary_leading_tone_verification_issues(
                 ("CM054", f"Beat {beat}: secondary leading-tone chord misses declared target")
             )
         if result.tonicization_targets[beat + 1] is not None:
-            issues.append(("CM054", f"Beat {beat}: target chord cannot carry tonicization metadata"))
+            issues.append(
+                (
+                    "CM054",
+                    f"Beat {beat}: target chord cannot carry tonicization metadata",
+                )
+            )
         if kinds[beat + 1] is not ChordKind.TRIAD:
             issues.append(("CM054", f"Beat {beat}: target chord must be triadic"))
         if result.modal_sources and result.modal_sources[beat + 1] is not None:
@@ -747,7 +761,10 @@ def _secondary_leading_tone_verification_issues(
                 issues.append(
                     (
                         "CM054",
-                        f"{label} beat {beat}: local leading tone does not resolve upward by semitone",
+                        (
+                            f"{label} beat {beat}: local leading tone does not resolve "
+                            "upward by semitone"
+                        ),
                     )
                 )
             if voice[beat] % 12 == diminished_fifth:
@@ -756,7 +773,10 @@ def _secondary_leading_tone_verification_issues(
                     issues.append(
                         (
                             "CM054",
-                            f"{label} beat {beat}: diminished fifth does not resolve downward by step",
+                            (
+                                f"{label} beat {beat}: diminished fifth does not resolve "
+                                "downward by step"
+                            ),
                         )
                     )
 
