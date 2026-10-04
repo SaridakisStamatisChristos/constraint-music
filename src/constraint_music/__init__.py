@@ -8,6 +8,12 @@ from .objective import evaluate_objective_vector
 from .phrase import PhraseSpec
 from .satb import SatbGenerationResult
 from .search import dominates, pareto_indices
+from .secondary_leading_tone import (
+    secondary_leading_tone_name,
+    secondary_leading_tone_support_degree,
+    secondary_leading_tone_triad_pitch_classes,
+    supported_secondary_leading_tone_targets,
+)
 from .solver import ConstraintMusicSolver, InternalVerificationError, NoSolutionError
 from .theory import ChordKind
 from .verifier import verify_result
@@ -29,7 +35,11 @@ __all__ = [
     "dominates",
     "evaluate_objective_vector",
     "pareto_indices",
+    "secondary_leading_tone_name",
+    "secondary_leading_tone_support_degree",
+    "secondary_leading_tone_triad_pitch_classes",
+    "supported_secondary_leading_tone_targets",
     "verify_result",
 ]
 
-__version__ = "2.9.0a1"
+__version__ = "2.10.0a1"

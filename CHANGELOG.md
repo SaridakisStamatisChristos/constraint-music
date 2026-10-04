@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.10.0a1 — verified secondary leading-tone chords
+
+- Added opt-in secondary leading-tone triads through `secondary_leading_tone_enabled` and `minimum_secondary_leading_tone_chords`.
+- Reused the existing nullable local-target identity instead of introducing an opaque secondary-chord label: target-bearing sevenths remain applied dominants, while target-bearing triads under the v2.10 feature are secondary leading-tone chords.
+- Derived each diminished triad from the exact active local key and declared non-tonic target rather than granting unrestricted chromatic pitch permission.
+- Added a deterministic active-key support-degree policy so chromatic diminished roots are never forged into fake diatonic degrees while CM005, CM006, and CM007 retain their established meanings.
+- Required complete diminished-triad SATB realization with local leading tone and diminished fifth exactly once, stable third doubled, and root/first/second inversion agreement with bass.
+- Added immediate resolution to the declared untargeted, unborrowed triadic target.
+- Added independent local tendency semantics: local leading tone rises by semitone and diminished fifth falls by one or two semitones.
+- Kept secondary leading-tone chords disjoint from modal borrowing and excluded them from certified modulation/cadence anchors.
+- Made post-modulation secondary harmony derive from the persistent destination active key, never the original global key.
+- Prevented target-bearing triads from satisfying `minimum_applied_dominants`; applied-dominant counts remain target-bearing seventh counts.
+- Extended the hard contract additively from 51 to 54 rules with `CM052` context/support eligibility, `CM053` exact diminished realization/inversion, and `CM054` target/tendency resolution.
+- Versioned the package to `2.10.0a1` and artifact/contract schema to `2.10`.
+- Preserved provenance through existing target, harmonic-form, voicing, modal-source, and key-context data; no synthetic secondary-chord metadata was added.
+- Added adversarial tests for forged support degree, doubled tendency tones, inversion mismatch, wrong-direction local resolutions, applied-dominant count forgery, target provenance tampering, and stale global-key interpretation after modulation.
+- Kept secondary leading-tone sevenths, third-inversion sevenths, arbitrary modulation chains, enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, and probabilistic key inference outside v2.10.
+
 ## 2.9.0a1 — source-aware borrowed seventh chords
 
 - Extended opt-in modal mixture to a deliberately filtered subset of source-derived borrowed seventh chords when `harmony_vocabulary: triads+sevenths` is also enabled.

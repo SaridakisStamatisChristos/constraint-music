@@ -156,7 +156,7 @@ def test_solver_emits_complete_verified_borrowed_seventh() -> None:
     result = borrowed_seventh_piece()
     assert result.validation.valid, result.validation.issues
     assert result.validation.checked_rules == HARD_CONSTRAINT_IDS
-    assert len(HARD_CONSTRAINT_IDS) == 51
+    assert len(HARD_CONSTRAINT_IDS) == 54
 
     beat = _borrowed_seventh_beat(result)
     source = result.modal_sources[beat]
