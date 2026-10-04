@@ -147,12 +147,12 @@ def test_v211_quality_target_support_and_names_are_deterministic() -> None:
     assert secondary_leading_tone_seventh_name(key, 1, 0) == "vii°7/ii"
     assert secondary_leading_tone_seventh_name(key, 1, 1) == "vii°65/ii"
     assert secondary_leading_tone_seventh_name(key, 1, 2) == "vii°43/ii"
-    with pytest.raises(ValueError, match="inversion must be in 0..2"):
+    with pytest.raises(ValueError, match=r"inversion must be in 0\.\.2"):
         secondary_leading_tone_seventh_name(key, 1, 3)
 
 
 def test_secondary_seventh_requires_expanded_harmony_and_own_minimum_flag() -> None:
-    with pytest.raises(ValueError, match="harmony_vocabulary='triads\+sevenths'"):
+    with pytest.raises(ValueError, match=r"harmony_vocabulary='triads\+sevenths'"):
         GenerationSpec(secondary_leading_tone_seventh_enabled=True)
     with pytest.raises(ValueError, match="secondary_leading_tone_seventh_enabled=true"):
         GenerationSpec(
@@ -391,7 +391,9 @@ def test_secondary_seventh_is_rejected_on_legacy_cadence_anchor() -> None:
 def test_post_modulation_secondary_seventh_uses_destination_active_key() -> None:
     result = modulated_secondary_seventh_piece()
     beat = _secondary_seventh_beat(result)
-    assert beat >= result.spec.modulation_boundary_beat  # type: ignore[operator]
+    boundary = result.spec.modulation_boundary_beat
+    assert boundary is not None
+    assert beat >= boundary
     target = result.tonicization_targets[beat]
     assert target is not None
     destination = result.spec.modulation_destination
