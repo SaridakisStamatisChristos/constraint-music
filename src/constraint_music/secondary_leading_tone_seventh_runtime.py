@@ -31,12 +31,18 @@ from .satb import (
     _satb_chord_rows,
 )
 from .secondary_leading_tone import (
+    SecondaryLeadingToneSeventhQuality,
+    secondary_leading_tone_seventh_pitch_class_variants,
     secondary_leading_tone_seventh_pitch_classes,
+    secondary_leading_tone_seventh_qualities,
     secondary_leading_tone_seventh_support_degree,
     secondary_leading_tone_support_degree,
     secondary_leading_tone_triad_pitch_classes,
     supported_secondary_leading_tone_seventh_targets,
     supported_secondary_leading_tone_targets,
+)
+from .secondary_leading_tone_complete_compiler import (
+    secondary_seventh_outer_pitches_in_range,
 )
 from .secondary_leading_tone_runtime import (
     _add_borrowed_source_leading_constraints,
@@ -47,11 +53,31 @@ from .secondary_leading_tone_runtime import (
 from .theory import NO_TONICIZATION_TARGET, ChordKind, Key
 
 ChordRow = tuple[int, int, int, int, int, int, int, int, int]
-FunctionRow = tuple[int, int, int, int, int, int, int, int, int, int, int, int]
+FunctionRow = tuple[int, int, int, int, int, int, int, int, int, int, int, int, int]
+
+QUALITY_NONE = 0
+QUALITY_FULLY_DIMINISHED = 1
+QUALITY_HALF_DIMINISHED = 2
+
+
+def _quality_code(quality: SecondaryLeadingToneSeventhQuality) -> int:
+    return (
+        QUALITY_FULLY_DIMINISHED
+        if quality is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
+        else QUALITY_HALF_DIMINISHED
+    )
+
+
+def _quality_from_code(code: int) -> SecondaryLeadingToneSeventhQuality | None:
+    if code == QUALITY_FULLY_DIMINISHED:
+        return SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
+    if code == QUALITY_HALF_DIMINISHED:
+        return SecondaryLeadingToneSeventhQuality.HALF_DIMINISHED
+    return None
 
 
 @cache
-def _v211_chord_rows(
+def _v212_chord_rows(
     key: Key,
     progression_graph: tuple[tuple[int, ...], ...],
     expanded_harmony: bool,
@@ -60,7 +86,7 @@ def _v211_chord_rows(
     secondary_triads_enabled: bool,
     secondary_sevenths_enabled: bool,
 ) -> tuple[ChordRow, ...]:
-    """Extend the verified v2.10 row model with fully diminished vii°7/x rows."""
+    """Extend v2.11 with both certified qualities and all seventh inversions."""
     if modal_mixture_enabled and expanded_harmony:
         rows: list[ChordRow] = list(_v29_chord_rows(key, tonicization_enabled))
     else:
@@ -110,39 +136,41 @@ def _v211_chord_rows(
             key,
             progression_graph,
         ):
-            support = secondary_leading_tone_seventh_support_degree(
+            for quality, secondary in secondary_leading_tone_seventh_pitch_class_variants(
                 key,
                 target,
-                progression_graph,
-            )
-            support_triad = key.triad_pitch_classes(support)
-            secondary = secondary_leading_tone_seventh_pitch_classes(key, target)
-            for pcs in product(secondary, repeat=4):
-                if len(set(pcs)) != 4:
-                    continue
-                if pcs[0] not in support_triad or pcs[3] not in support_triad:
-                    continue
-                inversion = secondary.index(pcs[3])
-                if inversion > 2:
-                    continue
-                rows.append(
-                    (
-                        support,
-                        int(ChordKind.SEVENTH),
-                        inversion,
+            ):
+                try:
+                    support = secondary_leading_tone_seventh_support_degree(
+                        key,
                         target,
-                        NO_MODAL_SOURCE,
-                        pcs[0],
-                        pcs[1],
-                        pcs[2],
-                        pcs[3],
+                        progression_graph,
+                        quality,
                     )
-                )
+                except ValueError:
+                    continue
+                for pcs in product(secondary, repeat=4):
+                    if set(pcs) != set(secondary) or len(set(pcs)) != 4:
+                        continue
+                    inversion = secondary.index(pcs[3])
+                    rows.append(
+                        (
+                            support,
+                            int(ChordKind.SEVENTH),
+                            inversion,
+                            target,
+                            NO_MODAL_SOURCE,
+                            pcs[0],
+                            pcs[1],
+                            pcs[2],
+                            pcs[3],
+                        )
+                    )
     return tuple(rows)
 
 
 @cache
-def _v211_function_rows(
+def _v212_function_rows(
     key: Key,
     progression_graph: tuple[tuple[int, ...], ...],
     expanded_harmony: bool,
@@ -151,13 +179,13 @@ def _v211_function_rows(
     secondary_triads_enabled: bool,
     secondary_sevenths_enabled: bool,
 ) -> tuple[FunctionRow, ...]:
-    """Attach exact functional flags without adding a serialized function-state axis."""
+    """Attach exact function and quality flags without trusting serialized labels."""
     output: list[FunctionRow] = []
     triad_targets = set(supported_secondary_leading_tone_targets(key, progression_graph))
     seventh_targets = set(
         supported_secondary_leading_tone_seventh_targets(key, progression_graph)
     )
-    for row in _v211_chord_rows(
+    for row in _v212_chord_rows(
         key,
         progression_graph,
         expanded_harmony,
@@ -171,6 +199,7 @@ def _v211_function_rows(
         applied = False
         secondary_triad = False
         secondary_seventh = False
+        quality_code = QUALITY_NONE
         if target != NO_TONICIZATION_TARGET and source == NO_MODAL_SOURCE:
             if (
                 tonicization_enabled
@@ -202,20 +231,36 @@ def _v211_function_rows(
                 secondary_sevenths_enabled
                 and kind is ChordKind.SEVENTH
                 and target in seventh_targets
+                and not applied
             ):
-                expected_seventh = secondary_leading_tone_seventh_pitch_classes(key, target)
-                secondary_seventh = (
-                    degree
-                    == secondary_leading_tone_seventh_support_degree(
-                        key,
-                        target,
-                        progression_graph,
-                    )
-                    and set(pcs) == set(expected_seventh)
-                    and len(set(pcs)) == 4
-                )
+                for quality, expected_seventh in (
+                    secondary_leading_tone_seventh_pitch_class_variants(key, target)
+                ):
+                    try:
+                        expected_support = secondary_leading_tone_seventh_support_degree(
+                            key,
+                            target,
+                            progression_graph,
+                            quality,
+                        )
+                    except ValueError:
+                        continue
+                    if (
+                        degree == expected_support
+                        and set(pcs) == set(expected_seventh)
+                        and len(set(pcs)) == 4
+                    ):
+                        secondary_seventh = True
+                        quality_code = _quality_code(quality)
+                        break
         output.append(
-            (*row, int(applied), int(secondary_triad), int(secondary_seventh))
+            (
+                *row,
+                int(applied),
+                int(secondary_triad),
+                int(secondary_seventh),
+                quality_code,
+            )
         )
     return tuple(output)
 
@@ -224,38 +269,69 @@ def _v211_function_rows(
 def _secondary_seventh_role_rows(
     key: Key,
     progression_graph: tuple[tuple[int, ...], ...],
-) -> tuple[tuple[int, int, int, int, int, int], ...]:
+) -> tuple[tuple[int, int, int, int, int, int, int, int, int], ...]:
+    """Map exact quality/target identity to role flags and exact resolution deltas."""
+    rows: list[tuple[int, int, int, int, int, int, int, int, int]] = []
     supported = set(
         supported_secondary_leading_tone_seventh_targets(key, progression_graph)
     )
-    rows: list[tuple[int, int, int, int, int, int]] = []
     for degree in range(7):
         for target in range(NO_TONICIZATION_TARGET + 1):
-            root_pc: int | None = None
-            fifth_pc: int | None = None
-            seventh_pc: int | None = None
-            if target in supported:
-                support = secondary_leading_tone_seventh_support_degree(
-                    key,
-                    target,
-                    progression_graph,
-                )
-                if degree == support:
-                    tones = secondary_leading_tone_seventh_pitch_classes(key, target)
-                    root_pc = tones[0]
-                    fifth_pc = tones[2]
-                    seventh_pc = tones[3]
-            for pc in range(12):
-                rows.append(
-                    (
-                        degree,
-                        target,
-                        pc,
-                        int(root_pc is not None and pc == root_pc),
-                        int(fifth_pc is not None and pc == fifth_pc),
-                        int(seventh_pc is not None and pc == seventh_pc),
+            for quality_code in (
+                QUALITY_NONE,
+                QUALITY_FULLY_DIMINISHED,
+                QUALITY_HALF_DIMINISHED,
+            ):
+                root_pc: int | None = None
+                fifth_pc: int | None = None
+                seventh_pc: int | None = None
+                fifth_delta = 0
+                seventh_delta = 0
+                quality = _quality_from_code(quality_code)
+                if quality is not None and target in supported:
+                    if quality in secondary_leading_tone_seventh_qualities(key, target):
+                        try:
+                            support = secondary_leading_tone_seventh_support_degree(
+                                key,
+                                target,
+                                progression_graph,
+                                quality,
+                            )
+                        except ValueError:
+                            support = -1
+                        if degree == support:
+                            tones = secondary_leading_tone_seventh_pitch_classes(
+                                key,
+                                target,
+                                quality,
+                            )
+                            root_pc = tones[0]
+                            fifth_pc = tones[2]
+                            seventh_pc = tones[3]
+                            fifth_delta = -1 if key.triad_quality(target) == "major" else -2
+                            seventh_delta = (
+                                -1
+                                if quality
+                                is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
+                                else -2
+                            )
+                for pc in range(12):
+                    root_flag = int(root_pc is not None and pc == root_pc)
+                    fifth_flag = int(fifth_pc is not None and pc == fifth_pc)
+                    seventh_flag = int(seventh_pc is not None and pc == seventh_pc)
+                    rows.append(
+                        (
+                            degree,
+                            target,
+                            quality_code,
+                            pc,
+                            root_flag,
+                            fifth_flag,
+                            fifth_delta if fifth_flag else 0,
+                            seventh_flag,
+                            seventh_delta if seventh_flag else 0,
+                        )
                     )
-                )
     return tuple(rows)
 
 
@@ -266,27 +342,39 @@ def add_secondary_leading_tone_seventh_satb_constraints(
     melody_note: list[cp_model.IntVar],
     bass_note: list[cp_model.IntVar],
 ) -> SatbVariables:
-    """Compile v2.11 secondary leading-tone sevenths with exact functional counting."""
+    """Compile the v2.12 complete secondary leading-tone seventh vocabulary."""
     if not (
         spec.secondary_leading_tone_enabled
         or spec.secondary_leading_tone_seventh_enabled
     ):
-        raise ValueError("v2.11 runtime requires a secondary leading-tone feature")
+        raise ValueError("v2.12 runtime requires a secondary leading-tone feature")
     if spec.secondary_leading_tone_seventh_enabled and not spec.expanded_harmony_enabled:
         raise ValueError(
-            "v2.11 secondary leading-tone sevenths require expanded harmony"
+            "v2.12 secondary leading-tone sevenths require expanded harmony"
         )
 
-    soprano_domain = (
-        spec.context_pitches_in_range(spec.melody_low, spec.melody_high)
-        if spec.modulation_enabled
-        else spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
-    )
-    bass_domain = (
-        spec.context_pitches_in_range(spec.bass_low, spec.bass_high)
-        if spec.modulation_enabled
-        else spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
-    )
+    if spec.secondary_leading_tone_seventh_enabled:
+        soprano_domain = secondary_seventh_outer_pitches_in_range(
+            spec,
+            spec.melody_low,
+            spec.melody_high,
+        )
+        bass_domain = secondary_seventh_outer_pitches_in_range(
+            spec,
+            spec.bass_low,
+            spec.bass_high,
+        )
+    else:
+        soprano_domain = (
+            spec.context_pitches_in_range(spec.melody_low, spec.melody_high)
+            if spec.modulation_enabled
+            else spec.tonal_key.pitches_in_range(spec.melody_low, spec.melody_high)
+        )
+        bass_domain = (
+            spec.context_pitches_in_range(spec.bass_low, spec.bass_high)
+            if spec.modulation_enabled
+            else spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
+        )
 
     inner_pitch_classes: set[int] = set()
     for key in spec.context_keys:
@@ -320,9 +408,11 @@ def add_secondary_leading_tone_seventh_satb_constraints(
                 key,
                 spec.progression_graph,
             ):
-                inner_pitch_classes.update(
-                    secondary_leading_tone_seventh_pitch_classes(key, target)
-                )
+                for _quality, tones in secondary_leading_tone_seventh_pitch_class_variants(
+                    key,
+                    target,
+                ):
+                    inner_pitch_classes.update(tones)
 
     alto_domain = _pitches_for_pitch_classes(ALTO_LOW, ALTO_HIGH, inner_pitch_classes)
     tenor_domain = _pitches_for_pitch_classes(TENOR_LOW, TENOR_HIGH, inner_pitch_classes)
@@ -345,7 +435,7 @@ def add_secondary_leading_tone_seventh_satb_constraints(
         model.new_bool_var(f"chord_kind_{beat}") for beat in range(spec.total_beats)
     ]
     chord_inversion = [
-        model.new_int_var(0, 2, f"chord_inversion_{beat}")
+        model.new_int_var(0, 3, f"chord_inversion_{beat}")
         for beat in range(spec.total_beats)
     ]
     tonicization_target = [
@@ -405,10 +495,13 @@ def add_secondary_leading_tone_seventh_satb_constraints(
     applied_flags: list[cp_model.IntVar] = []
     secondary_triad_flags: list[cp_model.IntVar] = []
     secondary_seventh_flags: list[cp_model.IntVar] = []
+    secondary_quality: list[cp_model.IntVar] = []
     pitch_classes: list[list[cp_model.IntVar]] = []
     for beat in range(spec.total_beats):
         strong_step = beat * spec.subdivisions_per_beat
         model.add(soprano[beat] == melody_note[strong_step])
+        model.add_allowed_assignments([soprano[beat]], [(note,) for note in soprano_domain])
+        model.add_allowed_assignments([bass_note[beat]], [(note,) for note in bass_domain])
         model.add_allowed_assignments([alto[beat]], [(note,) for note in alto_domain])
         model.add_allowed_assignments([tenor[beat]], [(note,) for note in tenor_domain])
         model.add(bass_note[beat] < tenor[beat])
@@ -428,9 +521,15 @@ def add_secondary_leading_tone_seventh_satb_constraints(
         secondary_seventh = model.new_bool_var(
             f"secondary_leading_tone_seventh_{beat}"
         )
+        quality = model.new_int_var(
+            QUALITY_NONE,
+            QUALITY_HALF_DIMINISHED,
+            f"secondary_leading_tone_seventh_quality_{beat}",
+        )
         applied_flags.append(applied)
         secondary_triad_flags.append(secondary_triad)
         secondary_seventh_flags.append(secondary_seventh)
+        secondary_quality.append(quality)
         model.add_allowed_assignments(
             [
                 chord[beat],
@@ -442,8 +541,9 @@ def add_secondary_leading_tone_seventh_satb_constraints(
                 applied,
                 secondary_triad,
                 secondary_seventh,
+                quality,
             ],
-            _v211_function_rows(
+            _v212_function_rows(
                 spec.active_key_at_beat(beat),
                 spec.progression_graph,
                 spec.expanded_harmony_enabled,
@@ -589,6 +689,7 @@ def add_secondary_leading_tone_seventh_satb_constraints(
             modal_source,
             pitch_classes,
             secondary_seventh_flags,
+            secondary_quality,
             soprano,
             alto,
             tenor,
@@ -615,6 +716,7 @@ def _add_secondary_seventh_tendency_constraints(
     modal_source: list[cp_model.IntVar],
     pitch_classes: list[list[cp_model.IntVar]],
     secondary_seventh_flags: list[cp_model.IntVar],
+    secondary_quality: list[cp_model.IntVar],
     soprano: list[cp_model.IntVar],
     alto: list[cp_model.IntVar],
     tenor: list[cp_model.IntVar],
@@ -648,35 +750,42 @@ def _add_secondary_seventh_tendency_constraints(
             fifth_flag = model.new_bool_var(
                 f"secondary_seventh_dim5_{beat}_{voice_index}"
             )
+            fifth_delta = model.new_int_var(
+                -2,
+                0,
+                f"secondary_seventh_dim5_delta_{beat}_{voice_index}",
+            )
             seventh_flag = model.new_bool_var(
-                f"secondary_seventh_dim7_{beat}_{voice_index}"
+                f"secondary_seventh_chordal7_{beat}_{voice_index}"
+            )
+            seventh_delta = model.new_int_var(
+                -2,
+                0,
+                f"secondary_seventh_chordal7_delta_{beat}_{voice_index}",
             )
             model.add_allowed_assignments(
                 [
                     chord[beat],
                     tonicization_target[beat],
+                    secondary_quality[beat],
                     pitch_classes[beat][voice_index],
                     root_flag,
                     fifth_flag,
+                    fifth_delta,
                     seventh_flag,
+                    seventh_delta,
                 ],
                 rows,
             )
             model.add(voice[beat + 1] == voice[beat] + 1).only_enforce_if(
                 [is_secondary, root_flag]
             )
-            model.add(voice[beat + 1] <= voice[beat] - 1).only_enforce_if(
-                [is_secondary, fifth_flag]
-            )
-            model.add(voice[beat + 1] >= voice[beat] - 2).only_enforce_if(
-                [is_secondary, fifth_flag]
-            )
-            model.add(voice[beat + 1] <= voice[beat] - 1).only_enforce_if(
-                [is_secondary, seventh_flag]
-            )
-            model.add(voice[beat + 1] >= voice[beat] - 2).only_enforce_if(
-                [is_secondary, seventh_flag]
-            )
+            model.add(
+                voice[beat + 1] == voice[beat] + fifth_delta
+            ).only_enforce_if([is_secondary, fifth_flag])
+            model.add(
+                voice[beat + 1] == voice[beat] + seventh_delta
+            ).only_enforce_if([is_secondary, seventh_flag])
 
 
 def _voice_pitch_classes(
@@ -757,6 +866,75 @@ def _secondary_seventh_candidate_beats(result: GenerationResult) -> set[int]:
     return beats
 
 
+def reconstruct_secondary_leading_tone_seventh(
+    result: GenerationResult,
+    beat: int,
+) -> tuple[SecondaryLeadingToneSeventhQuality, tuple[int, int, int, int]] | None:
+    """Independently reconstruct exact v2.12 secondary-seventh identity from artifact data."""
+    if not isinstance(result, SatbGenerationResult):
+        return None
+    spec = result.spec
+    if not spec.secondary_leading_tone_seventh_enabled or not 0 <= beat < spec.total_beats:
+        return None
+    if not (
+        len(result.tonicization_targets) > beat
+        and len(result.chord_kinds) > beat
+        and len(result.chord_degrees) > beat
+        and len(result.chord_inversions) > beat
+        and len(result.soprano) > beat
+        and len(result.alto) > beat
+        and len(result.tenor) > beat
+        and len(result.bass) > beat
+    ):
+        return None
+    target = result.tonicization_targets[beat]
+    if target is None:
+        return None
+    try:
+        kind = ChordKind.parse(result.chord_kinds[beat])
+    except ValueError:
+        return None
+    if kind is not ChordKind.SEVENTH or _exact_applied_dominant(result, beat):
+        return None
+    if result.modal_sources and (
+        len(result.modal_sources) <= beat or result.modal_sources[beat] is not None
+    ):
+        return None
+    key = spec.active_key_at_beat(beat)
+    if target not in supported_secondary_leading_tone_seventh_targets(
+        key,
+        spec.progression_graph,
+    ):
+        return None
+    pcs = _voice_pitch_classes(result, beat)
+    if len(set(pcs)) != 4:
+        return None
+    inversion = result.chord_inversions[beat]
+    if not 0 <= inversion <= 3:
+        return None
+    for quality, expected in secondary_leading_tone_seventh_pitch_class_variants(
+        key,
+        target,
+    ):
+        try:
+            support = secondary_leading_tone_seventh_support_degree(
+                key,
+                target,
+                spec.progression_graph,
+                quality,
+            )
+        except ValueError:
+            continue
+        if result.chord_degrees[beat] != support:
+            continue
+        if set(pcs) != set(expected):
+            continue
+        if result.bass[beat] % 12 != expected[inversion]:
+            continue
+        return quality, expected
+    return None
+
+
 def secondary_leading_tone_seventh_satb_verification_issues(
     result: GenerationResult,
 ) -> tuple[tuple[str, str], ...]:
@@ -778,6 +956,8 @@ def secondary_leading_tone_seventh_satb_verification_issues(
             or message.startswith(f"bass beat {beat}:")
             for beat in candidates
         ):
+            continue
+        if rule_id == "CM033" and message == "Chord inversions must be encoded in 0..2":
             continue
         issues.append((rule_id, message))
 
@@ -806,6 +986,17 @@ def secondary_leading_tone_seventh_satb_verification_issues(
         kinds = tuple(ChordKind.parse(item) for item in result.chord_kinds)
     except ValueError:
         return tuple(issues)
+
+    for beat, inversion in enumerate(result.chord_inversions):
+        if beat in candidates:
+            if not 0 <= inversion <= 3:
+                issues.append(
+                    ("CM056", f"Beat {beat}: secondary seventh inversion is outside 0..3")
+                )
+        elif not 0 <= inversion <= 2:
+            issues.append(
+                ("CM033", f"Beat {beat}: non-secondary inversion must remain in 0..2")
+            )
 
     applied_count = sum(
         _exact_applied_dominant(result, beat) for beat in range(spec.total_beats)
@@ -878,12 +1069,61 @@ def secondary_leading_tone_seventh_satb_verification_issues(
             )
             context_ok = False
 
+        pcs = _voice_pitch_classes(result, beat)
+        matched_quality: SecondaryLeadingToneSeventhQuality | None = None
         expected: tuple[int, int, int, int] | None = None
         if target in supported:
+            for quality, candidate_pcs in secondary_leading_tone_seventh_pitch_class_variants(
+                key,
+                target,
+            ):
+                try:
+                    support = secondary_leading_tone_seventh_support_degree(
+                        key,
+                        target,
+                        spec.progression_graph,
+                        quality,
+                    )
+                except ValueError:
+                    continue
+                if result.chord_degrees[beat] != support:
+                    continue
+                if set(pcs) == set(candidate_pcs) and len(set(pcs)) == 4:
+                    matched_quality = quality
+                    expected = candidate_pcs
+                    break
+
+            if matched_quality is None:
+                root, third, fifth = secondary_leading_tone_triad_pitch_classes(key, target)
+                raw_half = (root, third, fifth, (root + 10) % 12)
+                if (
+                    set(pcs) == set(raw_half)
+                    and SecondaryLeadingToneSeventhQuality.HALF_DIMINISHED
+                    not in secondary_leading_tone_seventh_qualities(key, target)
+                ):
+                    issues.append(
+                        (
+                            "CM055",
+                            f"Beat {beat}: half-diminished quality is not eligible for minor "
+                            f"target {target} in {key}",
+                        )
+                    )
+                    context_ok = False
+
+        if matched_quality is None or expected is None:
+            issues.append(
+                (
+                    "CM056",
+                    f"Beat {beat}: secondary leading-tone seventh is not an exact certified "
+                    "fully- or half-diminished target-derived sonority",
+                )
+            )
+        else:
             support = secondary_leading_tone_seventh_support_degree(
                 key,
                 target,
                 spec.progression_graph,
+                matched_quality,
             )
             if result.chord_degrees[beat] != support:
                 issues.append(
@@ -894,24 +1134,18 @@ def secondary_leading_tone_seventh_satb_verification_issues(
                     )
                 )
                 context_ok = False
-            expected = secondary_leading_tone_seventh_pitch_classes(key, target)
 
-        pcs = _voice_pitch_classes(result, beat)
-        realization_ok = expected is not None and set(pcs) == set(expected) and len(set(pcs)) == 4
-        if not realization_ok:
-            issues.append(
-                (
-                    "CM056",
-                    f"Beat {beat}: secondary leading-tone seventh is not the complete fully "
-                    "diminished seventh",
-                )
-            )
         inversion = result.chord_inversions[beat]
-        inversion_ok = 0 <= inversion <= 2
+        inversion_ok = 0 <= inversion <= 3
         if not inversion_ok:
-            issues.append(
-                ("CM056", f"Beat {beat}: secondary seventh inversion is outside 0..2")
-            )
+            if not any(
+                rule_id == "CM056"
+                and message == f"Beat {beat}: secondary seventh inversion is outside 0..3"
+                for rule_id, message in issues
+            ):
+                issues.append(
+                    ("CM056", f"Beat {beat}: secondary seventh inversion is outside 0..3")
+                )
         elif expected is not None and result.bass[beat] % 12 != expected[inversion]:
             issues.append(
                 (
@@ -921,6 +1155,7 @@ def secondary_leading_tone_seventh_satb_verification_issues(
             )
             inversion_ok = False
 
+        realization_ok = matched_quality is not None and expected is not None
         if context_ok and realization_ok and inversion_ok:
             exact_secondary_count += 1
 
@@ -945,9 +1180,15 @@ def secondary_leading_tone_seventh_satb_verification_issues(
         if result.modal_sources and result.modal_sources[beat + 1] is not None:
             issues.append(("CM057", f"Beat {beat}: target chord must be unborrowed"))
 
-        if expected is None:
+        if expected is None or matched_quality is None:
             continue
-        root, _third, diminished_fifth, diminished_seventh = expected
+        root, _third, diminished_fifth, chordal_seventh = expected
+        fifth_delta = -1 if key.triad_quality(target) == "major" else -2
+        seventh_delta = (
+            -1
+            if matched_quality is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
+            else -2
+        )
         for label, voice in voices:
             if voice[beat] % 12 == root and voice[beat + 1] != voice[beat] + 1:
                 issues.append(
@@ -957,26 +1198,28 @@ def secondary_leading_tone_seventh_satb_verification_issues(
                         "semitone",
                     )
                 )
-            if voice[beat] % 12 == diminished_fifth:
-                delta = voice[beat + 1] - voice[beat]
-                if delta not in {-1, -2}:
-                    issues.append(
-                        (
-                            "CM057",
-                            f"{label} beat {beat}: diminished fifth does not resolve downward "
-                            "by step",
-                        )
+            if (
+                voice[beat] % 12 == diminished_fifth
+                and voice[beat + 1] - voice[beat] != fifth_delta
+            ):
+                issues.append(
+                    (
+                        "CM057",
+                        f"{label} beat {beat}: diminished fifth does not resolve by its exact "
+                        "target-dependent downward step",
                     )
-            if voice[beat] % 12 == diminished_seventh:
-                delta = voice[beat + 1] - voice[beat]
-                if delta not in {-1, -2}:
-                    issues.append(
-                        (
-                            "CM057",
-                            f"{label} beat {beat}: chordal diminished seventh does not resolve "
-                            "downward by step",
-                        )
+                )
+            if (
+                voice[beat] % 12 == chordal_seventh
+                and voice[beat + 1] - voice[beat] != seventh_delta
+            ):
+                issues.append(
+                    (
+                        "CM057",
+                        f"{label} beat {beat}: chordal seventh does not resolve by its exact "
+                        "quality-dependent downward step",
                     )
+                )
 
     if exact_secondary_count < spec.minimum_secondary_leading_tone_seventh_chords:
         issues.append(

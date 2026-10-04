@@ -4,7 +4,7 @@
 
 Constraint Music treats composition as a verifiable constraint problem. A YAML specification is compiled into an OR-Tools CP-SAT model; the solver produces melody, rhythm, bass, harmonic identity, and a solver-native SATB realization; a separate application-level verifier reconstructs the declared musical semantics from ordinary serialized values; only verified results are exported.
 
-> Current release line: **2.11.0a1** — verified fully diminished secondary leading-tone seventh chords with active-key reconstruction and independent tendency-tone semantics.
+> Current release line: **2.12.0a1** — complete verifier-certified secondary leading-tone seventh support within the declared common-practice tonicization domain, including eligible fully diminished and half-diminished qualities and all four inversions.
 
 ## Pipeline
 
@@ -14,7 +14,7 @@ YAML GenerationSpec
       v
 pitch + rhythm + phrase grammar
       |
-      +--> chord degree / support degree
+      +--> chord degree / deterministic support degree
       +--> harmonic form + inversion
       +--> nullable local target identity
       +--> nullable modal source
@@ -53,6 +53,7 @@ A solver status of `OPTIMAL` or `FEASIBLE` is never sufficient. Solver/verifier 
 - **v2.9** — source-aware borrowed seventh chords.
 - **v2.10** — target-derived secondary leading-tone triads.
 - **v2.11** — fully diminished secondary leading-tone sevenths with exact functional disambiguation.
+- **v2.12** — complete secondary leading-tone seventh certification: eligible `°7`/`ø7` qualities, all four inversions, exact quality-specific tendency behavior, and scoped chromatic outer-voice support.
 
 ## Harmonic identity stays decomposed
 
@@ -65,15 +66,15 @@ Constraint Music deliberately avoids a single opaque Roman-numeral field. Each b
 - `key_context` — persistent active local-key sequence / modulation identity;
 - `voicing` — SATB realization.
 
-The global key is immutable for the artifact. Persistent modulation changes active-key interpretation without rewriting that global key.
+The artifact-global key remains immutable. Persistent modulation changes active-key interpretation without rewriting that global key.
 
-A non-null local target is therefore interpreted together with harmonic form and reconstructed pitch identity:
+A non-null local target is interpreted together with harmonic form and independently reconstructed pitch identity:
 
 - target + triad under the v2.10 feature => secondary leading-tone triad;
-- target + seventh whose active-key pitch/support identity reconstructs exactly as `V7/x` => applied dominant;
-- target + seventh whose active-key pitch/support identity reconstructs exactly as the v2.11 fully diminished set => secondary leading-tone seventh.
+- target + seventh reconstructing exactly as active-key `V7/x` => applied dominant;
+- target + seventh reconstructing as an eligible target-derived `vii°7/x` or `viiø7/x` form => secondary leading-tone seventh.
 
-No opaque secondary-chord-name state axis is serialized.
+No opaque secondary-function or quality field is required as the artifact source of truth.
 
 ## Expanded harmony and applied dominants
 
@@ -102,38 +103,34 @@ modal_mixture_enabled: true
 minimum_borrowed_chords: 1
 ```
 
-Major active keys use parallel natural minor as their canonical source; minor active keys use parallel major. v2.9 adds a deliberately filtered subset of source-derived borrowed sevenths when expanded harmony is also enabled. Borrowing remains independent from local-target identity and from persistent key context.
+Major active keys use parallel natural minor as their canonical source; minor active keys use parallel major. v2.9 adds a deliberately filtered subset of source-derived borrowed sevenths when expanded harmony is also enabled. Borrowing remains independent from local-target identity and persistent key context.
 
 See [Modal Mixture](docs/MODAL_MIXTURE.md) and [Borrowed Seventh Chords](docs/BORROWED_SEVENTHS.md).
 
 ## Persistent local key and controlled modulation
 
-v2.8 distinguishes persistent modulation from one-chord local target events. Its conservative certified model supports one same-mode modulation to the dominant key with:
+v2.8 distinguishes persistent modulation from one-chord local-target events. Its conservative certified model supports one same-mode modulation to the dominant key with:
 
 - an explicit destination key and boundary;
 - source I as a common-chord pivot reinterpreted as destination IV;
 - persistent destination-key interpretation after the boundary;
 - destination V-I confirmation;
-- one serialized active key context per beat.
+- one serialized active-key context per beat.
 
 The strict v2.8.0a2 repair keeps exact active-key pitch admission and destination leading-tone resolution through the final cadence.
 
-## v2.10: secondary leading-tone triads
+## Secondary leading-tone triads
 
 ```yaml
 secondary_leading_tone_enabled: true
 minimum_secondary_leading_tone_chords: 1
 ```
 
-v2.10 derives `vii°/x` from the exact active local key and explicit non-tonic target. The chromatic diminished root is not forged into a fake diatonic degree; instead, a deterministic support degree preserves CM005/CM006/CM007 while target + voicing reconstruct the actual sonority.
-
-Certified triads require complete diminished-triad realization, exact tendency-tone multiplicities, root/first/second inversion agreement, immediate resolution to the declared unaltered triadic target, local leading tone up by semitone, and diminished fifth down by step.
+v2.10 derives `vii°/x` from the exact active local key and explicit non-tonic target. The chromatic diminished root is not forged into a fake diatonic degree; instead, a deterministic support degree preserves progression semantics while target + voicing reconstruct the actual sonority.
 
 See [Secondary Leading-Tone Triads](docs/SECONDARY_LEADING_TONE.md).
 
-## v2.11: secondary leading-tone sevenths
-
-v2.11 is a separate additive opt-in extension:
+## v2.12: complete secondary leading-tone sevenths
 
 ```yaml
 harmony_vocabulary: triads+sevenths
@@ -141,25 +138,43 @@ secondary_leading_tone_seventh_enabled: true
 minimum_secondary_leading_tone_seventh_chords: 1
 ```
 
-The certified v2.11 quality policy is intentionally narrow:
+For a **major local target**, the certified family is:
 
-- **fully diminished seventh only** (`vii°7/x` family);
-- half-diminished secondary leading-tone sevenths are not certified;
-- root, first, and second inversions only (`7`, `65`, `43`);
-- third inversion remains deferred;
-- four target-derived pitch classes must appear exactly once;
-- the chord resolves immediately to its declared untargeted, unborrowed triadic target;
-- local leading tone rises by semitone;
-- diminished fifth and chordal diminished seventh descend by one or two semitones;
-- modal-source overlap is forbidden;
-- certified modulation pivots and cadence anchors are protected;
-- post-modulation reconstruction uses the persistent destination active key, never stale global-key context.
+```text
+vii°7/x   vii°65/x   vii°43/x   vii°42/x
+viiø7/x   viiø65/x   viiø43/x   viiø42/x
+```
 
-See [Secondary Leading-Tone Seventh Chords](docs/SECONDARY_LEADING_TONE_SEVENTHS.md).
+For a **minor local target**, the certified family is:
+
+```text
+vii°7/x   vii°65/x   vii°43/x   vii°42/x
+```
+
+Diminished and augmented target triads are not treated as local tonics by this subsystem.
+
+Certification requires:
+
+- exact target-derived four-tone pitch content, each pitch class once;
+- independent reconstruction of fully diminished vs. eligible half-diminished quality;
+- root, first, second, or third inversion with actual bass/inversion agreement;
+- inversion `3` only on a beat independently reconstructed as a secondary leading-tone seventh;
+- immediate resolution to the declared untargeted, unborrowed triadic target;
+- local leading tone/root `+1` semitone;
+- diminished fifth `-1` for a major target and `-2` for a minor target;
+- fully diminished chordal seventh `-1` semitone;
+- half-diminished chordal seventh `-2` semitones;
+- the same rules in every SATB voice, including the bass of a genuine `42`;
+- no modal-source overlap and no contamination of certified cadence/modulation anchors;
+- post-modulation reconstruction against the persistent destination active key, never the stale global key.
+
+The chromatic outer-voice expansion needed for genuine third inversion is routed only when this feature is enabled. Ordinary harmony retains the earlier domain and inversion contract.
+
+See [Secondary Leading-Tone Seventh Chords](docs/SECONDARY_LEADING_TONE_SEVENTHS.md) and [v2.12 Release Notes](docs/V2_12_RELEASE_NOTES.md).
 
 ## Hard-constraint contract
 
-v2.11 exposes **57 stable hard-rule IDs**:
+v2.12 exposes **57 stable hard-rule IDs**:
 
 - `CM001–CM021` — tonal, rhythmic, motif, and articulation rules;
 - `CM022–CM026` — phrase structure;
@@ -170,7 +185,7 @@ v2.11 exposes **57 stable hard-rule IDs**:
 - `CM043–CM048` — persistent key context and controlled modulation;
 - `CM049–CM051` — borrowed-seventh eligibility, realization, and tendencies;
 - `CM052–CM054` — secondary leading-tone triad context, realization, and resolution;
-- `CM055–CM057` — secondary leading-tone seventh context/quality, four-tone realization/inversion, and target/tendency resolution.
+- `CM055–CM057` — complete secondary leading-tone seventh context/quality, four-tone realization/inversion, and exact target/tendency resolution.
 
 Search/ranking semantics cannot waive a hard rule.
 
@@ -203,7 +218,7 @@ constraint-music generate examples/secondary_leading_tone_sevenths.yaml \
 constraint-music verify build/composition.json
 ```
 
-The verifier rechecks the musical contract plus artifact schema, contract digest, semantic composition digest, full artifact-content digest, and objective-vector metadata. Current package version is `2.11.0a1`; artifact and constraint-contract versions are `2.11`.
+The verifier rechecks the musical contract plus artifact schema, contract digest, semantic composition digest, full artifact-content digest, and objective-vector metadata. Current package version is `2.12.0a1`; artifact and constraint-contract versions are `2.12`.
 
 Older payloads remain loadable without inventing newer semantic metadata when the corresponding feature is disabled. `--allow-legacy` remains available for intentional inspection of older provenance versions.
 
@@ -222,12 +237,12 @@ pytest --cov=constraint_music --cov-report=term-missing
 python -m build
 ```
 
-GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**. The v2.11 implementation baseline is **139 tests passing**, **81% branch-aware coverage**, and strict mypy clean across **26 source files**.
+GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**. The v2.12 pre-merge baseline is **147 tests passing**, **80% branch-aware coverage**, strict mypy clean across **27 source files**, and successful package builds on all three interpreters.
 
 ## Scope boundary
 
 Independent verification is an application-level separation of trust, not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates conformance to the declared executable contract; it does not prove aesthetic quality or complete historical-style authenticity.
 
-v2.11 deliberately does not certify half-diminished secondary leading-tone sevenths, third-inversion sevenths, arbitrary modulation chains, distant/enharmonic modulation, broad enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, unrestricted chromatic-harmony inference, free key-center inference, or probabilistic harmony certification.
+v2.12 completes the secondary leading-tone seventh family claimed by this subsystem. Separate future domains include arbitrary modulation chains, distant/enharmonic modulation, broad enharmonic reinterpretation, augmented-sixth/Neapolitan reinterpretation, unrestricted chromatic-harmony inference, free key-center inference, and probabilistic harmony certification.
 
 See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [History](docs/HISTORY.md), [Roadmap](docs/ROADMAP.md), and [Changelog](CHANGELOG.md).

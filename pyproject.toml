@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "constraint-music"
-version = "2.11.0a1"
+version = "2.12.0a1"
 description = "Deterministic constraint-programming music synthesis with independent verification"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -45,6 +45,9 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/constraint_music/secondary_leading_tone_seventh_runtime.py" = ["SIM102"]
 
 [tool.mypy]
 strict = true
