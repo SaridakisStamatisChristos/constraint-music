@@ -12,10 +12,12 @@
 - Preserved immediate resolution to the declared untargeted, unborrowed triadic target, modal-source disjointness, protected cadence/modulation anchors, and persistent destination-key interpretation after modulation.
 - Preserved exact applied-dominant classification and minimum counting when applied dominants and secondary leading-tone sevenths coexist.
 - Strengthened CM002/CM003/CM005/CM006 only on independently reconstructed secondary-seventh beats; ordinary feature-disabled paths retain their previous domain/verification behavior.
+- Removed v2.11's two-tone diatonic-overlap gate from the secondary-seventh support bridge: progression compatibility remains structural, while exact active-key target/quality/pitch reconstruction certifies musical identity. The v2.10 triad path keeps its historical overlap policy.
+- Added exhaustive all-key coverage across 12 chromatic tonics × major/minor modes, every progression-reachable eligible target, every certified quality, and all four inversions, including a regression for the formerly excluded `vii°7/iii` in C major.
 - Kept the stable hard-rule range `CM001–CM057` while strengthening CM055–CM057 for complete quality/inversion certification.
 - Versioned package to `2.12.0a1` and artifact/constraint-contract schema to `2.12`.
 - Expanded adversarial coverage across both qualities × all four inversions, inversion-scope leakage, missing/duplicated tones, exact tendency errors, applied-count confusion, modal overlap, cadence contamination, provenance tampering, destination-key reconstruction, and stale-key forgery.
-- Validation baseline: 147 tests passing, 80% branch-aware coverage, strict mypy clean across 27 source files, and successful Ruff/mypy/pytest/build gates on Python 3.11, 3.12, and 3.13.
+- Validation baseline: 197 tests passing, 80% branch-aware coverage, strict mypy clean across 27 source files, and successful Ruff/mypy/pytest/build gates on Python 3.11, 3.12, and 3.13.
 
 ## 2.11.0a1 — verified secondary leading-tone seventh chords
 
