@@ -98,14 +98,14 @@
 - [x] Keep borrowing and tonicization mutually exclusive on the same beat.
 - [x] Exclude certified modulation pivot and destination-cadence anchors.
 - [x] Reconstruct post-modulation borrowing from the destination active key, never stale global context.
-- [x] Preserve orthogonal `modal_source`, `harmonic_form`, and `key_context` search identities.
+- [x] Preserve orthogonal `modal_source`, `harmonic_form`, and `key_context` identities.
 - [x] Extend the hard contract additively with CM049–CM051 and schema/contract 2.9.
 - [x] Add hostile solver/verifier/provenance/cross-feature tests.
 
-## v2.10 verified secondary leading-tone chords
+## v2.10 verified secondary leading-tone triads
 
 - [x] Add explicit opt-in secondary leading-tone harmony without a new opaque chord identity axis.
-- [x] Reuse local target identity and disambiguate applied dominants vs. leading-tone chords by harmonic form.
+- [x] Reuse local target identity for target-bearing triads.
 - [x] Derive diminished triads from the exact active local key and declared non-tonic target.
 - [x] Preserve CM005/CM006/CM007 through a deterministic active-key support degree instead of forging a diatonic chromatic root.
 - [x] Require complete diminished-triad realization with tendency tones undoubled and the stable third doubled.
@@ -117,9 +117,26 @@
 - [x] Extend the hard contract additively with CM052–CM054 and schema/contract 2.10.
 - [x] Add hostile solver/verifier/provenance/post-modulation tests.
 
+## v2.11 verified secondary leading-tone seventh chords
+
+- [x] Add a separate opt-in seventh feature so v2.10 triad specifications retain their prior feasible set.
+- [x] Certify fully diminished `vii°7/x` only; keep half-diminished forms outside the v2.11 contract.
+- [x] Preserve root, first, and second inversion only; keep third inversion deferred.
+- [x] Derive all four pitch classes from the exact active local key and declared target.
+- [x] Reuse the support-degree bridge without forging the chromatic diminished root into a diatonic degree.
+- [x] Distinguish applied `V7/x` from `vii°7/x` by exact active-key pitch/support identity rather than an opaque serialized function flag.
+- [x] Ensure `minimum_applied_dominants` counts only exact applied dominants.
+- [x] Require complete four-tone realization with no duplicated unstable tone.
+- [x] Require immediate resolution to the declared untargeted, unborrowed triadic target.
+- [x] Require local leading tone up by semitone, diminished fifth down by step, and chordal diminished seventh down by step.
+- [x] Exclude modal-source overlap and protected modulation/cadence anchors.
+- [x] Reconstruct post-modulation secondary sevenths from the persistent destination active key.
+- [x] Extend the hard contract additively with CM055–CM057 and schema/contract 2.11.
+- [x] Add hostile tests for quality, pitch, inversion, tendency, classification, provenance, anchor contamination, and stale-key forgery.
+
 ## Later harmonic expansion
 
-- [ ] Secondary leading-tone seventh chords only after an explicit seventh-form/tendency contract revision.
+- [ ] Half-diminished secondary leading-tone sevenths only after an explicit quality/source policy revision.
 - [ ] Third-inversion seventh support only after an explicit outer-voice compatibility revision.
 - [ ] Richer voice-leading policy where justified by an explicit contract version.
 - [ ] Multi-modulation chains only after single-modulation invariants remain stable.

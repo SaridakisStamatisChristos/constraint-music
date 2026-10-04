@@ -10,8 +10,12 @@ from .satb import SatbGenerationResult
 from .search import dominates, pareto_indices
 from .secondary_leading_tone import (
     secondary_leading_tone_name,
+    secondary_leading_tone_seventh_name,
+    secondary_leading_tone_seventh_pitch_classes,
+    secondary_leading_tone_seventh_support_degree,
     secondary_leading_tone_support_degree,
     secondary_leading_tone_triad_pitch_classes,
+    supported_secondary_leading_tone_seventh_targets,
     supported_secondary_leading_tone_targets,
 )
 from .solver import ConstraintMusicSolver, InternalVerificationError, NoSolutionError
@@ -36,10 +40,14 @@ __all__ = [
     "evaluate_objective_vector",
     "pareto_indices",
     "secondary_leading_tone_name",
+    "secondary_leading_tone_seventh_name",
+    "secondary_leading_tone_seventh_pitch_classes",
+    "secondary_leading_tone_seventh_support_degree",
     "secondary_leading_tone_support_degree",
     "secondary_leading_tone_triad_pitch_classes",
+    "supported_secondary_leading_tone_seventh_targets",
     "supported_secondary_leading_tone_targets",
     "verify_result",
 ]
 
-__version__ = "2.10.0a1"
+__version__ = "2.11.0a1"

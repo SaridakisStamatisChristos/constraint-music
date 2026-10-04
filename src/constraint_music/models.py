@@ -12,7 +12,10 @@ import yaml
 from .modal_mixture import supported_borrowed_degrees
 from .modulation import dominant_key
 from .phrase import PhraseSpec, normalize_phrases, phrase_by_id
-from .secondary_leading_tone import supported_secondary_leading_tone_targets
+from .secondary_leading_tone import (
+    supported_secondary_leading_tone_seventh_targets,
+    supported_secondary_leading_tone_targets,
+)
 from .theory import DEFAULT_PROGRESSION_GRAPH_ROWS, Key, Mode, midi_note_name
 
 
@@ -73,10 +76,16 @@ class GenerationSpec:
     modal_mixture_enabled: bool = False
     minimum_borrowed_chords: int = 0
 
-    # v2.10 adds a distinct chromatic function that reuses tonicization target identity while
+    # v2.10 adds a distinct chromatic function that reuses local target identity while
     # preserving the legacy outer-voice/progression contract through a verified support degree.
     secondary_leading_tone_enabled: bool = False
     minimum_secondary_leading_tone_chords: int = 0
+
+    # v2.11 extends the same decomposed identity model with fully diminished secondary
+    # leading-tone sevenths. This is a separate opt-in so v2.10 triad specifications retain
+    # their exact feasible set. Half-diminished quality and third inversion remain deferred.
+    secondary_leading_tone_seventh_enabled: bool = False
+    minimum_secondary_leading_tone_seventh_chords: int = 0
 
     # v2.8 adds one explicit, persistent same-mode modulation to the dominant key.
     modulation_enabled: bool = False
@@ -343,6 +352,34 @@ class GenerationSpec:
                 "preserved closure/context anchors"
             )
 
+        _between(
+            "minimum_secondary_leading_tone_seventh_chords",
+            self.minimum_secondary_leading_tone_seventh_chords,
+            0,
+            self.total_beats,
+        )
+        if self.secondary_leading_tone_seventh_enabled and not self.expanded_harmony_enabled:
+            raise ValueError(
+                "secondary_leading_tone_seventh_enabled requires "
+                "harmony_vocabulary='triads+sevenths'"
+            )
+        if (
+            not self.secondary_leading_tone_seventh_enabled
+            and self.minimum_secondary_leading_tone_seventh_chords != 0
+        ):
+            raise ValueError(
+                "minimum_secondary_leading_tone_seventh_chords requires "
+                "secondary_leading_tone_seventh_enabled=true"
+            )
+        if (
+            self.secondary_leading_tone_seventh_enabled
+            and self.minimum_secondary_leading_tone_seventh_chords > maximum_secondary
+        ):
+            raise ValueError(
+                "minimum_secondary_leading_tone_seventh_chords exceeds beats available outside "
+                "preserved closure/context anchors"
+            )
+
         _ = self.tonal_key
         if self.tonicization_enabled:
             for context_key in self.context_keys:
@@ -367,6 +404,16 @@ class GenerationSpec:
                     raise ValueError(
                         f"Key context {context_key} has no secondary leading-tone targets "
                         "compatible with CM005/CM006 and progression_graph"
+                    )
+        if self.secondary_leading_tone_seventh_enabled:
+            for context_key in self.context_keys:
+                if not supported_secondary_leading_tone_seventh_targets(
+                    context_key,
+                    self.progression_graph,
+                ):
+                    raise ValueError(
+                        f"Key context {context_key} has no secondary leading-tone seventh "
+                        "targets compatible with CM005/CM006 and progression_graph"
                     )
         if len(self.tonal_key.pitches_in_range(self.melody_low, self.melody_high)) < 8:
             raise ValueError("Melody range is too narrow for the selected key")

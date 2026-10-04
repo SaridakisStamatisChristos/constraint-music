@@ -32,6 +32,9 @@ from .search import (
     scalarization_profiles,
 )
 from .secondary_leading_tone_runtime import add_secondary_leading_tone_satb_constraints
+from .secondary_leading_tone_seventh_runtime import (
+    add_secondary_leading_tone_seventh_satb_constraints,
+)
 from .theory import NO_TONICIZATION_TARGET, ChordKind
 from .verifier import verify_result
 
@@ -253,7 +256,15 @@ class ConstraintMusicSolver:
         add_voice_leading_constraints(
             model, spec, melody_note, bass_note, melody_domain, bass_domain
         )
-        if spec.secondary_leading_tone_enabled:
+        if spec.secondary_leading_tone_seventh_enabled:
+            satb = add_secondary_leading_tone_seventh_satb_constraints(
+                model,
+                spec,
+                chord,
+                melody_note,
+                bass_note,
+            )
+        elif spec.secondary_leading_tone_enabled:
             satb = add_secondary_leading_tone_satb_constraints(
                 model, spec, chord, melody_note, bass_note
             )
