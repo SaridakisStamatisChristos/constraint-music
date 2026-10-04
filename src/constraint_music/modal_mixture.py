@@ -121,6 +121,8 @@ def supported_borrowed_seventh_degrees(key: Key) -> tuple[int, ...]:
 
     A source-derived seventh is admitted only when:
     - it is genuinely different from the active-key seventh,
+    - it is not functional degree V, whose source-null seventh identity retains the historical
+      CM036 active-dominant semantics rather than being reinterpreted in v2.9,
     - its complete four-tone realization still leaves two distinct tones available to the
       unchanged CM005/CM006 outer-voice triadic core,
     - its chordal seventh matches the already-certified active-key seventh pitch class, so the
@@ -131,6 +133,8 @@ def supported_borrowed_seventh_degrees(key: Key) -> tuple[int, ...]:
     source_leading = modal_source_leading_tone_pc(key, source)
     supported: list[int] = []
     for degree in range(7):
+        if degree == 4:
+            continue
         borrowed = borrowed_seventh_pitch_classes(key, degree, source)
         active_seventh = key.seventh_pitch_classes(degree)
         if set(borrowed) == set(active_seventh):
