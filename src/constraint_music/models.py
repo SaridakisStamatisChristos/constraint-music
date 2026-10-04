@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from .modal_mixture import supported_borrowed_degrees
+from .modulation import dominant_key
 from .phrase import PhraseSpec, normalize_phrases, phrase_by_id
 from .theory import DEFAULT_PROGRESSION_GRAPH_ROWS, Key, Mode, midi_note_name
 
@@ -71,6 +72,11 @@ class GenerationSpec:
     modal_mixture_enabled: bool = False
     minimum_borrowed_chords: int = 0
 
+    # v2.8 adds one explicit, persistent same-mode modulation to the dominant key.
+    modulation_enabled: bool = False
+    modulation_destination_key: str | None = None
+    modulation_boundary_beat: int | None = None
+
     rhythm_enabled: bool = False
     min_onsets_per_bar: int = 1
     max_onsets_per_bar: int = 16
@@ -103,6 +109,9 @@ class GenerationSpec:
         object.__setattr__(
             self, "harmony_vocabulary", str(self.harmony_vocabulary).strip().lower()
         )
+        if self.modulation_destination_key is not None:
+            destination = Key(str(self.modulation_destination_key), self.mode)
+            object.__setattr__(self, "modulation_destination_key", destination.tonic)
         object.__setattr__(self, "motif_relation", str(self.motif_relation).strip().lower())
         object.__setattr__(self, "phrases", normalize_phrases(self.phrases))
         self.validate()
@@ -126,6 +135,38 @@ class GenerationSpec:
     @property
     def expanded_harmony_enabled(self) -> bool:
         return self.harmony_vocabulary == "triads+sevenths"
+
+    @property
+    def modulation_destination(self) -> Key | None:
+        if not self.modulation_enabled or self.modulation_destination_key is None:
+            return None
+        return Key(self.modulation_destination_key, self.mode)
+
+    def active_key_at_beat(self, beat: int) -> Key:
+        if not 0 <= beat < self.total_beats:
+            raise IndexError(f"Beat {beat} is outside 0..{self.total_beats - 1}")
+        boundary = self.modulation_boundary_beat
+        destination = self.modulation_destination
+        if (
+            not self.modulation_enabled
+            or boundary is None
+            or destination is None
+            or beat < boundary
+        ):
+            return self.tonal_key
+        return destination
+
+    @property
+    def expected_key_contexts(self) -> tuple[Key, ...]:
+        return tuple(self.active_key_at_beat(beat) for beat in range(self.total_beats))
+
+    @property
+    def context_keys(self) -> tuple[Key, ...]:
+        keys = [self.tonal_key]
+        destination = self.modulation_destination
+        if destination is not None and destination not in keys:
+            keys.append(destination)
+        return tuple(keys)
 
     @property
     def progression_pairs(self) -> tuple[tuple[int, int], ...]:
@@ -175,6 +216,41 @@ class GenerationSpec:
             raise ValueError("Authentic cadence requires progression_graph to allow 4->0 or 6->0")
         if self.harmony_vocabulary not in {"triads", "triads+sevenths"}:
             raise ValueError("harmony_vocabulary must be 'triads' or 'triads+sevenths'")
+
+        if self.modulation_enabled:
+            if self.require_authentic_cadence:
+                raise ValueError(
+                    "modulation_enabled requires require_authentic_cadence=false because CM016 "
+                    "remains the legacy global-key closure rule"
+                )
+            if self.total_beats < 4:
+                raise ValueError("modulation requires at least four beats")
+            destination = self.modulation_destination
+            boundary = self.modulation_boundary_beat
+            if destination is None:
+                raise ValueError("modulation_enabled requires modulation_destination_key")
+            if boundary is None:
+                raise ValueError("modulation_enabled requires modulation_boundary_beat")
+            expected = dominant_key(self.tonal_key)
+            if destination != expected:
+                raise ValueError(
+                    "v2.8 modulation_destination_key must be the same-mode dominant key "
+                    f"{expected.tonic}"
+                )
+            _between("modulation_boundary_beat", boundary, 2, self.total_beats - 2)
+            if self.phrases:
+                raise ValueError(
+                    "v2.8 modulation does not yet compose with explicit phrase grammar; "
+                    "leave phrases empty"
+                )
+        elif (
+            self.modulation_destination_key is not None
+            or self.modulation_boundary_beat is not None
+        ):
+            raise ValueError(
+                "modulation destination/boundary require modulation_enabled=true"
+            )
+
         _between("minimum_seventh_chords", self.minimum_seventh_chords, 0, self.total_beats)
         if not self.expanded_harmony_enabled and self.minimum_seventh_chords != 0:
             raise ValueError(
@@ -196,10 +272,12 @@ class GenerationSpec:
         )
         if not self.tonicization_enabled and self.minimum_applied_dominants != 0:
             raise ValueError("minimum_applied_dominants requires tonicization_enabled=true")
-        if self.tonicization_enabled and self.minimum_applied_dominants > self.total_beats - 1:
+        reserved_applied = 4 if self.modulation_enabled else 1
+        maximum_applied = max(0, self.total_beats - reserved_applied)
+        if self.tonicization_enabled and self.minimum_applied_dominants > maximum_applied:
             raise ValueError(
-                "minimum_applied_dominants cannot include the final beat because tonicizations "
-                "must resolve"
+                "minimum_applied_dominants exceeds beats available outside required "
+                "closure/context anchors"
             )
 
         _between(
@@ -210,25 +288,31 @@ class GenerationSpec:
         )
         if not self.modal_mixture_enabled and self.minimum_borrowed_chords != 0:
             raise ValueError("minimum_borrowed_chords requires modal_mixture_enabled=true")
-        reserved_cadence_beats = 2 if self.require_authentic_cadence else 1
+        reserved_cadence_beats = (
+            4 if self.modulation_enabled else (2 if self.require_authentic_cadence else 1)
+        )
         maximum_borrowed = max(0, self.total_beats - reserved_cadence_beats)
         if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:
             raise ValueError(
-                "minimum_borrowed_chords exceeds beats available outside the preserved global "
-                "cadential boundary"
+                "minimum_borrowed_chords exceeds beats available outside the preserved "
+                "cadential/context boundary"
             )
 
         _ = self.tonal_key
-        if self.tonicization_enabled and not self.tonal_key.applied_dominant_targets:
-            raise ValueError(
-                "The selected key has no applied-dominant targets compatible with the current "
-                "outer-voice contract"
-            )
-        if self.modal_mixture_enabled and not supported_borrowed_degrees(self.tonal_key):
-            raise ValueError(
-                "The selected key has no borrowed triads compatible with the current "
-                "outer-voice contract"
-            )
+        if self.tonicization_enabled:
+            for context_key in self.context_keys:
+                if not context_key.applied_dominant_targets:
+                    raise ValueError(
+                        f"Key context {context_key} has no applied-dominant targets compatible "
+                        "with the current outer-voice contract"
+                    )
+        if self.modal_mixture_enabled:
+            for context_key in self.context_keys:
+                if not supported_borrowed_degrees(context_key):
+                    raise ValueError(
+                        f"Key context {context_key} has no borrowed triads compatible with the "
+                        "current outer-voice contract"
+                    )
         if len(self.tonal_key.pitches_in_range(self.melody_low, self.melody_high)) < 8:
             raise ValueError("Melody range is too narrow for the selected key")
         if len(self.tonal_key.pitches_in_range(self.bass_low, self.bass_high)) < 5:
@@ -398,8 +482,10 @@ class GenerationResult:
 
     @property
     def chord_names(self) -> tuple[str, ...]:
-        key = self.spec.tonal_key
-        return tuple(key.chord_name(degree) for degree in self.chord_degrees)
+        return tuple(
+            self.spec.active_key_at_beat(beat).chord_name(degree)
+            for beat, degree in enumerate(self.chord_degrees)
+        )
 
     @property
     def melody_names(self) -> tuple[str, ...]:
