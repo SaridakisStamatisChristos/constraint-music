@@ -83,14 +83,20 @@ A malformed target-bearing chord therefore does not inherit a broad chromatic ex
 
 ## Support-degree compatibility bridge
 
-The chromatic functional root is not encoded as a fake diatonic degree. A deterministic support degree is chosen from the active key such that it:
+The chromatic functional root is not encoded as a fake diatonic degree. `chord_degrees` remains the structural axis used by the historical progression graph, so v2.12 assigns each secondary seventh a deterministic **support degree** that is separate from its reconstructed musical function.
 
-- is already allowed to progress to the target by the configured progression graph;
-- shares at least two pitch classes with the chromatic sonority;
-- maximizes pitch-class overlap;
-- breaks ties deterministically.
+For seventh chords the support degree:
 
-CM007 thus retains its historical progression-graph meaning while target metadata and exact SATB realization carry the chromatic function.
+- must already be allowed to progress to the declared target by the configured progression graph;
+- does **not** require a minimum pitch-class overlap with the chromatic sonority;
+- maximizes pitch-class overlap among all graph-compatible predecessors;
+- breaks ties by the lowest degree for deterministic output.
+
+The old v2.11 two-tone-overlap threshold existed only because CM005/CM006 forced both outer voices into a diatonic support triad. v2.12's exact reconstructed chord-member exception makes that workaround unnecessary. Removing it is important: otherwise legitimate secondary sevenths such as `vii°7/iii` in C major can be excluded for structural reasons unrelated to music theory.
+
+CM007 therefore retains its historical graph meaning while target metadata, quality reconstruction, inversion, and exact SATB realization carry the chromatic function. Under the default graph, every non-tonic major or minor target that is progression-reachable is eligible for its appropriate secondary-seventh family.
+
+The v2.10 secondary-leading-tone **triad** path deliberately keeps its historical overlap rule so the older feature's semantics are not silently rewritten.
 
 ## Realization — CM056
 
