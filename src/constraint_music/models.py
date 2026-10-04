@@ -243,9 +243,12 @@ class GenerationSpec:
                     "v2.8 modulation does not yet compose with explicit phrase grammar; "
                     "leave phrases empty"
                 )
-        elif self.modulation_destination_key is not None or self.modulation_boundary_beat is not None:
+        elif (
+            self.modulation_destination_key is not None
+            or self.modulation_boundary_beat is not None
+        ):
             raise ValueError(
-                "modulation_destination_key/modulation_boundary_beat require modulation_enabled=true"
+                "modulation destination/boundary require modulation_enabled=true"
             )
 
         _between("minimum_seventh_chords", self.minimum_seventh_chords, 0, self.total_beats)

@@ -31,8 +31,8 @@ from .satb import (
     _parallel_rows,
     _pitches_for_pitch_classes,
     _satb_chord_rows,
-    result_from_dict as legacy_result_from_dict,
 )
+from .satb import result_from_dict as legacy_result_from_dict
 from .theory import NO_TONICIZATION_TARGET, ChordKind, Key, Mode, is_parallel_perfect
 
 
@@ -578,7 +578,9 @@ def modulated_satb_verification_issues(
             triad = key.triad_pitch_classes(degree)
             root = triad[0]
             if set(pcs) != set(triad) or pcs.count(root) < 2:
-                issues.append(("CM030", f"Beat {beat}: active-key triad incomplete/root not doubled"))
+                issues.append(
+                    ("CM030", f"Beat {beat}: active-key triad incomplete/root not doubled")
+                )
             tones = triad
         else:
             seventh = key.seventh_pitch_classes(degree)
