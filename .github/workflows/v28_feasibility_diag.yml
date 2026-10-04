@@ -1,0 +1,57 @@
+name: v2.8 feasibility diagnostic
+
+on:
+  push:
+    branches: ["staging/v2.8-typefix"]
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -e ".[dev]"
+      - name: Probe modulation feasibility
+        run: |
+          python - <<'PY'
+          from constraint_music.models import GenerationSpec
+          from constraint_music.solver import ConstraintMusicSolver
+          from constraint_music.search import DEFAULT_OBJECTIVE_WEIGHTS, normalize_objective_weights
+          from ortools.sat.python import cp_model
+
+          FULL = tuple(tuple(range(7)) for _ in range(7))
+          common = dict(
+              bars=2, beats_per_bar=4, subdivisions_per_beat=1,
+              require_authentic_cadence=False,
+              modulation_enabled=True, modulation_destination_key="G",
+              modulation_boundary_beat=2, avoid_parallel_perfects=False,
+              workers=1, seed=2808, max_time_seconds=5,
+              tension_curve=(0.05,0.15,0.35,0.55,0.75,0.9,0.6,0.1),
+          )
+          variants = {
+              "base": {},
+              "no_leading_resolution": {"resolve_leading_tone": False},
+              "full_progression": {"progression_graph": FULL},
+              "wide_motion": {"max_melody_leap": 24, "max_bass_leap": 24, "max_repeated_notes": 8},
+              "relaxed_all": {"resolve_leading_tone": False, "progression_graph": FULL, "max_melody_leap": 24, "max_bass_leap": 24, "max_repeated_notes": 8},
+              "boundary3": {"modulation_boundary_beat": 3},
+              "boundary4": {"modulation_boundary_beat": 4},
+          }
+          weights = normalize_objective_weights(DEFAULT_OBJECTIVE_WEIGHTS)
+          engine = ConstraintMusicSolver()
+          for name, changes in variants.items():
+              spec = GenerationSpec(**(common | changes))
+              problem = engine._compile(spec, weights)
+              validation = problem.model.validate()
+              solver = cp_model.CpSolver()
+              solver.parameters.max_time_in_seconds = 5
+              solver.parameters.num_search_workers = 1
+              status = solver.solve(problem.model)
+              print(name, "model_validate=", repr(validation), "status=", solver.status_name(status))
+              if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+                  print(" chords=", [solver.value(v) for v in problem.chord])
+                  print(" melody=", [solver.value(v) for v in problem.melody_note])
+                  print(" bass=", [solver.value(v) for v in problem.bass_note])
+          PY
