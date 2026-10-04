@@ -7,6 +7,7 @@ import pytest
 
 from constraint_music.contract import HARD_CONSTRAINT_IDS
 from constraint_music.models import GenerationSpec, RhythmState
+from constraint_music.modulation_runtime import result_from_dict
 from constraint_music.provenance import artifact_payload, verify_artifact_integrity
 from constraint_music.satb import SatbGenerationResult
 from constraint_music.secondary_leading_tone import (
@@ -76,6 +77,7 @@ def _synthetic_vii7_v(
         minimum_secondary_leading_tone_seventh_chords=1,
         avoid_parallel_perfects=False,
         resolve_leading_tone=False,
+        bass_high=59,
         tension_curve=(0.8, 0.1),
     )
     key = spec.tonal_key
@@ -339,6 +341,7 @@ def test_secondary_seventh_target_identity_is_committed_by_provenance() -> None:
     target = payload["music"]["tonicization_targets"][beat]
     assert target is not None
     payload["music"]["tonicization_targets"][beat] = (int(target) + 1) % 7
-    issues = verify_artifact_integrity(result, payload)
+    tampered = result_from_dict(payload)
+    issues = verify_artifact_integrity(tampered, payload)
     assert "composition digest mismatch" in issues
     assert "artifact content digest mismatch" in issues
