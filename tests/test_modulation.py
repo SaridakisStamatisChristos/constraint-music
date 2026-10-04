@@ -64,7 +64,7 @@ def test_solver_emits_verified_persistent_destination_context() -> None:
     result = modulated_piece()
     assert result.validation.valid, result.validation.issues
     assert result.validation.checked_rules == HARD_CONSTRAINT_IDS
-    assert len(HARD_CONSTRAINT_IDS) == 54
+    assert len(HARD_CONSTRAINT_IDS) == 57
     assert result.key_contexts[:2] == (Key("C", Mode.MAJOR),) * 2
     assert result.key_contexts[2:] == (Key("G", Mode.MAJOR),) * 6
     assert result.chord_degrees[1] == 0
