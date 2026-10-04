@@ -12,6 +12,7 @@ import yaml
 from .modal_mixture import supported_borrowed_degrees
 from .modulation import dominant_key
 from .phrase import PhraseSpec, normalize_phrases, phrase_by_id
+from .secondary_leading_tone import supported_secondary_leading_tone_targets
 from .theory import DEFAULT_PROGRESSION_GRAPH_ROWS, Key, Mode, midi_note_name
 
 
@@ -71,6 +72,11 @@ class GenerationSpec:
     # triads carry explicit parallel-source identity while legacy outer-voice rules stay intact.
     modal_mixture_enabled: bool = False
     minimum_borrowed_chords: int = 0
+
+    # v2.10 adds a distinct chromatic function that reuses tonicization target identity while
+    # preserving the legacy outer-voice/progression contract through a verified support degree.
+    secondary_leading_tone_enabled: bool = False
+    minimum_secondary_leading_tone_chords: int = 0
 
     # v2.8 adds one explicit, persistent same-mode modulation to the dominant key.
     modulation_enabled: bool = False
@@ -313,6 +319,30 @@ class GenerationSpec:
                 "minimum_borrowed_chords exceeds beats available outside the " + boundary_name
             )
 
+        _between(
+            "minimum_secondary_leading_tone_chords",
+            self.minimum_secondary_leading_tone_chords,
+            0,
+            self.total_beats,
+        )
+        if (
+            not self.secondary_leading_tone_enabled
+            and self.minimum_secondary_leading_tone_chords != 0
+        ):
+            raise ValueError(
+                "minimum_secondary_leading_tone_chords requires "
+                "secondary_leading_tone_enabled=true"
+            )
+        maximum_secondary = max(0, self.total_beats - reserved_cadence_beats)
+        if (
+            self.secondary_leading_tone_enabled
+            and self.minimum_secondary_leading_tone_chords > maximum_secondary
+        ):
+            raise ValueError(
+                "minimum_secondary_leading_tone_chords exceeds beats available outside "
+                "preserved closure/context anchors"
+            )
+
         _ = self.tonal_key
         if self.tonicization_enabled:
             for context_key in self.context_keys:
@@ -327,6 +357,16 @@ class GenerationSpec:
                     raise ValueError(
                         f"Key context {context_key} has no borrowed triads compatible with the "
                         "current outer-voice contract"
+                    )
+        if self.secondary_leading_tone_enabled:
+            for context_key in self.context_keys:
+                if not supported_secondary_leading_tone_targets(
+                    context_key,
+                    self.progression_graph,
+                ):
+                    raise ValueError(
+                        f"Key context {context_key} has no secondary leading-tone targets "
+                        "compatible with CM005/CM006 and progression_graph"
                     )
         if len(self.tonal_key.pitches_in_range(self.melody_low, self.melody_high)) < 8:
             raise ValueError("Melody range is too narrow for the selected key")
