@@ -81,9 +81,9 @@ class GenerationSpec:
     secondary_leading_tone_enabled: bool = False
     minimum_secondary_leading_tone_chords: int = 0
 
-    # v2.11 extends the same decomposed identity model with fully diminished secondary
-    # leading-tone sevenths. This is a separate opt-in so v2.10 triad specifications retain
-    # their exact feasible set. Half-diminished quality and third inversion remain deferred.
+    # v2.12 completes the decomposed secondary-leading-tone seventh model with eligible fully
+    # diminished and half-diminished qualities plus all four seventh inversions. This remains a
+    # separate opt-in so v2.10 triad specifications retain their established feasible set.
     secondary_leading_tone_seventh_enabled: bool = False
     minimum_secondary_leading_tone_seventh_chords: int = 0
 
@@ -413,7 +413,7 @@ class GenerationSpec:
                 ):
                     raise ValueError(
                         f"Key context {context_key} has no secondary leading-tone seventh "
-                        "targets compatible with CM005/CM006 and progression_graph"
+                        "targets compatible with progression_graph and v2.12 quality policy"
                     )
         if len(self.tonal_key.pitches_in_range(self.melody_low, self.melody_high)) < 8:
             raise ValueError("Melody range is too narrow for the selected key")
