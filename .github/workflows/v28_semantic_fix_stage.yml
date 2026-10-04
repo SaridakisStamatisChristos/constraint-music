@@ -1,0 +1,133 @@
+name: Stage v2.8 active-key leading-tone fix
+
+on:
+  push:
+    branches: ["staging/v2.8-typefix"]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply solver/verifier symmetric fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          compiler = Path("src/constraint_music/compiler_tonal.py")
+          text = compiler.read_text()
+          old = '''    key = spec.tonal_key
+    allowed_pairs: list[tuple[int, int]] = []
+    for left_index, left_note in enumerate(melody_domain):
+        for right_index, right_note in enumerate(melody_domain):
+            leap = right_note - left_note
+            if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:
+                continue
+            if (
+                spec.resolve_leading_tone
+                and left_note % 12 == key.leading_tone_pc
+                and right_note != left_note + 1
+            ):
+                continue
+            allowed_pairs.append((left_index, right_index))
+    for left_var, right_var in pairwise(melody_choice):
+        model.add_allowed_assignments([left_var, right_var], allowed_pairs)
+'''
+          new = '''    key = spec.tonal_key
+    pair_rows_by_leading_pc: dict[int, list[tuple[int, int]]] = {}
+
+    def pair_rows(leading_tone_pc: int) -> list[tuple[int, int]]:
+        cached = pair_rows_by_leading_pc.get(leading_tone_pc)
+        if cached is not None:
+            return cached
+        rows: list[tuple[int, int]] = []
+        for left_index, left_note in enumerate(melody_domain):
+            for right_index, right_note in enumerate(melody_domain):
+                leap = right_note - left_note
+                if abs(leap) > spec.max_melody_leap or abs(leap) % 12 == 6:
+                    continue
+                if (
+                    spec.resolve_leading_tone
+                    and left_note % 12 == leading_tone_pc
+                    and right_note != left_note + 1
+                ):
+                    continue
+                rows.append((left_index, right_index))
+        pair_rows_by_leading_pc[leading_tone_pc] = rows
+        return rows
+
+    for step, (left_var, right_var) in enumerate(pairwise(melody_choice)):
+        active_key = (
+            spec.active_key_at_beat(step // spec.subdivisions_per_beat)
+            if spec.modulation_enabled
+            else key
+        )
+        model.add_allowed_assignments(
+            [left_var, right_var], pair_rows(active_key.leading_tone_pc)
+        )
+'''
+          if old not in text:
+              raise SystemExit("compiler melodic anchor missing")
+          compiler.write_text(text.replace(old, new, 1))
+
+          verifier = Path("src/constraint_music/verifier.py")
+          text = verifier.read_text()
+          old = '''        if spec.resolve_leading_tone and left % 12 == key.leading_tone_pc and right != left + 1:
+            fail("CM010", f"Melody step {step}: leading tone does not resolve upward to tonic")
+'''
+          new = '''        active_key = (
+            spec.active_key_at_beat(step // spec.subdivisions_per_beat)
+            if spec.modulation_enabled
+            else key
+        )
+        if (
+            spec.resolve_leading_tone
+            and left % 12 == active_key.leading_tone_pc
+            and right != left + 1
+        ):
+            fail("CM010", f"Melody step {step}: leading tone does not resolve upward to tonic")
+'''
+          if old not in text:
+              raise SystemExit("verifier CM010 anchor missing")
+          verifier.write_text(text.replace(old, new, 1))
+
+          models = Path("src/constraint_music/models.py")
+          text = models.read_text()
+          old = '''        if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:
+            raise ValueError(
+                "minimum_borrowed_chords exceeds beats available outside the preserved "
+                "cadential/context boundary"
+            )
+'''
+          new = '''        if self.modal_mixture_enabled and self.minimum_borrowed_chords > maximum_borrowed:
+            boundary_name = (
+                "preserved cadential/context boundary"
+                if self.modulation_enabled
+                else "preserved global cadential boundary"
+            )
+            raise ValueError(
+                "minimum_borrowed_chords exceeds beats available outside the " + boundary_name
+            )
+'''
+          if old not in text:
+              raise SystemExit("modal compatibility anchor missing")
+          models.write_text(text.replace(old, new, 1))
+          PY
+      - name: Remove helper-only workflows from resulting tree
+        run: |
+          rm -f .github/workflows/v28_feasibility_diag.yml
+          rm -f .github/workflows/v28_semantic_fix_stage.yml
+      - name: Run focused regression tests
+        run: |
+          python -m pip install -e ".[dev]"
+          pytest -q tests/test_modulation.py tests/test_modal_mixture.py
+      - name: Commit fixed source tree
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(v2.8): make melodic leading-tone context local"
+          git push origin HEAD:staging/v2.8-typefix
