@@ -13,12 +13,13 @@ from .modulation_runtime import (
     modulation_verification_issues,
 )
 from .phrase_verify import phrase_verification_issues
-from .satb import satb_verification_issues
+from .satb import SatbGenerationResult, satb_verification_issues
 from .secondary_leading_tone_runtime import (
     secondary_leading_tone_modulation_verification_issues,
     secondary_leading_tone_satb_verification_issues,
 )
 from .secondary_leading_tone_seventh_runtime import (
+    reconstruct_secondary_leading_tone_seventh,
     secondary_leading_tone_seventh_modulation_verification_issues,
     secondary_leading_tone_seventh_satb_verification_issues,
 )
@@ -36,6 +37,13 @@ def verify_result(result: GenerationResult) -> ValidationReport:
     issues: list[str] = []
     failed: list[str] = []
 
+    exact_secondary = {
+        beat: reconstruction
+        for beat in range(spec.total_beats)
+        if (reconstruction := reconstruct_secondary_leading_tone_seventh(result, beat))
+        is not None
+    }
+
     def fail(rule_id: str, message: str) -> None:
         issues.append(f"[{rule_id}] {message}")
         if rule_id not in failed:
@@ -51,12 +59,15 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         fail("CM001", f"Expected {spec.total_beats} chords, got {len(chords)}")
 
     for index, note in enumerate(melody):
-        active_key = (
-            spec.active_key_at_beat(index // spec.subdivisions_per_beat)
-            if spec.modulation_enabled
-            else key
+        beat = index // spec.subdivisions_per_beat
+        active_key = spec.active_key_at_beat(beat) if spec.modulation_enabled else key
+        secondary = exact_secondary.get(beat)
+        is_secondary_strong_tone = (
+            secondary is not None
+            and index % spec.subdivisions_per_beat == 0
+            and note % 12 in secondary[1]
         )
-        if note % 12 not in active_key.pitch_classes:
+        if note % 12 not in active_key.pitch_classes and not is_secondary_strong_tone:
             fail(
                 "CM002",
                 f"Melody step {index}: note {note} is outside {active_key}",
@@ -66,7 +77,9 @@ def verify_result(result: GenerationResult) -> ValidationReport:
 
     for beat, note in enumerate(bass):
         active_key = spec.active_key_at_beat(beat) if spec.modulation_enabled else key
-        if note % 12 not in active_key.pitch_classes:
+        secondary = exact_secondary.get(beat)
+        is_secondary_tone = secondary is not None and note % 12 in secondary[1]
+        if note % 12 not in active_key.pitch_classes and not is_secondary_tone:
             fail("CM003", f"Bass beat {beat}: note {note} is outside {active_key}")
         if not spec.bass_low <= note <= spec.bass_high:
             fail("CM003", f"Bass beat {beat}: note {note} is outside the configured range")
@@ -80,20 +93,26 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         if not 0 <= chord <= 6:
             continue
         active_key = spec.active_key_at_beat(beat)
+        secondary = exact_secondary.get(beat)
+        secondary_pcs = set(secondary[1]) if secondary is not None else set()
         strong_step = beat * spec.subdivisions_per_beat
         if strong_step < len(melody):
             strong_note = melody[strong_step]
-            if strong_note % 12 not in active_key.triad_pitch_classes(chord):
+            if (
+                strong_note % 12 not in active_key.triad_pitch_classes(chord)
+                and strong_note % 12 not in secondary_pcs
+            ):
                 fail(
                     "CM005",
-                    f"Beat {beat}: strong melody note is not in active-key "
-                    f"{active_key.chord_name(chord)}",
+                    f"Beat {beat}: strong melody note is not in the active support/realized chord",
                 )
-        if beat < len(bass) and bass[beat] % 12 not in active_key.triad_pitch_classes(chord):
+        if beat < len(bass) and (
+            bass[beat] % 12 not in active_key.triad_pitch_classes(chord)
+            and bass[beat] % 12 not in secondary_pcs
+        ):
             fail(
                 "CM006",
-                f"Bass beat {beat}: note {bass[beat]} is not in active-key "
-                f"{active_key.chord_name(chord)}",
+                f"Bass beat {beat}: note {bass[beat]} is not in the active support/realized chord",
             )
 
     allowed_pairs = set(spec.progression_pairs)
@@ -234,6 +253,21 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         satb_issues = satb_verification_issues(result)
     for rule_id, message in satb_issues:
         fail(rule_id, message)
+
+    if spec.secondary_leading_tone_seventh_enabled and isinstance(
+        result, SatbGenerationResult
+    ):
+        inversions = result.chord_inversions
+        if len(inversions) == spec.total_beats:
+            for beat, raw_inversion in enumerate(inversions):
+                inversion = int(raw_inversion)
+                maximum = 3 if beat in exact_secondary else 2
+                if not 0 <= inversion <= maximum:
+                    fail(
+                        "CM033",
+                        f"Beat {beat}: inversion {inversion} is outside 0..{maximum} "
+                        "for its independently reconstructed function",
+                    )
 
     if spec.secondary_leading_tone_seventh_enabled and spec.modulation_enabled:
         modulation_issues = secondary_leading_tone_seventh_modulation_verification_issues(result)

@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 
-CONTRACT_VERSION = "2.11"
+CONTRACT_VERSION = "2.12"
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,10 +20,22 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM001", "shape", "Melody, rhythm, bass, and harmony lengths match the specification."
     ),
     ConstraintRule(
-        "CM002", "melody_domain", "Every melody pitch is in-key and inside the configured range."
+        "CM002",
+        "melody_domain",
+        (
+            "Every melody pitch is in the active key and inside the configured range, except an "
+            "exactly reconstructed strong-beat secondary leading-tone seventh may carry one of "
+            "its certified chromatic chord tones."
+        ),
     ),
     ConstraintRule(
-        "CM003", "bass_domain", "Every bass pitch is in-key and inside the configured range."
+        "CM003",
+        "bass_domain",
+        (
+            "Every bass pitch is in the active key and inside the configured range, except an "
+            "exactly reconstructed secondary leading-tone seventh may carry its certified "
+            "chromatic inversion tone."
+        ),
     ),
     ConstraintRule(
         "CM004", "harmony_domain", "Every chord degree is a valid diatonic degree in 0..6."
@@ -31,12 +43,18 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
     ConstraintRule(
         "CM005",
         "strong_beat_chord_tone",
-        "Every strong-beat melody pitch belongs to the active local-key triad.",
+        (
+            "Every strong-beat melody pitch belongs to the active support triad or, for an exact "
+            "certified secondary leading-tone seventh, to the realized target-derived seventh."
+        ),
     ),
     ConstraintRule(
         "CM006",
         "bass_chord_member",
-        "Every bass pitch belongs to the active local-key triad.",
+        (
+            "Every bass pitch belongs to the active support triad or, for an exact certified "
+            "secondary leading-tone seventh, to the realized target-derived seventh."
+        ),
     ),
     ConstraintRule(
         "CM007",
@@ -242,7 +260,7 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
             "When applied-dominant tonicization is enabled, only target-bearing sevenths whose "
             "active-key pitch content and support identity reconstruct exactly as applied V7/x "
             "count toward the declared minimum. Target-bearing triads remain governed by "
-            "CM052-CM054; v2.11 secondary leading-tone sevenths by CM055-CM057."
+            "CM052-CM054; v2.12 secondary leading-tone sevenths by CM055-CM057."
         ),
         conditional=True,
     ),
@@ -406,10 +424,11 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM055",
         "secondary_leading_tone_seventh_context",
         (
-            "Every v2.11 target-bearing secondary leading-tone seventh declares a supported "
-            "non-tonic target in the exact active local key, uses the deterministic CM005/CM006 "
-            "support degree, is fully diminished, does not overlap modal borrowing or applied-"
-            "dominant identity, and stays outside certified cadence/modulation anchors."
+            "Every v2.12 target-bearing secondary leading-tone seventh declares a supported "
+            "non-tonic target in the exact active local key, uses its deterministic progression "
+            "support degree, does not overlap modal borrowing or applied-dominant identity, and "
+            "stays outside certified cadence/modulation anchors. Fully diminished quality is "
+            "eligible for major and minor targets; half-diminished quality only for major targets."
         ),
         conditional=True,
     ),
@@ -417,9 +436,10 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "CM056",
         "secondary_leading_tone_seventh_realization",
         (
-            "Every certified secondary leading-tone seventh contains its four target-derived "
-            "fully diminished pitch classes exactly once; only root, first, and second inversion "
-            "are admitted and the serialized inversion must match the bass."
+            "Every certified secondary leading-tone seventh contains exactly once the four "
+            "target-derived pitch classes of its independently reconstructed fully diminished or "
+            "eligible half-diminished quality. Root, first, second, and third inversions are "
+            "admitted and the serialized inversion must match the realized bass."
         ),
         conditional=True,
     ),
@@ -428,8 +448,10 @@ HARD_CONSTRAINTS: tuple[ConstraintRule, ...] = (
         "secondary_leading_tone_seventh_resolution",
         (
             "Every certified secondary leading-tone seventh resolves immediately to its declared "
-            "untargeted, unborrowed triadic target; the local leading tone rises by semitone, "
-            "while the diminished fifth and chordal diminished seventh descend by step."
+            "untargeted, unborrowed triadic target. The local leading tone rises by semitone; the "
+            "diminished fifth descends by the exact target-quality step; the chordal seventh "
+            "descends by the exact quality-dependent step, including when carried by the bass in "
+            "third inversion."
         ),
         conditional=True,
     ),

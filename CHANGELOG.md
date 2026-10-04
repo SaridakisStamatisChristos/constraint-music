@@ -1,5 +1,24 @@
 # Changelog
 
+## 2.12.0a1 — complete secondary leading-tone seventh certification
+
+- Completed the secondary leading-tone seventh family within the declared common-practice tonicization domain instead of leaving half-diminished quality or third inversion as deferred convenience cases.
+- Certified both fully diminished and half-diminished `vii7/x` families for major local targets; certified the fully diminished family for minor local targets.
+- Added all four inversion figures (`7`, `65`, `43`, `42`) with exact bass/inversion agreement; a third-inversion chord must actually place its chordal seventh in the bass.
+- Added a scoped outer-voice compiler path so genuine chromatic `42` realizations are possible without granting unrestricted chromatic melody/bass permission to ordinary harmony.
+- Added a second independent inversion-scope guard: inversion `3` is legal only on a beat that independently reconstructs as a secondary leading-tone seventh.
+- Kept quality as a solver witness/reconstructed musical property rather than a trusted opaque serialized identity field.
+- Added exact target- and quality-dependent tendency semantics in every SATB voice: local leading tone `+1`; diminished fifth `-1` for major targets / `-2` for minor targets; fully diminished chordal seventh `-1`; half-diminished chordal seventh `-2`.
+- Preserved immediate resolution to the declared untargeted, unborrowed triadic target, modal-source disjointness, protected cadence/modulation anchors, and persistent destination-key interpretation after modulation.
+- Preserved exact applied-dominant classification and minimum counting when applied dominants and secondary leading-tone sevenths coexist.
+- Strengthened CM002/CM003/CM005/CM006 only on independently reconstructed secondary-seventh beats; ordinary feature-disabled paths retain their previous domain/verification behavior.
+- Removed v2.11's two-tone diatonic-overlap gate from the secondary-seventh support bridge: progression compatibility remains structural, while exact active-key target/quality/pitch reconstruction certifies musical identity. The v2.10 triad path keeps its historical overlap policy.
+- Added exhaustive all-key coverage across 12 chromatic tonics × major/minor modes, every progression-reachable eligible target, every certified quality, and all four inversions, including a regression for the formerly excluded `vii°7/iii` in C major.
+- Kept the stable hard-rule range `CM001–CM057` while strengthening CM055–CM057 for complete quality/inversion certification.
+- Versioned package to `2.12.0a1` and artifact/constraint-contract schema to `2.12`.
+- Expanded adversarial coverage across both qualities × all four inversions, inversion-scope leakage, missing/duplicated tones, exact tendency errors, applied-count confusion, modal overlap, cadence contamination, provenance tampering, destination-key reconstruction, and stale-key forgery.
+- Validation baseline: 197 tests passing, 80% branch-aware coverage, strict mypy clean across 27 source files, and successful Ruff/mypy/pytest/build gates on Python 3.11, 3.12, and 3.13.
+
 ## 2.11.0a1 — verified secondary leading-tone seventh chords
 
 - Added a separate opt-in `secondary_leading_tone_seventh_enabled` feature and `minimum_secondary_leading_tone_seventh_chords`, preserving the v2.10 triad feature and its feasible set unless the new seventh feature is explicitly enabled.

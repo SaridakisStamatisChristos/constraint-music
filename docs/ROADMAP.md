@@ -92,7 +92,7 @@
 
 - [x] Compose expanded harmony, modal-source identity, and persistent active-key context.
 - [x] Admit only a narrow source-derived borrowed-seventh whitelist compatible with CM005/CM006.
-- [x] Preserve root, first, and second inversions; keep third inversion deferred.
+- [x] Preserve root, first, and second inversions; keep third inversion deferred for this borrowed-seventh family.
 - [x] Require complete four-tone realization and inversion/bass agreement.
 - [x] Require source-aware chordal-seventh and source-leading-tone resolution.
 - [x] Keep borrowing and tonicization mutually exclusive on the same beat.
@@ -107,7 +107,7 @@
 - [x] Add explicit opt-in secondary leading-tone harmony without a new opaque chord identity axis.
 - [x] Reuse local target identity for target-bearing triads.
 - [x] Derive diminished triads from the exact active local key and declared non-tonic target.
-- [x] Preserve CM005/CM006/CM007 through a deterministic active-key support degree instead of forging a diatonic chromatic root.
+- [x] Preserve progression compatibility through a deterministic active-key support degree instead of forging a diatonic chromatic root.
 - [x] Require complete diminished-triad realization with tendency tones undoubled and the stable third doubled.
 - [x] Require immediate resolution to the declared unaltered triadic target.
 - [x] Require local leading tone up by semitone and diminished fifth down by step.
@@ -117,28 +117,44 @@
 - [x] Extend the hard contract additively with CM052–CM054 and schema/contract 2.10.
 - [x] Add hostile solver/verifier/provenance/post-modulation tests.
 
-## v2.11 verified secondary leading-tone seventh chords
+## v2.11 verified secondary leading-tone seventh foundation
 
 - [x] Add a separate opt-in seventh feature so v2.10 triad specifications retain their prior feasible set.
-- [x] Certify fully diminished `vii°7/x` only; keep half-diminished forms outside the v2.11 contract.
-- [x] Preserve root, first, and second inversion only; keep third inversion deferred.
+- [x] Certify fully diminished `vii°7/x` as the initial quality.
+- [x] Certify root, first, and second inversion as the initial inversion set.
 - [x] Derive all four pitch classes from the exact active local key and declared target.
 - [x] Reuse the support-degree bridge without forging the chromatic diminished root into a diatonic degree.
 - [x] Distinguish applied `V7/x` from `vii°7/x` by exact active-key pitch/support identity rather than an opaque serialized function flag.
 - [x] Ensure `minimum_applied_dominants` counts only exact applied dominants.
 - [x] Require complete four-tone realization with no duplicated unstable tone.
 - [x] Require immediate resolution to the declared untargeted, unborrowed triadic target.
-- [x] Require local leading tone up by semitone, diminished fifth down by step, and chordal diminished seventh down by step.
+- [x] Require local leading tone and unstable-tone resolution.
 - [x] Exclude modal-source overlap and protected modulation/cadence anchors.
 - [x] Reconstruct post-modulation secondary sevenths from the persistent destination active key.
-- [x] Extend the hard contract additively with CM055–CM057 and schema/contract 2.11.
+- [x] Extend the hard contract with CM055–CM057 and schema/contract 2.11.
 - [x] Add hostile tests for quality, pitch, inversion, tendency, classification, provenance, anchor contamination, and stale-key forgery.
+
+## v2.12 complete secondary leading-tone seventh certification
+
+- [x] Add explicit fully diminished / half-diminished quality theory while keeping fully diminished as the backward-compatible API default.
+- [x] Certify both `vii°7/x` and `viiø7/x` families for major local targets.
+- [x] Certify the fully diminished family for minor local targets.
+- [x] Certify all four inversion figures: `7`, `65`, `43`, and genuine seventh-in-bass `42`.
+- [x] Expand outer-voice domains only on the enabled secondary-seventh path so ordinary harmony does not gain unrestricted chromatic permission.
+- [x] Independently reconstruct quality from active key + target + support degree + complete SATB pitch content rather than trusting an opaque quality label.
+- [x] Restrict inversion `3` to beats independently reconstructed as secondary leading-tone sevenths; preserve the established inversion domain elsewhere.
+- [x] Compile and verify exact target-/quality-dependent tendency deltas in every SATB voice, including the bass of `42`.
+- [x] Preserve exact applied-dominant counting and separation from modal-source identity.
+- [x] Preserve protected cadence/modulation anchors and persistent destination-key interpretation.
+- [x] Preserve provenance without adding a trusted serialized function/quality axis.
+- [x] Version package to `2.12.0a1` and artifact/contract schema to `2.12` while retaining `CM001–CM057`.
+- [x] Restore and expand adversarial tests for all quality/inversion combinations, inversion-scope leakage, modal overlap, protected anchors, count confusion, provenance, and stale-key interpretation.
+- [x] Pass Ruff, strict mypy, pytest/coverage, and build on Python 3.11, 3.12, and 3.13.
 
 ## Later harmonic expansion
 
-- [ ] Half-diminished secondary leading-tone sevenths only after an explicit quality/source policy revision.
-- [ ] Third-inversion seventh support only after an explicit outer-voice compatibility revision.
-- [ ] Richer voice-leading policy where justified by an explicit contract version.
+- [ ] Richer borrowed-seventh inversion/source policy under its own explicit contract revision.
+- [ ] Richer general seventh voice-leading policy where justified by an explicit contract version.
 - [ ] Multi-modulation chains only after single-modulation invariants remain stable.
 - [ ] Distant-key networks and enharmonic reinterpretation.
 - [ ] Augmented-sixth and Neapolitan reinterpretation.
