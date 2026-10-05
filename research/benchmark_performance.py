@@ -15,11 +15,13 @@ import tempfile
 import time
 import tracemalloc
 from collections import Counter, defaultdict
+from collections.abc import Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from importlib import metadata
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Iterator
 
 from constraint_music.certification import verify_artifact
 from constraint_music.delivery import RenderProfile, verify_delivery
@@ -165,6 +167,33 @@ def rss_bytes() -> int:
     return value if sys.platform == "darwin" else value * 1024
 
 
+@contextmanager
+def strict_semantic_timer() -> Iterator[dict[str, float | int]]:
+    import constraint_music.certification as certification_module
+    import constraint_music.provenance as provenance_module
+    import constraint_music.verifier as verifier_module
+
+    original_cert = certification_module.verify_result
+    original_prov = provenance_module.verify_result
+    timing: dict[str, float | int] = {"seconds": 0.0, "calls": 0}
+
+    def wrapped(result: Any) -> Any:
+        start = time.perf_counter()
+        try:
+            return verifier_module.verify_result(result)
+        finally:
+            timing["seconds"] = float(timing["seconds"]) + time.perf_counter() - start
+            timing["calls"] = int(timing["calls"]) + 1
+
+    certification_module.verify_result = wrapped
+    provenance_module.verify_result = wrapped
+    try:
+        yield timing
+    finally:
+        certification_module.verify_result = original_cert
+        provenance_module.verify_result = original_prov
+
+
 def one(case: Case, spec: GenerationSpec) -> dict[str, Any]:
     solver = TimedSolver()
     start = time.perf_counter()
@@ -182,9 +211,10 @@ def one(case: Case, spec: GenerationSpec) -> dict[str, Any]:
         start = time.perf_counter()
         parsed, raw = load_result_json(artifact_path)
         parse_s = time.perf_counter() - start
-        start = time.perf_counter()
-        strict = verify_artifact(raw, expected_spec=spec)
-        strict_s = time.perf_counter() - start
+        with strict_semantic_timer() as strict_semantics:
+            start = time.perf_counter()
+            strict = verify_artifact(raw, expected_spec=spec)
+            strict_s = time.perf_counter() - start
         midi = Path(d) / "delivery.mid"
         start = time.perf_counter()
         write_midi(result, midi, profile=RenderProfile.CERTIFIED_SATB)
@@ -192,6 +222,8 @@ def one(case: Case, spec: GenerationSpec) -> dict[str, Any]:
         start = time.perf_counter()
         delivery = verify_delivery(parsed, midi)
         delivery_s = time.perf_counter() - start
+    strict_semantic_s = float(strict_semantics["seconds"])
+    binding_s = max(0.0, strict_s - strict_semantic_s)
     certification = strict_s + delivery_s
     return {
         "generated_count": 1, "accepted_count": int(strict.accepted),
@@ -206,6 +238,9 @@ def one(case: Case, spec: GenerationSpec) -> dict[str, Any]:
         "semantic_verification_seconds": semantic_s,
         "artifact_build_seconds": artifact_s, "artifact_parse_seconds": parse_s,
         "strict_artifact_certification_seconds": strict_s,
+        "strict_semantic_recheck_seconds": strict_semantic_s,
+        "strict_semantic_recheck_calls": int(strict_semantics["calls"]),
+        "integrity_request_binding_exclusive_seconds": binding_s,
         "export_seconds": export_s, "parseback_and_delivery_seconds": delivery_s,
         "certification_total_seconds": certification,
         "verification_overhead_ratio": certification / generation if generation else None,
@@ -357,6 +392,19 @@ def summarize(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
             "certification_seconds": stats(
                 [float(r["certification_total_seconds"]) for r in ok]
             ),
+            "stage_seconds": {
+                name: stats([float(r[name]) for r in ok])
+                for name in (
+                    "compile_seconds",
+                    "solve_seconds",
+                    "semantic_verification_seconds",
+                    "artifact_parse_seconds",
+                    "strict_semantic_recheck_seconds",
+                    "integrity_request_binding_exclusive_seconds",
+                    "export_seconds",
+                    "parseback_and_delivery_seconds",
+                )
+            },
             "verification_overhead_ratio": stats(
                 [
                     float(r["verification_overhead_ratio"])
@@ -465,10 +513,16 @@ def report(path: Path, summary: Mapping[str, Any], env: Mapping[str, Any]) -> No
              f"- Strict accepted: **{s['accepted']}** ({ratio(s['acceptance_yield'])})",
              f"- Released: **{s['released']}** ({ratio(s['release_yield'])})",
              f"- Outcomes: `{s['outcomes']}`", f"- Solver statuses: `{s['solver_statuses']}`", "",
-             "## Scaling and variance", "",
-             "| Profile | Bars | Mode | n runnable | n success | Attempt median s | "
-             "Success median s | RSS median MiB | Cert median s | Cert/gen |",
-             "| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
+             "## Multi-output throughput", "",
+             f"- Cases: **{summary['multi_output']['attempted_cases']}**",
+             f"- Requested solutions: **{summary['multi_output']['requested_solutions']}**",
+             f"- Generated solutions: **{summary['multi_output']['generated_solutions']}**",
+             "", "## Scaling and variance", "",
+             "| Profile | Bars | Mode | n run | n success | Attempt median s | "
+             "Attempt p90 s | Attempt CV | Success median s | RSS median MiB | "
+             "Cert median s | Cert/gen |",
+             "| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | "
+             "---: | ---: |"]
     for g in s["groups"]:
         a, gen, mem, cert, ov = (g["attempt_seconds"], g["successful_generation_seconds"],
                                   g["peak_rss_bytes"], g["certification_seconds"],
@@ -478,8 +532,9 @@ def report(path: Path, summary: Mapping[str, Any], env: Mapping[str, Any]) -> No
         memory_mib = None if mem["median"] is None else mem["median"] / 1048576
         lines.append(
             f"| {g['profile']} | {g['bars']} | {g['worker_mode']} | {a['n']} | "
-            f"{gen['n']} | {fmt(a['median'])} | {fmt(gen['median'])} | "
-            f"{fmt(memory_mib, 1)} | {fmt(cert['median'])} | {fmt(ov['median'], 3)} |"
+            f"{gen['n']} | {fmt(a['median'])} | {fmt(a['p90'])} | {fmt(a['cv'], 3)} | "
+            f"{fmt(gen['median'])} | {fmt(memory_mib, 1)} | {fmt(cert['median'])} | "
+            f"{fmt(ov['median'], 3)} |"
         )
     lines += ["", "Raw rows preserve exclusions, UNKNOWN/no-solution outcomes, and crashes. ",
               "These measurements apply only to the recorded commit/runner; "
@@ -526,6 +581,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     report(a.report, summary, env)
     validate(a.output_dir)
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
