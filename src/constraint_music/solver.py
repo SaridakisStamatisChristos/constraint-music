@@ -58,6 +58,25 @@ class _CompiledProblem:
     objective: ObjectiveBundle
 
 
+def finalize_generated_result(
+    raw_result: GenerationResult,
+    compiled_objective_vector: ObjectiveVector,
+) -> GenerationResult:
+    """Fail closed on any semantic or objective breach at the generator boundary."""
+
+    report = verify_result(raw_result)
+    if not report.valid:
+        joined = "; ".join(report.issues[:5])
+        raise InternalVerificationError(f"Solver/verifier contract breach: {joined}")
+
+    independent_vector = evaluate_objective_vector(raw_result)
+    if compiled_objective_vector != independent_vector:
+        raise InternalVerificationError(
+            "Solver/objective-vector breach: compiled and independent objective vectors differ"
+        )
+    return replace(raw_result, validation=report)
+
+
 class ConstraintMusicSolver:
     """Compile the musical contract into CP-SAT and fail closed after verification."""
 
@@ -194,20 +213,10 @@ class ConstraintMusicSolver:
         else:
             raw_result = SatbGenerationResult(**common)
 
-        report = verify_result(raw_result)
-        if not report.valid:
-            joined = "; ".join(report.issues[:5])
-            raise InternalVerificationError(f"Solver/verifier contract breach: {joined}")
-
         solver_vector = tuple(
             (name, solver.value(problem.objective.components[name])) for name, _ in weights
         )
-        independent_vector = evaluate_objective_vector(raw_result)
-        if solver_vector != independent_vector:
-            raise InternalVerificationError(
-                "Solver/objective-vector breach: compiled and independent objective vectors differ"
-            )
-        return replace(raw_result, validation=report)
+        return finalize_generated_result(raw_result, solver_vector)
 
     def _compile(self, spec: GenerationSpec, weights: ObjectiveVector) -> _CompiledProblem:
         if spec.secondary_leading_tone_seventh_enabled:

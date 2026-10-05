@@ -17,6 +17,11 @@ Install the complete development environment with:
 python -m pip install -e ".[dev]"
 ```
 
+The development extra pins `ortools==9.15.6755` because the checked-in CP-SAT
+generator-boundary evidence is version-specific. The broader `generation` extra retains
+the supported compatible range for ordinary package use; do not regenerate research
+evidence from that unpinned environment.
+
 The checker-only runtime intentionally omits CP-SAT:
 
 ```bash
@@ -43,8 +48,14 @@ and implementation hashes. The context/anchor partition enumerates every beat in
 crossed with supported-target and modal-overlap truth values.
 The checked-in evidence must match a fresh run data-for-data after JSON parsing. It
 must not be described as exhaustive beyond each declared domain; the complete-verifier
-matrix is explicitly systematic. The corruption harness records
-`ACCEPT`, `REJECT`, `BLOCKED`, and `CRASH` separately:
+matrix is explicitly systematic.
+The same aggregate evidence also records a pinned six-case generator finalization
+matrix: one valid control, four generated-assignment corruptions, and one
+compiled-objective corruption. Every injected fault must raise the production
+`InternalVerificationError` boundary; source and dependency hashes are persisted.
+
+The artifact corruption harness records `ACCEPT`, `REJECT`, `BLOCKED`, and `CRASH`
+separately:
 
 ```bash
 python -m research.run_corruption_benchmark ARTIFACT.json \

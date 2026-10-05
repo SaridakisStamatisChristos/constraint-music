@@ -244,6 +244,10 @@ See [Assurance Boundary](docs/ASSURANCE_BOUNDARY.md),
 
 Use `workers: 1` with a fixed `seed` for deterministic regression work and deterministic enumeration order. Multi-worker CP-SAT search is for performance and should not be assumed to return an identical optimum or enumeration order on every runtime.
 
+The contributor extra pins OR-Tools 9.15.6755 for the checked-in generator-boundary
+evidence. The ordinary `generation` extra intentionally remains compatible with the
+supported OR-Tools 9.15 release line.
+
 ## Quality gates
 
 Every supported interpreter runs the same complete gate:
@@ -255,7 +259,7 @@ pytest --cov=constraint_music --cov-report=term-missing
 python -m build
 ```
 
-GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**. The v2.12 pre-merge baseline is **197 tests passing**, **80% branch-aware coverage**, strict mypy clean across **27 source files**, and successful package builds on all three interpreters. The exhaustive secondary-seventh matrix spans all 12 chromatic tonics in both major and minor modes, every progression-reachable eligible target, both certified quality classes where applicable, and all four inversions.
+GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**. The current local baseline is **565 tests passing**, branch-aware coverage, strict mypy clean across **33 source files**, and successful package builds. The secondary-seventh evidence spans all 12 chromatic tonics in both major and minor modes, every progression-reachable eligible target, both certified quality classes where applicable, all four inversions, finite register/context/resolution partitions, and a pinned generator-finalization fault matrix.
 
 ## Scope boundary
 
