@@ -1,0 +1,84 @@
+CONSTRAINT MUSIC PROPRIETARY LICENSE
+Version 1.0 — 5 October 2026
+
+Copyright (c) 2026 Stamatis-Christos Saridakis. All rights reserved.
+
+1. Ownership
+
+Constraint Music, including its source code, documentation, research artifacts,
+tests, examples, and associated materials (collectively, the "Software"), is
+proprietary. All right, title, and interest in the Software are retained by the
+copyright holder. Public availability of the source code does not make the
+Software open source or place it in the public domain.
+
+2. No General License Grant
+
+Except for rights that cannot lawfully be excluded and the limited rights
+expressly arising from GitHub's Terms of Service for content in a public
+repository, no permission is granted to use, execute, copy, modify, adapt,
+translate, create derivative works from, publish, distribute, sublicense, sell,
+rent, lease, host, provide as a service, or otherwise exploit the Software, in
+whole or in part, without prior written permission from the copyright holder.
+
+The GitHub-specific rights referenced above apply only to the extent and for the
+purposes required by GitHub's Terms of Service. They do not create an independent
+licence to use the Software outside those terms.
+
+3. Restrictions
+
+Without prior written permission from the copyright holder, you may not:
+
+  a. use the Software for commercial, production, research, educational, or
+     other operational purposes;
+  b. modify, translate, reverse engineer, decompile, disassemble, or derive
+     another work from the Software, except where applicable law expressly
+     permits such activity despite this restriction;
+  c. redistribute, republish, mirror, sublicense, sell, or otherwise transfer
+     the Software or any substantial portion of it;
+  d. remove, obscure, or alter copyright, ownership, provenance, or licensing
+     notices; or
+  e. represent that the Software is open-source software or that any licence has
+     been granted beyond the limited rights stated in Section 2.
+
+4. Contributions
+
+Contributions are not accepted unless the contributor and the copyright holder
+have first entered into a separate written contribution or assignment agreement.
+Submitting an issue, suggestion, or other feedback does not transfer ownership of
+the Software or grant a licence to it.
+
+5. Third-Party Materials
+
+Third-party libraries, tools, and other materials are governed by their
+respective licences. This licence does not restrict rights independently granted
+under those third-party licences.
+
+6. Disclaimer of Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY OF ANY
+KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, NON-INFRINGEMENT,
+ACCURACY, OR RELIABILITY. THE COPYRIGHT HOLDER DOES NOT WARRANT THAT THE SOFTWARE
+WILL BE ERROR-FREE, SECURE, OR SUITABLE FOR ANY PARTICULAR USE.
+
+7. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE COPYRIGHT HOLDER SHALL NOT
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+CONSEQUENTIAL, OR OTHER DAMAGES ARISING FROM OR RELATED TO ACCESS TO, INABILITY TO
+ACCESS, OR ANY AUTHORIZED OR UNAUTHORIZED USE OF THE SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGES.
+
+8. Enforcement and Severability
+
+Any use of the Software beyond the limited rights described in Section 2 without
+prior written permission is unauthorized. If any provision of this licence is
+held unenforceable, the remaining provisions remain in effect to the fullest
+extent permitted by law.
+
+9. Permission and Commercial Licensing
+
+Requests for evaluation, research, educational, commercial, or other licensing
+may be submitted to the copyright holder through the repository owner's verified
+GitHub contact channels. Permission is effective only when granted in writing.
+

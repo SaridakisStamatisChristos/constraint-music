@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=75", "wheel"]
+requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,6 +9,8 @@ description = "Deterministic constraint-programming music synthesis with indepen
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{name = "Constraint Music contributors"}]
+license = "LicenseRef-Constraint-Music-Proprietary"
+license-files = ["LICENSE"]
 dependencies = [
   "mido>=1.3,<2",
   "PyYAML>=6,<7",
