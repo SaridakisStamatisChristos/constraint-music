@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "claim_boundary": "Finite deterministic corruptions of one pinned artifact and its certified MIDI delivery; confidence intervals use attack clusters, not raw cases.",
+  "fixture": {
+    "bars": 2,
+    "beats_per_bar": 4,
+    "seed": 123,
+    "workers": 1,
+    "composition_sha256": "f680dbd0c76c0a4c9291c0c9e5bfdc0e6f7db713b9d9ccade270d9e3985f439f",
+    "midi_sha256": "1d0cb5f4fd0a1c1bcd20f7d417a283618ce8743e5c74ba020e749d7e4aa8483f"
+  },
+  "manifest_sha256": "022320e54e4a26df0d789f8a0afe18185396f2b05aa52a4747d8091d6dcdc3f4",
+  "raw_results_sha256": "b9469feb7beb6354ad7f049e545a4acbf668df16cdbe9cb49018efbe4ea87e90",
+  "overall": {
+    "cases": 32,
+    "attacks": 30,
+    "controls": 2,
+    "correct": 32,
+    "crashes": 0,
+    "outcomes": {
+      "ACCEPT": 2,
+      "BLOCKED": 6,
+      "REJECT": 24
+    },
+    "attack_detection_rate": 1.0,
+    "control_acceptance_rate": 1.0,
+    "clusters": 15,
+    "successful_clusters": 15,
+    "cluster_detection_rate": 1.0,
+    "cluster_wilson_95": [
+      0.796117,
+      1.0
+    ]
+  },
+  "by_family": {
+    "delivery": {
+      "cases": 6,
+      "attacks": 6,
+      "controls": 0,
+      "correct": 6,
+      "crashes": 0,
+      "outcomes": {
+        "REJECT": 6
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 3,
+      "successful_clusters": 3,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.438503,
+        1.0
+      ]
+    },
+    "harmonic-claims": {
+      "cases": 6,
+      "attacks": 6,
+      "controls": 0,
+      "correct": 6,
+      "crashes": 0,
+      "outcomes": {
+        "REJECT": 6
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 3,
+      "successful_clusters": 3,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.438503,
+        1.0
+      ]
+    },
+    "integrity-request": {
+      "cases": 6,
+      "attacks": 6,
+      "controls": 0,
+      "correct": 6,
+      "crashes": 0,
+      "outcomes": {
+        "REJECT": 6
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 3,
+      "successful_clusters": 3,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.438503,
+        1.0
+      ]
+    },
+    "realized-music": {
+      "cases": 6,
+      "attacks": 6,
+      "controls": 0,
+      "correct": 6,
+      "crashes": 0,
+      "outcomes": {
+        "REJECT": 6
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 3,
+      "successful_clusters": 3,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.438503,
+        1.0
+      ]
+    },
+    "structure": {
+      "cases": 6,
+      "attacks": 6,
+      "controls": 0,
+      "correct": 6,
+      "crashes": 0,
+      "outcomes": {
+        "BLOCKED": 6
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 3,
+      "successful_clusters": 3,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.438503,
+        1.0
+      ]
+    }
+  },
+  "by_tier": {
+    "T0": {
+      "cases": 2,
+      "attacks": 0,
+      "controls": 2,
+      "correct": 2,
+      "crashes": 0,
+      "outcomes": {
+        "ACCEPT": 2
+      },
+      "attack_detection_rate": null,
+      "control_acceptance_rate": 1.0,
+      "clusters": 0,
+      "successful_clusters": 0,
+      "cluster_detection_rate": null,
+      "cluster_wilson_95": null
+    },
+    "T1": {
+      "cases": 8,
+      "attacks": 8,
+      "controls": 0,
+      "correct": 8,
+      "crashes": 0,
+      "outcomes": {
+        "REJECT": 8
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 5,
+      "successful_clusters": 5,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.565518,
+        1.0
+      ]
+    },
+    "T2": {
+      "cases": 10,
+      "attacks": 10,
+      "controls": 0,
+      "correct": 10,
+      "crashes": 0,
+      "outcomes": {
+        "REJECT": 10
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 7,
+      "successful_clusters": 7,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.64567,
+        1.0
+      ]
+    },
+    "T3": {
+      "cases": 6,
+      "attacks": 6,
+      "controls": 0,
+      "correct": 6,
+      "crashes": 0,
+      "outcomes": {
+        "REJECT": 6
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 5,
+      "successful_clusters": 5,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.565518,
+        1.0
+      ]
+    },
+    "T4": {
+      "cases": 6,
+      "attacks": 6,
+      "controls": 0,
+      "correct": 6,
+      "crashes": 0,
+      "outcomes": {
+        "BLOCKED": 6
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": null,
+      "clusters": 3,
+      "successful_clusters": 3,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.438503,
+        1.0
+      ]
+    }
+  },
+  "by_split": {
+    "development": {
+      "cases": 13,
+      "attacks": 12,
+      "controls": 1,
+      "correct": 13,
+      "crashes": 0,
+      "outcomes": {
+        "ACCEPT": 1,
+        "BLOCKED": 2,
+        "REJECT": 10
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": 1.0,
+      "clusters": 6,
+      "successful_clusters": 6,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.609666,
+        1.0
+      ]
+    },
+    "evaluation": {
+      "cases": 19,
+      "attacks": 18,
+      "controls": 1,
+      "correct": 19,
+      "crashes": 0,
+      "outcomes": {
+        "ACCEPT": 1,
+        "BLOCKED": 4,
+        "REJECT": 14
+      },
+      "attack_detection_rate": 1.0,
+      "control_acceptance_rate": 1.0,
+      "clusters": 9,
+      "successful_clusters": 9,
+      "cluster_detection_rate": 1.0,
+      "cluster_wilson_95": [
+        0.700855,
+        1.0
+      ]
+    }
+  },
+  "split_cluster_overlap": [],
+  "implementation_hashes": {
+    "research/mutations.py": "2dd37c12a2c72eaae00a8a9692f65bb260423d32193ff596af0acfe9a3231092",
+    "research/run_corruption_benchmark.py": "f48d5105452697da80863e180c90f78e032b333a6733bbb9948f8943954ffb41",
+    "src/constraint_music/artifact_validation.py": "210ca1acc356d0954ed42e0c2d92e911ac8bf17a159b23a6c6c9dc4b0acd0af3",
+    "src/constraint_music/certification.py": "e8895ca44b517af63e01a20f7ab32de6667435d40d8c94dd1b00b683d070ec8d",
+    "src/constraint_music/delivery.py": "540c4a13685cf27567d242e90dee81b5bd2f4a11d03938da3d41e2410e0e4f51"
+  }
+}

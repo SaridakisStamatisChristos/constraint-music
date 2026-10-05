@@ -96,6 +96,22 @@ These matrices demonstrate fail-closed behavior at selected generator/compiler a
 feature-interaction boundaries. They do not delete every individual CP-SAT constraint,
 prove that CP-SAT is correct, or establish global compiler/checker equivalence.
 
+## Frozen corruption benchmark
+
+`research/results/corruption_manifest.json` defines 32 stable cases: two valid controls
+and 30 corruptions split evenly across realized music, harmonic claims, malformed
+structure, integrity/request binding, and certified MIDI delivery. T0–T4 distinguish
+controls, direct attacks, content-digest repair, coordinated claims/external-request
+changes, and pre-reconstruction wire malformations. Attack clusters never cross the
+development/evaluation boundary.
+
+`corruption_benchmark.jsonl` preserves every raw outcome and diagnostic. The derived
+`corruption_summary.json` reports family, tier, split, and overall denominators, outcome
+counts, crashes, source hashes, and cluster-level Wilson intervals. On the pinned
+two-bar, seed-123, one-worker fixture, all 30 attacks are detected, both controls are
+accepted, and no case crashes. This corpus does not estimate robustness over arbitrary
+musical works or unknown attack distributions.
+
 ## Known limits
 
 The reference encodes the repository's declared bounded contract. It does not infer

@@ -15,6 +15,7 @@
 - Added predicate-level rule visits, fail-closed `NOT_VISITED` handling, structured diagnostics, and measured compiler-phase registrations with exact CP-SAT constraint spans; removed the historical compiled-rule alias.
 - Added a pinned direct compiler-deletion experiment for the named `CM057.root.beat-0.voice-2` CP-SAT clause. The resulting octave-displaced local-leading-tone witness is rejected independently by the oracle, verifier, and production finalizer with zero escapes.
 - Added five deterministic cross-feature differential partitions covering secondary sevenths with tonicization, modal mixture, rhythm, authentic cadence, and persistent modulation. All five valid controls pass and all five independently adjudicated faults fail with zero checker/oracle disagreements.
+- Replaced the four-case corruption smoke test with a frozen 32-case artifact-and-delivery benchmark: 30 attacks across realized music, harmonic claims, structure, integrity/request binding, and MIDI delivery plus two valid controls. The checked-in manifest keeps attack clusters wholly inside development or evaluation splits; raw outcomes and family/tier/split metrics include cluster-level Wilson uncertainty. The current corpus detects all 30 attacks, accepts both controls, and records zero crashes.
 
 ## 2.12.0a1 — complete secondary leading-tone seventh certification
 

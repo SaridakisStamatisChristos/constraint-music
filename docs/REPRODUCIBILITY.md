@@ -60,14 +60,28 @@ cross-feature partitions pair valid controls with targeted faults under coenable
 tonicization, modal mixture, rhythm, authentic cadence, and modulation. These are
 finite local comparisons, not a global compiler/checker-equivalence claim.
 
-The artifact corruption harness records `ACCEPT`, `REJECT`, `BLOCKED`, and `CRASH`
-separately:
+Regenerate the frozen artifact-and-delivery corruption manifest, raw JSONL, and summary
+with the pinned one-worker fixture:
+
+```bash
+python -m research.generate_corruption_evidence
+```
+
+For an external artifact, run:
 
 ```bash
 python -m research.run_corruption_benchmark ARTIFACT.json \
-  --spec REQUEST.yaml \
-  --output research/results/corruption.jsonl
+  --spec REQUEST.yaml --midi DELIVERY.mid \
+  --output corruption.jsonl --summary corruption-summary.json \
+  --manifest corruption-manifest.json
 ```
+
+The benchmark records `ACCEPT`, `REJECT`, `BLOCKED`, and `CRASH` separately. Its 32
+cases comprise two valid controls and 30 attacks across five families. Stable clusters
+remain entirely in either the development or evaluation split. Family, tier, and split
+metrics retain raw denominators; the reported 95% interval uses all-or-nothing cluster
+detection rather than treating correlated mutations as independent cases. The current
+single-fixture result is finite assurance evidence, not a population estimate.
 
 Run performance measurements on recorded hardware, preserve unsuccessful attempts in
 denominators, and separate compile, solve, artifact verification, export, and parse-back
