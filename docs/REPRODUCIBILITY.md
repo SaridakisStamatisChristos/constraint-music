@@ -31,11 +31,16 @@ ruff check src tests research
 mypy src
 python -m pytest
 python -m build
-python -m research.enumerate_fragments
+python -m research.enumerate_fragments \
+  --output research/results/bounded_conformance.json
 ```
 
-The bounded enumerator prints its finite domain and computed cardinalities. It must not
-be described as exhaustive beyond that domain. The corruption harness records
+The bounded enumerator reports separately named pitch-class, absolute-register,
+voice-resolution, and complete-verifier partitions. It records generated/visited
+cardinalities, explicit pruning, first disagreements, and implementation hashes.
+The checked-in evidence must match a fresh run data-for-data after JSON parsing. It
+must not be described as exhaustive beyond each declared domain; the complete-verifier
+matrix is explicitly systematic. The corruption harness records
 `ACCEPT`, `REJECT`, `BLOCKED`, and `CRASH` separately:
 
 ```bash
@@ -54,4 +59,3 @@ Use a fixed seed and `workers: 1` for deterministic regression and enumeration o
 Multi-worker CP-SAT runs may return different feasible/optimal assignments across
 runtimes. All research tables must retain raw machine-readable results and the exact
 configuration used to derive them.
-

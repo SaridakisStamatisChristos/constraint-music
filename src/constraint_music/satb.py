@@ -784,18 +784,14 @@ def satb_verification_issues(
     for beat, (sv, av, tv, bv) in enumerate(
         zip(soprano, alto, tenor, bass, strict=True)
     ):
-        if not spec.melody_low <= sv <= spec.melody_high:
-            issues.append(("CM028", f"Beat {beat}: soprano is outside its configured range"))
-        if not ALTO_LOW <= av <= ALTO_HIGH:
-            issues.append(("CM028", f"Beat {beat}: alto is outside {ALTO_LOW}..{ALTO_HIGH}"))
-        if not TENOR_LOW <= tv <= TENOR_HIGH:
-            issues.append(("CM028", f"Beat {beat}: tenor is outside {TENOR_LOW}..{TENOR_HIGH}"))
-        if not bv < tv < av < sv:
-            issues.append(
-                ("CM028", f"Beat {beat}: SATB voice order/crossing invariant is violated")
+        issues.extend(
+            satb_register_verification_issues(
+                (sv, av, tv, bv),
+                melody_low=spec.melody_low,
+                melody_high=spec.melody_high,
+                beat=beat,
             )
-        if sv - av > MAX_UPPER_SPACING or av - tv > MAX_UPPER_SPACING:
-            issues.append(("CM029", f"Beat {beat}: adjacent upper voices exceed octave spacing"))
+        )
 
         if beat >= len(result.chord_degrees) or not 0 <= result.chord_degrees[beat] <= 6:
             continue
@@ -930,6 +926,36 @@ def satb_verification_issues(
             semantic_dispatch=semantic_dispatch,
         )
 
+    return tuple(issues)
+
+
+def satb_register_verification_issues(
+    voices: tuple[int, int, int, int],
+    *,
+    melody_low: int,
+    melody_high: int,
+    beat: int | None = None,
+) -> tuple[tuple[str, str], ...]:
+    """Classify one S/A/T/B register tuple under CM028 and CM029.
+
+    The bass range is enforced by CM003 in the complete verifier. Bounded callers
+    should enumerate bass notes inside the configured bass range before invoking
+    this local predicate.
+    """
+
+    prefix = "" if beat is None else f"Beat {beat}: "
+    soprano, alto, tenor, bass = voices
+    issues: list[tuple[str, str]] = []
+    if not melody_low <= soprano <= melody_high:
+        issues.append(("CM028", f"{prefix}soprano is outside its configured range"))
+    if not ALTO_LOW <= alto <= ALTO_HIGH:
+        issues.append(("CM028", f"{prefix}alto is outside {ALTO_LOW}..{ALTO_HIGH}"))
+    if not TENOR_LOW <= tenor <= TENOR_HIGH:
+        issues.append(("CM028", f"{prefix}tenor is outside {TENOR_LOW}..{TENOR_HIGH}"))
+    if not bass < tenor < alto < soprano:
+        issues.append(("CM028", f"{prefix}SATB voice order/crossing invariant is violated"))
+    if soprano - alto > MAX_UPPER_SPACING or alto - tenor > MAX_UPPER_SPACING:
+        issues.append(("CM029", f"{prefix}adjacent upper voices exceed octave spacing"))
     return tuple(issues)
 
 

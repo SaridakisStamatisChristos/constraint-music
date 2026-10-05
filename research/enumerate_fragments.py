@@ -8,6 +8,7 @@ from dataclasses import asdict
 from itertools import permutations
 from pathlib import Path
 
+from .differential_check import bounded_conformance_report
 from .oracle.secondary_seventh import (
     SeventhQuality,
     adjudicate_secondary_seventh,
@@ -72,11 +73,21 @@ def enumerate_pitch_class_domain() -> dict[str, object]:
     }
 
 
+def enumerate_all_domains() -> dict[str, object]:
+    """Return separately named finite partitions without inflating their scope."""
+
+    return {
+        "schema_version": 2,
+        "pitch_class_relation": enumerate_pitch_class_domain(),
+        "bounded_conformance": bounded_conformance_report(),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    result = enumerate_pitch_class_domain()
+    result = enumerate_all_domains()
     rendered = json.dumps(result, indent=2) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
