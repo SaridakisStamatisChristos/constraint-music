@@ -7,8 +7,10 @@ on:
     paths:
       - ".github/workflows/eh11-performance.yml"
       - "research/benchmark_performance.py"
+      - "research/normalize_eh11_results.py"
       - "research/configs/eh11_performance_matrix.json"
       - "tests/test_eh11_performance.py"
+      - "tests/test_eh11_normalization.py"
       - "src/**"
       - "pyproject.toml"
   workflow_dispatch:
@@ -36,13 +38,26 @@ jobs:
       - run: python -m pip install -e ".[dev]"
       - name: Validate EH-11 harness
         run: |
-          ruff check --fix research/benchmark_performance.py tests/test_eh11_performance.py
-          ruff check research/benchmark_performance.py tests/test_eh11_performance.py
-          pytest -q tests/test_eh11_performance.py
+          ruff check --fix \
+            research/benchmark_performance.py \
+            research/normalize_eh11_results.py \
+            tests/test_eh11_performance.py \
+            tests/test_eh11_normalization.py
+          ruff check \
+            research/benchmark_performance.py \
+            research/normalize_eh11_results.py \
+            tests/test_eh11_performance.py \
+            tests/test_eh11_normalization.py
+          pytest -q tests/test_eh11_performance.py tests/test_eh11_normalization.py
       - name: Run controlled EH-11 matrix
         run: >-
           python -m research.benchmark_performance
           --config research/configs/eh11_performance_matrix.json
+          --output-dir research/results
+          --report docs/EH11_PERFORMANCE_RESULTS.md
+      - name: Normalize declared scope exclusions
+        run: >-
+          python -m research.normalize_eh11_results
           --output-dir research/results
           --report docs/EH11_PERFORMANCE_RESULTS.md
       - name: Reproduce summary from raw rows
@@ -66,6 +81,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
             research/benchmark_performance.py \
+            research/normalize_eh11_results.py \
             research/results/eh11_performance_raw.jsonl \
             research/results/eh11_performance_summary.json \
             research/results/eh11_environment.json \
