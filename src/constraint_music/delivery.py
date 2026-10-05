@@ -159,7 +159,13 @@ def parse_midi_projection(
                     unexpected_notes_reported = True
                 continue
             if message.type == "note_on" and message.velocity > 0:
-                active[(message.channel, message.note)].append(absolute)
+                key = (message.channel, message.note)
+                if active[key]:
+                    issues.append(
+                        f"{track_name}: overlapping note-on for channel {key[0]} "
+                        f"pitch {key[1]}"
+                    )
+                active[key].append(absolute)
             elif message.type == "note_off" or (
                 message.type == "note_on" and message.velocity == 0
             ):
