@@ -8,7 +8,9 @@ from dataclasses import asdict
 from itertools import permutations
 from pathlib import Path
 
+from .compiler_deletions import compiler_constraint_deletion_report
 from .compiler_faults import generator_boundary_fault_report
+from .cross_feature_differential import cross_feature_differential_report
 from .differential_check import bounded_conformance_report
 from .oracle.secondary_seventh import (
     SeventhQuality,
@@ -78,10 +80,12 @@ def enumerate_all_domains() -> dict[str, object]:
     """Return separately named finite partitions without inflating their scope."""
 
     return {
-        "schema_version": 4,
+        "schema_version": 5,
         "pitch_class_relation": enumerate_pitch_class_domain(),
         "bounded_conformance": bounded_conformance_report(),
         "generator_boundary_faults": generator_boundary_fault_report(),
+        "compiler_constraint_deletion": compiler_constraint_deletion_report(),
+        "cross_feature_differential": cross_feature_differential_report(),
     }
 
 

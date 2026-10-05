@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "pitch_class_relation": {
     "domain": "12 tonics x 2 modes x degrees 1..6 x 2 qualities x 4 inversions x 24 permutations",
     "visited": 27648,
@@ -36,7 +36,7 @@
       "research/oracle/secondary_seventh.py": "7e1b22849200a45aa21aa415fe1b1e64d8cc1ce623957c47bbed84014ded94bf",
       "research/differential_check.py": "9a7b64d56da45f1b38605131ba9d399527c6b860a172694cd9175a4364b83694",
       "src/constraint_music/satb.py": "b6e7fc465b21aa2c6a79e0f03ec29e73d51a477440c42c6fec694bed0325e1cd",
-      "src/constraint_music/secondary_leading_tone_seventh_runtime.py": "5a6f3d328cf4c1a45d7674094a92cbdd23376985c90aa35b38ecf495d08b8b62"
+      "src/constraint_music/secondary_leading_tone_seventh_runtime.py": "8d8b7fa585b0ba7e778b23774246e6c6faf2cd3834f16d04f2448e483599367a"
     },
     "partitions": {
       "absolute_register": {
@@ -169,6 +169,216 @@
         "observed": "REJECT",
         "diagnostic": "Solver/objective-vector breach: compiled and independent objective vectors differ"
       }
+    }
+  },
+  "compiler_constraint_deletion": {
+    "schema_version": 1,
+    "claim_boundary": "This experiment deletes one exact named CP-SAT CM057 clause, forces the corresponding violating witness, and compares the independent oracle and production finalizer. It is not every-constraint mutation coverage.",
+    "toolchain": {
+      "ortools": "9.15.6755",
+      "workers": 1,
+      "seed": 6131
+    },
+    "visited": 2,
+    "deleted_constraints": 1,
+    "escaped_faults": 0,
+    "control": {
+      "observed": "ACCEPT",
+      "secondary_beat": 0,
+      "source_voices": [
+        62,
+        56,
+        53,
+        47
+      ]
+    },
+    "deletion": {
+      "constraint_name": "CM057.root.beat-0.voice-2",
+      "constraint_index": 91,
+      "registered_phase": {
+        "phase": "secondary_seventh_satb",
+        "implementation": "constraint_music.secondary_leading_tone_seventh_runtime.add_secondary_leading_tone_seventh_satb_constraints",
+        "rule_ids": [
+          "CM027",
+          "CM028",
+          "CM029",
+          "CM030",
+          "CM032",
+          "CM033",
+          "CM034",
+          "CM035",
+          "CM036",
+          "CM055",
+          "CM056",
+          "CM057"
+        ],
+        "constraint_start": 13,
+        "constraint_end": 98,
+        "constraint_count": 85
+      },
+      "violating_voice": "tenor",
+      "source_voices": [
+        67,
+        64,
+        61,
+        46
+      ],
+      "destination_voices": [
+        65,
+        62,
+        50,
+        45
+      ],
+      "oracle_valid": false,
+      "oracle_reasons": [
+        "tenor moves -11; expected +1"
+      ],
+      "verifier_valid": false,
+      "failed_rules": [
+        "CM057"
+      ],
+      "boundary_outcome": "REJECT",
+      "boundary_diagnostic": "Solver/verifier contract breach: [CM057] tenor beat 0: local leading tone does not resolve upward by semitone"
+    },
+    "implementation_hashes": {
+      "research/compiler_deletions.py": "1a719a7c3879e9aff8ebe68212f1d442d7440a46a13b0e32ae821d0401147bf0",
+      "research/oracle/secondary_seventh.py": "7e1b22849200a45aa21aa415fe1b1e64d8cc1ce623957c47bbed84014ded94bf",
+      "src/constraint_music/compiler_registry.py": "4a17908624cf3c31cbf0439a254cc42bf91a40a5d4215ba787484ca0aff251a4",
+      "src/constraint_music/secondary_leading_tone_seventh_runtime.py": "8d8b7fa585b0ba7e778b23774246e6c6faf2cd3834f16d04f2448e483599367a",
+      "src/constraint_music/solver.py": "d2265e69ad8f8be5184dd48add884ef5caf2db1e60ce1f99d9f87441ea2c8fa7"
+    }
+  },
+  "cross_feature_differential": {
+    "schema_version": 1,
+    "claim_boundary": "Five deterministic feature intersections: secondary sevenths coenabled with tonicization, modal mixture, rhythm, authentic cadence, and modulation. Each partition compares one targeted fault with an independent local oracle; this is not global whole-composition oracle equivalence.",
+    "visited": 10,
+    "controls_accepted": 5,
+    "faults_rejected": 5,
+    "disagreements": 0,
+    "escaped_faults": 0,
+    "cases": [
+      {
+        "feature": "tonicization",
+        "seed": 7101,
+        "control": {
+          "verifier_valid": true,
+          "secondary_beat": 2
+        },
+        "fault": {
+          "expected_rule": "CM055",
+          "oracle_valid": false,
+          "oracle_reason": [
+            "target is unsupported"
+          ],
+          "verifier_valid": false,
+          "failed_rules": [
+            "CM005",
+            "CM033",
+            "CM034",
+            "CM055"
+          ]
+        },
+        "disagreement": false,
+        "escaped": false
+      },
+      {
+        "feature": "modal_mixture",
+        "seed": 7102,
+        "control": {
+          "verifier_valid": true,
+          "secondary_beat": 2
+        },
+        "fault": {
+          "expected_rule": "CM055",
+          "oracle_valid": false,
+          "oracle_reason": [
+            "secondary seventh overlaps modal borrowing"
+          ],
+          "verifier_valid": false,
+          "failed_rules": [
+            "CM003",
+            "CM005",
+            "CM006",
+            "CM037",
+            "CM041",
+            "CM049",
+            "CM055"
+          ]
+        },
+        "disagreement": false,
+        "escaped": false
+      },
+      {
+        "feature": "rhythm",
+        "seed": 7103,
+        "control": {
+          "verifier_valid": true,
+          "secondary_beat": 2
+        },
+        "fault": {
+          "expected_rule": "CM018",
+          "oracle_valid": false,
+          "oracle_reason": [
+            "[CM018] first rhythm step is a tie",
+            "[CM018] tie at step 0 has no sounding predecessor",
+            "[CM019] bar 1 does not start with an onset"
+          ],
+          "verifier_valid": false,
+          "failed_rules": [
+            "CM018",
+            "CM019"
+          ]
+        },
+        "disagreement": false,
+        "escaped": false
+      },
+      {
+        "feature": "authentic_cadence",
+        "seed": 7104,
+        "control": {
+          "verifier_valid": true,
+          "secondary_beat": 1
+        },
+        "fault": {
+          "expected_rule": "CM021",
+          "oracle_valid": false,
+          "oracle_reason": [
+            "[CM021] final step is not a new onset"
+          ],
+          "verifier_valid": false,
+          "failed_rules": [
+            "CM021"
+          ]
+        },
+        "disagreement": false,
+        "escaped": false
+      },
+      {
+        "feature": "modulation",
+        "seed": 7105,
+        "control": {
+          "verifier_valid": true,
+          "secondary_beat": 3
+        },
+        "fault": {
+          "expected_rule": "CM048",
+          "oracle_valid": false,
+          "oracle_reason": "serialized contexts disagree with the boundary",
+          "verifier_valid": false,
+          "failed_rules": [
+            "CM048",
+            "CM047"
+          ]
+        },
+        "disagreement": false,
+        "escaped": false
+      }
+    ],
+    "implementation_hashes": {
+      "research/oracle/modulation.py": "cc547ba54a9bb2e06af061a64a2f007985193bcf4c86f398209509bc9b92a2f4",
+      "research/oracle/rhythm_phrase.py": "75eae67d21fb49d3ff66cd9bb057bb464ec8300fd22540480ee1047f4a6e76c9",
+      "research/oracle/secondary_seventh.py": "7e1b22849200a45aa21aa415fe1b1e64d8cc1ce623957c47bbed84014ded94bf",
+      "src/constraint_music/verifier.py": "5ea1fded93a086c66ab32140854f24ccf3558ddfe9961a4f14f0e61268d89bf3"
     }
   }
 }

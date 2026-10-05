@@ -783,15 +783,25 @@ def _add_secondary_seventh_tendency_constraints(
                 ],
                 rows,
             )
-            model.add(voice[beat + 1] == voice[beat] + 1).only_enforce_if(
-                [is_secondary, root_flag]
-            )
-            model.add(
+            root_resolution = model.add(voice[beat + 1] == voice[beat] + 1)
+            root_resolution.only_enforce_if([is_secondary, root_flag])
+            root_resolution.with_name(f"CM057.root.beat-{beat}.voice-{voice_index}")
+
+            fifth_resolution = model.add(
                 voice[beat + 1] == voice[beat] + fifth_delta
-            ).only_enforce_if([is_secondary, fifth_flag])
-            model.add(
+            )
+            fifth_resolution.only_enforce_if([is_secondary, fifth_flag])
+            fifth_resolution.with_name(
+                f"CM057.diminished-fifth.beat-{beat}.voice-{voice_index}"
+            )
+
+            seventh_resolution = model.add(
                 voice[beat + 1] == voice[beat] + seventh_delta
-            ).only_enforce_if([is_secondary, seventh_flag])
+            )
+            seventh_resolution.only_enforce_if([is_secondary, seventh_flag])
+            seventh_resolution.with_name(
+                f"CM057.chordal-seventh.beat-{beat}.voice-{voice_index}"
+            )
 
 
 def _voice_pitch_classes(

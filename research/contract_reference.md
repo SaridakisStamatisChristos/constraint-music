@@ -84,9 +84,17 @@ tendency resolution) and one corruption of the compiled objective vector. The ex
 production finalizer must accept only the control and raise `InternalVerificationError`
 for every injected fault.
 
-This matrix demonstrates fail-closed behavior at the generator finalization boundary.
-It does not delete every individual CP-SAT constraint, prove that CP-SAT is correct, or
-establish global compiler/checker equivalence.
+The direct-deletion partition removes exactly the named
+`CM057.root.beat-0.voice-2` CP-SAT constraint, verifies that it belongs to the measured
+`secondary_seventh_satb` registration span, and forces a feasible octave-displaced
+local-leading-tone resolution. The independent oracle, complete verifier, and
+production finalizer all reject the witness. A separate ten-case partition accepts
+five generated controls and rejects five targeted faults while secondary sevenths are
+coenabled with tonicization, modal mixture, rhythm, authentic cadence, and modulation.
+
+These matrices demonstrate fail-closed behavior at selected generator/compiler and
+feature-interaction boundaries. They do not delete every individual CP-SAT constraint,
+prove that CP-SAT is correct, or establish global compiler/checker equivalence.
 
 ## Known limits
 
