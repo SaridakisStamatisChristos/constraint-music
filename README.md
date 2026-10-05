@@ -238,15 +238,18 @@ and never bypasses arbitrary integrity errors.
 
 See [Assurance Boundary](docs/ASSURANCE_BOUNDARY.md),
 [Executable Contract](docs/EXECUTABLE_CONTRACT.md), and
-[Reproducibility](docs/REPRODUCIBILITY.md).
+[Reproducibility](docs/REPRODUCIBILITY.md). The research-only
+[EH-10 comparison](docs/EH10_ASSURANCE_COMPARISON.md) documents internal signal
+ablations and narrowly scoped external adapters without adding certification bypasses.
 
 ## Reproducibility
 
 Use `workers: 1` with a fixed `seed` for deterministic regression work and deterministic enumeration order. Multi-worker CP-SAT search is for performance and should not be assumed to return an identical optimum or enumeration order on every runtime.
 
 The contributor extra pins OR-Tools 9.15.6755 for the checked-in generator-boundary
-evidence. The ordinary `generation` extra intentionally remains compatible with the
-supported OR-Tools 9.15 release line.
+evidence and music21 9.9.2 for external-comparator evidence. The ordinary `generation`
+extra intentionally remains compatible with the supported OR-Tools 9.15 release line;
+the `comparators` extra installs the exact research comparator pin.
 
 ## Quality gates
 
@@ -266,6 +269,13 @@ wire structure, integrity/request binding, and certified MIDI delivery, plus two
 controls. Raw outcomes, stable development/evaluation splits, family/tier metrics, and
 cluster-aware uncertainty are checked in under `research/results/`; the current corpus
 detects all attacks, accepts both controls, and has zero crashes.
+
+The EH-10 observational ablation records four overlapping assurance channels. Removing
+wire-shape, semantic, integrity/request, or delivery signals leaves respectively
+24/30, 25/30, 23/30, and 24/30 attacks detected; no control is flagged. Two pinned,
+scope-normalized music21 9.9.2 adapters have zero disagreements across 9,840 bounded
+voice-leading cases and 126 C-major triad-policy cases. These are finite predicate
+comparisons, not whole-system equivalence or superiority claims.
 
 ## Scope boundary
 

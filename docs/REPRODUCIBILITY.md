@@ -18,9 +18,11 @@ python -m pip install -e ".[dev]"
 ```
 
 The development extra pins `ortools==9.15.6755` because the checked-in CP-SAT
-generator-boundary evidence is version-specific. The broader `generation` extra retains
-the supported compatible range for ordinary package use; do not regenerate research
-evidence from that unpinned environment.
+generator-boundary evidence is version-specific and `music21==9.9.2` because the EH-10
+external-comparator evidence is version-specific. The broader `generation` extra
+retains the supported compatible OR-Tools range for ordinary package use. The separate
+`comparators` extra installs only the pinned external comparator stack. Do not
+regenerate research evidence from unpinned environments.
 
 The checker-only runtime intentionally omits CP-SAT:
 
@@ -38,6 +40,8 @@ python -m pytest
 python -m build
 python -m research.enumerate_fragments \
   --output research/results/bounded_conformance.json
+python -m research.generate_eh10_evidence
+git diff --exit-code -- research/results
 ```
 
 The bounded enumerator reports separately named pitch-class, absolute-register,
@@ -82,6 +86,21 @@ remain entirely in either the development or evaluation split. Family, tier, and
 metrics retain raw denominators; the reported 95% interval uses all-or-nothing cluster
 detection rather than treating correlated mutations as independent cases. The current
 single-fixture result is finite assurance evidence, not a population estimate.
+
+Regenerate the research-only internal channel ablations and pinned, scope-normalized
+external comparator evidence with:
+
+```bash
+python -m research.generate_eh10_evidence
+```
+
+The ablation records all per-case channel signals and computes counterfactual
+leave-one-channel-out union coverage without exposing production bypass switches.
+Channels overlap operationally, so the losses are descriptive rather than causal. The
+music21 9.9.2 adapters compare only bounded shared voice-leading and C-major triad
+predicates; exact scope, exclusions, denominators, dependency identity, disagreements,
+and implementation hashes are persisted. See
+[EH-10 internal ablations and external comparators](EH10_ASSURANCE_COMPARISON.md).
 
 Run performance measurements on recorded hardware, preserve unsuccessful attempts in
 denominators, and separate compile, solve, artifact verification, export, and parse-back

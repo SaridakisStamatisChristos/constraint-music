@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "study_type": "observational assurance-channel signal ablation",
+  "claim_boundary": "Finite leave-one-channel-out signal coverage over the frozen EH-09 corpus. Channels overlap operationally; results are not causal, statistically independent, or production configurations.",
+  "channels": [
+    "wire_shape",
+    "semantic_rules",
+    "integrity_request",
+    "delivery_parseback"
+  ],
+  "case_denominator": 32,
+  "attack_denominator": 30,
+  "control_denominator": 2,
+  "full_detected": 30,
+  "full_attack_coverage": 1.0,
+  "false_positive_controls": [],
+  "production_outcomes": {
+    "ACCEPT": 2,
+    "BLOCKED": 6,
+    "REJECT": 24
+  },
+  "leave_one_channel_out": {
+    "wire_shape": {
+      "attack_denominator": 30,
+      "detected_without_channel": 24,
+      "escaped_without_channel": 6,
+      "coverage_without_channel": 0.8,
+      "unique_catch_count": 6,
+      "unique_catch_case_ids": [
+        "shape.boolean-degree",
+        "shape.legacy-schema",
+        "shape.missing-tenor",
+        "shape.missing-validation",
+        "shape.nonobject-music",
+        "shape.short-bass"
+      ],
+      "escape_case_ids": [
+        "shape.boolean-degree",
+        "shape.legacy-schema",
+        "shape.missing-tenor",
+        "shape.missing-validation",
+        "shape.nonobject-music",
+        "shape.short-bass"
+      ]
+    },
+    "semantic_rules": {
+      "attack_denominator": 30,
+      "detected_without_channel": 25,
+      "escaped_without_channel": 5,
+      "coverage_without_channel": 0.833333,
+      "unique_catch_count": 5,
+      "unique_catch_case_ids": [
+        "harmony.false-degree",
+        "harmony.false-kind",
+        "music.bass-pitch",
+        "music.final-rest",
+        "music.tenor-pitch"
+      ],
+      "escape_case_ids": [
+        "harmony.false-degree",
+        "harmony.false-kind",
+        "music.bass-pitch",
+        "music.final-rest",
+        "music.tenor-pitch"
+      ]
+    },
+    "integrity_request": {
+      "attack_denominator": 30,
+      "detected_without_channel": 23,
+      "escaped_without_channel": 7,
+      "coverage_without_channel": 0.766667,
+      "unique_catch_count": 7,
+      "unique_catch_case_ids": [
+        "harmony.false-display-name",
+        "integrity.composition-digest",
+        "integrity.contract-digest",
+        "integrity.contract-version",
+        "integrity.empty-rule-claim",
+        "integrity.objective-vector",
+        "request.external-seed"
+      ],
+      "escape_case_ids": [
+        "harmony.false-display-name",
+        "integrity.composition-digest",
+        "integrity.contract-digest",
+        "integrity.contract-version",
+        "integrity.empty-rule-claim",
+        "integrity.objective-vector",
+        "request.external-seed"
+      ]
+    },
+    "delivery_parseback": {
+      "attack_denominator": 30,
+      "detected_without_channel": 24,
+      "escaped_without_channel": 6,
+      "coverage_without_channel": 0.8,
+      "unique_catch_count": 6,
+      "unique_catch_case_ids": [
+        "delivery.changed-channel",
+        "delivery.changed-pitch",
+        "delivery.duplicate-track",
+        "delivery.missing-track",
+        "delivery.wrong-division",
+        "delivery.wrong-key"
+      ],
+      "escape_case_ids": [
+        "delivery.changed-channel",
+        "delivery.changed-pitch",
+        "delivery.duplicate-track",
+        "delivery.missing-track",
+        "delivery.wrong-division",
+        "delivery.wrong-key"
+      ]
+    }
+  },
+  "fixture": {
+    "composition_sha256": "f680dbd0c76c0a4c9291c0c9e5bfdc0e6f7db713b9d9ccade270d9e3985f439f",
+    "midi_sha256": "1d0cb5f4fd0a1c1bcd20f7d417a283618ce8743e5c74ba020e749d7e4aa8483f"
+  },
+  "raw_results_sha256": "a9439184243cef545bc9eee6b023916a3aa3f332da2fb7799d15a83e9d086612",
+  "implementation_hashes": {
+    "research/assurance_ablations.py": "16ef4fc437c57cc67556af939d2d203ccd2ba712b5a97e548a84c4d4ea8b9b11",
+    "research/mutations.py": "2dd37c12a2c72eaae00a8a9692f65bb260423d32193ff596af0acfe9a3231092",
+    "src/constraint_music/artifact_validation.py": "210ca1acc356d0954ed42e0c2d92e911ac8bf17a159b23a6c6c9dc4b0acd0af3",
+    "src/constraint_music/provenance.py": "9fef4ef642c14f5b25842e31652676397c6082b795b0e8cab422069dc9dee747",
+    "src/constraint_music/delivery.py": "540c4a13685cf27567d242e90dee81b5bd2f4a11d03938da3d41e2410e0e4f51",
+    "src/constraint_music/verifier.py": "5ea1fded93a086c66ab32140854f24ccf3558ddfe9961a4f14f0e61268d89bf3"
+  }
+}
