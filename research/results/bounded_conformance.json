@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "pitch_class_relation": {
     "domain": "12 tonics x 2 modes x degrees 1..6 x 2 qualities x 4 inversions x 24 permutations",
     "visited": 27648,
@@ -119,6 +119,55 @@
         },
         "disagreements": 0,
         "first_disagreement": null
+      }
+    }
+  },
+  "generator_boundary_faults": {
+    "schema_version": 1,
+    "claim_boundary": "This matrix tests deterministic corruption at the generated-assignment and compiled-objective finalization boundary; it is not exhaustive CP-SAT validation.",
+    "toolchain": {
+      "ortools": "9.15.6755",
+      "workers": 1,
+      "seed": 6131,
+      "request_sha256": "221708672cb1a4bff47319a6d99b148bdceb7844e86cc326af05a7ccde5f2a17"
+    },
+    "implementation_hashes": {
+      "pyproject.toml": "093a33c280173be0bd6e10144b73704e2b188c7f44562f89953e5e3b64fffee4",
+      "research/compiler_faults.py": "5b098ec087217c0aadee7bb280434130d04ecf57c8595550946260c5d50e25a2",
+      "src/constraint_music/solver.py": "8171d894cd80b41e7bf501afa4fa02c50da3a29ff1849500816b5fd818228990"
+    },
+    "visited": 6,
+    "escaped_faults": 0,
+    "cases": {
+      "control": {
+        "expected": "ACCEPT",
+        "observed": "ACCEPT",
+        "diagnostic": null
+      },
+      "melody_domain": {
+        "expected": "REJECT",
+        "observed": "REJECT",
+        "diagnostic": "Solver/verifier contract breach: [CM002] Melody step 0: note 0 is outside the configured range; [CM005] Beat 0: strong melody note is not in the active support/realized chord; [CM008] Melody steps 0->1: leap exceeds limit; [CM027] Beat 0: soprano is not anchored to the strong-step melody"
+      },
+      "target_metadata": {
+        "expected": "REJECT",
+        "observed": "REJECT",
+        "diagnostic": "Solver/verifier contract breach: [CM034] Beat 0: seventh chord does not contain four chord tones; [CM036] Beat 0: dominant seventh does not resolve to tonic; [CM036] bass beat 0: dominant leading tone does not resolve upward; [CM055] Serialized harmony does not meet minimum_secondary_leading_tone_seventh_chords"
+      },
+      "inversion_bass": {
+        "expected": "REJECT",
+        "observed": "REJECT",
+        "diagnostic": "Solver/verifier contract breach: [CM037] Beat 0: tonicization is not enabled by the spec; [CM038] Beat 0: applied-dominant root degree does not match target 5; [CM038] Beat 0: applied dominant is not a complete dominant seventh; [CM056] Beat 0: secondary leading-tone seventh inversion mismatches bass; [CM055] Serialized harmony does not meet minimum_secondary_leading_tone_seventh_chords"
+      },
+      "tendency_resolution": {
+        "expected": "REJECT",
+        "observed": "REJECT",
+        "diagnostic": "Solver/verifier contract breach: [CM030] Beat 1: SATB chord is incomplete or does not double the root; [CM057] alto beat 0: local leading tone does not resolve upward by semitone"
+      },
+      "compiled_objective": {
+        "expected": "REJECT",
+        "observed": "REJECT",
+        "diagnostic": "Solver/objective-vector breach: compiled and independent objective vectors differ"
       }
     }
   }

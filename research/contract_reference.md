@@ -74,6 +74,20 @@ Its scope is systematic rather than exhaustive. The checked-in
 `research/results/bounded_conformance.json` records exact cardinalities, category
 counts, pruning, first disagreements, and hashes for the oracle and production predicates.
 
+## Pinned generator finalization faults
+
+The aggregate evidence pins OR-Tools 9.15.6755, one worker, seed 6131, the canonical
+request digest, and hashes for the dependency declaration, fault harness, and production
+solver boundary. It runs one valid secondary-seventh control plus four corruptions of
+ordinary generated values (melody domain, target metadata, inversion/bass identity, and
+tendency resolution) and one corruption of the compiled objective vector. The exact
+production finalizer must accept only the control and raise `InternalVerificationError`
+for every injected fault.
+
+This matrix demonstrates fail-closed behavior at the generator finalization boundary.
+It does not delete every individual CP-SAT constraint, prove that CP-SAT is correct, or
+establish global compiler/checker equivalence.
+
 ## Known limits
 
 The reference encodes the repository's declared bounded contract. It does not infer
