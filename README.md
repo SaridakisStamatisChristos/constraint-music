@@ -268,3 +268,14 @@ augmented-sixth/Neapolitan reinterpretation, unrestricted chromatic-harmony
 inference, free key-center inference, and probabilistic harmony certification.
 
 See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [History](docs/HISTORY.md), [Roadmap](docs/ROADMAP.md), and [Changelog](CHANGELOG.md).
+
+## Licence
+
+Constraint Music is **proprietary, source-available software**. It is not open
+source. Copyright © 2026 Stamatis-Christos Saridakis. All rights are reserved.
+
+Public repository visibility permits the limited viewing and forking rights
+required by GitHub's Terms of Service; it does not grant a general right to run,
+modify, redistribute, sublicense, or commercialize the software. Contributions
+are accepted only by prior written agreement. See [LICENSE](LICENSE) for the
+complete terms and licensing contact route.
