@@ -24,6 +24,7 @@ class RuleOutcome:
     status: RuleStatus
     diagnostic_codes: tuple[str, ...] = ()
     rationale: str = ""
+    visited: bool = False
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -31,6 +32,7 @@ class RuleOutcome:
             "status": self.status.value,
             "diagnostic_codes": list(self.diagnostic_codes),
             "rationale": self.rationale,
+            "visited": self.visited,
         }
 
     @classmethod
@@ -41,13 +43,63 @@ class RuleOutcome:
         status = value.get("status")
         codes = value.get("diagnostic_codes", ())
         rationale = value.get("rationale", "")
+        visited = value.get("visited")
         if not isinstance(rule_id, str) or not isinstance(status, str):
             raise ValueError("rule outcome requires string rule_id/status")
         if not isinstance(codes, list) or not all(isinstance(item, str) for item in codes):
             raise ValueError("rule outcome diagnostic_codes must be a string array")
         if not isinstance(rationale, str):
             raise ValueError("rule outcome rationale must be a string")
-        return cls(rule_id, RuleStatus(status), tuple(codes), rationale)
+        parsed_status = RuleStatus(status)
+        if visited is None:
+            visited = parsed_status in {RuleStatus.PASS, RuleStatus.FAIL}
+        if type(visited) is not bool:
+            raise ValueError("rule outcome visited must be a boolean")
+        return cls(rule_id, parsed_status, tuple(codes), rationale, visited)
+
+
+@dataclass(frozen=True, slots=True)
+class RuleDiagnostic:
+    """Stable machine-readable diagnostic emitted by an executed rule."""
+
+    rule_id: str
+    code: str
+    message: str
+    feature: str
+    location: str | None = None
+    voice: str | None = None
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "rule_id": self.rule_id,
+            "code": self.code,
+            "message": self.message,
+            "feature": self.feature,
+            "location": self.location,
+            "voice": self.voice,
+        }
+
+    @classmethod
+    def from_mapping(cls, value: Any) -> RuleDiagnostic:
+        if not isinstance(value, dict):
+            raise ValueError("rule diagnostic must be an object")
+        required = ("rule_id", "code", "message", "feature")
+        if not all(isinstance(value.get(key), str) for key in required):
+            raise ValueError("rule diagnostic requires string rule_id/code/message/feature")
+        location = value.get("location")
+        voice = value.get("voice")
+        if location is not None and not isinstance(location, str):
+            raise ValueError("rule diagnostic location must be a string or null")
+        if voice is not None and not isinstance(voice, str):
+            raise ValueError("rule diagnostic voice must be a string or null")
+        return cls(
+            rule_id=value["rule_id"],
+            code=value["code"],
+            message=value["message"],
+            feature=value["feature"],
+            location=location,
+            voice=voice,
+        )
 
 
 @dataclass(frozen=True, slots=True)
@@ -581,9 +633,11 @@ def build_rule_outcomes(
     spec: Any,
     failed_rules: tuple[str, ...],
     *,
+    visited_rules: tuple[str, ...] = (),
     blocked_rules: tuple[str, ...] = (),
 ) -> tuple[RuleOutcome, ...]:
     failed = set(failed_rules)
+    visited = set(visited_rules)
     blocked = set(blocked_rules)
     outcomes: list[RuleOutcome] = []
     for rule_id in HARD_CONSTRAINT_IDS:
@@ -592,12 +646,29 @@ def build_rule_outcomes(
             status = RuleStatus.FAIL
         elif rule_id in blocked:
             status = RuleStatus.BLOCKED
-        elif applicable:
+        elif applicable and rule_id in visited:
             status = RuleStatus.PASS
-        else:
+        elif not applicable:
             status = RuleStatus.NOT_APPLICABLE
-        codes = (f"{rule_id}.FAILED",) if status is RuleStatus.FAIL else ()
-        outcomes.append(RuleOutcome(rule_id, status, codes, rationale))
+        else:
+            status = RuleStatus.BLOCKED
+            rationale = "applicable predicate was not visited"
+        codes: tuple[str, ...]
+        if status is RuleStatus.FAIL:
+            codes = (f"{rule_id}.FAILED",)
+        elif status is RuleStatus.BLOCKED and rule_id not in blocked:
+            codes = (f"{rule_id}.NOT_VISITED",)
+        else:
+            codes = ()
+        outcomes.append(
+            RuleOutcome(
+                rule_id,
+                status,
+                codes,
+                rationale,
+                rule_id in visited,
+            )
+        )
     return tuple(outcomes)
 
 
@@ -611,6 +682,8 @@ def contract_payload() -> dict[str, object]:
                 "description": rule.description,
                 "conditional": rule.conditional,
                 "applicability": _applicability_label(rule.rule_id),
+                "feature": rule_feature(rule.rule_id),
+                "checker": rule_checker(rule.rule_id),
             }
             for rule in HARD_CONSTRAINTS
         ],
@@ -657,3 +730,47 @@ def _applicability_label(rule_id: str) -> str:
     if 52 <= number <= 54:
         return "secondary_leading_tone_enabled"
     return "secondary_leading_tone_seventh_enabled"
+
+
+def rule_feature(rule_id: str) -> str:
+    number = int(rule_id[2:])
+    if number == 1:
+        return "artifact-shape"
+    if 2 <= number <= 16:
+        return "tonal-core"
+    if 17 <= number <= 21:
+        return "rhythm-motif"
+    if 22 <= number <= 26:
+        return "phrase-grammar"
+    if 27 <= number <= 32:
+        return "satb"
+    if 33 <= number <= 36:
+        return "expanded-harmony"
+    if 37 <= number <= 40:
+        return "tonicization"
+    if 41 <= number <= 42:
+        return "modal-mixture"
+    if 43 <= number <= 48:
+        return "modulation"
+    if 49 <= number <= 51:
+        return "borrowed-seventh"
+    if 52 <= number <= 54:
+        return "secondary-leading-tone-triad"
+    return "secondary-leading-tone-seventh"
+
+
+def rule_checker(rule_id: str) -> str:
+    number = int(rule_id[2:])
+    if number <= 21:
+        return "constraint_music.verifier.verify_result"
+    if number <= 26:
+        return "constraint_music.phrase_verify.phrase_verification_issues"
+    if number <= 42:
+        return "constraint_music.satb and contextual runtime verification"
+    if number <= 48:
+        return "constraint_music.modulation_runtime verification"
+    if number <= 51:
+        return "constraint_music.borrowed_seventh_runtime verification"
+    if number <= 54:
+        return "constraint_music.secondary_leading_tone_runtime verification"
+    return "constraint_music.secondary_leading_tone_seventh_runtime verification"

@@ -1,6 +1,13 @@
 # Executable Contract 2.13
 
-Each rule is emitted exactly once as `PASS`, `FAIL`, `NOT_APPLICABLE`, or `BLOCKED`. `PASS` means the production checker executed the applicable predicate; `NOT_APPLICABLE` records the condition below; `BLOCKED` means required inputs were unavailable. `checked_rules` is retained only as a compatibility index; certification claims use `rule_outcomes` and `evaluated_rule_ids`.
+Each rule is emitted exactly once as `PASS`, `FAIL`, `NOT_APPLICABLE`, or `BLOCKED`. `PASS` means the production checker executed the applicable predicate; every outcome carries an explicit `visited` bit. An applicable rule that was not visited is fail-closed as `BLOCKED` with `<RULE>.NOT_VISITED`. `NOT_APPLICABLE` records the condition below; other `BLOCKED` outcomes identify unavailable prerequisites. `checked_rules` is retained only as a compatibility index; certification claims use `rule_outcomes` and `evaluated_rule_ids`.
+
+Failures additionally carry structured diagnostics with a stable code, rule ID,
+feature family, location, optional voice, and presentation message. Compiler coverage
+is registered independently in `compiler_registry.py`: every invoked phase records its
+implementation symbol, applicable rule IDs, and exact half-open CP-SAT constraint span.
+The registration catalogue covers `CM001`–`CM057`, but is evidence of implemented
+coverage only; it is not a compiler/checker-equivalence theorem.
 
 | Rule | Predicate | Applicability |
 |---|---|---|
