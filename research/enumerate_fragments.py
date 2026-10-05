@@ -77,7 +77,7 @@ def enumerate_all_domains() -> dict[str, object]:
     """Return separately named finite partitions without inflating their scope."""
 
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "pitch_class_relation": enumerate_pitch_class_domain(),
         "bounded_conformance": bounded_conformance_report(),
     }

@@ -6,6 +6,7 @@ from pathlib import Path
 from research.differential_check import (
     bounded_conformance_report,
     enumerate_absolute_register_domain,
+    enumerate_context_anchor_domain,
     enumerate_voice_resolution_domain,
     evaluate_complete_verifier_matrix,
 )
@@ -39,6 +40,24 @@ def test_voice_resolution_partition_matches_every_bounded_local_decision() -> No
     assert result["first_disagreement"] is None
 
 
+def test_context_anchor_partition_matches_every_bounded_local_decision() -> None:
+    result = enumerate_context_anchor_domain()
+
+    assert result["visited"] == 680
+    assert result["visited"] == result["accepted"] + result["rejected"]
+    assert result["accepted"] == 83
+    assert result["categories"] == {
+        "authentic_cadence:accept": 15,
+        "authentic_cadence:reject": 125,
+        "modulation:accept": 40,
+        "modulation:reject": 360,
+        "open_form:accept": 28,
+        "open_form:reject": 112,
+    }
+    assert result["disagreements"] == 0
+    assert result["first_disagreement"] is None
+
+
 def test_complete_verifier_matrix_accepts_controls_and_rejects_named_faults() -> None:
     result = evaluate_complete_verifier_matrix()
 
@@ -60,8 +79,10 @@ def test_bounded_report_is_deterministic_json_with_pinned_sources() -> None:
     rendered = json.dumps(report, sort_keys=True)
 
     assert json.dumps(json.loads(rendered), sort_keys=True) == rendered
+    assert report["schema_version"] == 2
     assert set(report["partitions"]) == {
         "absolute_register",
+        "context_anchor",
         "voice_resolution",
         "complete_verifier",
     }

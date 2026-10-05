@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "pitch_class_relation": {
     "domain": "12 tonics x 2 modes x degrees 1..6 x 2 qualities x 4 inversions x 24 permutations",
     "visited": 27648,
@@ -30,13 +30,13 @@
     }
   },
   "bounded_conformance": {
-    "schema_version": 1,
+    "schema_version": 2,
     "claim_boundary": "Agreement is limited to the declared finite partitions and systematic matrix; it is not global solver/checker equivalence.",
     "implementation_hashes": {
-      "research/oracle/secondary_seventh.py": "2b467232dcb59eb153010fe96cf843e9227710f6ca958049aabf9a3ed0819929",
-      "research/differential_check.py": "4129f0c86500875d6c1bbffdea411feada8a7098ba39f2830e0ff43ab8552d3c",
+      "research/oracle/secondary_seventh.py": "7e1b22849200a45aa21aa415fe1b1e64d8cc1ce623957c47bbed84014ded94bf",
+      "research/differential_check.py": "9a7b64d56da45f1b38605131ba9d399527c6b860a172694cd9175a4364b83694",
       "src/constraint_music/satb.py": "b6e7fc465b21aa2c6a79e0f03ec29e73d51a477440c42c6fec694bed0325e1cd",
-      "src/constraint_music/secondary_leading_tone_seventh_runtime.py": "469720b6609ac885ba0befebfe1a1031c6af252b64340432ee32e41ff1e29ccd"
+      "src/constraint_music/secondary_leading_tone_seventh_runtime.py": "5a6f3d328cf4c1a45d7674094a92cbdd23376985c90aa35b38ecf495d08b8b62"
     },
     "partitions": {
       "absolute_register": {
@@ -66,6 +66,29 @@
         "visited": 4824,
         "accepted": 1233,
         "rejected": 3591,
+        "disagreements": 0,
+        "first_disagreement": null
+      },
+      "context_anchor": {
+        "domain": "2..8 beats x open/authentic-cadence forms plus every valid single-modulation boundary x every beat x supported-target/modal-overlap truth table",
+        "bounds": {
+          "total_beats": [
+            2,
+            8
+          ],
+          "modulation_boundary": "every valid boundary in 2..total_beats-2"
+        },
+        "visited": 680,
+        "accepted": 83,
+        "rejected": 597,
+        "categories": {
+          "authentic_cadence:accept": 15,
+          "authentic_cadence:reject": 125,
+          "modulation:accept": 40,
+          "modulation:reject": 360,
+          "open_form:accept": 28,
+          "open_form:reject": 112
+        },
         "disagreements": 0,
         "first_disagreement": null
       },

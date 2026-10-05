@@ -36,8 +36,11 @@ python -m research.enumerate_fragments \
 ```
 
 The bounded enumerator reports separately named pitch-class, absolute-register,
-voice-resolution, and complete-verifier partitions. It records generated/visited
-cardinalities, explicit pruning, first disagreements, and implementation hashes.
+context/anchor, voice-resolution, and complete-verifier partitions. It records
+generated/visited cardinalities, explicit pruning, category counts, first disagreements,
+and implementation hashes. The context/anchor partition enumerates every beat in
+2..8-beat open and authentic-cadence forms plus every valid single-modulation boundary,
+crossed with supported-target and modal-overlap truth values.
 The checked-in evidence must match a fresh run data-for-data after JSON parsing. It
 must not be described as exhaustive beyond each declared domain; the complete-verifier
 matrix is explicitly systematic. The corruption harness records

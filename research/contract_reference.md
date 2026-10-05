@@ -13,7 +13,7 @@ test guard parses their abstract syntax trees and rejects imports from
 | Module | Reference domain | SHA-256 |
 | --- | --- | --- |
 | `contextual_harmony.py` | Diatonic triads/sevenths, applied dominants, borrowed sevenths and tendencies | `f25bff4951e0e634d7d2edc05e0d29a6da2a392b08319f16d25955b67b515259` |
-| `secondary_seventh.py` | Secondary leading-tone seventh quality, completeness, inversion, bounded register and voice resolution | `2b467232dcb59eb153010fe96cf843e9227710f6ca958049aabf9a3ed0819929` |
+| `secondary_seventh.py` | Secondary leading-tone seventh quality, completeness, inversion, bounded context/register and voice resolution | `7e1b22849200a45aa21aa415fe1b1e64d8cc1ce623957c47bbed84014ded94bf` |
 | `modulation.py` | Dominant destination, persistent context, common pivot and terminal confirmation | `cc547ba54a9bb2e06af061a64a2f007985193bcf4c86f398209509bc9b92a2f4` |
 | `rhythm_phrase.py` | CM017–CM026 rhythm, motif, phrase, cadence and period relations | `75eae67d21fb49d3ff66cd9bb057bb464ec8300fd22540480ee1047f4a6e76c9` |
 | `delivery.py` | Standard MIDI File parsing, exact event/context projection and byte digest | `3cdc28a711d455e75f4dd1c0dec95756c21b62c57528c2ecd2598ad223601700` |
@@ -63,11 +63,16 @@ quality policies, inversions and role assignments. Octave normalization is valid
 only for that local motion predicate; register and target-triad membership remain
 separate obligations.
 
+The context/anchor partition enumerates every beat of 2..8-beat open and
+authentic-cadence forms, every valid single-modulation boundary in that range, and the
+complete supported-target/modal-overlap truth table. It compares an independent
+placement oracle with the exact CM055 production predicate used by full verification.
+
 The complete-verifier matrix embeds all eight permitted quality/inversion forms of
 C-major vii7/V -> V, plus one register fault and one resolution fault per form.
 Its scope is systematic rather than exhaustive. The checked-in
-`research/results/bounded_conformance.json` records exact cardinalities, pruning,
-first disagreements, and hashes for the oracle and production predicates.
+`research/results/bounded_conformance.json` records exact cardinalities, category
+counts, pruning, first disagreements, and hashes for the oracle and production predicates.
 
 ## Known limits
 

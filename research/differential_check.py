@@ -22,6 +22,7 @@ from constraint_music.secondary_leading_tone import (
     secondary_leading_tone_seventh_support_degree,
 )
 from constraint_music.secondary_leading_tone_seventh_runtime import (
+    secondary_seventh_context_verification_issues,
     secondary_seventh_resolution_verification_issues,
 )
 from constraint_music.theory import ChordKind
@@ -32,6 +33,7 @@ from .oracle.secondary_seventh import (
     SeventhQuality,
     adjudicate_satb_register,
     adjudicate_secondary_seventh,
+    adjudicate_secondary_seventh_context,
     adjudicate_target_triad,
     adjudicate_voice_resolutions,
     pitches_for_pitch_classes,
@@ -256,6 +258,118 @@ def enumerate_voice_resolution_domain() -> dict[str, object]:
     }
 
 
+def _context_specs() -> tuple[tuple[str, GenerationSpec], ...]:
+    specs: list[tuple[str, GenerationSpec]] = []
+    for total_beats in range(2, 9):
+        common = {
+            "bars": 1,
+            "beats_per_bar": total_beats,
+            "subdivisions_per_beat": 1,
+            "harmony_vocabulary": "triads+sevenths",
+            "secondary_leading_tone_seventh_enabled": True,
+        }
+        specs.append(
+            (
+                "open_form",
+                GenerationSpec(require_authentic_cadence=False, **common),
+            )
+        )
+        specs.append(
+            (
+                "authentic_cadence",
+                GenerationSpec(require_authentic_cadence=True, **common),
+            )
+        )
+        if total_beats >= 4:
+            for boundary in range(2, total_beats - 1):
+                specs.append(
+                    (
+                        "modulation",
+                        GenerationSpec(
+                            require_authentic_cadence=False,
+                            modulation_enabled=True,
+                            modulation_destination_key="G",
+                            modulation_boundary_beat=boundary,
+                            **common,
+                        ),
+                    )
+                )
+    return tuple(specs)
+
+
+@cache
+def enumerate_context_anchor_domain() -> dict[str, object]:
+    """Enumerate every declared placement/context bit over bounded form topologies."""
+
+    visited = 0
+    accepted = 0
+    rejected = 0
+    disagreements = 0
+    first_disagreement: dict[str, object] | None = None
+    categories: Counter[str] = Counter()
+
+    for topology, spec in _context_specs():
+        for beat in range(spec.total_beats):
+            for target_supported, modal_overlap in product((False, True), repeat=2):
+                boundary = (
+                    spec.modulation_boundary_beat if spec.modulation_enabled else None
+                )
+                oracle = adjudicate_secondary_seventh_context(
+                    beat=beat,
+                    total_beats=spec.total_beats,
+                    target_supported=target_supported,
+                    modal_overlap=modal_overlap,
+                    require_authentic_cadence=spec.require_authentic_cadence,
+                    modulation_boundary_beat=boundary,
+                )
+                production_issues = secondary_seventh_context_verification_issues(
+                    spec,
+                    beat,
+                    target=4,
+                    supported_targets={4} if target_supported else set(),
+                    modal_overlap=modal_overlap,
+                )
+                production_valid = not production_issues
+                visited += 1
+                accepted += int(oracle.valid)
+                rejected += int(not oracle.valid)
+                categories[f"{topology}:{'accept' if oracle.valid else 'reject'}"] += 1
+                if oracle.valid != production_valid:
+                    disagreements += 1
+                first_disagreement = _first_disagreement(
+                    first_disagreement,
+                    case={
+                        "topology": topology,
+                        "total_beats": spec.total_beats,
+                        "beat": beat,
+                        "modulation_boundary_beat": boundary,
+                        "target_supported": target_supported,
+                        "modal_overlap": modal_overlap,
+                    },
+                    oracle_valid=oracle.valid,
+                    production_valid=production_valid,
+                    oracle_reasons=oracle.reasons,
+                    production_issues=production_issues,
+                )
+
+    return {
+        "domain": (
+            "2..8 beats x open/authentic-cadence forms plus every valid single-modulation "
+            "boundary x every beat x supported-target/modal-overlap truth table"
+        ),
+        "bounds": {
+            "total_beats": (2, 8),
+            "modulation_boundary": "every valid boundary in 2..total_beats-2",
+        },
+        "visited": visited,
+        "accepted": accepted,
+        "rejected": rejected,
+        "categories": dict(sorted(categories.items())),
+        "disagreements": disagreements,
+        "first_disagreement": first_disagreement,
+    }
+
+
 def _complete_artifact(
     quality: SeventhQuality,
     inversion: int,
@@ -442,7 +556,7 @@ def _source_hash(relative_path: str) -> str:
 
 def bounded_conformance_report() -> dict[str, object]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "claim_boundary": (
             "Agreement is limited to the declared finite partitions and systematic matrix; "
             "it is not global solver/checker equivalence."
@@ -458,6 +572,7 @@ def bounded_conformance_report() -> dict[str, object]:
         },
         "partitions": {
             "absolute_register": enumerate_absolute_register_domain(),
+            "context_anchor": enumerate_context_anchor_domain(),
             "voice_resolution": enumerate_voice_resolution_domain(),
             "complete_verifier": evaluate_complete_verifier_matrix(),
         },
