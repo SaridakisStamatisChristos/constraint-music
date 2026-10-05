@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "comparator": {
+    "package": "music21",
+    "required_version": "9.9.2",
+    "observed_version": "9.9.2",
+    "source_tag": "v9.9.2",
+    "release_commit": "aa9780a",
+    "license": "BSD-3-Clause"
+  },
+  "claim_boundary": "Predicate agreement on declared finite shared scopes only; this is not a whole-system quality, robustness, generation, or superiority comparison.",
+  "excluded_from_comparison": [
+    "generation and objective quality",
+    "complete SATB rule-contract coverage",
+    "artifact shape and schema validation",
+    "provenance and request binding",
+    "certified MIDI delivery parse-back",
+    "contextual harmony, rhythm, motifs, phrases, and modulation"
+  ],
+  "adapters": [
+    {
+      "adapter_id": "music21-voice-leading-v1",
+      "scope": "Two ordered voices; initial lower MIDI 48..59; initial vertical spans 1..24; signed nonzero motions of 1..3 semitones (overall MIDI 45..86); ending order preserved; similar-motion parallel perfect fifths or octave-equivalent intervals.",
+      "case_denominator": 9840,
+      "agreements": 9840,
+      "disagreements": 0,
+      "agreement_rate": 1.0,
+      "decision_pairs": {
+        "internal_false__external_false": 9552,
+        "internal_true__external_true": 288
+      },
+      "first_disagreements": []
+    },
+    {
+      "adapter_id": "music21-c-major-triad-v1",
+      "scope": "Four-note C-major diatonic triads only; degrees 1..7; declared inversions 0..2; exact chord-tone completeness, root doubling, and bass inversion; bounded doubling, missing-third, foreign-tone, and wrong-inversion cases.",
+      "case_denominator": 126,
+      "agreements": 126,
+      "disagreements": 0,
+      "agreement_rate": 1.0,
+      "decision_pairs": {
+        "internal_false__external_false": 105,
+        "internal_true__external_true": 21
+      },
+      "first_disagreements": []
+    }
+  ],
+  "implementation_hashes": {
+    "research/external_comparators.py": "5e0abab3ad27988109f2d545d8269dc411411bb31dae81598346e518f3296175",
+    "src/constraint_music/theory.py": "ddd89821e56c30ecfc32f2fb5376802423594d21b5a1f5f76dc96db1aa790548",
+    "src/constraint_music/satb.py": "b6e7fc465b21aa2c6a79e0f03ec29e73d51a477440c42c6fec694bed0325e1cd"
+  }
+}
