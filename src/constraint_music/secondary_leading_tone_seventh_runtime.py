@@ -1044,12 +1044,6 @@ def secondary_leading_tone_seventh_satb_verification_issues(
         issues.append(("CM037", "Serialized harmony misses minimum_applied_dominants"))
 
     exact_secondary_count = 0
-    voices = (
-        ("soprano", result.soprano),
-        ("alto", result.alto),
-        ("tenor", result.tenor),
-        ("bass", result.bass),
-    )
     for beat in sorted(candidates):
         target = result.tonicization_targets[beat]
         if target is None:
@@ -1216,44 +1210,28 @@ def secondary_leading_tone_seventh_satb_verification_issues(
 
         if expected is None or matched_quality is None:
             continue
-        root, _third, diminished_fifth, chordal_seventh = expected
-        fifth_delta = -1 if key.triad_quality(target) == "major" else -2
-        seventh_delta = (
-            -1
-            if matched_quality is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
-            else -2
+        source_voices = (
+            result.soprano[beat],
+            result.alto[beat],
+            result.tenor[beat],
+            result.bass[beat],
         )
-        for label, voice in voices:
-            if voice[beat] % 12 == root and voice[beat + 1] != voice[beat] + 1:
-                issues.append(
-                    (
-                        "CM057",
-                        f"{label} beat {beat}: local leading tone does not resolve upward by "
-                        "semitone",
-                    )
-                )
-            if (
-                voice[beat] % 12 == diminished_fifth
-                and voice[beat + 1] - voice[beat] != fifth_delta
-            ):
-                issues.append(
-                    (
-                        "CM057",
-                        f"{label} beat {beat}: diminished fifth does not resolve by its exact "
-                        "target-dependent downward step",
-                    )
-                )
-            if (
-                voice[beat] % 12 == chordal_seventh
-                and voice[beat + 1] - voice[beat] != seventh_delta
-            ):
-                issues.append(
-                    (
-                        "CM057",
-                        f"{label} beat {beat}: chordal seventh does not resolve by its exact "
-                        "quality-dependent downward step",
-                    )
-                )
+        destination_voices = (
+            result.soprano[beat + 1],
+            result.alto[beat + 1],
+            result.tenor[beat + 1],
+            result.bass[beat + 1],
+        )
+        issues.extend(
+            secondary_seventh_resolution_verification_issues(
+                source_voices,
+                destination_voices,
+                expected=expected,
+                quality=matched_quality,
+                target_is_major=key.triad_quality(target) == "major",
+                beat=beat,
+            )
+        )
 
     if exact_secondary_count < spec.minimum_secondary_leading_tone_seventh_chords:
         issues.append(
@@ -1263,6 +1241,58 @@ def secondary_leading_tone_seventh_satb_verification_issues(
                 "minimum_secondary_leading_tone_seventh_chords",
             )
         )
+    return tuple(issues)
+
+
+def secondary_seventh_resolution_verification_issues(
+    source: tuple[int, int, int, int],
+    destination: tuple[int, int, int, int],
+    *,
+    expected: tuple[int, int, int, int],
+    quality: SecondaryLeadingToneSeventhQuality,
+    target_is_major: bool,
+    beat: int | None = None,
+) -> tuple[tuple[str, str], ...]:
+    """Classify the three voice-specific secondary-seventh tendency motions."""
+
+    root, _third, diminished_fifth, chordal_seventh = expected
+    fifth_delta = -1 if target_is_major else -2
+    seventh_delta = (
+        -1
+        if quality is SecondaryLeadingToneSeventhQuality.FULLY_DIMINISHED
+        else -2
+    )
+    prefix = "" if beat is None else f" beat {beat}"
+    issues: list[tuple[str, str]] = []
+    for label, before, after in zip(
+        ("soprano", "alto", "tenor", "bass"),
+        source,
+        destination,
+        strict=True,
+    ):
+        if before % 12 == root and after != before + 1:
+            issues.append(
+                (
+                    "CM057",
+                    f"{label}{prefix}: local leading tone does not resolve upward by semitone",
+                )
+            )
+        if before % 12 == diminished_fifth and after - before != fifth_delta:
+            issues.append(
+                (
+                    "CM057",
+                    f"{label}{prefix}: diminished fifth does not resolve by its exact "
+                    "target-dependent downward step",
+                )
+            )
+        if before % 12 == chordal_seventh and after - before != seventh_delta:
+            issues.append(
+                (
+                    "CM057",
+                    f"{label}{prefix}: chordal seventh does not resolve by its exact "
+                    "quality-dependent downward step",
+                )
+            )
     return tuple(issues)
 
 

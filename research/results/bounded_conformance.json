@@ -1,0 +1,102 @@
+{
+  "schema_version": 2,
+  "pitch_class_relation": {
+    "domain": "12 tonics x 2 modes x degrees 1..6 x 2 qualities x 4 inversions x 24 permutations",
+    "visited": 27648,
+    "accepted": 5184,
+    "rejected": 22464,
+    "first_rejection": {
+      "tonic": 0,
+      "mode": "major",
+      "target_degree": 1,
+      "quality": "fully-diminished",
+      "inversion": 0,
+      "voices": [
+        61,
+        64,
+        55,
+        46
+      ],
+      "decision": {
+        "valid": false,
+        "reason": "bass does not realize the declared inversion",
+        "expected_pitch_classes": [
+          1,
+          4,
+          7,
+          10
+        ]
+      }
+    }
+  },
+  "bounded_conformance": {
+    "schema_version": 1,
+    "claim_boundary": "Agreement is limited to the declared finite partitions and systematic matrix; it is not global solver/checker equivalence.",
+    "implementation_hashes": {
+      "research/oracle/secondary_seventh.py": "2b467232dcb59eb153010fe96cf843e9227710f6ca958049aabf9a3ed0819929",
+      "research/differential_check.py": "4129f0c86500875d6c1bbffdea411feada8a7098ba39f2830e0ff43ab8552d3c",
+      "src/constraint_music/satb.py": "b6e7fc465b21aa2c6a79e0f03ec29e73d51a477440c42c6fec694bed0325e1cd",
+      "src/constraint_music/secondary_leading_tone_seventh_runtime.py": "469720b6609ac885ba0befebfe1a1031c6af252b64340432ee32e41ff1e29ccd"
+    },
+    "partitions": {
+      "absolute_register": {
+        "domain": "12 target pitch classes x 2 qualities x 4 inversions x every exact S/A/T/B octave placement in the closed bounds",
+        "bounds": {
+          "soprano": [
+            60,
+            81
+          ],
+          "alto": [
+            55,
+            74
+          ],
+          "tenor": [
+            48,
+            67
+          ],
+          "bass": [
+            36,
+            55
+          ],
+          "max_upper_spacing": 12
+        },
+        "generated": 52325,
+        "pruned_non_exact_role_assignment": 47501,
+        "pruning_rationale": "The pitch-class partition already classifies incomplete or doubled relations; this partition keeps only exact four-role realizations with the declared bass.",
+        "visited": 4824,
+        "accepted": 1233,
+        "rejected": 3591,
+        "disagreements": 0,
+        "first_disagreement": null
+      },
+      "voice_resolution": {
+        "domain": "12 target pitch classes x target quality policy (minor: fully diminished; major: fully/half diminished) x 4 inversions x 6 voice assignments x 5^4 simultaneous voice motions",
+        "motion_bounds_semitones": [
+          -2,
+          2
+        ],
+        "pruning_rationale": "Source pitches are octave-normalized because the local tendency predicate depends only on source pitch class and signed melodic delta. Register and destination-triad membership are classified in separate partitions.",
+        "visited": 540000,
+        "accepted": 4320,
+        "rejected": 535680,
+        "disagreements": 0,
+        "first_disagreement": null
+      },
+      "complete_verifier": {
+        "domain": "systematic complete-verifier matrix: 2 qualities x 4 inversions x valid/register-fault/resolution-fault",
+        "scope": "C major vii7/V -> V two-beat artifacts; this matrix is systematic, not an exhaustive full-composition claim",
+        "visited": 24,
+        "categories": {
+          "none:oracle_accept": 8,
+          "none:verifier_accept": 8,
+          "register:oracle_reject": 8,
+          "register:verifier_reject": 8,
+          "resolution:oracle_reject": 8,
+          "resolution:verifier_reject": 8
+        },
+        "disagreements": 0,
+        "first_disagreement": null
+      }
+    }
+  }
+}

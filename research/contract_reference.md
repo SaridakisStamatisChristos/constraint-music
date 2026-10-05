@@ -13,7 +13,7 @@ test guard parses their abstract syntax trees and rejects imports from
 | Module | Reference domain | SHA-256 |
 | --- | --- | --- |
 | `contextual_harmony.py` | Diatonic triads/sevenths, applied dominants, borrowed sevenths and tendencies | `f25bff4951e0e634d7d2edc05e0d29a6da2a392b08319f16d25955b67b515259` |
-| `secondary_seventh.py` | Secondary leading-tone seventh quality, completeness and inversion | `11b25049467368fb71902636e75d374b42a9826e2eec6774e8c1da8b894ff2d7` |
+| `secondary_seventh.py` | Secondary leading-tone seventh quality, completeness, inversion, bounded register and voice resolution | `2b467232dcb59eb153010fe96cf843e9227710f6ca958049aabf9a3ed0819929` |
 | `modulation.py` | Dominant destination, persistent context, common pivot and terminal confirmation | `cc547ba54a9bb2e06af061a64a2f007985193bcf4c86f398209509bc9b92a2f4` |
 | `rhythm_phrase.py` | CM017–CM026 rhythm, motif, phrase, cadence and period relations | `75eae67d21fb49d3ff66cd9bb057bb464ec8300fd22540480ee1047f4a6e76c9` |
 | `delivery.py` | Standard MIDI File parsing, exact event/context projection and byte digest | `3cdc28a711d455e75f4dd1c0dec95756c21b62c57528c2ecd2598ad223601700` |
@@ -50,6 +50,24 @@ The current delivery matrix includes both certifying profiles, tie/rest melody,
 twelve representative quality/inversion/register realizations, modulation context,
 note identity/timing/channel/track faults, malformed bytes, overlapping note-ons,
 output hashing, and publication failures before atomic replacement.
+
+## Bounded secondary-seventh conformance
+
+`research.enumerate_fragments` keeps the historical pitch-class relation partition
+separate from two new finite local partitions and a systematic whole-verifier matrix.
+The absolute-register partition enumerates every exact four-role octave placement
+inside S 60..81, A 55..74, T 48..67 and B 36..55, with strict ordering and
+12-semitone upper-voice spacing. The voice-resolution partition enumerates every
+simultaneous -2..+2 semitone motion for all target pitch classes, permitted target
+quality policies, inversions and role assignments. Octave normalization is valid
+only for that local motion predicate; register and target-triad membership remain
+separate obligations.
+
+The complete-verifier matrix embeds all eight permitted quality/inversion forms of
+C-major vii7/V -> V, plus one register fault and one resolution fault per form.
+Its scope is systematic rather than exhaustive. The checked-in
+`research/results/bounded_conformance.json` records exact cardinalities, pruning,
+first disagreements, and hashes for the oracle and production predicates.
 
 ## Known limits
 
