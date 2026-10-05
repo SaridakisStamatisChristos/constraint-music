@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Container
 from functools import cache
 from itertools import pairwise, product
 
@@ -992,6 +993,63 @@ def _secondary_seventh_dispatch(
     return merge_semantic_dispatch(inherited, interpretations)
 
 
+def secondary_seventh_context_verification_issues(
+    spec: GenerationSpec,
+    beat: int,
+    *,
+    target: int,
+    supported_targets: Container[int],
+    modal_overlap: bool,
+) -> tuple[tuple[str, str], ...]:
+    """Check only CM055 placement and contextual eligibility for one candidate beat."""
+
+    if not 0 <= beat < spec.total_beats:
+        raise ValueError(f"Beat {beat} is outside 0..{spec.total_beats - 1}")
+
+    issues: list[tuple[str, str]] = []
+    if target not in supported_targets:
+        issues.append(
+            (
+                "CM055",
+                f"Beat {beat}: target {target} is not a supported secondary leading-tone "
+                "seventh target",
+            )
+        )
+    if beat == spec.total_beats - 1:
+        issues.append(
+            ("CM055", f"Beat {beat}: secondary leading-tone seventh cannot be final")
+        )
+    if spec.modulation_enabled:
+        boundary = spec.modulation_boundary_beat
+        if boundary is not None and beat in {
+            0,
+            boundary - 1,
+            spec.total_beats - 2,
+            spec.total_beats - 1,
+        }:
+            issues.append(
+                (
+                    "CM055",
+                    f"Beat {beat}: secondary leading-tone seventh occupies a certified anchor",
+                )
+            )
+    elif spec.require_authentic_cadence and beat in {0, spec.total_beats - 2}:
+        issues.append(
+            (
+                "CM055",
+                f"Beat {beat}: secondary leading-tone seventh occupies a cadence anchor",
+            )
+        )
+    if modal_overlap:
+        issues.append(
+            (
+                "CM055",
+                f"Beat {beat}: secondary leading-tone seventh and modal borrowing overlap",
+            )
+        )
+    return tuple(issues)
+
+
 def secondary_leading_tone_seventh_satb_verification_issues(
     result: GenerationResult,
     *,
@@ -1055,52 +1113,17 @@ def secondary_leading_tone_seventh_satb_verification_issues(
                 spec.progression_graph,
             )
         )
-        context_ok = True
-        if target not in supported:
-            issues.append(
-                (
-                    "CM055",
-                    f"Beat {beat}: target {target} is not a supported secondary leading-tone "
-                    "seventh target",
-                )
-            )
-            context_ok = False
-        if beat == spec.total_beats - 1:
-            issues.append(
-                ("CM055", f"Beat {beat}: secondary leading-tone seventh cannot be final")
-            )
-            context_ok = False
-        if spec.modulation_enabled:
-            boundary = spec.modulation_boundary_beat
-            if boundary is not None and beat in {
-                0,
-                boundary - 1,
-                spec.total_beats - 2,
-                spec.total_beats - 1,
-            }:
-                issues.append(
-                    (
-                        "CM055",
-                        f"Beat {beat}: secondary leading-tone seventh occupies a certified anchor",
-                    )
-                )
-                context_ok = False
-        elif spec.require_authentic_cadence and beat in {0, spec.total_beats - 2}:
-            issues.append(
-                (
-                    "CM055",
-                    f"Beat {beat}: secondary leading-tone seventh occupies a cadence anchor",
-                )
-            )
-            context_ok = False
-        if result.modal_sources and result.modal_sources[beat] is not None:
-            issues.append(
-                (
-                    "CM055",
-                    f"Beat {beat}: secondary leading-tone seventh and modal borrowing overlap",
-                )
-            )
-            context_ok = False
+        context_issues = secondary_seventh_context_verification_issues(
+            spec,
+            beat,
+            target=target,
+            supported_targets=supported,
+            modal_overlap=bool(
+                result.modal_sources and result.modal_sources[beat] is not None
+            ),
+        )
+        issues.extend(context_issues)
+        context_ok = not context_issues
 
         pcs = _voice_pitch_classes(result, beat)
         matched_quality: SecondaryLeadingToneSeventhQuality | None = None

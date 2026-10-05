@@ -47,6 +47,12 @@ class ResolutionDecision:
     reasons: tuple[str, ...]
 
 
+@dataclass(frozen=True, slots=True)
+class ContextDecision:
+    valid: bool
+    reasons: tuple[str, ...]
+
+
 _DEFAULT_SATB_REGISTER_BOUNDS = SatbRegisterBounds()
 
 
@@ -152,6 +158,43 @@ def adjudicate_voice_resolutions(
                 f"{label} moves {after - before:+d}; expected {expected_delta:+d}"
             )
     return ResolutionDecision(not reasons, tuple(reasons))
+
+
+def adjudicate_secondary_seventh_context(
+    *,
+    beat: int,
+    total_beats: int,
+    target_supported: bool,
+    modal_overlap: bool,
+    require_authentic_cadence: bool,
+    modulation_boundary_beat: int | None,
+) -> ContextDecision:
+    """Classify the finite CM055 placement/context relation independently."""
+
+    if total_beats < 2:
+        raise ValueError("total_beats must be at least 2")
+    if not 0 <= beat < total_beats:
+        raise ValueError(f"beat must be inside 0..{total_beats - 1}")
+
+    reasons: list[str] = []
+    if not target_supported:
+        reasons.append("target is unsupported")
+    if beat == total_beats - 1:
+        reasons.append("secondary seventh is final")
+    if modulation_boundary_beat is not None:
+        anchors = {
+            0,
+            modulation_boundary_beat - 1,
+            total_beats - 2,
+            total_beats - 1,
+        }
+        if beat in anchors:
+            reasons.append("secondary seventh occupies a modulation anchor")
+    elif require_authentic_cadence and beat in {0, total_beats - 2}:
+        reasons.append("secondary seventh occupies an authentic-cadence anchor")
+    if modal_overlap:
+        reasons.append("secondary seventh overlaps modal borrowing")
+    return ContextDecision(not reasons, tuple(reasons))
 
 
 def target_triad_pitch_classes(
