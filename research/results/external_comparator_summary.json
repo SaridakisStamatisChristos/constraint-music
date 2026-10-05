@@ -47,7 +47,7 @@
   ],
   "implementation_hashes": {
     "research/external_comparators.py": "5e0abab3ad27988109f2d545d8269dc411411bb31dae81598346e518f3296175",
-    "src/constraint_music/theory.py": "2e60b3405f81603cea49b17a8e083ef1e17e40bee3840425e3027b1cf374a126",
+    "src/constraint_music/theory.py": "ddd89821e56c30ecfc32f2fb5376802423594d21b5a1f5f76dc96db1aa790548",
     "src/constraint_music/satb.py": "b6e7fc465b21aa2c6a79e0f03ec29e73d51a477440c42c6fec694bed0325e1cd"
   }
 }
