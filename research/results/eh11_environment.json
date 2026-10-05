@@ -1,0 +1,76 @@
+{
+  "benchmark_version": "eh11-v1",
+  "captured_at_utc": "2026-10-05T19:44:35.958538+00:00",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor",
+  "git_commit": "87f4e6f11f9d4fedab00f8741fb0db11fd77d73d",
+  "git_dirty": false,
+  "github_actions": {
+    "GITHUB_ACTIONS": "true",
+    "GITHUB_RUN_ATTEMPT": "1",
+    "GITHUB_RUN_ID": "37361242981",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_NAME": "GitHub Actions 1000022274",
+    "RUNNER_OS": "Linux"
+  },
+  "logical_cpu_count": 4,
+  "machine": "x86_64",
+  "matrix": {
+    "bar_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "benchmark_version": "eh11-v1",
+    "multi_output": {
+      "bar_sizes": [
+        4,
+        8,
+        16
+      ],
+      "count": 3,
+      "profile": "base_satb",
+      "seeds": [
+        7,
+        19,
+        43
+      ]
+    },
+    "profiles": [
+      "base_satb",
+      "rhythm_motifs",
+      "phrase_grammar",
+      "expanded_sevenths",
+      "applied_harmony",
+      "secondary_harmony",
+      "borrowed_harmony",
+      "declared_modulation",
+      "combined_borrowed_modulation"
+    ],
+    "seeds": [
+      7,
+      19,
+      43,
+      73,
+      101
+    ],
+    "throughput_worker_cap": 4,
+    "time_limit_seconds": 2.0
+  },
+  "memory_total_kib": 16377684,
+  "notes": [
+    "Fresh subprocess per case for case-local peak RSS.",
+    "UNKNOWN is never relabelled INFEASIBLE.",
+    "Upper quantiles require at least five observations."
+  ],
+  "packages": {
+    "PyYAML": "6.0.3",
+    "constraint-music": "2.13.0a1",
+    "mido": "1.3.3",
+    "ortools": "9.15.6755"
+  },
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "python": "3.12.14 (main, Aug 13 2026, 02:47:42) [GCC 13.3.0]"
+}

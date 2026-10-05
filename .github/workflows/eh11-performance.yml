@@ -1,0 +1,94 @@
+name: EH-11 Performance Evaluation
+
+on:
+  push:
+    branches:
+      - eh11-performance-evaluation
+    paths:
+      - ".github/workflows/eh11-performance.yml"
+      - "research/benchmark_performance.py"
+      - "research/normalize_eh11_results.py"
+      - "research/configs/eh11_performance_matrix.json"
+      - "tests/test_eh11_performance.py"
+      - "tests/test_eh11_normalization.py"
+      - "src/**"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eh11-performance-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[dev]"
+      - name: Validate EH-11 harness
+        run: |
+          ruff check --fix \
+            research/benchmark_performance.py \
+            research/normalize_eh11_results.py \
+            tests/test_eh11_performance.py \
+            tests/test_eh11_normalization.py
+          ruff check \
+            research/benchmark_performance.py \
+            research/normalize_eh11_results.py \
+            tests/test_eh11_performance.py \
+            tests/test_eh11_normalization.py
+          pytest -q tests/test_eh11_performance.py tests/test_eh11_normalization.py
+      - name: Run controlled EH-11 matrix
+        run: >-
+          python -m research.benchmark_performance
+          --config research/configs/eh11_performance_matrix.json
+          --output-dir research/results
+          --report docs/EH11_PERFORMANCE_RESULTS.md
+      - name: Normalize declared scope exclusions
+        run: >-
+          python -m research.normalize_eh11_results
+          --output-dir research/results
+          --report docs/EH11_PERFORMANCE_RESULTS.md
+      - name: Reproduce summary from raw rows
+        run: >-
+          python -m research.benchmark_performance
+          --output-dir research/results
+          --validate-results
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eh11-performance-${{ github.sha }}
+          path: |
+            research/results/eh11_performance_raw.jsonl
+            research/results/eh11_performance_summary.json
+            research/results/eh11_environment.json
+            docs/EH11_PERFORMANCE_RESULTS.md
+          if-no-files-found: error
+      - name: Persist benchmark evidence on the EH-11 branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            research/benchmark_performance.py \
+            research/normalize_eh11_results.py \
+            research/results/eh11_performance_raw.jsonl \
+            research/results/eh11_performance_summary.json \
+            research/results/eh11_environment.json \
+            docs/EH11_PERFORMANCE_RESULTS.md
+          if git diff --cached --quiet; then
+            echo "EH-11 evidence already matches this run."
+          else
+            git commit -m "Record EH-11 performance evidence [eh11-results]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
