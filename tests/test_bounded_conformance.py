@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from research.compiler_deletions import compiler_constraint_deletion_report
+from research.cross_feature_differential import cross_feature_differential_report
 from research.differential_check import (
     bounded_conformance_report,
     enumerate_absolute_register_domain,
@@ -96,3 +98,44 @@ def test_checked_in_bounded_evidence_matches_current_implementation() -> None:
     persisted = json.loads(_EVIDENCE.read_text(encoding="utf-8"))
 
     assert persisted == expected
+
+
+def test_named_compiler_constraint_deletion_is_caught_at_every_boundary() -> None:
+    result = compiler_constraint_deletion_report()
+    deletion = result["deletion"]
+
+    assert result["deleted_constraints"] == 1
+    assert result["escaped_faults"] == 0
+    assert isinstance(deletion, dict)
+    assert deletion["constraint_name"] == "CM057.root.beat-0.voice-2"
+    assert deletion["oracle_valid"] is False
+    assert deletion["verifier_valid"] is False
+    assert deletion["boundary_outcome"] == "REJECT"
+    assert deletion["failed_rules"] == ("CM057",)
+    registration = deletion["registered_phase"]
+    assert isinstance(registration, dict)
+    assert registration["constraint_start"] <= deletion["constraint_index"]
+    assert deletion["constraint_index"] < registration["constraint_end"]
+
+
+def test_cross_feature_controls_accept_and_targeted_faults_do_not_escape() -> None:
+    result = cross_feature_differential_report()
+
+    assert result["visited"] == 10
+    assert result["controls_accepted"] == 5
+    assert result["faults_rejected"] == 5
+    assert result["disagreements"] == 0
+    assert result["escaped_faults"] == 0
+    cases = result["cases"]
+    assert isinstance(cases, list)
+    assert {case["feature"] for case in cases} == {
+        "authentic_cadence",
+        "modal_mixture",
+        "modulation",
+        "rhythm",
+        "tonicization",
+    }
+    for case in cases:
+        fault = case["fault"]
+        assert isinstance(fault, dict)
+        assert fault["expected_rule"] in fault["failed_rules"]

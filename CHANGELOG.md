@@ -13,6 +13,8 @@
 - Added a separately versioned 680-case CM055 context/anchor partition spanning every beat in bounded open, authentic-cadence, and valid single-modulation topologies, crossed with supported-target and modal-overlap truth values; the independent oracle and production predicate agree on every case.
 - Pinned development evidence to OR-Tools 9.15.6755 and added a six-case generator-finalization fault matrix. The production boundary accepts the valid control and rejects corrupted melody-domain, target-metadata, inversion/bass, tendency-resolution, and compiled-objective values before returning a result.
 - Added predicate-level rule visits, fail-closed `NOT_VISITED` handling, structured diagnostics, and measured compiler-phase registrations with exact CP-SAT constraint spans; removed the historical compiled-rule alias.
+- Added a pinned direct compiler-deletion experiment for the named `CM057.root.beat-0.voice-2` CP-SAT clause. The resulting octave-displaced local-leading-tone witness is rejected independently by the oracle, verifier, and production finalizer with zero escapes.
+- Added five deterministic cross-feature differential partitions covering secondary sevenths with tonicization, modal mixture, rhythm, authentic cadence, and persistent modulation. All five valid controls pass and all five independently adjudicated faults fail with zero checker/oracle disagreements.
 
 ## 2.12.0a1 — complete secondary leading-tone seventh certification
 

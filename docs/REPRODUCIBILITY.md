@@ -53,6 +53,12 @@ The same aggregate evidence also records a pinned six-case generator finalizatio
 matrix: one valid control, four generated-assignment corruptions, and one
 compiled-objective corruption. Every injected fault must raise the production
 `InternalVerificationError` boundary; source and dependency hashes are persisted.
+It additionally deletes one exact named `CM057` CP-SAT clause, checks that its index
+falls inside the registered compiler phase, and requires the independent oracle,
+application verifier, and production finalizer to reject the exposed witness. Five
+cross-feature partitions pair valid controls with targeted faults under coenabled
+tonicization, modal mixture, rhythm, authentic cadence, and modulation. These are
+finite local comparisons, not a global compiler/checker-equivalence claim.
 
 The artifact corruption harness records `ACCEPT`, `REJECT`, `BLOCKED`, and `CRASH`
 separately:
