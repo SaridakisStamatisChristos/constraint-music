@@ -1,0 +1,397 @@
+{
+  "schema_version": 1,
+  "claim_boundary": "A deterministic artifact-and-delivery corruption corpus. Cases sharing a cluster stay in one split; metrics do not claim independence within clusters.",
+  "tiers": {
+    "T0": "valid control",
+    "T1": "direct semantic or delivery mutation",
+    "T2": "mutation with repaired artifact-content digest",
+    "T3": "coordinated semantic claims or independently changed request",
+    "T4": "malformed wire structure blocked before reconstruction"
+  },
+  "cases": [
+    {
+      "case_id": "control.artifact",
+      "split": "development",
+      "tier": "T0",
+      "family": "control",
+      "cluster_id": "control-artifact",
+      "expected_class": "valid",
+      "expected_outcomes": [
+        "ACCEPT"
+      ],
+      "mutation": "identity"
+    },
+    {
+      "case_id": "control.delivery",
+      "split": "evaluation",
+      "tier": "T0",
+      "family": "control",
+      "cluster_id": "control-delivery",
+      "expected_class": "valid",
+      "expected_outcomes": [
+        "ACCEPT"
+      ],
+      "mutation": "delivery.identity"
+    },
+    {
+      "case_id": "music.soprano-pitch",
+      "split": "development",
+      "tier": "T1",
+      "family": "realized-music",
+      "cluster_id": "rm-outer-upper",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "music.soprano-pitch.naive"
+    },
+    {
+      "case_id": "music.alto-pitch",
+      "split": "development",
+      "tier": "T2",
+      "family": "realized-music",
+      "cluster_id": "rm-outer-upper",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "music.alto-pitch.rehash"
+    },
+    {
+      "case_id": "music.tenor-pitch",
+      "split": "evaluation",
+      "tier": "T3",
+      "family": "realized-music",
+      "cluster_id": "rm-inner-lower",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "music.tenor-pitch.coordinated"
+    },
+    {
+      "case_id": "music.bass-pitch",
+      "split": "evaluation",
+      "tier": "T3",
+      "family": "realized-music",
+      "cluster_id": "rm-inner-lower",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "music.bass-pitch.coordinated"
+    },
+    {
+      "case_id": "music.melody-pitch",
+      "split": "development",
+      "tier": "T2",
+      "family": "realized-music",
+      "cluster_id": "rm-melodic-line",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "music.melody-pitch.rehash"
+    },
+    {
+      "case_id": "music.final-rest",
+      "split": "development",
+      "tier": "T3",
+      "family": "realized-music",
+      "cluster_id": "rm-melodic-line",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "music.final-rest.coordinated"
+    },
+    {
+      "case_id": "harmony.illegal-inversion",
+      "split": "development",
+      "tier": "T1",
+      "family": "harmonic-claims",
+      "cluster_id": "hm-form",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "harmony.inversion.naive"
+    },
+    {
+      "case_id": "harmony.false-kind",
+      "split": "development",
+      "tier": "T3",
+      "family": "harmonic-claims",
+      "cluster_id": "hm-form",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "harmony.kind.coordinated"
+    },
+    {
+      "case_id": "harmony.false-degree",
+      "split": "evaluation",
+      "tier": "T3",
+      "family": "harmonic-claims",
+      "cluster_id": "hm-function",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "harmony.degree.coordinated"
+    },
+    {
+      "case_id": "harmony.false-target",
+      "split": "evaluation",
+      "tier": "T2",
+      "family": "harmonic-claims",
+      "cluster_id": "hm-function",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "harmony.target.rehash"
+    },
+    {
+      "case_id": "harmony.false-modal-source",
+      "split": "evaluation",
+      "tier": "T2",
+      "family": "harmonic-claims",
+      "cluster_id": "hm-claims",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "harmony.modal-source.rehash"
+    },
+    {
+      "case_id": "harmony.false-display-name",
+      "split": "evaluation",
+      "tier": "T2",
+      "family": "harmonic-claims",
+      "cluster_id": "hm-claims",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "harmony.display-name.rehash"
+    },
+    {
+      "case_id": "shape.missing-tenor",
+      "split": "development",
+      "tier": "T4",
+      "family": "structure",
+      "cluster_id": "st-cardinality",
+      "expected_class": "malformed",
+      "expected_outcomes": [
+        "BLOCKED"
+      ],
+      "mutation": "shape.missing-tenor"
+    },
+    {
+      "case_id": "shape.short-bass",
+      "split": "development",
+      "tier": "T4",
+      "family": "structure",
+      "cluster_id": "st-cardinality",
+      "expected_class": "malformed",
+      "expected_outcomes": [
+        "BLOCKED"
+      ],
+      "mutation": "shape.short-bass"
+    },
+    {
+      "case_id": "shape.boolean-degree",
+      "split": "evaluation",
+      "tier": "T4",
+      "family": "structure",
+      "cluster_id": "st-wire-types",
+      "expected_class": "malformed",
+      "expected_outcomes": [
+        "BLOCKED"
+      ],
+      "mutation": "shape.boolean-degree"
+    },
+    {
+      "case_id": "shape.legacy-schema",
+      "split": "evaluation",
+      "tier": "T4",
+      "family": "structure",
+      "cluster_id": "st-wire-types",
+      "expected_class": "malformed",
+      "expected_outcomes": [
+        "BLOCKED"
+      ],
+      "mutation": "shape.legacy-schema"
+    },
+    {
+      "case_id": "shape.missing-validation",
+      "split": "evaluation",
+      "tier": "T4",
+      "family": "structure",
+      "cluster_id": "st-root-sections",
+      "expected_class": "malformed",
+      "expected_outcomes": [
+        "BLOCKED"
+      ],
+      "mutation": "shape.missing-validation"
+    },
+    {
+      "case_id": "shape.nonobject-music",
+      "split": "evaluation",
+      "tier": "T4",
+      "family": "structure",
+      "cluster_id": "st-root-sections",
+      "expected_class": "malformed",
+      "expected_outcomes": [
+        "BLOCKED"
+      ],
+      "mutation": "shape.nonobject-music"
+    },
+    {
+      "case_id": "integrity.contract-version",
+      "split": "development",
+      "tier": "T2",
+      "family": "integrity-request",
+      "cluster_id": "in-contract",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "integrity.contract-version.rehash"
+    },
+    {
+      "case_id": "integrity.contract-digest",
+      "split": "development",
+      "tier": "T2",
+      "family": "integrity-request",
+      "cluster_id": "in-contract",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "integrity.contract-digest.rehash"
+    },
+    {
+      "case_id": "integrity.empty-rule-claim",
+      "split": "evaluation",
+      "tier": "T2",
+      "family": "integrity-request",
+      "cluster_id": "in-provenance",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "integrity.empty-rule-claim.rehash"
+    },
+    {
+      "case_id": "integrity.composition-digest",
+      "split": "evaluation",
+      "tier": "T2",
+      "family": "integrity-request",
+      "cluster_id": "in-provenance",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "integrity.composition-digest.rehash"
+    },
+    {
+      "case_id": "integrity.objective-vector",
+      "split": "evaluation",
+      "tier": "T2",
+      "family": "integrity-request",
+      "cluster_id": "in-objective",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "integrity.objective-vector.rehash"
+    },
+    {
+      "case_id": "request.external-seed",
+      "split": "evaluation",
+      "tier": "T3",
+      "family": "integrity-request",
+      "cluster_id": "in-objective",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "request.external-seed"
+    },
+    {
+      "case_id": "delivery.changed-pitch",
+      "split": "development",
+      "tier": "T1",
+      "family": "delivery",
+      "cluster_id": "dl-notes",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "delivery.changed-pitch"
+    },
+    {
+      "case_id": "delivery.changed-channel",
+      "split": "development",
+      "tier": "T1",
+      "family": "delivery",
+      "cluster_id": "dl-notes",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "delivery.changed-channel"
+    },
+    {
+      "case_id": "delivery.missing-track",
+      "split": "evaluation",
+      "tier": "T1",
+      "family": "delivery",
+      "cluster_id": "dl-structure",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "delivery.missing-track"
+    },
+    {
+      "case_id": "delivery.duplicate-track",
+      "split": "evaluation",
+      "tier": "T1",
+      "family": "delivery",
+      "cluster_id": "dl-structure",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "delivery.duplicate-track"
+    },
+    {
+      "case_id": "delivery.wrong-key",
+      "split": "evaluation",
+      "tier": "T1",
+      "family": "delivery",
+      "cluster_id": "dl-context",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "delivery.wrong-key"
+    },
+    {
+      "case_id": "delivery.wrong-division",
+      "split": "evaluation",
+      "tier": "T1",
+      "family": "delivery",
+      "cluster_id": "dl-context",
+      "expected_class": "invalid",
+      "expected_outcomes": [
+        "REJECT"
+      ],
+      "mutation": "delivery.wrong-division"
+    }
+  ]
+}

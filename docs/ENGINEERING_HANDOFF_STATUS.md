@@ -24,7 +24,7 @@ not a publication-readiness claim.
 | EH-06 | Operational boundary complete | Checker/certifier imports and executes without OR-Tools; solver loading is lazy; generation dependencies are optional; isolation is tested. | Further split shared result types from mixed runtime modules if a stronger semantic-independence claim is desired. |
 | EH-07 | Core oracle complete | Standard-library-only, production-import-guarded oracles cover diatonic triads/sevenths, applied dominants, secondary sevenths, borrowed sevenths, secondary diminished triads, bounded persistent modulation, rhythm, motifs, phrase form, and raw-byte MIDI delivery. Differential fixtures exercise all chromatic tonics, both modes, every diatonic degree, eligible contextual target/degree and certified inversion, all valid modulation boundaries, every four-step rhythm-state sequence, every motif/phrase relation and cadence label, phrase boundaries/roles/period strength, exact delivery projections and output hashes, exact doubling/completeness, and hostile context/tone/inversion/resolution/articulation/density/relation/event/anchor mutations. The versioned reference records source hashes, shared dependencies, adjudication rules, and non-claims. | Continue growing the hand-adjudicated full-piece interaction corpus; changes to oracle sources require new hashes and fresh differential evidence. |
 | EH-08 | Core bounded evidence complete | Separately named secondary-seventh partitions persist 27,648 pitch-class cases, 4,824 exact absolute-register cases, 680 context/anchor truth-table cases, 540,000 voice-resolution cases, and a 24-case complete-verifier control/fault matrix. The pinned OR-Tools 9.15.6755 evidence also contains a six-case generator-boundary matrix, one exact named `CM057` compiler-constraint deletion rejected by the oracle/verifier/finalizer, and five valid plus five faulty cross-feature cases spanning tonicization, modal mixture, rhythm, authentic cadence, and modulation. Bounds, pruning, registrations, hashes, category counts, and first disagreements are recorded; every partition currently has zero disagreements or escapes. | Continue breadth expansion across additional named compiler clauses and larger interaction topologies; the handoff's direct-deletion and cross-feature gaps are closed without claiming global equivalence. |
-| EH-09 | Partial smoke infrastructure | Deterministic semantic mutations, tiered outcomes, valid controls, and a runnable corruption-benchmark harness exist. | Build and freeze the full adjudicated corpus, manifests, family/tier metrics, clustered uncertainty, and development/evaluation split. |
+| EH-09 | Core benchmark complete | A frozen 32-case corpus includes 30 attacks and two valid controls across realized music, harmonic claims, malformed structure, integrity/request binding, and certified MIDI delivery. The versioned manifest defines stable IDs, T0–T4 adversary tiers, expected outcomes, and cluster-preserving development/evaluation splits. Checked-in JSONL preserves raw outcomes/issues; the summary reports family/tier/split metrics, 15-cluster Wilson uncertainty, source hashes, 30/30 attack detection, 2/2 control acceptance, and zero crashes. | Expand with independently curated artifacts and additional attack clusters before making population-level robustness claims; the single pinned fixture remains a finite benchmark. |
 | EH-10 | Not executed | None claimed. | Implement internal ablations and fairly scoped, pinned external baseline adapters before reporting comparative effects. |
 | EH-11 | Not executed | None claimed. | Implement and run the declared multi-size, multi-seed timing/memory/yield matrix on recorded hardware. |
 | EH-12 | Partial | CI covers supported Python versions, lint, typing, tests, build, checker-only installation, and scheduled bounded enumeration; assurance and reproducibility docs are present. | Publication gate remains HOLD until the EH-07 through EH-11 evidence program is complete and adjudicated. |
@@ -49,7 +49,7 @@ The end-to-end certification returned `PASS (EXTERNAL REQUEST + DELIVERY)` and
 independently observed 64 delivery note events. The generated certificate records
 all binding digests and the exact evaluated/not-applicable rule sets.
 
-The full local suite contains 570 passing tests and reports 82.32% branch-aware
+The full local suite contains 572 passing tests and reports 82.69% branch-aware
 source coverage. The combined `melody-plus-satb` CLI round trip also passed with 96
 independently observed note events. The current bounded evidence records 27,648
 pitch-class cases (5,184 accepted and 22,464 rejected), 4,824 exact register cases
@@ -57,8 +57,9 @@ pitch-class cases (5,184 accepted and 22,464 rejected), 4,824 exact register cas
 rejected), 540,000 resolution cases (4,320 accepted and 535,680 rejected), and 24
 complete-verifier cases. The pinned generator-boundary matrix rejects all five injected
 semantic/objective faults before return; the exact named compiler deletion and all five
-cross-feature faults are also rejected with zero escapes. The smoke corruption corpus
-classified all four initial mutations as `REJECT` or `BLOCKED` without a crash.
+cross-feature faults are also rejected with zero escapes. The full corruption benchmark
+detects all 30 attacks, accepts both controls, and reports zero crashes across 15
+split-isolated attack clusters; its cluster-level 95% Wilson interval is 0.796117–1.0.
 
 ## Claim boundary
 

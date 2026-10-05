@@ -261,6 +261,12 @@ python -m build
 
 GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**. The current local baseline includes branch-aware coverage, strict mypy, and successful package builds. The secondary-seventh evidence spans all 12 chromatic tonics in both major and minor modes, every progression-reachable eligible target, both certified quality classes where applicable, all four inversions, finite register/context/resolution partitions, a pinned generator-finalization fault matrix, one exact named compiler-constraint deletion, and five cross-feature control/fault pairs with zero disagreements or escapes.
 
+The frozen corruption benchmark adds 30 attacks across realized music, harmonic claims,
+wire structure, integrity/request binding, and certified MIDI delivery, plus two valid
+controls. Raw outcomes, stable development/evaluation splits, family/tier metrics, and
+cluster-aware uncertainty are checked in under `research/results/`; the current corpus
+detects all attacks, accepts both controls, and has zero crashes.
+
 ## Scope boundary
 
 Independent verification is an application-level separation of trust, not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates conformance to the declared executable contract; it does not prove aesthetic quality or complete historical-style authenticity.
