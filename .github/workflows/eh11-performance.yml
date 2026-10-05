@@ -8,6 +8,7 @@ on:
       - ".github/workflows/eh11-performance.yml"
       - "research/benchmark_performance.py"
       - "research/configs/eh11_performance_matrix.json"
+      - "tests/test_eh11_performance.py"
       - "src/**"
       - "pyproject.toml"
   workflow_dispatch:
