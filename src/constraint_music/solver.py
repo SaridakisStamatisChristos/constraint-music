@@ -6,6 +6,13 @@ from typing import Any
 from ortools.sat.python import cp_model
 
 from .borrowed_seventh_runtime import add_borrowed_seventh_satb_constraints
+from .compiler_registry import (
+    COMPILED_HARD_CONSTRAINT_IDS as REGISTERED_HARD_CONSTRAINT_IDS,
+)
+from .compiler_registry import (
+    CompilerRecorder,
+    CompilerRegistration,
+)
 from .compiler_structure import (
     add_motif_constraints,
     add_phrase_constraints,
@@ -17,7 +24,6 @@ from .compiler_tonal import (
     add_melodic_constraints,
     add_voice_leading_constraints,
 )
-from .contract import HARD_CONSTRAINT_IDS
 from .errors import InternalVerificationError, NoSolutionError
 from .modal_mixture import NO_MODAL_SOURCE, ModalSource
 from .models import GenerationResult, GenerationSpec, RhythmState
@@ -44,7 +50,7 @@ from .secondary_leading_tone_seventh_runtime import (
 from .theory import NO_TONICIZATION_TARGET, ChordKind
 from .verifier import verify_result
 
-COMPILED_HARD_CONSTRAINT_IDS: tuple[str, ...] = HARD_CONSTRAINT_IDS
+COMPILED_HARD_CONSTRAINT_IDS = REGISTERED_HARD_CONSTRAINT_IDS
 
 
 @dataclass(slots=True)
@@ -56,6 +62,7 @@ class _CompiledProblem:
     chord: list[cp_model.IntVar]
     satb: SatbVariables
     objective: ObjectiveBundle
+    compiler_registrations: tuple[CompilerRegistration, ...]
 
 
 def finalize_generated_result(
@@ -242,6 +249,8 @@ class ConstraintMusicSolver:
                 else spec.tonal_key.pitches_in_range(spec.bass_low, spec.bass_high)
             )
         model = cp_model.CpModel()
+        recorder = CompilerRecorder(model, spec)
+        domain_start = len(model.proto.constraints)
 
         melody_choice = [
             model.new_int_var(0, len(melody_domain) - 1, f"melody_choice_{step}")
@@ -266,61 +275,145 @@ class ConstraintMusicSolver:
         for choice, note in zip(bass_choice, bass_note, strict=True):
             model.add_element(choice, bass_domain, note)
         chord = [model.new_int_var(0, 6, f"chord_{beat}") for beat in range(spec.total_beats)]
+        recorder.record_span(
+            "variable_domains",
+            domain_start,
+            len(model.proto.constraints),
+        )
 
         if spec.secondary_leading_tone_seventh_enabled:
-            add_complete_secondary_harmony_constraints(
-                model,
-                spec,
-                chord,
-                melody_choice,
-                bass_choice,
-                melody_domain,
-                bass_domain,
+            recorder.call(
+                "secondary_harmony",
+                lambda: add_complete_secondary_harmony_constraints(
+                    model,
+                    spec,
+                    chord,
+                    melody_choice,
+                    bass_choice,
+                    melody_domain,
+                    bass_domain,
+                ),
             )
-            add_complete_secondary_melodic_constraints(
-                model,
-                spec,
-                melody_choice,
-                melody_domain,
+            recorder.call(
+                "secondary_melody",
+                lambda: add_complete_secondary_melodic_constraints(
+                    model,
+                    spec,
+                    melody_choice,
+                    melody_domain,
+                ),
             )
         else:
-            add_harmony_constraints(
-                model,
-                spec,
-                chord,
-                melody_choice,
-                bass_choice,
-                melody_domain,
-                bass_domain,
+            recorder.call(
+                "harmony",
+                lambda: add_harmony_constraints(
+                    model,
+                    spec,
+                    chord,
+                    melody_choice,
+                    bass_choice,
+                    melody_domain,
+                    bass_domain,
+                ),
             )
-            add_melodic_constraints(model, spec, melody_choice, melody_domain)
-        add_bass_constraints(model, spec, bass_choice, bass_domain)
-        add_voice_leading_constraints(
-            model, spec, melody_note, bass_note, melody_domain, bass_domain
+            recorder.call(
+                "melody",
+                lambda: add_melodic_constraints(
+                    model,
+                    spec,
+                    melody_choice,
+                    melody_domain,
+                ),
+            )
+        recorder.call(
+            "bass",
+            lambda: add_bass_constraints(model, spec, bass_choice, bass_domain),
         )
-        if spec.secondary_leading_tone_seventh_enabled:
-            satb = add_secondary_leading_tone_seventh_satb_constraints(
+        recorder.call(
+            "outer_voice_leading",
+            lambda: add_voice_leading_constraints(
                 model,
                 spec,
-                chord,
                 melody_note,
                 bass_note,
+                melody_domain,
+                bass_domain,
+            ),
+        )
+        if spec.secondary_leading_tone_seventh_enabled:
+            satb = recorder.call(
+                "secondary_seventh_satb",
+                lambda: add_secondary_leading_tone_seventh_satb_constraints(
+                    model,
+                    spec,
+                    chord,
+                    melody_note,
+                    bass_note,
+                ),
             )
         elif spec.secondary_leading_tone_enabled:
-            satb = add_secondary_leading_tone_satb_constraints(
-                model, spec, chord, melody_note, bass_note
+            satb = recorder.call(
+                "secondary_triad_satb",
+                lambda: add_secondary_leading_tone_satb_constraints(
+                    model,
+                    spec,
+                    chord,
+                    melody_note,
+                    bass_note,
+                ),
             )
         elif spec.modal_mixture_enabled and spec.expanded_harmony_enabled:
-            satb = add_borrowed_seventh_satb_constraints(
-                model, spec, chord, melody_note, bass_note
+            satb = recorder.call(
+                "borrowed_seventh_satb",
+                lambda: add_borrowed_seventh_satb_constraints(
+                    model,
+                    spec,
+                    chord,
+                    melody_note,
+                    bass_note,
+                ),
             )
         elif spec.modulation_enabled:
-            satb = add_modulated_satb_constraints(model, spec, chord, melody_note, bass_note)
+            satb = recorder.call(
+                "modulated_satb",
+                lambda: add_modulated_satb_constraints(
+                    model,
+                    spec,
+                    chord,
+                    melody_note,
+                    bass_note,
+                ),
+            )
         else:
-            satb = add_satb_constraints(model, spec, chord, melody_note, bass_note)
-        add_rhythm_constraints(model, spec, rhythm, melody_note)
-        add_motif_constraints(model, spec, rhythm, melody_note)
-        add_phrase_constraints(model, spec, rhythm, melody_note, bass_note, chord)
+            satb = recorder.call(
+                "satb",
+                lambda: add_satb_constraints(
+                    model,
+                    spec,
+                    chord,
+                    melody_note,
+                    bass_note,
+                ),
+            )
+        recorder.call(
+            "rhythm",
+            lambda: add_rhythm_constraints(model, spec, rhythm, melody_note),
+        )
+        recorder.call(
+            "motif",
+            lambda: add_motif_constraints(model, spec, rhythm, melody_note),
+        )
+        recorder.call(
+            "phrase",
+            lambda: add_phrase_constraints(
+                model,
+                spec,
+                rhythm,
+                melody_note,
+                bass_note,
+                chord,
+            ),
+        )
         objective = add_objective(
             model,
             spec,
@@ -333,7 +426,16 @@ class ConstraintMusicSolver:
             weights,
         )
         model.minimize(objective.scalarized)
-        return _CompiledProblem(model, melody_note, rhythm, bass_note, chord, satb, objective)
+        return _CompiledProblem(
+            model,
+            melody_note,
+            rhythm,
+            bass_note,
+            chord,
+            satb,
+            objective,
+            recorder.registrations,
+        )
 
     def _add_no_good(
         self,

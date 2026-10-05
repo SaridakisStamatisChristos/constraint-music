@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from .contract import RuleOutcome, RuleStatus
+from .contract import RuleDiagnostic, RuleOutcome, RuleStatus
 from .modal_mixture import supported_borrowed_degrees
 from .modulation import dominant_key
 from .phrase import PhraseSpec, normalize_phrases, phrase_by_id
@@ -560,6 +560,7 @@ class ValidationReport:
     checked_rules: tuple[str, ...] = ()
     failed_rules: tuple[str, ...] = ()
     rule_outcomes: tuple[RuleOutcome, ...] = ()
+    diagnostics: tuple[RuleDiagnostic, ...] = ()
 
     @property
     def evaluated_rule_ids(self) -> tuple[str, ...]:
@@ -648,6 +649,9 @@ class GenerationResult:
                 "rule_outcomes": [
                     outcome.to_dict() for outcome in self.validation.rule_outcomes
                 ],
+                "diagnostics": [
+                    diagnostic.to_dict() for diagnostic in self.validation.diagnostics
+                ],
             },
             "music": {
                 "melody_midi": list(self.melody),
@@ -688,6 +692,10 @@ class GenerationResult:
             tuple(
                 RuleOutcome.from_mapping(item)
                 for item in raw_validation.get("rule_outcomes", ())
+            ),
+            tuple(
+                RuleDiagnostic.from_mapping(item)
+                for item in raw_validation.get("diagnostics", ())
             ),
         )
         raw_rhythm = raw_music.get("rhythm", ())

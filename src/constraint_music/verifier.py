@@ -6,7 +6,13 @@ from .borrowed_seventh_runtime import (
     borrowed_seventh_modulation_verification_issues,
     borrowed_seventh_satb_verification_issues,
 )
-from .contract import HARD_CONSTRAINT_IDS, build_rule_outcomes
+from .contract import (
+    HARD_CONSTRAINT_IDS,
+    RuleDiagnostic,
+    build_rule_outcomes,
+    rule_applicability,
+    rule_feature,
+)
 from .models import GenerationResult, RhythmState, ValidationReport
 from .modulation_runtime import (
     modulated_satb_verification_issues,
@@ -36,22 +42,56 @@ def verify_result(result: GenerationResult) -> ValidationReport:
     chords = result.chord_degrees
     issues: list[str] = []
     failed: list[str] = []
+    visited: list[str] = []
+    diagnostics: list[RuleDiagnostic] = []
 
-    def fail(rule_id: str, message: str) -> None:
+    def visit(*rule_ids: str) -> None:
+        for rule_id in rule_ids:
+            if rule_id not in visited:
+                visited.append(rule_id)
+
+    def visit_applicable(*rule_ids: str) -> None:
+        visit(*(rule_id for rule_id in rule_ids if rule_applicability(rule_id, spec)[0]))
+
+    def fail(
+        rule_id: str,
+        message: str,
+        *,
+        location: str | None = None,
+        voice: str | None = None,
+    ) -> None:
+        visit(rule_id)
         issues.append(f"[{rule_id}] {message}")
+        diagnostics.append(
+            RuleDiagnostic(
+                rule_id=rule_id,
+                code=f"{rule_id}.FAILED",
+                message=message,
+                feature=rule_feature(rule_id),
+                location=location or "global",
+                voice=voice,
+            )
+        )
         if rule_id not in failed:
             failed.append(rule_id)
 
     def finish(*, blocked: tuple[str, ...] = ()) -> ValidationReport:
-        outcomes = build_rule_outcomes(spec, tuple(failed), blocked_rules=blocked)
+        outcomes = build_rule_outcomes(
+            spec,
+            tuple(failed),
+            visited_rules=tuple(visited),
+            blocked_rules=blocked,
+        )
         return ValidationReport(
-            valid=not issues,
+            valid=not issues and all(outcome.status.value != "BLOCKED" for outcome in outcomes),
             issues=tuple(issues),
             checked_rules=HARD_CONSTRAINT_IDS,
             failed_rules=tuple(failed),
             rule_outcomes=outcomes,
+            diagnostics=tuple(diagnostics),
         )
 
+    visit("CM001")
     if len(melody) != spec.total_steps:
         fail("CM001", f"Expected {spec.total_steps} melody steps, got {len(melody)}")
     if len(rhythm) != spec.total_steps:
@@ -94,6 +134,7 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         else {}
     )
 
+    visit("CM002")
     for index, note in enumerate(melody):
         beat = index // spec.subdivisions_per_beat
         active_key = spec.active_key_at_beat(beat) if spec.modulation_enabled else key
@@ -107,23 +148,47 @@ def verify_result(result: GenerationResult) -> ValidationReport:
             fail(
                 "CM002",
                 f"Melody step {index}: note {note} is outside {active_key}",
+                location=f"step:{index}",
+                voice="soprano",
             )
         if not spec.melody_low <= note <= spec.melody_high:
-            fail("CM002", f"Melody step {index}: note {note} is outside the configured range")
+            fail(
+                "CM002",
+                f"Melody step {index}: note {note} is outside the configured range",
+                location=f"step:{index}",
+                voice="soprano",
+            )
 
+    visit("CM003")
     for beat, note in enumerate(bass):
         active_key = spec.active_key_at_beat(beat) if spec.modulation_enabled else key
         secondary = exact_secondary.get(beat)
         is_secondary_tone = secondary is not None and note % 12 in secondary[1]
         if note % 12 not in active_key.pitch_classes and not is_secondary_tone:
-            fail("CM003", f"Bass beat {beat}: note {note} is outside {active_key}")
+            fail(
+                "CM003",
+                f"Bass beat {beat}: note {note} is outside {active_key}",
+                location=f"beat:{beat}",
+                voice="bass",
+            )
         if not spec.bass_low <= note <= spec.bass_high:
-            fail("CM003", f"Bass beat {beat}: note {note} is outside the configured range")
+            fail(
+                "CM003",
+                f"Bass beat {beat}: note {note} is outside the configured range",
+                location=f"beat:{beat}",
+                voice="bass",
+            )
 
+    visit("CM004")
     for beat, chord in enumerate(chords):
         if not 0 <= chord <= 6:
-            fail("CM004", f"Chord beat {beat}: degree {chord} is outside 0..6")
+            fail(
+                "CM004",
+                f"Chord beat {beat}: degree {chord} is outside 0..6",
+                location=f"beat:{beat}",
+            )
 
+    visit("CM005", "CM006")
     for beat in range(min(spec.total_beats, len(chords))):
         chord = chords[beat]
         if not 0 <= chord <= 6:
@@ -141,6 +206,8 @@ def verify_result(result: GenerationResult) -> ValidationReport:
                 fail(
                     "CM005",
                     f"Beat {beat}: strong melody note is not in the active support/realized chord",
+                    location=f"beat:{beat}",
+                    voice="soprano",
                 )
         if beat < len(bass) and (
             bass[beat] % 12 not in active_key.triad_pitch_classes(chord)
@@ -149,19 +216,38 @@ def verify_result(result: GenerationResult) -> ValidationReport:
             fail(
                 "CM006",
                 f"Bass beat {beat}: note {bass[beat]} is not in the active support/realized chord",
+                location=f"beat:{beat}",
+                voice="bass",
             )
 
+    visit("CM007")
     allowed_pairs = set(spec.progression_pairs)
     for beat, pair in enumerate(pairwise(chords)):
         if pair not in allowed_pairs:
-            fail("CM007", f"Chord transition at beat {beat} is not allowed: {pair}")
+            fail(
+                "CM007",
+                f"Chord transition at beat {beat} is not allowed: {pair}",
+                location=f"transition:{beat}->{beat + 1}",
+            )
 
+    visit("CM008", "CM009")
+    visit_applicable("CM010")
     for step, (left, right) in enumerate(pairwise(melody)):
         delta = right - left
         if abs(delta) > spec.max_melody_leap:
-            fail("CM008", f"Melody steps {step}->{step + 1}: leap exceeds limit")
+            fail(
+                "CM008",
+                f"Melody steps {step}->{step + 1}: leap exceeds limit",
+                location=f"transition:{step}->{step + 1}",
+                voice="soprano",
+            )
         if abs(delta) % 12 == 6:
-            fail("CM009", f"Melody steps {step}->{step + 1}: tritone motion is forbidden")
+            fail(
+                "CM009",
+                f"Melody steps {step}->{step + 1}: tritone motion is forbidden",
+                location=f"transition:{step}->{step + 1}",
+                voice="soprano",
+            )
         active_key = (
             spec.active_key_at_beat(step // spec.subdivisions_per_beat)
             if spec.modulation_enabled
@@ -172,14 +258,26 @@ def verify_result(result: GenerationResult) -> ValidationReport:
             and left % 12 == active_key.leading_tone_pc
             and right != left + 1
         ):
-            fail("CM010", f"Melody step {step}: leading tone does not resolve upward to tonic")
+            fail(
+                "CM010",
+                f"Melody step {step}: leading tone does not resolve upward to tonic",
+                location=f"transition:{step}->{step + 1}",
+                voice="soprano",
+            )
 
+    visit("CM011")
     run_length = 1
     for step in range(1, len(melody)):
         run_length = run_length + 1 if melody[step] == melody[step - 1] else 1
         if run_length > spec.max_repeated_notes:
-            fail("CM011", f"Melody step {step}: too many repeated notes")
+            fail(
+                "CM011",
+                f"Melody step {step}: too many repeated notes",
+                location=f"step:{step}",
+                voice="soprano",
+            )
 
+    visit("CM012")
     for step in range(len(melody) - 2):
         first = melody[step + 1] - melody[step]
         second = melody[step + 2] - melody[step + 1]
@@ -188,16 +286,30 @@ def verify_result(result: GenerationResult) -> ValidationReport:
                 "CM012",
                 f"Melody steps {step}->{step + 2}: large leap is not followed by "
                 "contrary stepwise recovery",
+                location=f"transition:{step}->{step + 2}",
+                voice="soprano",
             )
 
+    visit("CM013", "CM014")
     for beat, (left, right) in enumerate(pairwise(bass)):
         delta = right - left
         if abs(delta) > spec.max_bass_leap:
-            fail("CM013", f"Bass beats {beat}->{beat + 1}: leap exceeds limit")
+            fail(
+                "CM013",
+                f"Bass beats {beat}->{beat + 1}: leap exceeds limit",
+                location=f"transition:{beat}->{beat + 1}",
+                voice="bass",
+            )
         if abs(delta) % 12 == 6:
-            fail("CM014", f"Bass beats {beat}->{beat + 1}: tritone motion is forbidden")
+            fail(
+                "CM014",
+                f"Bass beats {beat}->{beat + 1}: tritone motion is forbidden",
+                location=f"transition:{beat}->{beat + 1}",
+                voice="bass",
+            )
 
     if spec.avoid_parallel_perfects:
+        visit("CM015")
         for step, (m1, m2) in enumerate(pairwise(melody)):
             first_beat = step // spec.subdivisions_per_beat
             second_beat = (step + 1) // spec.subdivisions_per_beat
@@ -207,9 +319,11 @@ def verify_result(result: GenerationResult) -> ValidationReport:
                 fail(
                     "CM015",
                     f"Parallel perfect interval between melody steps {step} and {step + 1}",
+                    location=f"transition:{step}->{step + 1}",
                 )
 
     if spec.require_authentic_cadence and chords:
+        visit("CM016")
         if chords[0] != 0:
             fail("CM016", "Opening chord is not tonic")
         if len(chords) < 2 or chords[-2] not in {4, 6} or chords[-1] != 0:
@@ -219,12 +333,14 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         if not bass or bass[-1] % 12 != key.tonic_pc:
             fail("CM016", "Final bass note is not tonic")
 
+    visit("CM017")
     valid_states = {RhythmState.REST, RhythmState.ONSET, RhythmState.TIE}
     for step, state in enumerate(rhythm):
         if state not in valid_states:
             fail("CM017", f"Rhythm step {step}: invalid state {state!r}")
 
     if rhythm:
+        visit_applicable("CM018")
         if rhythm[0] == RhythmState.TIE:
             fail("CM018", "The first rhythm step cannot be a tie")
         tie_run = 0
@@ -243,6 +359,7 @@ def verify_result(result: GenerationResult) -> ValidationReport:
                     fail("CM018", f"Rhythm step {step}: tied pitch changed")
 
     if spec.rhythm_enabled and len(rhythm) == spec.total_steps:
+        visit("CM019")
         for bar in range(spec.bars):
             start = bar * spec.steps_per_bar
             states = rhythm[start : start + spec.steps_per_bar]
@@ -261,6 +378,7 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         and len(melody) == spec.total_steps
         and len(rhythm) == spec.total_steps
     ):
+        visit("CM020")
         source = spec.motif_source_start
         target = spec.motif_target_start
         interval = 0 if spec.motif_relation == "repeat" else spec.motif_transpose_semitones
@@ -271,8 +389,12 @@ def verify_result(result: GenerationResult) -> ValidationReport:
                 fail("CM020", f"Motif step {offset}: rhythm relation is violated")
 
     if spec.require_authentic_cadence and rhythm and rhythm[-1] != RhythmState.ONSET:
+        visit("CM021")
         fail("CM021", "Final tonic must be a newly articulated onset")
+    elif spec.require_authentic_cadence:
+        visit("CM021")
 
+    visit_applicable(*(f"CM{number:03d}" for number in range(22, 27)))
     for rule_id, message in phrase_verification_issues(result):
         fail(rule_id, message)
 
@@ -287,6 +409,8 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         satb_issues = modulated_satb_verification_issues(result)
     else:
         satb_issues = satb_verification_issues(result)
+    if satb_complete:
+        visit_applicable(*(f"CM{number:03d}" for number in range(27, 43)))
     for rule_id, message in satb_issues:
         fail(rule_id, message)
 
@@ -313,6 +437,8 @@ def verify_result(result: GenerationResult) -> ValidationReport:
         modulation_issues = borrowed_seventh_modulation_verification_issues(result)
     else:
         modulation_issues = modulation_verification_issues(result)
+    if satb_complete:
+        visit_applicable(*(f"CM{number:03d}" for number in range(43, 58)))
     for rule_id, message in modulation_issues:
         fail(rule_id, message)
 

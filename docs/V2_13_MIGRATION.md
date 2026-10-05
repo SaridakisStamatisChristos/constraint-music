@@ -7,7 +7,11 @@ Version 2.13 intentionally closes permissive 2.12 certification behavior.
 - Numeric strings, booleans-as-integers, fractional MIDI pitches, and non-finite numbers
   are rejected by strict input validation.
 - `verified_constraint_ids` now lists freshly evaluated rules; the complete 57-row
-  ledger separately records `NOT_APPLICABLE` rules.
+  ledger separately records `NOT_APPLICABLE` rules. Each row now includes `visited`;
+  an applicable predicate that is not reached becomes `BLOCKED`, never `PASS`.
+- Validation failures now serialize stable structured diagnostics. Consumers should
+  treat `code`, `rule_id`, `feature`, and `location` as machine fields and `message`
+  as presentation text.
 - Use `verify` for embedded-context inspection and `certify --spec ... --midi ...` for
   strict release acceptance.
 - The default generated MIDI is `certified-satb`; request `melody-plus-satb` explicitly
