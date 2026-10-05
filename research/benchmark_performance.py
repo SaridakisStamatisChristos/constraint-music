@@ -15,13 +15,13 @@ import tempfile
 import time
 import tracemalloc
 from collections import Counter, defaultdict
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from importlib import metadata
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 from constraint_music.certification import verify_artifact
 from constraint_music.delivery import RenderProfile, verify_delivery
