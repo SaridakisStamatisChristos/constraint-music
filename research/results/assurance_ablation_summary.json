@@ -117,7 +117,7 @@
     "composition_sha256": "f680dbd0c76c0a4c9291c0c9e5bfdc0e6f7db713b9d9ccade270d9e3985f439f",
     "midi_sha256": "1d0cb5f4fd0a1c1bcd20f7d417a283618ce8743e5c74ba020e749d7e4aa8483f"
   },
-  "raw_results_sha256": "a9439184243cef545bc9eee6b023916a3aa3f332da2fb7799d15a83e9d086612",
+  "raw_results_sha256": "8df3f3d78fd86f38f81483279be89163b67f7d6fbb897343c10a026e51c9cfbf",
   "implementation_hashes": {
     "research/assurance_ablations.py": "16ef4fc437c57cc67556af939d2d203ccd2ba712b5a97e548a84c4d4ea8b9b11",
     "research/mutations.py": "2dd37c12a2c72eaae00a8a9692f65bb260423d32193ff596af0acfe9a3231092",
