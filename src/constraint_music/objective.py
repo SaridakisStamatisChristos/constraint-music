@@ -13,7 +13,7 @@ from .search import (
     normalize_objective_weights,
     objective_mapping,
 )
-from .theory import CHORD_TENSION, DEGREE_TENSION
+from .theory import CHORD_TENSION, DEGREE_TENSION, Key
 
 
 @dataclass(frozen=True, slots=True)
@@ -21,6 +21,20 @@ class ObjectiveBundle:
     components: dict[str, cp_model.IntVar]
     actual_tensions: list[cp_model.IntVar]
     scalarized: cp_model.LinearExpr
+
+
+def _melody_tension_for_key(key: Key, note: int) -> int:
+    """Return the objective melody tension used by both model and recomputation.
+
+    Chromatic pitches admitted by contextual harmony are intentionally neutral in the
+    diatonic degree-tension term. This must stay identical to the table compiled into
+    the CP-SAT objective so post-solve objective recomputation cannot reject a valid
+    chromatic solution.
+    """
+    pitch_class = note % 12
+    if pitch_class not in key.pitch_classes:
+        return 0
+    return DEGREE_TENSION[key.degree_of_pc(pitch_class)]
 
 
 def add_objective(
@@ -50,10 +64,7 @@ def add_objective(
         model.add_element(chord[beat], chord_tension_table, chord_tension)
         active_key = spec.active_key_at_beat(beat)
         melody_tension_table = [
-            DEGREE_TENSION[active_key.degree_of_pc(note % 12)]
-            if note % 12 in active_key.pitch_classes
-            else 0
-            for note in melody_domain
+            _melody_tension_for_key(active_key, note) for note in melody_domain
         ]
         model.add_element(
             melody_choice[beat * spec.subdivisions_per_beat],
@@ -149,7 +160,7 @@ def evaluate_objective_vector(result: GenerationResult) -> ObjectiveVector:
         melody = result.melody[strong_step]
         active_key = spec.active_key_at_beat(beat)
         chord_tension = CHORD_TENSION[spec.mode][chord]
-        melody_tension = DEGREE_TENSION[active_key.degree_of_pc(melody % 12)]
+        melody_tension = _melody_tension_for_key(active_key, melody)
         actual = 2 * chord_tension + melody_tension
         tension_deviation += abs(actual - target[beat] * 3)
 
