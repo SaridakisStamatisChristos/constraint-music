@@ -157,7 +157,7 @@
 - [x] Freeze the `bounded-assurance-v1` claim and its explicit non-claims.
 - [x] Classify every inherited EH-01–EH-11 residual in a machine-validated EH-12 closure matrix.
 - [x] Build the PR-34 consolidated adversarial, delivery, interaction, oracle, compiler-deletion, and multi-fixture corpus.
-- [ ] Build the PR-35 one-command release-assurance validator with evidence hashes and CI enforcement.
+- [x] Build the PR-35 one-command release-assurance validator with evidence hashes and CI enforcement.
 - [ ] Complete an independent clean-checkout reproduction and claim-to-evidence audit.
 - [ ] Mark EH-12 complete only after the closure matrix contains no blockers.
 

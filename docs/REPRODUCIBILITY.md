@@ -33,18 +33,21 @@ python -c "from constraint_music.certification import verify_artifact"
 
 ## Required gates
 
+From the pinned development environment, the complete repository-authored release gate
+is one fail-closed command:
+
 ```bash
-ruff check src tests research
-mypy src
-python -m pytest
-python -m build
-python -m research.validate_eh12_closure
-python -m research.enumerate_fragments \
-  --output research/results/bounded_conformance.json
-python -m research.generate_eh10_evidence
-python -m research.eh12_assurance_corpus
-git diff --exit-code -- research/results
+python -m research.validate_release_assurance
 ```
+
+It checks the supported Python minor and exact OR-Tools/music21 research pins; runs
+Ruff, strict mypy, pytest with branch-aware coverage, and isolated package builds;
+installs the built wheel into a fresh checker-only environment and proves OR-Tools is
+absent; replays the bounded, corruption, EH-10, and EH-12 evidence into temporary
+directories; verifies the SHA-256 of every replay and all 12 checked-in evidence
+artifacts; and rejects frozen-claim, closure-status, or human/machine matrix drift.
+The recorded EH-11 measurements are hash-checked but intentionally not rerun on shared
+CI hardware. CI invokes this exact command on Python 3.11, 3.12, and 3.13.
 
 The bounded enumerator reports separately named pitch-class, absolute-register,
 context/anchor, voice-resolution, and complete-verifier partitions. It records

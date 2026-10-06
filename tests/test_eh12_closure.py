@@ -21,7 +21,7 @@ def test_closure_matrix_is_structurally_valid() -> None:
 
     assert summary.residuals == 11
     assert summary.deferred == 5
-    assert summary.satisfied_gates == 2
+    assert summary.satisfied_gates == 3
 
 
 def test_every_inherited_work_package_is_adjudicated_once() -> None:
@@ -38,10 +38,7 @@ def test_publication_gate_holds_while_blockers_remain() -> None:
     summary = validate_matrix(load_matrix())
 
     assert summary.publication_decision == "HOLD"
-    assert summary.blockers == (
-        "EH12-G03",
-        "EH12-G04",
-    )
+    assert summary.blockers == ("EH12-G04",)
 
 
 def test_machine_matrix_is_deterministic_json() -> None:
@@ -60,7 +57,7 @@ def test_closure_validator_cli_reports_current_decision(
     payload = json.loads(captured.out)
 
     assert payload["publication_decision"] == "HOLD"
-    assert len(payload["blockers"]) == 2
+    assert payload["blockers"] == ["EH12-G04"]
 
 
 def test_all_satisfied_evidence_references_exist() -> None:
@@ -122,4 +119,16 @@ def test_human_matrix_cannot_drift_from_machine_classification(
     document.write_text(rendered, encoding="utf-8")
 
     with pytest.raises(ClosureMatrixError, match="misclassifies EH12-R01"):
+        validate_matrix(load_matrix(), document=document)
+
+
+def test_human_matrix_cannot_drift_from_frozen_claim(tmp_path: Path) -> None:
+    rendered = DEFAULT_DOCUMENT.read_text(encoding="utf-8").replace(
+        "versioned, fail-closed generation and certification",
+        "unversioned generation",
+    )
+    document = tmp_path / "EH12_CLOSURE_MATRIX.md"
+    document.write_text(rendered, encoding="utf-8")
+
+    with pytest.raises(ClosureMatrixError, match="frozen claim statement"):
         validate_matrix(load_matrix(), document=document)

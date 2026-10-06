@@ -3,8 +3,8 @@
 ## Decision
 
 **Publication gate: HOLD.** EH-01 through EH-11 are core-complete and the consolidated
-assurance corpus is satisfied. The bounded publication package still requires the
-one-command release validator and an independent clean-checkout review.
+assurance corpus and repository-authored release validator are satisfied. The bounded
+publication package still requires an independent clean-checkout review.
 
 The machine-readable source of truth is
 [`research/configs/eh12_closure_matrix.json`](../research/configs/eh12_closure_matrix.json).
@@ -78,7 +78,7 @@ Detailed acceptance criteria live in the machine-readable matrix and are normati
 | --- | --- | --- |
 | `EH12-G01` | Satisfied by PR-33 | Claim frozen; EH-01–EH-11 residuals classified; matrix and documentation structurally validated. |
 | `EH12-G02` | Satisfied by PR-34 | The versioned 39-case corpus, raw JSONL, and derived summary satisfy all PR-34 residual criteria deterministically. |
-| `EH12-G03` | Blocker → PR-35 | One documented command validates dependencies, tests, builds, checker isolation, evidence replay/hashes, and claim drift in CI. |
+| `EH12-G03` | Satisfied by PR-35 | `python -m research.validate_release_assurance` validates exact research pins, lint, types, tests, coverage, builds, a solver-free wheel install, four deterministic evidence replays, all 12 evidence hashes, and the frozen claim/closure state; CI runs the same command. |
 | `EH12-G04` | Blocker → INDEPENDENT-REVIEW | Fresh-clone execution and claim/evidence audit by a reviewer who did not author the closure changes. |
 
 Research novelty and venue suitability remain a separate, live-literature research
