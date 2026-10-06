@@ -21,7 +21,7 @@ def test_closure_matrix_is_structurally_valid() -> None:
 
     assert summary.residuals == 11
     assert summary.deferred == 5
-    assert summary.satisfied_gates == 1
+    assert summary.satisfied_gates == 2
 
 
 def test_every_inherited_work_package_is_adjudicated_once() -> None:
@@ -39,15 +39,8 @@ def test_publication_gate_holds_while_blockers_remain() -> None:
 
     assert summary.publication_decision == "HOLD"
     assert summary.blockers == (
-        "EH12-G02",
         "EH12-G03",
         "EH12-G04",
-        "EH12-R01",
-        "EH12-R02",
-        "EH12-R05",
-        "EH12-R07",
-        "EH12-R08",
-        "EH12-R09",
     )
 
 
@@ -67,7 +60,7 @@ def test_closure_validator_cli_reports_current_decision(
     payload = json.loads(captured.out)
 
     assert payload["publication_decision"] == "HOLD"
-    assert len(payload["blockers"]) == 9
+    assert len(payload["blockers"]) == 2
 
 
 def test_all_satisfied_evidence_references_exist() -> None:
@@ -122,7 +115,7 @@ def test_human_matrix_cannot_drift_from_machine_classification(
     tmp_path: Path,
 ) -> None:
     rendered = DEFAULT_DOCUMENT.read_text(encoding="utf-8").replace(
-        "| `EH12-R01` | EH-01 | Blocker → PR-34 |",
+        "| `EH12-R01` | EH-01 | Satisfied by PR-34 |",
         "| `EH12-R01` | EH-01 | Deferred → `NC-01` |",
     )
     document = tmp_path / "EH12_CLOSURE_MATRIX.md"

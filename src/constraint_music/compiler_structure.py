@@ -50,7 +50,7 @@ def add_rhythm_constraints(
             model.add(state == onset)
         return
 
-    model.add(rhythm[0] != tie)
+    model.add(rhythm[0] != tie).with_name("CM018.initial-not-tie")
     allowed_transitions = [
         (left, right)
         for left in range(3)

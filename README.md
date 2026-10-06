@@ -243,6 +243,8 @@ See [Assurance Boundary](docs/ASSURANCE_BOUNDARY.md),
 ablations and narrowly scoped external adapters without adding certification bypasses.
 The [EH-12 closure matrix](docs/EH12_CLOSURE_MATRIX.md) freezes the bounded assurance
 claim, explicit non-claims, remaining blockers, and exact completion policy.
+The [EH-12 consolidated assurance corpus](docs/EH12_ASSURANCE_CORPUS.md) records the
+39-case PR-34 schema, interaction, delivery, multi-fixture, and compiler-deletion evidence.
 
 ## Reproducibility
 
@@ -262,6 +264,7 @@ ruff check src tests research
 mypy --python-version <3.11|3.12|3.13> src
 pytest --cov=constraint_music --cov-report=term-missing
 python -m research.validate_eh12_closure
+python -m research.eh12_assurance_corpus
 python -m build
 ```
 

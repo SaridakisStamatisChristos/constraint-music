@@ -241,7 +241,7 @@
       "boundary_diagnostic": "Solver/verifier contract breach: [CM057] tenor beat 0: local leading tone does not resolve upward by semitone"
     },
     "implementation_hashes": {
-      "research/compiler_deletions.py": "1a719a7c3879e9aff8ebe68212f1d442d7440a46a13b0e32ae821d0401147bf0",
+      "research/compiler_deletions.py": "bea990678ad264553a54642a56b55bebafdada1442e5b7ae190d80d8f5e457a1",
       "research/oracle/secondary_seventh.py": "7e1b22849200a45aa21aa415fe1b1e64d8cc1ce623957c47bbed84014ded94bf",
       "src/constraint_music/compiler_registry.py": "4a17908624cf3c31cbf0439a254cc42bf91a40a5d4215ba787484ca0aff251a4",
       "src/constraint_music/secondary_leading_tone_seventh_runtime.py": "8d8b7fa585b0ba7e778b23774246e6c6faf2cd3834f16d04f2448e483599367a",

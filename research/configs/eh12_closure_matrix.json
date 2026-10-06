@@ -75,8 +75,13 @@
       "id": "EH12-R01",
       "work_package": "EH-01",
       "title": "Complete the schema adversarial matrix",
-      "classification": "blocker",
-      "target_slice": "PR-34",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "research/configs/eh12_assurance_manifest.json",
+        "research/results/eh12_assurance_raw.jsonl",
+        "research/results/eh12_assurance_summary.json",
+        "tests/test_eh12_assurance.py"
+      ],
       "acceptance_criteria": [
         "Every required current-schema field family has a valid control and at least one malformed type, shape, nullability, or length mutation.",
         "Every supported legacy schema fixture is proven non-certifying at the strict boundary.",
@@ -87,8 +92,13 @@
       "id": "EH12-R02",
       "work_package": "EH-02",
       "title": "Expand solved cross-feature delivery controls",
-      "classification": "blocker",
-      "target_slice": "PR-34",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "research/eh12_assurance_corpus.py",
+        "research/results/eh12_assurance_raw.jsonl",
+        "research/results/eh12_assurance_summary.json",
+        "tests/test_eh12_assurance.py"
+      ],
       "acceptance_criteria": [
         "Frozen valid controls exercise combined harmonic features through certified-satb delivery.",
         "At least one control exercises melody-plus-satb with rhythm articulation.",
@@ -119,8 +129,13 @@
       "id": "EH12-R05",
       "work_package": "EH-05",
       "title": "Expand semantic-dispatch feature interactions",
-      "classification": "blocker",
-      "target_slice": "PR-34",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "research/configs/eh12_assurance_manifest.json",
+        "research/eh12_assurance_corpus.py",
+        "research/results/eh12_assurance_raw.jsonl",
+        "tests/test_eh12_assurance.py"
+      ],
       "acceptance_criteria": [
         "The corpus includes valid and faulty controls for modulation with modal mixture, modulation with secondary harmony, and modal mixture with secondary harmony on disjoint beats.",
         "Dispatch remains derived from reconstructed semantics rather than diagnostic text or trusted function labels.",
@@ -141,8 +156,13 @@
       "id": "EH12-R07",
       "work_package": "EH-07",
       "title": "Grow the hand-adjudicated full-piece corpus",
-      "classification": "blocker",
-      "target_slice": "PR-34",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "research/configs/eh12_assurance_manifest.json",
+        "research/results/eh12_assurance_raw.jsonl",
+        "research/results/eh12_assurance_summary.json",
+        "tests/test_eh12_assurance.py"
+      ],
       "acceptance_criteria": [
         "Each consolidated interaction family has a frozen full-piece control and a targeted fault.",
         "Expected outcomes are adjudicated independently of serialized generator labels.",
@@ -153,8 +173,13 @@
       "id": "EH12-R08",
       "work_package": "EH-08",
       "title": "Broaden named compiler-clause deletion evidence",
-      "classification": "blocker",
-      "target_slice": "PR-34",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "research/compiler_deletions.py",
+        "research/results/eh12_assurance_raw.jsonl",
+        "research/results/eh12_assurance_summary.json",
+        "tests/test_eh12_assurance.py"
+      ],
       "acceptance_criteria": [
         "At least two additional named compiler clauses from distinct registered phases are deleted one at a time.",
         "Each deletion exposes a forced witness rejected by the independent oracle or verifier and by the production finalization boundary.",
@@ -165,8 +190,13 @@
       "id": "EH12-R09",
       "work_package": "EH-09",
       "title": "Add independently curated benchmark fixtures",
-      "classification": "blocker",
-      "target_slice": "PR-34",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "research/configs/eh12_assurance_manifest.json",
+        "research/results/eh12_assurance_raw.jsonl",
+        "research/results/eh12_assurance_summary.json",
+        "tests/test_eh12_assurance.py"
+      ],
       "acceptance_criteria": [
         "The consolidated corpus contains at least three frozen valid fixtures with distinct specifications and seeds, not only the original corruption fixture.",
         "Controls and mutations preserve fixture identity, attack cluster, expected outcome, and raw issues.",
@@ -209,8 +239,14 @@
     {
       "id": "EH12-G02",
       "title": "Produce the consolidated assurance corpus",
-      "classification": "blocker",
-      "target_slice": "PR-34",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "research/configs/eh12_assurance_manifest.json",
+        "research/eh12_assurance_corpus.py",
+        "research/results/eh12_assurance_raw.jsonl",
+        "research/results/eh12_assurance_summary.json",
+        "tests/test_eh12_assurance.py"
+      ],
       "acceptance_criteria": [
         "All PR-34 residual acceptance criteria are satisfied by one versioned corpus, raw result set, and derived summary.",
         "The corpus is deterministic where workers=1 and preserves all failures, exclusions, and crashes."

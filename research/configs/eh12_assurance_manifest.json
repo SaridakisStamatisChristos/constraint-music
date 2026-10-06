@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "corpus_id": "eh12-consolidated-assurance-v1",
+  "claim_boundary": "A deterministic finite corpus covering current-schema shape rejection, three frozen cross-feature pieces and targeted faults, certified MIDI parse-back, and three named compiler-clause deletions. It does not establish population robustness or global compiler/checker equivalence.",
+  "common_spec": {
+    "bars": 2,
+    "beats_per_bar": 4,
+    "subdivisions_per_beat": 1,
+    "require_authentic_cadence": false,
+    "harmony_vocabulary": "triads+sevenths",
+    "avoid_parallel_perfects": false,
+    "workers": 1,
+    "max_time_seconds": 30,
+    "tension_curve": [0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
+  },
+  "fixtures": [
+    {
+      "id": "modulation-modal",
+      "seed": 7301,
+      "interaction": "modulation+modal_mixture",
+      "delivery_profiles": ["certified-satb"],
+      "fault": "stale_key_contexts",
+      "expected_rule": "CM048",
+      "adjudication_note": "The serialized key sequence must cross the declared modulation boundary while the borrowed harmony remains independently reconstructed.",
+      "spec_overrides": {
+        "modulation_enabled": true,
+        "modulation_destination_key": "G",
+        "modulation_boundary_beat": 4,
+        "modal_mixture_enabled": true,
+        "minimum_borrowed_chords": 1
+      }
+    },
+    {
+      "id": "modulation-secondary",
+      "seed": 7302,
+      "interaction": "modulation+secondary_harmony",
+      "delivery_profiles": ["certified-satb"],
+      "fault": "remove_secondary_target",
+      "expected_rule": "CM055",
+      "adjudication_note": "The secondary-seventh identity is reconstructed from realized tones in the destination-key region; removing its target must not relabel it as ordinary harmony.",
+      "spec_overrides": {
+        "modulation_enabled": true,
+        "modulation_destination_key": "G",
+        "modulation_boundary_beat": 4,
+        "secondary_leading_tone_seventh_enabled": true,
+        "minimum_secondary_leading_tone_seventh_chords": 1
+      }
+    },
+    {
+      "id": "modal-secondary-rhythm",
+      "seed": 7303,
+      "interaction": "modal_mixture+secondary_harmony",
+      "delivery_profiles": ["certified-satb", "melody-plus-satb"],
+      "fault": "overlap_modal_secondary",
+      "expected_rule": "CM055",
+      "adjudication_note": "Borrowed and secondary functions occupy disjoint beats in the control; forged overlap is independently rejected from the local context and realized chord.",
+      "spec_overrides": {
+        "subdivisions_per_beat": 2,
+        "modal_mixture_enabled": true,
+        "minimum_borrowed_chords": 1,
+        "secondary_leading_tone_seventh_enabled": true,
+        "minimum_secondary_leading_tone_seventh_chords": 1,
+        "rhythm_enabled": true,
+        "min_rests_per_bar": 1,
+        "max_rests_per_bar": 2,
+        "min_ties_per_bar": 1,
+        "max_ties_per_bar": 2,
+        "max_onsets_per_bar": 6
+      }
+    }
+  ],
+  "required_schema_families": [
+    "schema_version",
+    "root_sections",
+    "spec_required_fields",
+    "spec_integer_wire",
+    "spec_boolean_wire",
+    "spec_finite_number_wire",
+    "spec_tension_curve_wire",
+    "solver_metadata",
+    "validation_metadata",
+    "music_integer_arrays",
+    "music_string_arrays",
+    "music_nullable_integer_arrays",
+    "music_nullable_string_arrays",
+    "modulation_key_contexts",
+    "search_metadata",
+    "provenance_metadata",
+    "legacy_schema"
+  ],
+  "schema_cases": [
+    {"id": "schema.version-type", "fixture_id": "modulation-modal", "family": "schema_version", "cluster_id": "schema-root", "mutation": "schema_version_type", "expected_outcome": "BLOCKED"},
+    {"id": "schema.root-section-shape", "fixture_id": "modulation-modal", "family": "root_sections", "cluster_id": "schema-root", "mutation": "root_spec_shape", "expected_outcome": "BLOCKED"},
+    {"id": "schema.spec-required-field", "fixture_id": "modulation-modal", "family": "spec_required_fields", "cluster_id": "schema-spec", "mutation": "spec_missing_bars", "expected_outcome": "BLOCKED"},
+    {"id": "schema.spec-integer-type", "fixture_id": "modulation-modal", "family": "spec_integer_wire", "cluster_id": "schema-spec", "mutation": "spec_bars_string", "expected_outcome": "BLOCKED"},
+    {"id": "schema.spec-boolean-null", "fixture_id": "modulation-modal", "family": "spec_boolean_wire", "cluster_id": "schema-spec", "mutation": "spec_boolean_null", "expected_outcome": "BLOCKED"},
+    {"id": "schema.spec-finite-number", "fixture_id": "modulation-modal", "family": "spec_finite_number_wire", "cluster_id": "schema-spec", "mutation": "spec_time_string", "expected_outcome": "BLOCKED"},
+    {"id": "schema.spec-tension-item", "fixture_id": "modulation-modal", "family": "spec_tension_curve_wire", "cluster_id": "schema-spec", "mutation": "spec_tension_null", "expected_outcome": "BLOCKED"},
+    {"id": "schema.solver-number", "fixture_id": "modulation-secondary", "family": "solver_metadata", "cluster_id": "schema-solver", "mutation": "solver_objective_null", "expected_outcome": "BLOCKED"},
+    {"id": "schema.solver-status", "fixture_id": "modulation-secondary", "family": "solver_metadata", "cluster_id": "schema-solver", "mutation": "solver_status_null", "expected_outcome": "BLOCKED"},
+    {"id": "schema.validation-boolean", "fixture_id": "modulation-secondary", "family": "validation_metadata", "cluster_id": "schema-validation", "mutation": "validation_valid_null", "expected_outcome": "BLOCKED"},
+    {"id": "schema.validation-array", "fixture_id": "modulation-secondary", "family": "validation_metadata", "cluster_id": "schema-validation", "mutation": "validation_issues_shape", "expected_outcome": "BLOCKED"},
+    {"id": "schema.music-integer-shape", "fixture_id": "modal-secondary-rhythm", "family": "music_integer_arrays", "cluster_id": "schema-music-integer", "mutation": "music_bass_shape", "expected_outcome": "BLOCKED"},
+    {"id": "schema.music-integer-type", "fixture_id": "modal-secondary-rhythm", "family": "music_integer_arrays", "cluster_id": "schema-music-integer", "mutation": "music_bass_item_null", "expected_outcome": "BLOCKED"},
+    {"id": "schema.music-integer-length", "fixture_id": "modal-secondary-rhythm", "family": "music_integer_arrays", "cluster_id": "schema-music-integer", "mutation": "music_bass_short", "expected_outcome": "BLOCKED"},
+    {"id": "schema.music-string-shape", "fixture_id": "modal-secondary-rhythm", "family": "music_string_arrays", "cluster_id": "schema-music-string", "mutation": "music_rhythm_shape", "expected_outcome": "BLOCKED"},
+    {"id": "schema.music-string-type", "fixture_id": "modal-secondary-rhythm", "family": "music_string_arrays", "cluster_id": "schema-music-string", "mutation": "music_rhythm_item_null", "expected_outcome": "BLOCKED"},
+    {"id": "schema.music-string-length", "fixture_id": "modal-secondary-rhythm", "family": "music_string_arrays", "cluster_id": "schema-music-string", "mutation": "music_rhythm_short", "expected_outcome": "BLOCKED"},
+    {"id": "schema.nullable-integer-type", "fixture_id": "modulation-secondary", "family": "music_nullable_integer_arrays", "cluster_id": "schema-nullable", "mutation": "music_target_string", "expected_outcome": "BLOCKED"},
+    {"id": "schema.nullable-integer-length", "fixture_id": "modulation-secondary", "family": "music_nullable_integer_arrays", "cluster_id": "schema-nullable", "mutation": "music_target_short", "expected_outcome": "BLOCKED"},
+    {"id": "schema.nullable-string-type", "fixture_id": "modulation-modal", "family": "music_nullable_string_arrays", "cluster_id": "schema-nullable", "mutation": "music_modal_integer", "expected_outcome": "BLOCKED"},
+    {"id": "schema.nullable-string-length", "fixture_id": "modulation-modal", "family": "music_nullable_string_arrays", "cluster_id": "schema-nullable", "mutation": "music_modal_short", "expected_outcome": "BLOCKED"},
+    {"id": "schema.context-shape", "fixture_id": "modulation-modal", "family": "modulation_key_contexts", "cluster_id": "schema-context", "mutation": "music_context_item_null", "expected_outcome": "BLOCKED"},
+    {"id": "schema.context-length", "fixture_id": "modulation-modal", "family": "modulation_key_contexts", "cluster_id": "schema-context", "mutation": "music_context_short", "expected_outcome": "BLOCKED"},
+    {"id": "schema.search-shape", "fixture_id": "modulation-secondary", "family": "search_metadata", "cluster_id": "schema-root", "mutation": "search_shape", "expected_outcome": "BLOCKED"},
+    {"id": "schema.provenance-shape", "fixture_id": "modal-secondary-rhythm", "family": "provenance_metadata", "cluster_id": "schema-root", "mutation": "provenance_shape", "expected_outcome": "BLOCKED"},
+    {"id": "schema.legacy-2-12", "fixture_id": "modal-secondary-rhythm", "family": "legacy_schema", "cluster_id": "schema-legacy", "mutation": "legacy_2_12", "expected_outcome": "BLOCKED"}
+  ]
+}

@@ -42,6 +42,7 @@ python -m research.validate_eh12_closure
 python -m research.enumerate_fragments \
   --output research/results/bounded_conformance.json
 python -m research.generate_eh10_evidence
+python -m research.eh12_assurance_corpus
 git diff --exit-code -- research/results
 ```
 
@@ -64,6 +65,19 @@ application verifier, and production finalizer to reject the exposed witness. Fi
 cross-feature partitions pair valid controls with targeted faults under coenabled
 tonicization, modal mixture, rhythm, authentic cadence, and modulation. These are
 finite local comparisons, not a global compiler/checker-equivalence claim.
+
+Regenerate the versioned PR-34 consolidated assurance corpus with:
+
+```bash
+python -m research.eh12_assurance_corpus
+```
+
+Its 39 raw rows retain three distinct frozen fixture identities, three pairwise
+interaction faults, 26 current/legacy schema mutations, four exact certified-delivery
+parse-backs, and three named compiler-clause deletions across distinct phases. The
+derived summary preserves exact controls, faults, clusters, crashes, exclusions, output
+digests, phase spans, and implementation hashes. See
+[EH-12 consolidated assurance corpus](EH12_ASSURANCE_CORPUS.md).
 
 Regenerate the frozen artifact-and-delivery corruption manifest, raw JSONL, and summary
 with the pinned one-worker fixture:
