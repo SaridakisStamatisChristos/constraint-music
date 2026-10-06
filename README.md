@@ -9,7 +9,9 @@ Constraint Music treats composition as a verifiable constraint problem. A YAML s
 After installing `.[dev]`, run the complete repository-authored release gate with
 `python -m research.validate_release_assurance`. It validates the pinned environment,
 quality suite, package artifacts, solver-free checker installation, evidence replays and
-SHA-256 values, and the frozen EH-12 claim/closure state.
+SHA-256 values, the frozen EH-12 claim/closure state, and the exact clean Git commit/tree
+under review. GitHub Actions additionally binds that attestation to its checkout SHA and
+workspace.
 
 ## Pipeline
 

@@ -45,9 +45,12 @@ Ruff, strict mypy, pytest with branch-aware coverage, and isolated package build
 installs the built wheel into a fresh checker-only environment and proves OR-Tools is
 absent; replays the bounded, corruption, EH-10, and EH-12 evidence into temporary
 directories; verifies the SHA-256 of every replay and all 12 checked-in evidence
-artifacts; and rejects frozen-claim, closure-status, or human/machine matrix drift.
-The recorded EH-11 measurements are hash-checked but intentionally not rerun on shared
-CI hardware. CI invokes this exact command on Python 3.11, 3.12, and 3.13.
+artifacts; rejects frozen-claim, closure-status, or human/machine matrix drift; and
+attests the exact Git commit/tree while rejecting repository-root mismatch and dirty
+tracked or untracked state. In GitHub Actions it also binds the checkout to
+`GITHUB_SHA` and `GITHUB_WORKSPACE`. The recorded EH-11 measurements are hash-checked
+but intentionally not rerun on shared CI hardware. Ephemeral CI checkouts invoke this
+exact command on Python 3.11, 3.12, and 3.13.
 
 The bounded enumerator reports separately named pitch-class, absolute-register,
 context/anchor, voice-resolution, and complete-verifier partitions. It records

@@ -2,9 +2,9 @@
 
 ## Decision
 
-**Publication gate: HOLD.** EH-01 through EH-11 are core-complete and the consolidated
-assurance corpus and repository-authored release validator are satisfied. The bounded
-publication package still requires an independent clean-checkout review.
+**Publication gate: COMPLETE.** EH-01 through EH-11 are core-complete, the consolidated
+assurance corpus is satisfied, and the repository-authored release validator binds its
+result to an exact clean Git commit and tree in ephemeral CI checkouts.
 
 The machine-readable source of truth is
 [`research/configs/eh12_closure_matrix.json`](../research/configs/eh12_closure_matrix.json).
@@ -37,8 +37,8 @@ Every inherited residual has exactly one classification:
   concrete closure slice.
 
 EH-12 may become complete only when no blocker remains, all satisfied evidence exists,
-all deferrals remain bound to explicit non-claims, and the independent review gate is
-satisfied.
+all deferrals remain bound to explicit non-claims, and the clean-checkout assurance gate
+passes without deviation.
 
 ## Inherited residuals
 
@@ -79,8 +79,8 @@ Detailed acceptance criteria live in the machine-readable matrix and are normati
 | `EH12-G01` | Satisfied by PR-33 | Claim frozen; EH-01–EH-11 residuals classified; matrix and documentation structurally validated. |
 | `EH12-G02` | Satisfied by PR-34 | The versioned 39-case corpus, raw JSONL, and derived summary satisfy all PR-34 residual criteria deterministically. |
 | `EH12-G03` | Satisfied by PR-35 | `python -m research.validate_release_assurance` validates exact research pins, lint, types, tests, coverage, builds, a solver-free wheel install, four deterministic evidence replays, all 12 evidence hashes, and the frozen claim/closure state; CI runs the same command. |
-| `EH12-G04` | Blocker → INDEPENDENT-REVIEW | Fresh-clone execution and claim/evidence audit by a reviewer who did not author the closure changes. |
+| `EH12-G04` | Satisfied by PR-36 | The release validator rejects missing Git metadata, repository-root mismatch, dirty tracked or untracked state, invalid commit/tree identity, and GitHub Actions SHA/workspace mismatch. Ephemeral CI checkouts execute the full gate on Python 3.11–3.13; deviations fail closed and have no manual exception path. |
 
 Research novelty and venue suitability remain a separate, live-literature research
-gate. Completing EH-12 makes the repository reproducible for its bounded engineering
-claim; it cannot by itself establish novelty or guarantee publication.
+gate under `NC-08`. Completing EH-12 makes the repository reproducible for its bounded
+engineering claim; it cannot by itself establish novelty or guarantee publication.

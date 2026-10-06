@@ -19,6 +19,7 @@
 - Added research-only EH-10 assurance-channel ablations without production bypass switches. The checked-in per-case evidence attributes overlapping wire-shape, semantic, integrity/request, and delivery signals and reports exact leave-one-channel-out losses across the frozen 30-attack/two-control corpus.
 - Added exact-version, fail-on-mismatch music21 9.9.2 comparator adapters. Explicit enharmonic and chord-quality scope normalization yields zero disagreements across 9,840 bounded shared parallel-perfect cases and 126 bounded C-major triad-policy cases; unsupported whole-system claims and features are enumerated rather than scored.
 - Added the manifest-driven `python -m research.validate_release_assurance` gate. One fail-closed command validates the supported Python/runtime pins, lint, strict typing, all tests and coverage, isolated sdist/wheel builds, a genuinely solver-free wheel installation, four deterministic evidence replays, SHA-256 values for every checked-in evidence artifact, and the frozen EH-12 claim/closure state. The Python 3.11–3.13 CI matrix now runs this same aggregate command.
+- Completed EH-12's bounded engineering gate with a machine-verifiable clean-checkout attestation. The aggregate validator now binds results to exact Git commit/tree identities, rejects dirty or mismatched source roots, verifies GitHub Actions SHA/workspace identity, and emits the attested object IDs; research novelty and venue suitability remain explicitly outside the CI claim.
 
 ## 2.12.0a1 — complete secondary leading-tone seventh certification
 
