@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "suite_id": "eh12-release-assurance-v1",
+  "supported_python": [
+    "3.11",
+    "3.12",
+    "3.13"
+  ],
+  "pinned_dependencies": {
+    "music21": "9.9.2",
+    "ortools": "9.15.6755"
+  },
+  "closure": {
+    "claim_id": "bounded-assurance-v1",
+    "claim_statement_sha256": "3a8bf4ded89b2714efac3dc52641566629aa901c519fe2d902b71de2bdc35938",
+    "expected_publication_decision": "HOLD",
+    "expected_blockers": [
+      "EH12-G04"
+    ]
+  },
+  "evidence": [
+    {
+      "path": "research/results/assurance_ablation_rows.jsonl",
+      "sha256": "126b9aa04fedc04016105fa9aa6ede79fec020188d5db0a94cfd9e4fd266028f",
+      "replay_group": "eh10"
+    },
+    {
+      "path": "research/results/assurance_ablation_summary.json",
+      "sha256": "d58e628d3ff1cee2ecba5549572f0bdffbf098c4346fc4c9c59a7d21ddef527c",
+      "replay_group": "eh10"
+    },
+    {
+      "path": "research/results/bounded_conformance.json",
+      "sha256": "4c5ef79dc5f05867633c6f6fb7202a893f54abe5736e26a15f5a9a7ba754ddf6",
+      "replay_group": "bounded"
+    },
+    {
+      "path": "research/results/corruption_benchmark.jsonl",
+      "sha256": "103a7f3eef153b47208ea306a7abe4adc1f31205bd6c4d7470378f63a91dbb96",
+      "replay_group": "corruption"
+    },
+    {
+      "path": "research/results/corruption_manifest.json",
+      "sha256": "5c36b31cb9e8914e53c9a13b354655153f5c4f3d0d97e1af9b485d89f6c48600",
+      "replay_group": "corruption"
+    },
+    {
+      "path": "research/results/corruption_summary.json",
+      "sha256": "882717f6f751f5be707acfdcf2326ed47593d30595e967b92caafefbf6faa854",
+      "replay_group": "corruption"
+    },
+    {
+      "path": "research/results/eh11_environment.json",
+      "sha256": "665c6cd35c2fab8ed942c14250883600853295608f59998d05950107bcf58271",
+      "replay_group": null
+    },
+    {
+      "path": "research/results/eh11_performance_raw.jsonl",
+      "sha256": "8754825f7f7c5a2bbf0b6de52051412a114b823e6ca24ba4939b246f31568bdf",
+      "replay_group": null
+    },
+    {
+      "path": "research/results/eh11_performance_summary.json",
+      "sha256": "71ff0a052061952f5039c976f47b943a886e35276244fc1401be3abcbdc0e0d0",
+      "replay_group": null
+    },
+    {
+      "path": "research/results/eh12_assurance_raw.jsonl",
+      "sha256": "da7aa88565539cbeb16b53d84a145d22f149d0bf3189fff2e21322e68580292d",
+      "replay_group": "eh12"
+    },
+    {
+      "path": "research/results/eh12_assurance_summary.json",
+      "sha256": "1f8bd18cefaed8c8547cc9ffc20ad03223d6bbaf385b7cf38d00496a27fb420f",
+      "replay_group": "eh12"
+    },
+    {
+      "path": "research/results/external_comparator_summary.json",
+      "sha256": "52c2b7ad6f0796fe63e76c0c37b9dc0c03a42f7bd8d6353d56b36d3860717b9e",
+      "replay_group": "eh10"
+    }
+  ]
+}

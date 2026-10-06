@@ -6,6 +6,11 @@ Constraint Music treats composition as a verifiable constraint problem. A YAML s
 
 > Current release line: **2.13.0a1** — fail-closed artifacts, request-bound strict certification, executable rule outcomes, solver-optional checking, and exact SATB MIDI delivery verification.
 
+After installing `.[dev]`, run the complete repository-authored release gate with
+`python -m research.validate_release_assurance`. It validates the pinned environment,
+quality suite, package artifacts, solver-free checker installation, evidence replays and
+SHA-256 values, and the frozen EH-12 claim/closure state.
+
 ## Pipeline
 
 ```text

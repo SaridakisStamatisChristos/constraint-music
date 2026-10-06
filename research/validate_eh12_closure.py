@@ -58,6 +58,19 @@ def _text_list(value: object, location: str) -> tuple[str, ...]:
     return items
 
 
+def _normalized_text(value: str) -> str:
+    return " ".join(value.split())
+
+
+def _normalized_document_text(value: str) -> str:
+    return _normalized_text(
+        " ".join(
+            line[2:] if line.startswith("> ") else line
+            for line in value.splitlines()
+        )
+    )
+
+
 def load_matrix(path: Path = DEFAULT_MATRIX) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -237,6 +250,11 @@ def validate_matrix(
         )
     if f"`{_text(claim.get('id'), 'claim.id')}`" not in rendered:
         raise ClosureMatrixError("human closure matrix omits the frozen claim ID")
+    claim_statement = _text(claim.get("statement"), "claim.statement")
+    if _normalized_text(claim_statement) not in _normalized_document_text(rendered):
+        raise ClosureMatrixError("human closure matrix drifts from the frozen claim statement")
+    if f"**Publication gate: {decision}.**" not in rendered:
+        raise ClosureMatrixError("human closure matrix drifts from the publication decision")
     for index, raw_item in enumerate(residuals):
         _validate_documented_item(
             rendered, _mapping(raw_item, f"residuals[{index}]"), f"residuals[{index}]"

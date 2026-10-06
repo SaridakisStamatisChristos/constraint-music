@@ -27,11 +27,17 @@ not a publication-readiness claim.
 | EH-09 | PR-34 assurance complete | The original 32-case benchmark remains intact. The consolidated corpus adds three distinct frozen specifications/seeds and retains 39 raw rows with stable fixture/case/cluster identities, expected outcomes, issues, exact denominators, crashes, and exclusions. | Neither finite corpus supports a population-level robustness claim. |
 | EH-10 | Core comparative evidence complete | Research-only leave-one-channel-out signal ablations preserve all 32 EH-09 raw cases and reasons without adding production bypasses. The four overlapping channels retain 24/30, 25/30, 23/30, and 24/30 detections when wire-shape, semantic, integrity/request, and delivery signals are respectively omitted, with zero control flags. Exact-version music21 9.9.2 adapters explicitly normalize shared semantics and show zero disagreements on 9,840 bounded parallel-perfect cases and 126 bounded C-major triad-policy cases. Raw rows, exact denominators, exclusions, dependency identity, and implementation hashes are checked in and replayed in CI. | Expand to independently selected external tools and broader predeclared shared domains before making comparative-performance, general-equivalence, or superiority claims. |
 | EH-11 | Core performance evidence complete | The controlled matrix records nine feature profiles at 1, 2, 4, 8, 16, and 32 bars across five fixed seeds and single/throughput worker modes on a pinned Python/OR-Tools environment. Raw rows preserve all 540 single-output attempts plus 18 multi-output throughput cases, including 40 declared scope exclusions, solver outcomes, timing decomposition, peak RSS, certification overhead, and run provenance. The checked-in report records 126 generated, strictly accepted, and released artifacts from 500 runnable single-output cases without converting timeouts into successes. | Re-run on owned, quiescent hardware with longer solve budgets and repeated independent runners before making capacity, latency-SLO, or cross-platform performance claims. |
-| EH-12 | Consolidated assurance satisfied; closure partial | The closure matrix now marks all inherited EH-01–EH-11 residuals satisfied or explicitly deferred. CI replays the deterministic [39-case consolidated corpus](EH12_ASSURANCE_CORPUS.md) and rejects result/hash drift. | Publication gate remains HOLD until PR-35 and independent clean-checkout review satisfy `EH12-G03` and `EH12-G04`. |
+| EH-12 | Repository assurance satisfied; independent review pending | The closure matrix marks every inherited EH-01–EH-11 residual satisfied or explicitly deferred. One fail-closed release command validates exact dependency pins, lint/types/tests/coverage, package builds, a solver-free wheel install, four deterministic evidence families, all 12 evidence hashes, and frozen claim/closure drift across the CI Python matrix. | Publication gate remains HOLD only until an independent clean-checkout review satisfies `EH12-G04`. |
 
 ## Verified release gates
 
-The following commands passed in the implementation workspace:
+The repository-authored aggregate gate is:
+
+```text
+python -m research.validate_release_assurance
+```
+
+It subsumes the following implementation gates:
 
 ```text
 python -m ruff check src tests research
@@ -49,7 +55,7 @@ The end-to-end certification returned `PASS (EXTERNAL REQUEST + DELIVERY)` and
 independently observed 64 delivery note events. The generated certificate records
 all binding digests and the exact evaluated/not-applicable rule sets.
 
-The full local suite contains 615 passing tests and reports 83.48% branch-aware
+The full local suite contains 624 passing tests and reports 83.48% branch-aware
 source coverage. The combined `melody-plus-satb` CLI round trip also passed with 96
 independently observed note events. The current bounded evidence records 27,648
 pitch-class cases (5,184 accepted and 22,464 rejected), 4,824 exact register cases

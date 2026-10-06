@@ -255,8 +255,13 @@
     {
       "id": "EH12-G03",
       "title": "Add the one-command release-assurance validator",
-      "classification": "blocker",
-      "target_slice": "PR-35",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "research/configs/release_assurance_manifest.json",
+        "research/validate_release_assurance.py",
+        "tests/test_release_assurance.py",
+        ".github/workflows/ci.yml"
+      ],
       "acceptance_criteria": [
         "A clean checkout can validate pinned dependencies, tests, builds, checker isolation, evidence replay, and evidence SHA-256 values with one documented command.",
         "CI executes the release-assurance validator and fails on evidence or claim drift."
