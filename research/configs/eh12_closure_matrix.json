@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "program_id": "EH-12",
+  "publication_decision": "HOLD",
+  "claim": {
+    "id": "bounded-assurance-v1",
+    "statement": "Constraint Music implements a versioned, fail-closed generation and certification pipeline whose current-schema validation, request binding, declared rule outcomes, bounded oracle comparisons, corruption benchmark, scope-normalized comparator adapters, and recorded performance matrix are reproducible within their explicitly declared finite domains.",
+    "scope": [
+      "current schema and contract 2.13",
+      "certified-satb and melody-plus-satb delivery profiles",
+      "the finite oracle, corruption, comparator, and performance domains recorded in the repository",
+      "the pinned dependencies and environment declarations attached to each evidence family"
+    ],
+    "excluded_non_claim_ids": [
+      "NC-01",
+      "NC-02",
+      "NC-03",
+      "NC-04",
+      "NC-05",
+      "NC-06",
+      "NC-07",
+      "NC-08",
+      "NC-09"
+    ]
+  },
+  "classification_definitions": {
+    "satisfied": "Implemented and linked to repository evidence that can be checked from a clean checkout.",
+    "deferred_by_non_claim": "Not required for the frozen claim because an explicit non-claim excludes it.",
+    "blocker": "Required for the frozen claim or EH-12 release process and not yet complete."
+  },
+  "decision_policy": {
+    "hold_when": "At least one residual or EH-12 gate is classified as blocker.",
+    "complete_when": "No blocker remains, every satisfied item names existing evidence, every deferral maps to an explicit non-claim, and the independent review gate is satisfied."
+  },
+  "non_claims": [
+    {
+      "id": "NC-01",
+      "statement": "Authenticated authorship, origin, or non-repudiation."
+    },
+    {
+      "id": "NC-02",
+      "statement": "Universal musical soundness, aesthetics, or unique tonal interpretation."
+    },
+    {
+      "id": "NC-03",
+      "statement": "Global solver/compiler/checker equivalence outside the declared finite partitions."
+    },
+    {
+      "id": "NC-04",
+      "statement": "Absolute implementation independence from every shared data type or serialization helper."
+    },
+    {
+      "id": "NC-05",
+      "statement": "Population-level robustness inferred from the finite corruption corpus."
+    },
+    {
+      "id": "NC-06",
+      "statement": "Comparative superiority, general external-tool equivalence, or state-of-the-art performance."
+    },
+    {
+      "id": "NC-07",
+      "statement": "Capacity, latency-SLO, cross-platform, or production-performance guarantees."
+    },
+    {
+      "id": "NC-08",
+      "statement": "Research novelty, venue acceptance, or publication readiness established by repository CI alone."
+    },
+    {
+      "id": "NC-09",
+      "statement": "Beat- or transition-local diagnostics for every global validation failure."
+    }
+  ],
+  "residuals": [
+    {
+      "id": "EH12-R01",
+      "work_package": "EH-01",
+      "title": "Complete the schema adversarial matrix",
+      "classification": "blocker",
+      "target_slice": "PR-34",
+      "acceptance_criteria": [
+        "Every required current-schema field family has a valid control and at least one malformed type, shape, nullability, or length mutation.",
+        "Every supported legacy schema fixture is proven non-certifying at the strict boundary.",
+        "All cases retain stable expected outcomes and fail without an uncaught exception."
+      ]
+    },
+    {
+      "id": "EH12-R02",
+      "work_package": "EH-02",
+      "title": "Expand solved cross-feature delivery controls",
+      "classification": "blocker",
+      "target_slice": "PR-34",
+      "acceptance_criteria": [
+        "Frozen valid controls exercise combined harmonic features through certified-satb delivery.",
+        "At least one control exercises melody-plus-satb with rhythm articulation.",
+        "Each control has exact parse-back event and output-digest evidence."
+      ]
+    },
+    {
+      "id": "EH12-R03",
+      "work_package": "EH-03",
+      "title": "Add authenticated signing",
+      "classification": "deferred_by_non_claim",
+      "non_claim_ids": [
+        "NC-01"
+      ],
+      "rationale": "SHA-256 binding is scoped to independently trusted inputs; the frozen claim does not assert authenticated origin."
+    },
+    {
+      "id": "EH12-R04",
+      "work_package": "EH-04",
+      "title": "Narrow every global diagnostic location",
+      "classification": "deferred_by_non_claim",
+      "non_claim_ids": [
+        "NC-09"
+      ],
+      "rationale": "Typed outcomes, rule IDs, phase spans, and fail-closed visitation are in scope; universally minimal diagnostic locations are not."
+    },
+    {
+      "id": "EH12-R05",
+      "work_package": "EH-05",
+      "title": "Expand semantic-dispatch feature interactions",
+      "classification": "blocker",
+      "target_slice": "PR-34",
+      "acceptance_criteria": [
+        "The corpus includes valid and faulty controls for modulation with modal mixture, modulation with secondary harmony, and modal mixture with secondary harmony on disjoint beats.",
+        "Dispatch remains derived from reconstructed semantics rather than diagnostic text or trusted function labels.",
+        "Every targeted fault is rejected by its declared rule family."
+      ]
+    },
+    {
+      "id": "EH12-R06",
+      "work_package": "EH-06",
+      "title": "Split all shared result types from mixed runtime modules",
+      "classification": "deferred_by_non_claim",
+      "non_claim_ids": [
+        "NC-04"
+      ],
+      "rationale": "The checker-only dependency boundary is executable and tested; the frozen claim does not assert absolute codebase independence."
+    },
+    {
+      "id": "EH12-R07",
+      "work_package": "EH-07",
+      "title": "Grow the hand-adjudicated full-piece corpus",
+      "classification": "blocker",
+      "target_slice": "PR-34",
+      "acceptance_criteria": [
+        "Each consolidated interaction family has a frozen full-piece control and a targeted fault.",
+        "Expected outcomes are adjudicated independently of serialized generator labels.",
+        "Oracle implementation hashes and adjudication notes are recorded."
+      ]
+    },
+    {
+      "id": "EH12-R08",
+      "work_package": "EH-08",
+      "title": "Broaden named compiler-clause deletion evidence",
+      "classification": "blocker",
+      "target_slice": "PR-34",
+      "acceptance_criteria": [
+        "At least two additional named compiler clauses from distinct registered phases are deleted one at a time.",
+        "Each deletion exposes a forced witness rejected by the independent oracle or verifier and by the production finalization boundary.",
+        "Constraint indices, phase spans, source hashes, and escape counts are persisted."
+      ]
+    },
+    {
+      "id": "EH12-R09",
+      "work_package": "EH-09",
+      "title": "Add independently curated benchmark fixtures",
+      "classification": "blocker",
+      "target_slice": "PR-34",
+      "acceptance_criteria": [
+        "The consolidated corpus contains at least three frozen valid fixtures with distinct specifications and seeds, not only the original corruption fixture.",
+        "Controls and mutations preserve fixture identity, attack cluster, expected outcome, and raw issues.",
+        "Reported metrics retain exact denominators, controls, crashes, exclusions, and cluster boundaries."
+      ]
+    },
+    {
+      "id": "EH12-R10",
+      "work_package": "EH-10",
+      "title": "Add more external tools and broader comparator domains",
+      "classification": "deferred_by_non_claim",
+      "non_claim_ids": [
+        "NC-06"
+      ],
+      "rationale": "The frozen claim is limited to the two pinned music21 adapters and does not infer superiority or general equivalence."
+    },
+    {
+      "id": "EH12-R11",
+      "work_package": "EH-11",
+      "title": "Repeat performance evaluation on owned controlled hardware",
+      "classification": "deferred_by_non_claim",
+      "non_claim_ids": [
+        "NC-07"
+      ],
+      "rationale": "The checked-in measurements remain finite observations from the recorded runner and solve budget, not an operational guarantee."
+    }
+  ],
+  "eh12_gates": [
+    {
+      "id": "EH12-G01",
+      "title": "Freeze claims and adjudicate every inherited residual",
+      "classification": "satisfied",
+      "evidence_refs": [
+        "docs/EH12_CLOSURE_MATRIX.md",
+        "research/configs/eh12_closure_matrix.json",
+        "research/validate_eh12_closure.py",
+        "tests/test_eh12_closure.py"
+      ]
+    },
+    {
+      "id": "EH12-G02",
+      "title": "Produce the consolidated assurance corpus",
+      "classification": "blocker",
+      "target_slice": "PR-34",
+      "acceptance_criteria": [
+        "All PR-34 residual acceptance criteria are satisfied by one versioned corpus, raw result set, and derived summary.",
+        "The corpus is deterministic where workers=1 and preserves all failures, exclusions, and crashes."
+      ]
+    },
+    {
+      "id": "EH12-G03",
+      "title": "Add the one-command release-assurance validator",
+      "classification": "blocker",
+      "target_slice": "PR-35",
+      "acceptance_criteria": [
+        "A clean checkout can validate pinned dependencies, tests, builds, checker isolation, evidence replay, and evidence SHA-256 values with one documented command.",
+        "CI executes the release-assurance validator and fails on evidence or claim drift."
+      ]
+    },
+    {
+      "id": "EH12-G04",
+      "title": "Complete independent clean-checkout review",
+      "classification": "blocker",
+      "target_slice": "INDEPENDENT-REVIEW",
+      "acceptance_criteria": [
+        "A reviewer who did not author the closure changes runs the release validator from a fresh clone.",
+        "The review checks claim-to-evidence consistency and records all deviations and dispositions.",
+        "Research novelty and venue suitability remain a separate literature-backed research gate."
+      ]
+    }
+  ]
+}

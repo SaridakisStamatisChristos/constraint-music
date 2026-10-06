@@ -38,6 +38,7 @@ ruff check src tests research
 mypy src
 python -m pytest
 python -m build
+python -m research.validate_eh12_closure
 python -m research.enumerate_fragments \
   --output research/results/bounded_conformance.json
 python -m research.generate_eh10_evidence

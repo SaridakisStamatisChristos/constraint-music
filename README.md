@@ -241,6 +241,8 @@ See [Assurance Boundary](docs/ASSURANCE_BOUNDARY.md),
 [Reproducibility](docs/REPRODUCIBILITY.md). The research-only
 [EH-10 comparison](docs/EH10_ASSURANCE_COMPARISON.md) documents internal signal
 ablations and narrowly scoped external adapters without adding certification bypasses.
+The [EH-12 closure matrix](docs/EH12_CLOSURE_MATRIX.md) freezes the bounded assurance
+claim, explicit non-claims, remaining blockers, and exact completion policy.
 
 ## Reproducibility
 
@@ -256,9 +258,10 @@ the `comparators` extra installs the exact research comparator pin.
 Every supported interpreter runs the same complete gate:
 
 ```bash
-ruff check src tests
+ruff check src tests research
 mypy --python-version <3.11|3.12|3.13> src
 pytest --cov=constraint_music --cov-report=term-missing
+python -m research.validate_eh12_closure
 python -m build
 ```
 
