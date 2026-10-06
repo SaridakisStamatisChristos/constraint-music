@@ -151,6 +151,16 @@
 - [x] Restore and expand adversarial tests for all quality/inversion combinations, inversion-scope leakage, modal overlap, protected anchors, count confusion, provenance, and stale-key interpretation.
 - [x] Pass Ruff, strict mypy, pytest/coverage, and build on Python 3.11, 3.12, and 3.13.
 
+## v2.13 assurance and publication closure
+
+- [x] Complete EH-01 through EH-11 core implementation and bounded evidence packages.
+- [x] Freeze the `bounded-assurance-v1` claim and its explicit non-claims.
+- [x] Classify every inherited EH-01–EH-11 residual in a machine-validated EH-12 closure matrix.
+- [ ] Build the PR-34 consolidated adversarial, delivery, interaction, oracle, compiler-deletion, and multi-fixture corpus.
+- [ ] Build the PR-35 one-command release-assurance validator with evidence hashes and CI enforcement.
+- [ ] Complete an independent clean-checkout reproduction and claim-to-evidence audit.
+- [ ] Mark EH-12 complete only after the closure matrix contains no blockers.
+
 ## Later harmonic expansion
 
 - [ ] Richer borrowed-seventh inversion/source policy under its own explicit contract revision.

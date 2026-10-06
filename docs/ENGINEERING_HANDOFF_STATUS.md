@@ -27,7 +27,7 @@ not a publication-readiness claim.
 | EH-09 | Core benchmark complete | A frozen 32-case corpus includes 30 attacks and two valid controls across realized music, harmonic claims, malformed structure, integrity/request binding, and certified MIDI delivery. The versioned manifest defines stable IDs, T0–T4 adversary tiers, expected outcomes, and cluster-preserving development/evaluation splits. Checked-in JSONL preserves raw outcomes/issues; the summary reports family/tier/split metrics, 15-cluster Wilson uncertainty, source hashes, 30/30 attack detection, 2/2 control acceptance, and zero crashes. | Expand with independently curated artifacts and additional attack clusters before making population-level robustness claims; the single pinned fixture remains a finite benchmark. |
 | EH-10 | Core comparative evidence complete | Research-only leave-one-channel-out signal ablations preserve all 32 EH-09 raw cases and reasons without adding production bypasses. The four overlapping channels retain 24/30, 25/30, 23/30, and 24/30 detections when wire-shape, semantic, integrity/request, and delivery signals are respectively omitted, with zero control flags. Exact-version music21 9.9.2 adapters explicitly normalize shared semantics and show zero disagreements on 9,840 bounded parallel-perfect cases and 126 bounded C-major triad-policy cases. Raw rows, exact denominators, exclusions, dependency identity, and implementation hashes are checked in and replayed in CI. | Expand to independently selected external tools and broader predeclared shared domains before making comparative-performance, general-equivalence, or superiority claims. |
 | EH-11 | Core performance evidence complete | The controlled matrix records nine feature profiles at 1, 2, 4, 8, 16, and 32 bars across five fixed seeds and single/throughput worker modes on a pinned Python/OR-Tools environment. Raw rows preserve all 540 single-output attempts plus 18 multi-output throughput cases, including 40 declared scope exclusions, solver outcomes, timing decomposition, peak RSS, certification overhead, and run provenance. The checked-in report records 126 generated, strictly accepted, and released artifacts from 500 runnable single-output cases without converting timeouts into successes. | Re-run on owned, quiescent hardware with longer solve budgets and repeated independent runners before making capacity, latency-SLO, or cross-platform performance claims. |
-| EH-12 | Partial | CI covers supported Python versions, lint, typing, tests, build, checker-only installation, and scheduled bounded enumeration; assurance and reproducibility docs are present. | Publication gate remains HOLD pending independent evidence review, broader external/adversarial corpora, and resolution of the remaining work explicitly listed for EH-01 through EH-11. |
+| EH-12 | Closure defined; execution partial | CI covers supported Python versions, lint, typing, tests, build, checker-only installation, and scheduled bounded enumeration. The versioned [EH-12 closure matrix](EH12_CLOSURE_MATRIX.md) freezes the bounded claim, adjudicates every EH-01–EH-11 residual as satisfied/deferred/blocking, binds every deferral to an explicit non-claim, and fails structural validation on drift. | Publication gate remains HOLD until the PR-34 consolidated assurance corpus, PR-35 one-command release validator, and independent clean-checkout review satisfy `EH12-G02` through `EH12-G04`. |
 
 ## Verified release gates
 
@@ -49,7 +49,7 @@ The end-to-end certification returned `PASS (EXTERNAL REQUEST + DELIVERY)` and
 independently observed 64 delivery note events. The generated certificate records
 all binding digests and the exact evaluated/not-applicable rule sets.
 
-The full local suite contains 595 passing tests and reports 82.66% branch-aware
+The full local suite contains 606 passing tests and reports 82.66% branch-aware
 source coverage. The combined `melody-plus-satb` CLI round trip also passed with 96
 independently observed note events. The current bounded evidence records 27,648
 pitch-class cases (5,184 accepted and 22,464 rejected), 4,824 exact register cases
@@ -75,4 +75,5 @@ and external-request-binding defects. It provides substantial assurance
 infrastructure, but it does **not** establish global musical soundness,
 solver/checker equivalence, superiority to external systems, research novelty, or
 publication readiness. Those stronger claims remain gated on the unfinished work
-listed above.
+listed above. EH-12 closure status and normative acceptance criteria are tracked in
+[`EH12_CLOSURE_MATRIX.md`](EH12_CLOSURE_MATRIX.md).
