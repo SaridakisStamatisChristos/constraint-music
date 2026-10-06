@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "corpus_id": "eh12-consolidated-assurance-v1",
+  "claim_boundary": "A deterministic finite corpus covering current-schema shape rejection, three frozen cross-feature pieces and targeted faults, certified MIDI parse-back, and three named compiler-clause deletions. It does not establish population robustness or global compiler/checker equivalence.",
+  "manifest_sha256": "040fd54ab65d77442e60b03a7bb33696175818c5ecbb97c6b6442ed5a556be62",
+  "raw_results_sha256": "19f0a34e6ddd1a55cc2c9204e4dc7c7856015d49e17d0e090c69d1bc865b2f34",
+  "overall": {
+    "cases": 39,
+    "adjudicated": 39,
+    "crashes": 0,
+    "exclusions": 0,
+    "outcomes": {
+      "ACCEPT": 7,
+      "BLOCKED": 26,
+      "REJECT": 6
+    },
+    "families": {
+      "compiler-deletion": 3,
+      "delivery-control": 4,
+      "fixture-control": 3,
+      "interaction-fault": 3,
+      "schema-adversarial": 26
+    },
+    "clusters": 15
+  },
+  "fixtures": [
+    {
+      "id": "modulation-modal",
+      "seed": 7301,
+      "interaction": "modulation+modal_mixture",
+      "request_sha256": "aedcd60f1b3c35665deadbc1d249de6ed49060b063e9d5ea2c1601b6672af273",
+      "composition_sha256": "d977de3ee0ed31ab041ef33e2d328c07e09f991a9e2225a3bf1e8ac8cb8bbe57"
+    },
+    {
+      "id": "modulation-secondary",
+      "seed": 7302,
+      "interaction": "modulation+secondary_harmony",
+      "request_sha256": "08aca51581d693d3078d72a201a6f56f6d8e86fcade3d831b8bb222f521ad00a",
+      "composition_sha256": "ed39581af476fc7a9b2474af1ff9a0f556ba5548576698086f03b8457dab762a"
+    },
+    {
+      "id": "modal-secondary-rhythm",
+      "seed": 7303,
+      "interaction": "modal_mixture+secondary_harmony",
+      "request_sha256": "cb3adf8575056830012ca53d92dbb88765e64e21f8c988f2141192a4a436c1c3",
+      "composition_sha256": "5af0d8c31a006018e12a7f1b9db7c5f5990cd6535c2fac9245bf4e5734e19d8d"
+    }
+  ],
+  "schema_adversarial": {
+    "cases": 26,
+    "families": [
+      "legacy_schema",
+      "modulation_key_contexts",
+      "music_integer_arrays",
+      "music_nullable_integer_arrays",
+      "music_nullable_string_arrays",
+      "music_string_arrays",
+      "provenance_metadata",
+      "root_sections",
+      "schema_version",
+      "search_metadata",
+      "solver_metadata",
+      "spec_boolean_wire",
+      "spec_finite_number_wire",
+      "spec_integer_wire",
+      "spec_required_fields",
+      "spec_tension_curve_wire",
+      "validation_metadata"
+    ],
+    "legacy_versions": [
+      "2.12"
+    ]
+  },
+  "interactions": {
+    "controls": 3,
+    "faults": 3,
+    "rejected_faults": 3,
+    "families": [
+      "modal_mixture+secondary_harmony",
+      "modulation+modal_mixture",
+      "modulation+secondary_harmony"
+    ]
+  },
+  "delivery": {
+    "controls": 4,
+    "accepted": 4,
+    "profiles": [
+      "certified-satb",
+      "melody-plus-satb"
+    ]
+  },
+  "compiler_deletions": {
+    "cases": 3,
+    "distinct_registered_phases": 3,
+    "escaped_faults": 0
+  },
+  "implementation_hashes": {
+    "research/configs/eh12_assurance_manifest.json": "e50b8046f27313b4cf74cae1f4790ee1e2ad2db0b97be069963dc4e9dcb97755",
+    "research/compiler_deletions.py": "bea990678ad264553a54642a56b55bebafdada1442e5b7ae190d80d8f5e457a1",
+    "research/eh12_assurance_corpus.py": "0b1dbd91347dc00cf01ae2da5094cdf598a5dd44fdd97484a7fb3a28ddfc1161",
+    "research/oracle/modulation.py": "cc547ba54a9bb2e06af061a64a2f007985193bcf4c86f398209509bc9b92a2f4",
+    "research/oracle/rhythm_phrase.py": "75eae67d21fb49d3ff66cd9bb057bb464ec8300fd22540480ee1047f4a6e76c9",
+    "research/oracle/secondary_seventh.py": "7e1b22849200a45aa21aa415fe1b1e64d8cc1ce623957c47bbed84014ded94bf",
+    "src/constraint_music/artifact_validation.py": "210ca1acc356d0954ed42e0c2d92e911ac8bf17a159b23a6c6c9dc4b0acd0af3",
+    "src/constraint_music/certification.py": "e8895ca44b517af63e01a20f7ab32de6667435d40d8c94dd1b00b683d070ec8d",
+    "src/constraint_music/compiler_structure.py": "17a59020b5ee5157ab5ff59f97cb8210cc127028c5eb7496907f6c59bef2f0a7",
+    "src/constraint_music/compiler_tonal.py": "c057ef5644b22398c0966435a3d2cac8911ebebea4d74e178d27e47125f1bc22",
+    "src/constraint_music/delivery.py": "540c4a13685cf27567d242e90dee81b5bd2f4a11d03938da3d41e2410e0e4f51",
+    "src/constraint_music/semantic_dispatch.py": "ae8e04e3417b11cf377b822a6ce06e8bfef7f741f597a2d508e816c9a813de98",
+    "src/constraint_music/verifier.py": "5ea1fded93a086c66ab32140854f24ccf3558ddfe9961a4f14f0e61268d89bf3"
+  }
+}

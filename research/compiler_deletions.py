@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from copy import deepcopy
 from functools import cache
 from hashlib import sha256
@@ -26,6 +27,7 @@ from constraint_music.solver import (
 from constraint_music.theory import NO_TONICIZATION_TARGET, ChordKind
 from constraint_music.verifier import verify_result
 
+from .oracle.rhythm_phrase import RhythmPolicy, adjudicate_rhythm
 from .oracle.secondary_seventh import (
     SeventhQuality,
     adjudicate_voice_resolutions,
@@ -128,6 +130,146 @@ def _materialize_candidate(
 
 def _source_hash(relative_path: str) -> str:
     return sha256((_ROOT / relative_path).read_bytes()).hexdigest()
+
+
+def _solve_forced_deletion(
+    spec: GenerationSpec,
+    constraint_name: str,
+    force_witness: Callable[[_CompiledProblem], None],
+) -> tuple[
+    SatbGenerationResult,
+    tuple[tuple[str, int], ...],
+    int,
+    dict[str, object],
+]:
+    problem = ConstraintMusicSolver()._compile(spec, DEFAULT_OBJECTIVE_WEIGHTS)
+    deleted_index = _delete_constraint(problem.model, constraint_name)
+    registration = next(
+        item
+        for item in problem.compiler_registrations
+        if item.constraint_start <= deleted_index < item.constraint_end
+    )
+    force_witness(problem)
+
+    solver = cp_model.CpSolver()
+    solver.parameters.max_time_in_seconds = spec.max_time_seconds
+    solver.parameters.num_search_workers = 1
+    solver.parameters.random_seed = spec.seed
+    status = solver.solve(problem.model)
+    if status not in {cp_model.OPTIMAL, cp_model.FEASIBLE}:
+        raise AssertionError(
+            f"Deleting {constraint_name!r} did not expose a feasible forced witness"
+        )
+    candidate, compiled_vector = _materialize_candidate(problem, solver, spec, status)
+    return candidate, compiled_vector, deleted_index, registration.to_dict()
+
+
+def _boundary_observation(
+    candidate: SatbGenerationResult,
+    compiled_vector: tuple[tuple[str, int], ...],
+) -> tuple[str, str | None]:
+    try:
+        finalize_generated_result(candidate, compiled_vector)
+    except InternalVerificationError as exc:
+        return "REJECT", str(exc)
+    return "ACCEPT", None
+
+
+def _harmony_opening_deletion() -> dict[str, object]:
+    spec = GenerationSpec(
+        bars=1,
+        beats_per_bar=4,
+        subdivisions_per_beat=1,
+        require_authentic_cadence=True,
+        avoid_parallel_perfects=False,
+        workers=1,
+        seed=7401,
+        max_time_seconds=30,
+        tension_curve=(0.6, 0.5, 0.2, 0.1),
+    )
+    name = "CM016.opening-tonic"
+    candidate, vector, index, registration = _solve_forced_deletion(
+        spec,
+        name,
+        lambda problem: problem.model.add(problem.chord[0] == 3),
+    )
+    verifier = verify_result(candidate)
+    boundary_outcome, diagnostic = _boundary_observation(candidate, vector)
+    return {
+        "constraint_name": name,
+        "constraint_index": index,
+        "registered_phase": registration,
+        "forced_witness": {"opening_degree": candidate.chord_degrees[0]},
+        "adjudicator": "production_verifier_independent_of_compiler",
+        "verifier_valid": verifier.valid,
+        "failed_rules": verifier.failed_rules,
+        "boundary_outcome": boundary_outcome,
+        "boundary_diagnostic": diagnostic,
+        "escaped": verifier.valid or boundary_outcome != "REJECT",
+    }
+
+
+def _rhythm_initial_tie_deletion() -> dict[str, object]:
+    spec = GenerationSpec(
+        bars=1,
+        beats_per_bar=4,
+        subdivisions_per_beat=2,
+        require_authentic_cadence=False,
+        avoid_parallel_perfects=False,
+        rhythm_enabled=True,
+        require_bar_downbeat_onset=False,
+        min_onsets_per_bar=1,
+        max_onsets_per_bar=8,
+        min_rests_per_bar=0,
+        max_rests_per_bar=2,
+        min_ties_per_bar=0,
+        max_ties_per_bar=2,
+        workers=1,
+        seed=7402,
+        max_time_seconds=30,
+        tension_curve=(0.6, 0.5, 0.2, 0.1),
+    )
+    name = "CM018.initial-not-tie"
+    candidate, vector, index, registration = _solve_forced_deletion(
+        spec,
+        name,
+        lambda problem: problem.model.add(problem.rhythm[0] == int(RhythmState.TIE)),
+    )
+    oracle = adjudicate_rhythm(
+        candidate.melody,
+        candidate.rhythm_names,
+        policy=RhythmPolicy(
+            bars=spec.bars,
+            steps_per_bar=spec.steps_per_bar,
+            enabled=True,
+            min_onsets_per_bar=spec.min_onsets_per_bar,
+            max_onsets_per_bar=spec.max_onsets_per_bar,
+            min_rests_per_bar=spec.min_rests_per_bar,
+            max_rests_per_bar=spec.max_rests_per_bar,
+            min_ties_per_bar=spec.min_ties_per_bar,
+            max_ties_per_bar=spec.max_ties_per_bar,
+            max_consecutive_rests=spec.max_consecutive_rests,
+            max_tie_steps=spec.max_tie_steps,
+            require_bar_downbeat_onset=spec.require_bar_downbeat_onset,
+            require_final_onset=False,
+        ),
+    )
+    verifier = verify_result(candidate)
+    boundary_outcome, diagnostic = _boundary_observation(candidate, vector)
+    return {
+        "constraint_name": name,
+        "constraint_index": index,
+        "registered_phase": registration,
+        "forced_witness": {"first_rhythm_state": candidate.rhythm_names[0]},
+        "adjudicator": "standard_library_rhythm_oracle",
+        "oracle_valid": oracle.valid,
+        "oracle_reasons": oracle.reasons,
+        "verifier_valid": verifier.valid,
+        "failed_rules": verifier.failed_rules,
+        "boundary_outcome": boundary_outcome,
+        "boundary_diagnostic": diagnostic,
+        "escaped": oracle.valid or verifier.valid or boundary_outcome != "REJECT",
+    }
 
 
 @cache
@@ -276,6 +418,64 @@ def compiler_constraint_deletion_report() -> dict[str, object]:
                 "research/compiler_deletions.py",
                 "research/oracle/secondary_seventh.py",
                 "src/constraint_music/compiler_registry.py",
+                "src/constraint_music/secondary_leading_tone_seventh_runtime.py",
+                "src/constraint_music/solver.py",
+            )
+        },
+    }
+
+
+@cache
+def expanded_compiler_constraint_deletion_report() -> dict[str, object]:
+    """Exercise named deletions from three distinct registered compiler phases."""
+
+    secondary_report = compiler_constraint_deletion_report()
+    secondary = secondary_report["deletion"]
+    if not isinstance(secondary, dict):  # pragma: no cover - construction invariant
+        raise AssertionError("Legacy compiler deletion is not an object")
+    deletions = [
+        {
+            **secondary,
+            "adjudicator": "standard_library_secondary_seventh_oracle",
+            "forced_witness": {
+                "violating_voice": secondary["violating_voice"],
+                "source_voices": secondary["source_voices"],
+                "destination_voices": secondary["destination_voices"],
+            },
+            "escaped": bool(
+                secondary["oracle_valid"]
+                or secondary["verifier_valid"]
+                or secondary["boundary_outcome"] != "REJECT"
+            ),
+        },
+        _harmony_opening_deletion(),
+        _rhythm_initial_tie_deletion(),
+    ]
+    phases = {
+        str(deletion["registered_phase"]["phase"])
+        for deletion in deletions
+        if isinstance(deletion["registered_phase"], dict)
+    }
+    return {
+        "schema_version": 1,
+        "claim_boundary": (
+            "Three exact named CP-SAT clauses from distinct registered phases are "
+            "deleted one at a time under forced witnesses. This is bounded deletion "
+            "evidence, not mutation coverage for every compiled clause."
+        ),
+        "toolchain": secondary_report["toolchain"],
+        "deleted_constraints": len(deletions),
+        "distinct_registered_phases": len(phases),
+        "escaped_faults": sum(bool(item["escaped"]) for item in deletions),
+        "deletions": deletions,
+        "implementation_hashes": {
+            path: _source_hash(path)
+            for path in (
+                "research/compiler_deletions.py",
+                "research/oracle/rhythm_phrase.py",
+                "research/oracle/secondary_seventh.py",
+                "src/constraint_music/compiler_structure.py",
+                "src/constraint_music/compiler_tonal.py",
                 "src/constraint_music/secondary_leading_tone_seventh_runtime.py",
                 "src/constraint_music/solver.py",
             )

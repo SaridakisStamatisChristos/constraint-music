@@ -2,9 +2,9 @@
 
 ## Decision
 
-**Publication gate: HOLD.** EH-01 through EH-11 are core-complete, but the bounded
-publication package still requires the consolidated assurance corpus, the one-command
-release validator, and an independent clean-checkout review.
+**Publication gate: HOLD.** EH-01 through EH-11 are core-complete and the consolidated
+assurance corpus is satisfied. The bounded publication package still requires the
+one-command release validator and an independent clean-checkout review.
 
 The machine-readable source of truth is
 [`research/configs/eh12_closure_matrix.json`](../research/configs/eh12_closure_matrix.json).
@@ -44,15 +44,15 @@ satisfied.
 
 | ID | Source | Classification | Disposition |
 | --- | --- | --- | --- |
-| `EH12-R01` | EH-01 | Blocker → PR-34 | Complete current-schema field-family mutations and prove every supported legacy fixture non-certifying. |
-| `EH12-R02` | EH-02 | Blocker → PR-34 | Add solved cross-feature controls with exact certified MIDI parse-back and output digests. |
+| `EH12-R01` | EH-01 | Satisfied by PR-34 | Twenty-six fail-closed cases cover every declared current-schema field family and schema 2.12, with no crashes. |
+| `EH12-R02` | EH-02 | Satisfied by PR-34 | Four certified deliveries record exact parse-back counts and output digests; the articulated control covers `melody-plus-satb`. |
 | `EH12-R03` | EH-03 | Deferred → `NC-01` | Signing is unnecessary without an authenticated-origin claim. |
 | `EH12-R04` | EH-04 | Deferred → `NC-09` | Existing typed outcomes and phase spans suffice; universally minimal locations are not claimed. |
-| `EH12-R05` | EH-05 | Blocker → PR-34 | Add pairwise modulation/modal/secondary controls and targeted faults on disjoint beats. |
+| `EH12-R05` | EH-05 | Satisfied by PR-34 | Three pairwise modulation/modal/secondary controls use disjoint witness beats and reject reconstructed-semantic faults. |
 | `EH12-R06` | EH-06 | Deferred → `NC-04` | Checker-only isolation is proven; absolute codebase independence is not claimed. |
-| `EH12-R07` | EH-07 | Blocker → PR-34 | Add frozen, hand-adjudicated full-piece control/fault pairs for each consolidated interaction family. |
-| `EH12-R08` | EH-08 | Blocker → PR-34 | Delete at least two more named clauses from distinct compiler phases and persist witnesses, spans, hashes, and escape counts. |
-| `EH12-R09` | EH-09 | Blocker → PR-34 | Add at least three independently curated valid fixtures with stable identities and exact denominators. |
+| `EH12-R07` | EH-07 | Satisfied by PR-34 | Every interaction has a frozen full-piece control/fault pair, adjudication note, and pinned oracle hashes. |
+| `EH12-R08` | EH-08 | Satisfied by PR-34 | Named `CM057`, `CM016`, and `CM018` deletions span three compiler phases and record zero escapes. |
+| `EH12-R09` | EH-09 | Satisfied by PR-34 | Three distinct specifications/seeds retain fixture identity, clusters, outcomes, raw issues, crashes, and exclusions. |
 | `EH12-R10` | EH-10 | Deferred → `NC-06` | Existing music21 adapters stay bounded; no superiority or general-equivalence claim is made. |
 | `EH12-R11` | EH-11 | Deferred → `NC-07` | Recorded timings remain finite observations, not SLO, capacity, or cross-platform guarantees. |
 
@@ -77,7 +77,7 @@ Detailed acceptance criteria live in the machine-readable matrix and are normati
 | Gate | Status | Acceptance boundary |
 | --- | --- | --- |
 | `EH12-G01` | Satisfied by PR-33 | Claim frozen; EH-01–EH-11 residuals classified; matrix and documentation structurally validated. |
-| `EH12-G02` | Blocker → PR-34 | One versioned consolidated corpus satisfies all PR-34 residual criteria and preserves raw controls, faults, exclusions, and crashes. |
+| `EH12-G02` | Satisfied by PR-34 | The versioned 39-case corpus, raw JSONL, and derived summary satisfy all PR-34 residual criteria deterministically. |
 | `EH12-G03` | Blocker → PR-35 | One documented command validates dependencies, tests, builds, checker isolation, evidence replay/hashes, and claim drift in CI. |
 | `EH12-G04` | Blocker → INDEPENDENT-REVIEW | Fresh-clone execution and claim/evidence audit by a reviewer who did not author the closure changes. |
 

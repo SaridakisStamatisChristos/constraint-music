@@ -48,7 +48,7 @@ def add_harmony_constraints(
         tonic_bass_indices = [
             i for i, note in enumerate(bass_domain) if note % 12 == key.tonic_pc
         ]
-        model.add(chord[0] == 0)
+        model.add(chord[0] == 0).with_name("CM016.opening-tonic")
         model.add_allowed_assignments([chord[-2]], [(4,), (6,)])
         model.add(chord[-1] == 0)
         model.add_allowed_assignments([melody_choice[-1]], [(i,) for i in tonic_melody_indices])

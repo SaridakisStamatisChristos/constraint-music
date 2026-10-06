@@ -30,8 +30,9 @@ jobs:
       - run: mypy --python-version "${{ matrix.python-version }}" src
       - run: pytest --cov=constraint_music --cov-report=term-missing
       - run: python -m research.validate_eh12_closure
-      - run: python -m research.enumerate_fragments
+      - run: python -m research.enumerate_fragments --output research/results/bounded_conformance.json
       - run: python -m research.generate_eh10_evidence
+      - run: python -m research.eh12_assurance_corpus
       - run: git diff --exit-code -- research/results
       - run: python -m build
 
