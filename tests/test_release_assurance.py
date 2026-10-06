@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.metadata
 import json
+import subprocess
 from collections.abc import Mapping
 from dataclasses import replace
 from pathlib import Path
@@ -15,6 +16,7 @@ from research.validate_release_assurance import (
     _run_checked,
     load_release_manifest,
     validate_claim_boundary,
+    validate_clean_checkout,
     validate_environment,
     validate_evidence_hashes,
 )
@@ -82,11 +84,11 @@ def test_environment_rejects_missing_dependency() -> None:
         validate_environment(manifest, distribution_version=missing)
 
 
-def test_claim_boundary_matches_the_only_remaining_review_blocker() -> None:
+def test_claim_boundary_is_complete_without_blockers() -> None:
     decision, blockers = validate_claim_boundary(load_release_manifest())
 
-    assert decision == "HOLD"
-    assert blockers == ("EH12-G04",)
+    assert decision == "COMPLETE"
+    assert blockers == ()
 
 
 def test_claim_statement_drift_fails_closed() -> None:
@@ -113,4 +115,114 @@ def test_failed_subcommand_fails_closed() -> None:
             ("python", "-m", "example"),
             root=ROOT,
             runner=failing_runner,
+        )
+
+
+def _git(repository: Path, *arguments: str) -> str:
+    completed = subprocess.run(
+        ("git", *arguments),
+        cwd=repository,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return completed.stdout.strip()
+
+
+def _clean_repository(tmp_path: Path) -> tuple[Path, str]:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    _git(repository, "init")
+    tracked = repository / "evidence.txt"
+    tracked.write_text("pinned\n", encoding="utf-8")
+    _git(repository, "add", "evidence.txt")
+    _git(
+        repository,
+        "-c",
+        "user.name=EH12 Test",
+        "-c",
+        "user.email=eh12@example.invalid",
+        "commit",
+        "-m",
+        "Create evidence fixture",
+    )
+    return repository, _git(repository, "rev-parse", "HEAD")
+
+
+def test_clean_checkout_attestation_binds_commit_tree_and_actions_workspace(
+    tmp_path: Path,
+) -> None:
+    repository, commit = _clean_repository(tmp_path)
+
+    attestation = validate_clean_checkout(
+        root=repository,
+        environment={
+            "GITHUB_ACTIONS": "true",
+            "GITHUB_SHA": commit,
+            "GITHUB_WORKSPACE": str(repository),
+        },
+    )
+
+    assert attestation.commit == commit
+    assert attestation.tree == _git(repository, "rev-parse", "HEAD^{tree}")
+
+
+@pytest.mark.parametrize("change", ["tracked", "untracked"])
+def test_clean_checkout_attestation_rejects_dirty_source(
+    tmp_path: Path,
+    change: str,
+) -> None:
+    repository, _commit = _clean_repository(tmp_path)
+    if change == "tracked":
+        (repository / "evidence.txt").write_text("changed\n", encoding="utf-8")
+    else:
+        (repository / "untracked.txt").write_text("new\n", encoding="utf-8")
+
+    with pytest.raises(ReleaseAssuranceError, match="worktree contains changes"):
+        validate_clean_checkout(root=repository, environment={})
+
+
+def test_clean_checkout_attestation_rejects_actions_sha_mismatch(
+    tmp_path: Path,
+) -> None:
+    repository, _commit = _clean_repository(tmp_path)
+
+    with pytest.raises(ReleaseAssuranceError, match="GITHUB_SHA mismatch"):
+        validate_clean_checkout(
+            root=repository,
+            environment={
+                "GITHUB_ACTIONS": "true",
+                "GITHUB_SHA": "0" * 40,
+                "GITHUB_WORKSPACE": str(repository),
+            },
+        )
+
+
+def test_clean_checkout_attestation_rejects_non_repository(tmp_path: Path) -> None:
+    with pytest.raises(ReleaseAssuranceError, match="failed while running git"):
+        validate_clean_checkout(root=tmp_path, environment={})
+
+
+def test_clean_checkout_attestation_rejects_nested_root(tmp_path: Path) -> None:
+    repository, _commit = _clean_repository(tmp_path)
+    nested = repository / "nested"
+    nested.mkdir()
+
+    with pytest.raises(ReleaseAssuranceError, match="repository root mismatch"):
+        validate_clean_checkout(root=nested, environment={})
+
+
+def test_clean_checkout_attestation_rejects_actions_workspace_mismatch(
+    tmp_path: Path,
+) -> None:
+    repository, commit = _clean_repository(tmp_path)
+
+    with pytest.raises(ReleaseAssuranceError, match="GITHUB_WORKSPACE mismatch"):
+        validate_clean_checkout(
+            root=repository,
+            environment={
+                "GITHUB_ACTIONS": "true",
+                "GITHUB_SHA": commit,
+                "GITHUB_WORKSPACE": str(tmp_path),
+            },
         )

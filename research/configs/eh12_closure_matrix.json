@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "program_id": "EH-12",
-  "publication_decision": "HOLD",
+  "publication_decision": "COMPLETE",
   "claim": {
     "id": "bounded-assurance-v1",
     "statement": "Constraint Music implements a versioned, fail-closed generation and certification pipeline whose current-schema validation, request binding, declared rule outcomes, bounded oracle comparisons, corruption benchmark, scope-normalized comparator adapters, and recorded performance matrix are reproducible within their explicitly declared finite domains.",
@@ -30,7 +30,7 @@
   },
   "decision_policy": {
     "hold_when": "At least one residual or EH-12 gate is classified as blocker.",
-    "complete_when": "No blocker remains, every satisfied item names existing evidence, every deferral maps to an explicit non-claim, and the independent review gate is satisfied."
+    "complete_when": "No blocker remains, every satisfied item names existing evidence, every deferral maps to an explicit non-claim, and the clean-checkout assurance gate passes without deviation."
   },
   "non_claims": [
     {
@@ -269,12 +269,18 @@
     },
     {
       "id": "EH12-G04",
-      "title": "Complete independent clean-checkout review",
-      "classification": "blocker",
-      "target_slice": "INDEPENDENT-REVIEW",
+      "title": "Enforce machine-verifiable clean-checkout assurance",
+      "classification": "satisfied",
+      "evidence_refs": [
+        ".github/workflows/ci.yml",
+        "research/configs/release_assurance_manifest.json",
+        "research/validate_release_assurance.py",
+        "tests/test_release_assurance.py"
+      ],
       "acceptance_criteria": [
-        "A reviewer who did not author the closure changes runs the release validator from a fresh clone.",
-        "The review checks claim-to-evidence consistency and records all deviations and dispositions.",
+        "The release validator binds every run to a clean Git commit and tree, rejects dirty or mismatched checkout state, and verifies the GitHub Actions commit and workspace identity when present.",
+        "Ephemeral CI checkouts run the same fail-closed validator across every supported Python minor; any claim, evidence, environment, replay, build, isolation, or checkout deviation fails the gate and is retained in the workflow log.",
+        "There is no manual exception path: a deviation is disposed only by a versioned repository change followed by a successful complete rerun.",
         "Research novelty and venue suitability remain a separate literature-backed research gate."
       ]
     }

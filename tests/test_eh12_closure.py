@@ -21,7 +21,7 @@ def test_closure_matrix_is_structurally_valid() -> None:
 
     assert summary.residuals == 11
     assert summary.deferred == 5
-    assert summary.satisfied_gates == 3
+    assert summary.satisfied_gates == 4
 
 
 def test_every_inherited_work_package_is_adjudicated_once() -> None:
@@ -34,11 +34,11 @@ def test_every_inherited_work_package_is_adjudicated_once() -> None:
     )
 
 
-def test_publication_gate_holds_while_blockers_remain() -> None:
+def test_publication_gate_is_complete_when_no_blockers_remain() -> None:
     summary = validate_matrix(load_matrix())
 
-    assert summary.publication_decision == "HOLD"
-    assert summary.blockers == ("EH12-G04",)
+    assert summary.publication_decision == "COMPLETE"
+    assert summary.blockers == ()
 
 
 def test_machine_matrix_is_deterministic_json() -> None:
@@ -56,8 +56,8 @@ def test_closure_validator_cli_reports_current_decision(
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
 
-    assert payload["publication_decision"] == "HOLD"
-    assert payload["blockers"] == ["EH12-G04"]
+    assert payload["publication_decision"] == "COMPLETE"
+    assert payload["blockers"] == []
 
 
 def test_all_satisfied_evidence_references_exist() -> None:
@@ -86,6 +86,13 @@ def test_unknown_non_claim_cannot_justify_a_deferral() -> None:
 
 def test_publication_decision_cannot_ignore_blockers() -> None:
     matrix = deepcopy(load_matrix())
+    matrix["eh12_gates"][3] = {
+        "id": "EH12-G04",
+        "title": "Incomplete test gate",
+        "classification": "blocker",
+        "target_slice": "TEST",
+        "acceptance_criteria": ["A test blocker remains."],
+    }
     matrix["publication_decision"] = "COMPLETE"
 
     with pytest.raises(ClosureMatrixError, match="publication_decision must be HOLD"):

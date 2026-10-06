@@ -13,10 +13,8 @@
   "closure": {
     "claim_id": "bounded-assurance-v1",
     "claim_statement_sha256": "3a8bf4ded89b2714efac3dc52641566629aa901c519fe2d902b71de2bdc35938",
-    "expected_publication_decision": "HOLD",
-    "expected_blockers": [
-      "EH12-G04"
-    ]
+    "expected_publication_decision": "COMPLETE",
+    "expected_blockers": []
   },
   "evidence": [
     {

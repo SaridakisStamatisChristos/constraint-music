@@ -89,10 +89,20 @@ class ReleaseManifest:
 class ReleaseSummary:
     suite_id: str
     python_version: str
+    source_commit: str
+    source_tree: str
     evidence_artifacts: int
     replay_groups: int
     publication_decision: str
     blockers: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class CheckoutAttestation:
+    """Machine-verifiable identity of the clean source tree under review."""
+
+    commit: str
+    tree: str
 
 
 def _mapping(value: object, location: str) -> Mapping[str, Any]:
@@ -234,6 +244,105 @@ def _file_sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _git_output(arguments: Sequence[str], *, root: Path) -> str:
+    command = ("git", *arguments)
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError as error:
+        raise ReleaseAssuranceError(
+            f"clean-checkout attestation could not execute git: {error}"
+        ) from error
+    if completed.returncode != 0:
+        diagnostic = completed.stderr.strip() or completed.stdout.strip()
+        suffix = f": {diagnostic}" if diagnostic else ""
+        raise ReleaseAssuranceError(
+            "clean-checkout attestation failed while running "
+            f"{' '.join(command)}{suffix}"
+        )
+    return completed.stdout.strip()
+
+
+def _git_object_id(value: str, location: str) -> str:
+    if len(value) not in {40, 64} or any(
+        character not in _HEX_DIGITS for character in value
+    ):
+        raise ReleaseAssuranceError(
+            f"clean-checkout {location} must be a lowercase Git object ID"
+        )
+    return value
+
+
+def validate_clean_checkout(
+    *,
+    root: Path = ROOT,
+    environment: Mapping[str, str] | None = None,
+) -> CheckoutAttestation:
+    """Fail unless ``root`` is the exact, clean Git checkout being validated."""
+
+    active_environment = os.environ if environment is None else environment
+    repository_root = Path(
+        _git_output(("rev-parse", "--show-toplevel"), root=root)
+    ).resolve()
+    expected_root = root.resolve()
+    if repository_root != expected_root:
+        raise ReleaseAssuranceError(
+            "clean-checkout repository root mismatch: "
+            f"expected {expected_root}, got {repository_root}"
+        )
+
+    dirty = _git_output(
+        ("status", "--porcelain=v1", "--untracked-files=all"),
+        root=root,
+    )
+    if dirty:
+        entries = tuple(line for line in dirty.splitlines() if line)
+        preview = "; ".join(entries[:5])
+        if len(entries) > 5:
+            preview += f"; ... ({len(entries)} entries total)"
+        raise ReleaseAssuranceError(
+            f"clean-checkout worktree contains changes: {preview}"
+        )
+
+    commit = _git_object_id(
+        _git_output(("rev-parse", "--verify", "HEAD^{commit}"), root=root),
+        "commit",
+    )
+    tree = _git_object_id(
+        _git_output(("rev-parse", "--verify", "HEAD^{tree}"), root=root),
+        "tree",
+    )
+
+    if active_environment.get("GITHUB_ACTIONS") == "true":
+        github_sha = active_environment.get("GITHUB_SHA")
+        if not github_sha:
+            raise ReleaseAssuranceError(
+                "clean-checkout GitHub Actions attestation requires GITHUB_SHA"
+            )
+        if github_sha != commit:
+            raise ReleaseAssuranceError(
+                "clean-checkout GITHUB_SHA mismatch: "
+                f"expected {github_sha}, got {commit}"
+            )
+        github_workspace = active_environment.get("GITHUB_WORKSPACE")
+        if not github_workspace:
+            raise ReleaseAssuranceError(
+                "clean-checkout GitHub Actions attestation requires GITHUB_WORKSPACE"
+            )
+        if Path(github_workspace).resolve() != expected_root:
+            raise ReleaseAssuranceError(
+                "clean-checkout GITHUB_WORKSPACE mismatch: "
+                f"expected {expected_root}, got {Path(github_workspace).resolve()}"
+            )
+
+    return CheckoutAttestation(commit=commit, tree=tree)
 
 
 def validate_evidence_hashes(
@@ -505,6 +614,7 @@ def run_release_assurance(
 ) -> ReleaseSummary:
     """Run every release gate, stopping at the first failed invariant."""
 
+    checkout = validate_clean_checkout(root=root)
     manifest = load_release_manifest(manifest_path)
     active_python = validate_environment(
         manifest,
@@ -543,6 +653,8 @@ def run_release_assurance(
     return ReleaseSummary(
         suite_id=manifest.suite_id,
         python_version=active_python,
+        source_commit=checkout.commit,
+        source_tree=checkout.tree,
         evidence_artifacts=len(manifest.evidence),
         replay_groups=len(_REPLAY_COMMANDS),
         publication_decision=publication_decision,
@@ -565,6 +677,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "status": "PASS",
                 "suite_id": summary.suite_id,
                 "python_version": summary.python_version,
+                "source_commit": summary.source_commit,
+                "source_tree": summary.source_tree,
                 "evidence_artifacts": summary.evidence_artifacts,
                 "replay_groups": summary.replay_groups,
                 "publication_decision": summary.publication_decision,

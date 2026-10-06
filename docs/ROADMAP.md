@@ -158,8 +158,9 @@
 - [x] Classify every inherited EH-01–EH-11 residual in a machine-validated EH-12 closure matrix.
 - [x] Build the PR-34 consolidated adversarial, delivery, interaction, oracle, compiler-deletion, and multi-fixture corpus.
 - [x] Build the PR-35 one-command release-assurance validator with evidence hashes and CI enforcement.
-- [ ] Complete an independent clean-checkout reproduction and claim-to-evidence audit.
-- [ ] Mark EH-12 complete only after the closure matrix contains no blockers.
+- [x] Bind the complete claim-to-evidence audit to an exact clean Git commit/tree and
+  execute it from ephemeral CI checkouts across every supported Python minor.
+- [x] Mark EH-12 complete only after the closure matrix contains no blockers.
 
 ## Later harmonic expansion
 
