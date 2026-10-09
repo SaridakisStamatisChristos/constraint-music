@@ -1,0 +1,476 @@
+{
+  "candidate_yield": [
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 1,
+      "other_failure": 0,
+      "planned": 1,
+      "split": "development",
+      "stratum": "applied",
+      "strict_control_profiles_accepted": 2,
+      "strict_fixtures_accepted": 1
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 1,
+      "other_failure": 0,
+      "planned": 1,
+      "split": "development",
+      "stratum": "base",
+      "strict_control_profiles_accepted": 2,
+      "strict_fixtures_accepted": 1
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 1,
+      "other_failure": 0,
+      "planned": 1,
+      "split": "development",
+      "stratum": "interaction-rhythm",
+      "strict_control_profiles_accepted": 2,
+      "strict_fixtures_accepted": 1
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 1,
+      "other_failure": 0,
+      "planned": 1,
+      "split": "development",
+      "stratum": "mixture",
+      "strict_control_profiles_accepted": 2,
+      "strict_fixtures_accepted": 1
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 2,
+      "other_failure": 0,
+      "planned": 2,
+      "split": "evaluation",
+      "stratum": "applied",
+      "strict_control_profiles_accepted": 4,
+      "strict_fixtures_accepted": 2
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 2,
+      "other_failure": 0,
+      "planned": 2,
+      "split": "evaluation",
+      "stratum": "base",
+      "strict_control_profiles_accepted": 4,
+      "strict_fixtures_accepted": 2
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 2,
+      "other_failure": 0,
+      "planned": 2,
+      "split": "evaluation",
+      "stratum": "interaction-rhythm",
+      "strict_control_profiles_accepted": 4,
+      "strict_fixtures_accepted": 2
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 2,
+      "other_failure": 0,
+      "planned": 2,
+      "split": "evaluation",
+      "stratum": "mixture",
+      "strict_control_profiles_accepted": 4,
+      "strict_fixtures_accepted": 2
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 2,
+      "other_failure": 0,
+      "planned": 2,
+      "split": "evaluation",
+      "stratum": "modulation",
+      "strict_control_profiles_accepted": 4,
+      "strict_fixtures_accepted": 2
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 2,
+      "other_failure": 0,
+      "planned": 2,
+      "split": "evaluation",
+      "stratum": "secondary",
+      "strict_control_profiles_accepted": 4,
+      "strict_fixtures_accepted": 2
+    }
+  ],
+  "corpus_id": "multifixture-assurance-v1",
+  "counts": {
+    "attacks": 488,
+    "attempts": 16,
+    "controls": 32,
+    "rows": 536
+  },
+  "examples": {
+    "delivery": {
+      "case_id": "eval-base-1.certified-satb.missing-track",
+      "detected_by": [
+        "delivery_parseback"
+      ],
+      "first_rejecting_boundary": "delivery_parseback",
+      "issues": [
+        "missing voice tracks: Tenor",
+        "missing/changed projected note events: [NoteEvent(voice='Tenor', channel=2, pitch=52, onset_tick=960, duration_ticks=480), NoteEvent(voice='Tenor', channel=2, pitch=55, onset_tick=0, duration_ticks=480), NoteEvent(voice='Tenor', channel=2, pitch=55, onset_tick=480, duration_ticks=480), NoteEvent(voice='Tenor', channel=2, pitch=57, onset_tick=1440, duration_ticks=480)]"
+      ],
+      "witness": {
+        "after": "missing",
+        "before": "present",
+        "obligation": "Tenor track must be present",
+        "path": "tracks.Tenor"
+      }
+    },
+    "semantic": {
+      "case_id": "eval-base-1.certified-satb.bass-register",
+      "detected_by": [
+        "semantic_rules",
+        "integrity_request",
+        "delivery_parseback"
+      ],
+      "first_rejecting_boundary": "semantic_rules",
+      "issues": [
+        "[CM003] Bass beat 0: note 35 is outside the configured range",
+        "[CM013] Bass beats 0->1: leap exceeds limit",
+        "objective vector metadata mismatch",
+        "composition digest mismatch",
+        "serialized validation report does not match fresh verification",
+        "display claim bass_names does not match realized musical data",
+        "missing/changed projected note events: [NoteEvent(voice='Bass', channel=3, pitch=35, onset_tick=0, duration_ticks=480)]",
+        "extra/changed projected note events: [NoteEvent(voice='Bass', channel=3, pitch=47, onset_tick=0, duration_ticks=480)]"
+      ],
+      "witness": {
+        "after": 35,
+        "before": 47,
+        "index": 0,
+        "obligation": "Bass pitch must be >= the independently fixed bass_low",
+        "path": "music.bass_midi[0]"
+      }
+    }
+  },
+  "fault_results": [
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 8,
+      "applicable": 8,
+      "family": "delivery",
+      "planned": 8,
+      "split": "development",
+      "tier": "direct"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 8,
+      "applicable": 8,
+      "family": "integrity-request",
+      "planned": 8,
+      "split": "development",
+      "tier": "repaired-digest"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 8,
+      "applicable": 8,
+      "family": "realized-music",
+      "planned": 8,
+      "split": "development",
+      "tier": "repaired-digest"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 8,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 0,
+      "applicable": 8,
+      "family": "wire",
+      "planned": 8,
+      "split": "development",
+      "tier": "wire"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 56,
+      "REJECT": 112,
+      "applicable": 112,
+      "family": "delivery",
+      "planned": 168,
+      "split": "evaluation",
+      "tier": "direct"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 48,
+      "REJECT": 48,
+      "applicable": 48,
+      "family": "harmonic-claims",
+      "planned": 96,
+      "split": "evaluation",
+      "tier": "repaired-digest"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 24,
+      "applicable": 24,
+      "family": "integrity-request",
+      "planned": 24,
+      "split": "evaluation",
+      "tier": "coordinated"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 72,
+      "applicable": 72,
+      "family": "integrity-request",
+      "planned": 72,
+      "split": "evaluation",
+      "tier": "repaired-digest"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 20,
+      "REJECT": 28,
+      "applicable": 28,
+      "family": "realized-music",
+      "planned": 48,
+      "split": "evaluation",
+      "tier": "repaired-digest"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 48,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 0,
+      "applicable": 48,
+      "family": "wire",
+      "planned": 48,
+      "split": "evaluation",
+      "tier": "wire"
+    }
+  ],
+  "findings": [],
+  "nonclaims": [
+    "population robustness",
+    "aesthetic quality",
+    "universal soundness",
+    "global compiler/checker equivalence",
+    "authenticated origin",
+    "comparative superiority",
+    "causal channel contributions",
+    "novelty verdict"
+  ],
+  "oracle_agreement": [
+    {
+      "agreements": 32,
+      "cases": 32,
+      "disagreements": 0,
+      "exclusion_reasons": {
+        "wire admission blocked": 8
+      },
+      "exclusions": 8,
+      "predicate": "delivery",
+      "split": "development"
+    },
+    {
+      "agreements": 8,
+      "cases": 8,
+      "disagreements": 0,
+      "exclusion_reasons": {
+        "rhythm disabled": 24,
+        "wire admission blocked": 8
+      },
+      "exclusions": 32,
+      "predicate": "rhythm",
+      "split": "development"
+    },
+    {
+      "agreements": 308,
+      "cases": 308,
+      "disagreements": 0,
+      "exclusion_reasons": {
+        "not executed: unavailable/inapplicable slot": 124,
+        "wire admission blocked": 48
+      },
+      "exclusions": 172,
+      "predicate": "delivery",
+      "split": "evaluation"
+    },
+    {
+      "agreements": 62,
+      "cases": 62,
+      "disagreements": 0,
+      "exclusion_reasons": {
+        "not executed: unavailable/inapplicable slot": 124,
+        "rhythm disabled": 246,
+        "wire admission blocked": 48
+      },
+      "exclusions": 418,
+      "predicate": "rhythm",
+      "split": "evaluation"
+    }
+  ],
+  "raw_sha256": "764d3d0ccacaa6105afede742fb1a5e99972e5647bd65c8fde71770f33f8d39a",
+  "shortfalls": {
+    "development": 0,
+    "evaluation": 0
+  },
+  "signals": [
+    {
+      "applicable": 32,
+      "detected_without": 24,
+      "lost_or_undetected": 8,
+      "omitted": "wire_shape",
+      "split": "development",
+      "unique_catches": 8
+    },
+    {
+      "applicable": 32,
+      "detected_without": 32,
+      "lost_or_undetected": 0,
+      "omitted": "semantic_rules",
+      "split": "development",
+      "unique_catches": 0
+    },
+    {
+      "applicable": 32,
+      "detected_without": 24,
+      "lost_or_undetected": 8,
+      "omitted": "integrity_request",
+      "split": "development",
+      "unique_catches": 8
+    },
+    {
+      "applicable": 32,
+      "detected_without": 24,
+      "lost_or_undetected": 8,
+      "omitted": "delivery_parseback",
+      "split": "development",
+      "unique_catches": 8
+    },
+    {
+      "applicable": 332,
+      "detected_without": 284,
+      "lost_or_undetected": 48,
+      "omitted": "wire_shape",
+      "split": "evaluation",
+      "unique_catches": 48
+    },
+    {
+      "applicable": 332,
+      "detected_without": 332,
+      "lost_or_undetected": 0,
+      "omitted": "semantic_rules",
+      "split": "evaluation",
+      "unique_catches": 0
+    },
+    {
+      "applicable": 332,
+      "detected_without": 212,
+      "lost_or_undetected": 120,
+      "omitted": "integrity_request",
+      "split": "evaluation",
+      "unique_catches": 120
+    },
+    {
+      "applicable": 332,
+      "detected_without": 220,
+      "lost_or_undetected": 112,
+      "omitted": "delivery_parseback",
+      "split": "evaluation",
+      "unique_catches": 112
+    }
+  ],
+  "uncertainty": [
+    {
+      "all_detected_clusters": 4,
+      "clusters": 4,
+      "fixture_family_clusters": 16,
+      "population_inference": false,
+      "split": "development",
+      "unit": "fixture with applicable attacks",
+      "wilson_95": [
+        0.510109,
+        1
+      ]
+    },
+    {
+      "all_detected_clusters": 12,
+      "clusters": 12,
+      "fixture_family_clusters": 138,
+      "population_inference": false,
+      "split": "evaluation",
+      "unit": "fixture with applicable attacks",
+      "wilson_95": [
+        0.757506,
+        1
+      ]
+    }
+  ]
+}

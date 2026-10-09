@@ -1,0 +1,306 @@
+{
+  "environment": {
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "processor": "x86_64",
+    "cpu_count": 9,
+    "runtime_versions": {
+      "python": "3.12.14",
+      "ortools": "9.15.6755",
+      "music21": "9.9.2",
+      "mido": "1.3.3"
+    },
+    "source_commit": "975b284f9ef3d1a86443e81877fc637be349b803",
+    "rss_method": "process-local Linux VmRSS samples; not peak RSS"
+  },
+  "fixtures": [
+    {
+      "fixture_id": "dev-base",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 0.4703380659998402,
+        "solver_seconds": 0.464085079,
+        "serialization_seconds": 0.0009329980000529758,
+        "fresh_semantic_seconds": 0.00023377299999083334,
+        "artifact_certification_seconds": 0.001859186000046975,
+        "certified-satb.export_seconds": 0.0006498509999346425,
+        "certified-satb.delivery_parseback_seconds": 0.0003890370001045085,
+        "certified-satb.full_delivery_certification_seconds": 0.0023213429999486834,
+        "melody-plus-satb.export_seconds": 0.00044925799988959625,
+        "melody-plus-satb.delivery_parseback_seconds": 0.00033213100005013985,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.002311889000111478
+      },
+      "process_local_rss_kib": 100276
+    },
+    {
+      "fixture_id": "dev-applied",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 3.592687538000064,
+        "solver_seconds": 3.5707542660000002,
+        "serialization_seconds": 0.0012455490000320424,
+        "fresh_semantic_seconds": 0.00031220100004247797,
+        "artifact_certification_seconds": 0.002746494999882998,
+        "certified-satb.export_seconds": 0.0008643950000077893,
+        "certified-satb.delivery_parseback_seconds": 0.0006635610000103043,
+        "certified-satb.full_delivery_certification_seconds": 0.0034964869998930226,
+        "melody-plus-satb.export_seconds": 0.0009300740000526275,
+        "melody-plus-satb.delivery_parseback_seconds": 0.000653786999919248,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.0038033099999665865
+      },
+      "process_local_rss_kib": 127324
+    },
+    {
+      "fixture_id": "dev-mixture",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 1.6025659439999345,
+        "solver_seconds": 1.5949750470000001,
+        "serialization_seconds": 0.0015712420001818828,
+        "fresh_semantic_seconds": 0.00029894199997215765,
+        "artifact_certification_seconds": 0.0027952689999892755,
+        "certified-satb.export_seconds": 0.0008049549999213923,
+        "certified-satb.delivery_parseback_seconds": 0.0005062850000285835,
+        "certified-satb.full_delivery_certification_seconds": 0.003272198999866305,
+        "melody-plus-satb.export_seconds": 0.000690211999881285,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0005551780000132567,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.0036376299999574258
+      },
+      "process_local_rss_kib": 127720
+    },
+    {
+      "fixture_id": "dev-interaction-rhythm",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 6.177734171000111,
+        "solver_seconds": 5.864985001,
+        "serialization_seconds": 0.002462516999912623,
+        "fresh_semantic_seconds": 0.0005870760001016606,
+        "artifact_certification_seconds": 0.0036961979999432515,
+        "certified-satb.export_seconds": 0.0007847839999612916,
+        "certified-satb.delivery_parseback_seconds": 0.0005927239999437006,
+        "certified-satb.full_delivery_certification_seconds": 0.004620423000005758,
+        "melody-plus-satb.export_seconds": 0.0006756699999641569,
+        "melody-plus-satb.delivery_parseback_seconds": 0.000562669000146343,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.004443676999926538
+      },
+      "process_local_rss_kib": 181748
+    },
+    {
+      "fixture_id": "eval-base-1",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 0.4521705780000502,
+        "solver_seconds": 0.44804394000000003,
+        "serialization_seconds": 0.000870954999982132,
+        "fresh_semantic_seconds": 0.0002622360000259505,
+        "artifact_certification_seconds": 0.002159829999982321,
+        "certified-satb.export_seconds": 0.0005074260000128561,
+        "certified-satb.delivery_parseback_seconds": 0.0003497079999306152,
+        "certified-satb.full_delivery_certification_seconds": 0.002218277999872953,
+        "melody-plus-satb.export_seconds": 0.00047918299992488755,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0003321110000342742,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.002871063000156937
+      },
+      "process_local_rss_kib": 182020
+    },
+    {
+      "fixture_id": "eval-base-2",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 1.3507981289999407,
+        "solver_seconds": 1.343808951,
+        "serialization_seconds": 0.0010744820001491462,
+        "fresh_semantic_seconds": 0.0002772080001705035,
+        "artifact_certification_seconds": 0.002093489000117188,
+        "certified-satb.export_seconds": 0.0007061759999942296,
+        "certified-satb.delivery_parseback_seconds": 0.0005404449998422933,
+        "certified-satb.full_delivery_certification_seconds": 0.005422533999990264,
+        "melody-plus-satb.export_seconds": 0.0005917829998907109,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0005798350000532082,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.004835447999994358
+      },
+      "process_local_rss_kib": 182176
+    },
+    {
+      "fixture_id": "eval-applied-1",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 3.85105737899994,
+        "solver_seconds": 3.8218380100000005,
+        "serialization_seconds": 0.001527764999991632,
+        "fresh_semantic_seconds": 0.0002905090000240307,
+        "artifact_certification_seconds": 0.0025667939999038936,
+        "certified-satb.export_seconds": 0.0007383839999874908,
+        "certified-satb.delivery_parseback_seconds": 0.0005035900001075788,
+        "certified-satb.full_delivery_certification_seconds": 0.0032550219998483954,
+        "melody-plus-satb.export_seconds": 0.0007151890001750871,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0006692599999951199,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.0034497469998768793
+      },
+      "process_local_rss_kib": 182684
+    },
+    {
+      "fixture_id": "eval-applied-2",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 4.031518604999974,
+        "solver_seconds": 4.010353151,
+        "serialization_seconds": 0.0023057500000049913,
+        "fresh_semantic_seconds": 0.0002917909998814139,
+        "artifact_certification_seconds": 0.0024406530001215287,
+        "certified-satb.export_seconds": 0.0010297639998952945,
+        "certified-satb.delivery_parseback_seconds": 0.0005445619999591145,
+        "certified-satb.full_delivery_certification_seconds": 0.0033301650000794325,
+        "melody-plus-satb.export_seconds": 0.0006079069999032072,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0007125459999315353,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.0035268629999336554
+      },
+      "process_local_rss_kib": 182888
+    },
+    {
+      "fixture_id": "eval-secondary-1",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 5.333549059999996,
+        "solver_seconds": 5.008126433,
+        "serialization_seconds": 0.0012852599998041114,
+        "fresh_semantic_seconds": 0.000555268000198339,
+        "artifact_certification_seconds": 0.0028083679999326705,
+        "certified-satb.export_seconds": 0.0006922039999608387,
+        "certified-satb.delivery_parseback_seconds": 0.00048814699994181865,
+        "certified-satb.full_delivery_certification_seconds": 0.0037765199999739707,
+        "melody-plus-satb.export_seconds": 0.0006842020000021876,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0005414370000380586,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.00445035600000665
+      },
+      "process_local_rss_kib": 181404
+    },
+    {
+      "fixture_id": "eval-secondary-2",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 5.248260463999941,
+        "solver_seconds": 4.947992496,
+        "serialization_seconds": 0.0017452839999805292,
+        "fresh_semantic_seconds": 0.000595587999896452,
+        "artifact_certification_seconds": 0.00267244299993763,
+        "certified-satb.export_seconds": 0.0007257760000811686,
+        "certified-satb.delivery_parseback_seconds": 0.0004856230000314099,
+        "certified-satb.full_delivery_certification_seconds": 0.004339287999982844,
+        "melody-plus-satb.export_seconds": 0.0006016980000822514,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0006296200001543184,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.0035950249998677464
+      },
+      "process_local_rss_kib": 189432
+    },
+    {
+      "fixture_id": "eval-mixture-1",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 1.9170456730000751,
+        "solver_seconds": 1.908742192,
+        "serialization_seconds": 0.001379090999989785,
+        "fresh_semantic_seconds": 0.00028477999990172975,
+        "artifact_certification_seconds": 0.009393386000056125,
+        "certified-satb.export_seconds": 0.0007490210000469233,
+        "certified-satb.delivery_parseback_seconds": 0.0027088780000212864,
+        "certified-satb.full_delivery_certification_seconds": 0.008109459000024799,
+        "melody-plus-satb.export_seconds": 0.00585124100007306,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0005762900000263471,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.00405939600000238
+      },
+      "process_local_rss_kib": 190080
+    },
+    {
+      "fixture_id": "eval-mixture-2",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 1.582431606,
+        "solver_seconds": 1.57415799,
+        "serialization_seconds": 0.0015854419998504454,
+        "fresh_semantic_seconds": 0.0003147150000586407,
+        "artifact_certification_seconds": 0.0025452410000070813,
+        "certified-satb.export_seconds": 0.0009788469999421068,
+        "certified-satb.delivery_parseback_seconds": 0.0006255040000269219,
+        "certified-satb.full_delivery_certification_seconds": 0.0031682909998380637,
+        "melody-plus-satb.export_seconds": 0.0006784439999591996,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0005270650001421018,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.0032834849998835125
+      },
+      "process_local_rss_kib": 190224
+    },
+    {
+      "fixture_id": "eval-modulation-1",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 0.5520373500000915,
+        "solver_seconds": 0.5415155700000001,
+        "serialization_seconds": 0.0013448800000332994,
+        "fresh_semantic_seconds": 0.0002928119999978662,
+        "artifact_certification_seconds": 0.0022682129999793688,
+        "certified-satb.export_seconds": 0.0007047039998724358,
+        "certified-satb.delivery_parseback_seconds": 0.0005103399998915847,
+        "certified-satb.full_delivery_certification_seconds": 0.0031000880001101905,
+        "melody-plus-satb.export_seconds": 0.0005868349999218481,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0005513019998488744,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.0033835470001122303
+      },
+      "process_local_rss_kib": 190352
+    },
+    {
+      "fixture_id": "eval-modulation-2",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 0.679829287000075,
+        "solver_seconds": 0.669562733,
+        "serialization_seconds": 0.0014287260000855895,
+        "fresh_semantic_seconds": 0.000296237000156907,
+        "artifact_certification_seconds": 0.0021313170000212267,
+        "certified-satb.export_seconds": 0.0007012480000412324,
+        "certified-satb.delivery_parseback_seconds": 0.0005331049999313109,
+        "certified-satb.full_delivery_certification_seconds": 0.0028173519999654673,
+        "melody-plus-satb.export_seconds": 0.0006065459999717859,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0005731950000154029,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.003302494000081424
+      },
+      "process_local_rss_kib": 190496
+    },
+    {
+      "fixture_id": "eval-interaction-rhythm-1",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 6.24494762900008,
+        "solver_seconds": 5.93566223,
+        "serialization_seconds": 0.001644551000026695,
+        "fresh_semantic_seconds": 0.0005944869999439106,
+        "artifact_certification_seconds": 0.0034151639999890904,
+        "certified-satb.export_seconds": 0.0007197060001544742,
+        "certified-satb.delivery_parseback_seconds": 0.000730357000065851,
+        "certified-satb.full_delivery_certification_seconds": 0.005944702000078905,
+        "melody-plus-satb.export_seconds": 0.0009603190001143957,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0008072789999005181,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.006191003000139972
+      },
+      "process_local_rss_kib": 223752
+    },
+    {
+      "fixture_id": "eval-interaction-rhythm-2",
+      "candidate_outcome": "GENERATED",
+      "timings": {
+        "generation_seconds": 6.29667398499987,
+        "solver_seconds": 5.950525903,
+        "serialization_seconds": 0.0015821480001250166,
+        "fresh_semantic_seconds": 0.0005692789998192893,
+        "artifact_certification_seconds": 0.0030480099999294907,
+        "certified-satb.export_seconds": 0.0007038920000468352,
+        "certified-satb.delivery_parseback_seconds": 0.0005036099998960708,
+        "certified-satb.full_delivery_certification_seconds": 0.004047028000059072,
+        "melody-plus-satb.export_seconds": 0.000644603000182542,
+        "melody-plus-satb.delivery_parseback_seconds": 0.0006408869999177114,
+        "melody-plus-satb.full_delivery_certification_seconds": 0.00397203499983334
+      },
+      "process_local_rss_kib": 209436
+    }
+  ]
+}
