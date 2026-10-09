@@ -1,0 +1,2093 @@
+{
+  "schema_version": 1,
+  "corpus_id": "multifixture-assurance-v1",
+  "base_commit": "ef7e8c5a882e07fce5f862fca20fb9e3bb5a3c24",
+  "artifact_schema": "2.13",
+  "pinned_dependencies": {
+    "ortools": "9.15.6755",
+    "music21": "9.9.2",
+    "mido": "1.3.3"
+  },
+  "fixture_targets": {
+    "development": 4,
+    "evaluation": 12
+  },
+  "fixtures": [
+    {
+      "id": "dev-base",
+      "split": "development",
+      "stratum": "base",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "D",
+        "mode": "minor",
+        "bars": 1,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9101,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "dev-applied",
+      "split": "development",
+      "stratum": "applied",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads+sevenths",
+        "minimum_seventh_chords": 1,
+        "tonicization_enabled": true,
+        "minimum_applied_dominants": 1,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9102,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "dev-mixture",
+      "split": "development",
+      "stratum": "mixture",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": true,
+        "minimum_borrowed_chords": 1,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9103,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "dev-interaction-rhythm",
+      "split": "development",
+      "stratum": "interaction-rhythm",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 2,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads+sevenths",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": true,
+        "minimum_borrowed_chords": 1,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": true,
+        "minimum_secondary_leading_tone_seventh_chords": 1,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": true,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 6,
+        "min_rests_per_bar": 1,
+        "max_rests_per_bar": 2,
+        "min_ties_per_bar": 1,
+        "max_ties_per_bar": 2,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9104,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-base-1",
+      "split": "evaluation",
+      "stratum": "base",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 1,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9201,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-base-2",
+      "split": "evaluation",
+      "stratum": "base",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "A",
+        "mode": "minor",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9202,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-applied-1",
+      "split": "evaluation",
+      "stratum": "applied",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads+sevenths",
+        "minimum_seventh_chords": 1,
+        "tonicization_enabled": true,
+        "minimum_applied_dominants": 1,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9203,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-applied-2",
+      "split": "evaluation",
+      "stratum": "applied",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "G",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads+sevenths",
+        "minimum_seventh_chords": 1,
+        "tonicization_enabled": true,
+        "minimum_applied_dominants": 1,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9204,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-secondary-1",
+      "split": "evaluation",
+      "stratum": "secondary",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads+sevenths",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": true,
+        "minimum_secondary_leading_tone_seventh_chords": 1,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9205,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-secondary-2",
+      "split": "evaluation",
+      "stratum": "secondary",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "G",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads+sevenths",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": true,
+        "minimum_secondary_leading_tone_seventh_chords": 1,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9206,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-mixture-1",
+      "split": "evaluation",
+      "stratum": "mixture",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": true,
+        "minimum_borrowed_chords": 1,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9207,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-mixture-2",
+      "split": "evaluation",
+      "stratum": "mixture",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "G",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": true,
+        "minimum_borrowed_chords": 1,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9208,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-modulation-1",
+      "split": "evaluation",
+      "stratum": "modulation",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": true,
+        "modulation_destination_key": "G",
+        "modulation_boundary_beat": 4,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9209,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-modulation-2",
+      "split": "evaluation",
+      "stratum": "modulation",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "G",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 1,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": false,
+        "minimum_borrowed_chords": 0,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": false,
+        "minimum_secondary_leading_tone_seventh_chords": 0,
+        "modulation_enabled": true,
+        "modulation_destination_key": "D",
+        "modulation_boundary_beat": 4,
+        "rhythm_enabled": false,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 16,
+        "min_rests_per_bar": 0,
+        "max_rests_per_bar": 4,
+        "min_ties_per_bar": 0,
+        "max_ties_per_bar": 4,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9210,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-interaction-rhythm-1",
+      "split": "evaluation",
+      "stratum": "interaction-rhythm",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "C",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 2,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads+sevenths",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": true,
+        "minimum_borrowed_chords": 1,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": true,
+        "minimum_secondary_leading_tone_seventh_chords": 1,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": true,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 6,
+        "min_rests_per_bar": 1,
+        "max_rests_per_bar": 2,
+        "min_ties_per_bar": 1,
+        "max_ties_per_bar": 2,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9211,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    },
+    {
+      "id": "eval-interaction-rhythm-2",
+      "split": "evaluation",
+      "stratum": "interaction-rhythm",
+      "profiles": [
+        "certified-satb",
+        "melody-plus-satb"
+      ],
+      "spec": {
+        "key": "G",
+        "mode": "major",
+        "bars": 2,
+        "beats_per_bar": 4,
+        "subdivisions_per_beat": 2,
+        "tempo_bpm": 108,
+        "melody_low": 60,
+        "melody_high": 81,
+        "bass_low": 36,
+        "bass_high": 55,
+        "max_melody_leap": 12,
+        "max_bass_leap": 7,
+        "max_repeated_notes": 2,
+        "require_authentic_cadence": false,
+        "resolve_leading_tone": true,
+        "avoid_parallel_perfects": false,
+        "progression_graph": {
+          "0": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "1": [
+            1,
+            3,
+            4,
+            6
+          ],
+          "2": [
+            2,
+            3,
+            5
+          ],
+          "3": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "4": [
+            0,
+            4,
+            5,
+            6
+          ],
+          "5": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "6": [
+            0,
+            2,
+            6
+          ]
+        },
+        "tension_curve": [
+          0.8,
+          0.7,
+          0.6,
+          0.5,
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "harmony_vocabulary": "triads+sevenths",
+        "minimum_seventh_chords": 0,
+        "tonicization_enabled": false,
+        "minimum_applied_dominants": 0,
+        "modal_mixture_enabled": true,
+        "minimum_borrowed_chords": 1,
+        "secondary_leading_tone_enabled": false,
+        "minimum_secondary_leading_tone_chords": 0,
+        "secondary_leading_tone_seventh_enabled": true,
+        "minimum_secondary_leading_tone_seventh_chords": 1,
+        "modulation_enabled": false,
+        "modulation_destination_key": null,
+        "modulation_boundary_beat": null,
+        "rhythm_enabled": true,
+        "min_onsets_per_bar": 1,
+        "max_onsets_per_bar": 6,
+        "min_rests_per_bar": 1,
+        "max_rests_per_bar": 2,
+        "min_ties_per_bar": 1,
+        "max_ties_per_bar": 2,
+        "max_consecutive_rests": 1,
+        "max_tie_steps": 1,
+        "require_bar_downbeat_onset": true,
+        "motif_relation": "none",
+        "motif_source_bar": 0,
+        "motif_target_bar": 2,
+        "motif_length_steps": 4,
+        "motif_transpose_semitones": 0,
+        "phrases": [],
+        "seed": 9212,
+        "max_time_seconds": 30,
+        "workers": 1
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "id": "missing-tenor",
+      "split": "development",
+      "family": "wire",
+      "cluster": "dev-cardinality",
+      "tier": "wire",
+      "eligibility": "all",
+      "obligation": "SATB requires a tenor array",
+      "expected_class": "malformed",
+      "expected_outcome": "BLOCKED"
+    },
+    {
+      "id": "soprano-register",
+      "split": "development",
+      "family": "realized-music",
+      "cluster": "dev-upper-register",
+      "tier": "repaired-digest",
+      "eligibility": "all",
+      "obligation": "SATB soprano must stay in certified register",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "contract-version",
+      "split": "development",
+      "family": "integrity-request",
+      "cluster": "dev-contract",
+      "tier": "repaired-digest",
+      "eligibility": "all",
+      "obligation": "Contract version must equal the supported version",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "soprano-channel",
+      "split": "development",
+      "family": "delivery",
+      "cluster": "dev-note-channel",
+      "tier": "direct",
+      "eligibility": "all",
+      "obligation": "Soprano events use channel zero",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "degree-boolean",
+      "split": "evaluation",
+      "family": "wire",
+      "cluster": "eval-wire-types",
+      "tier": "wire",
+      "eligibility": "all",
+      "obligation": "Boolean is not an integer degree",
+      "expected_class": "malformed",
+      "expected_outcome": "BLOCKED"
+    },
+    {
+      "id": "music-nonobject",
+      "split": "evaluation",
+      "family": "wire",
+      "cluster": "eval-root-shape",
+      "tier": "wire",
+      "eligibility": "all",
+      "obligation": "music must be an object",
+      "expected_class": "malformed",
+      "expected_outcome": "BLOCKED"
+    },
+    {
+      "id": "bass-register",
+      "split": "evaluation",
+      "family": "realized-music",
+      "cluster": "eval-lower-register",
+      "tier": "repaired-digest",
+      "eligibility": "all",
+      "obligation": "Bass pitch must be >= the independently fixed bass_low",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "initial-tie",
+      "split": "evaluation",
+      "family": "realized-music",
+      "cluster": "eval-rhythm-transition",
+      "tier": "repaired-digest",
+      "eligibility": "rhythm",
+      "obligation": "First rhythm event cannot be a tie without a sounding predecessor",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "remove-target",
+      "split": "evaluation",
+      "family": "harmonic-claims",
+      "cluster": "eval-target-identity",
+      "tier": "repaired-digest",
+      "eligibility": "target",
+      "obligation": "Actual target-bearing harmony requires its local target identity",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "swap-modal-source",
+      "split": "evaluation",
+      "family": "harmonic-claims",
+      "cluster": "eval-modal-identity",
+      "tier": "repaired-digest",
+      "eligibility": "modal",
+      "obligation": "Borrowed source must be the canonical parallel source in the active key",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "stale-context",
+      "split": "evaluation",
+      "family": "harmonic-claims",
+      "cluster": "eval-persistent-key",
+      "tier": "repaired-digest",
+      "eligibility": "modulation",
+      "obligation": "Key contexts must change at the externally declared boundary",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "display-name",
+      "split": "evaluation",
+      "family": "harmonic-claims",
+      "cluster": "eval-display",
+      "tier": "repaired-digest",
+      "eligibility": "all",
+      "obligation": "Displayed chord form must match reconstruction",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "empty-rules",
+      "split": "evaluation",
+      "family": "integrity-request",
+      "cluster": "eval-provenance",
+      "tier": "repaired-digest",
+      "eligibility": "all",
+      "obligation": "Verified rule claims must match freshly evaluated rules",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "composition-digest",
+      "split": "evaluation",
+      "family": "integrity-request",
+      "cluster": "eval-provenance",
+      "tier": "repaired-digest",
+      "eligibility": "all",
+      "obligation": "Composition digest must equal independent reconstruction",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "objective-vector",
+      "split": "evaluation",
+      "family": "integrity-request",
+      "cluster": "eval-objective",
+      "tier": "repaired-digest",
+      "eligibility": "all",
+      "obligation": "Objective metadata must equal recomputation",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "embedded-seed",
+      "split": "evaluation",
+      "family": "integrity-request",
+      "cluster": "eval-request-binding",
+      "tier": "coordinated",
+      "eligibility": "all",
+      "obligation": "Embedded request cannot replace the externally fixed seed; all embedded hashes are coordinated",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "missing-track",
+      "split": "evaluation",
+      "family": "delivery",
+      "cluster": "eval-track-cardinality",
+      "tier": "direct",
+      "eligibility": "all",
+      "obligation": "Tenor track must be present",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "duplicate-track",
+      "split": "evaluation",
+      "family": "delivery",
+      "cluster": "eval-track-cardinality",
+      "tier": "direct",
+      "eligibility": "all",
+      "obligation": "Voice tracks must be unique",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "wrong-key",
+      "split": "evaluation",
+      "family": "delivery",
+      "cluster": "eval-delivery-context",
+      "tier": "direct",
+      "eligibility": "all",
+      "obligation": "Initial key event must match request; choose a different key",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "wrong-division",
+      "split": "evaluation",
+      "family": "delivery",
+      "cluster": "eval-delivery-context",
+      "tier": "direct",
+      "eligibility": "all",
+      "obligation": "SMF tick division must equal 480",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "melody-onset",
+      "split": "evaluation",
+      "family": "delivery",
+      "cluster": "eval-melody-time",
+      "tier": "direct",
+      "eligibility": "melody",
+      "obligation": "Melody onset tick must equal its projected onset",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "fill-rest",
+      "split": "evaluation",
+      "family": "delivery",
+      "cluster": "eval-melody-rest",
+      "tier": "direct",
+      "eligibility": "melody-rest",
+      "obligation": "Certified rest interval must contain no extra note",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    },
+    {
+      "id": "shorten-tie",
+      "split": "evaluation",
+      "family": "delivery",
+      "cluster": "eval-melody-tie",
+      "tier": "direct",
+      "eligibility": "melody-tie",
+      "obligation": "Tied melody event must span all tied steps",
+      "expected_class": "invalid",
+      "expected_outcome": "REJECT"
+    }
+  ],
+  "planned_attempts": 16,
+  "planned_controls": 32,
+  "planned_mutation_slots": 488,
+  "uncertainty": {
+    "method": "Wilson 95% interval on all-detected fixture clusters",
+    "unit": "fixture with >=1 applicable attack",
+    "assumption": "Illustrative independent fixture Bernoulli sampling; fixed purposive corpus is not a random population sample"
+  },
+  "stopping_rule": "One attempt per fixed request, all slots retained, no replacement or adaptive early stop",
+  "correction_policy": "Changes informed by held-out faults require a documented deviation, version change and fresh held-out set",
+  "exclusions": "No planned exclusions; eligibility failures are NOT_APPLICABLE and generation failures retain all slots",
+  "contract_version": "2.13",
+  "contract_sha256": "94c61c49a3306245887879585cd32363f4ff04116aa42f3ffff61beeebcd8b9b"
+}

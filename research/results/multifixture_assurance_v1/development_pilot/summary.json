@@ -1,0 +1,207 @@
+{
+  "candidate_yield": [
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 1,
+      "other_failure": 0,
+      "planned": 1,
+      "split": "development",
+      "stratum": "applied",
+      "strict_control_profiles_accepted": 2,
+      "strict_fixtures_accepted": 1
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 1,
+      "other_failure": 0,
+      "planned": 1,
+      "split": "development",
+      "stratum": "base",
+      "strict_control_profiles_accepted": 2,
+      "strict_fixtures_accepted": 1
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 1,
+      "other_failure": 0,
+      "planned": 1,
+      "split": "development",
+      "stratum": "interaction-rhythm",
+      "strict_control_profiles_accepted": 2,
+      "strict_fixtures_accepted": 1
+    },
+    {
+      "INFEASIBLE": 0,
+      "UNKNOWN": 0,
+      "excluded": 0,
+      "generated": 1,
+      "other_failure": 0,
+      "planned": 1,
+      "split": "development",
+      "stratum": "mixture",
+      "strict_control_profiles_accepted": 2,
+      "strict_fixtures_accepted": 1
+    }
+  ],
+  "corpus_id": "multifixture-assurance-v1",
+  "counts": {
+    "attacks": 32,
+    "attempts": 4,
+    "controls": 8,
+    "rows": 44
+  },
+  "examples": {},
+  "fault_results": [
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 8,
+      "applicable": 8,
+      "family": "delivery",
+      "planned": 8,
+      "split": "development",
+      "tier": "direct"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 8,
+      "applicable": 8,
+      "family": "integrity-request",
+      "planned": 8,
+      "split": "development",
+      "tier": "repaired-digest"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 0,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 8,
+      "applicable": 8,
+      "family": "realized-music",
+      "planned": 8,
+      "split": "development",
+      "tier": "repaired-digest"
+    },
+    {
+      "ACCEPT": 0,
+      "BLOCKED": 8,
+      "CRASH": 0,
+      "GENERATION_FAILED": 0,
+      "HARNESS_ERROR": 0,
+      "NOT_APPLICABLE": 0,
+      "REJECT": 0,
+      "applicable": 8,
+      "family": "wire",
+      "planned": 8,
+      "split": "development",
+      "tier": "wire"
+    }
+  ],
+  "findings": [],
+  "nonclaims": [
+    "population robustness",
+    "aesthetic quality",
+    "universal soundness",
+    "global compiler/checker equivalence",
+    "authenticated origin",
+    "comparative superiority",
+    "causal channel contributions",
+    "novelty verdict"
+  ],
+  "oracle_agreement": [
+    {
+      "agreements": 32,
+      "cases": 32,
+      "disagreements": 0,
+      "exclusion_reasons": {
+        "wire admission blocked": 8
+      },
+      "exclusions": 8,
+      "predicate": "delivery",
+      "split": "development"
+    },
+    {
+      "agreements": 8,
+      "cases": 8,
+      "disagreements": 0,
+      "exclusion_reasons": {
+        "rhythm disabled": 24,
+        "wire admission blocked": 8
+      },
+      "exclusions": 32,
+      "predicate": "rhythm",
+      "split": "development"
+    }
+  ],
+  "raw_sha256": "9094197e32703abab3c15cf12ddf7b1e49f6198722cadd4f6f553ff6db2007b8",
+  "shortfalls": {
+    "development": 0,
+    "evaluation": 12
+  },
+  "signals": [
+    {
+      "applicable": 32,
+      "detected_without": 24,
+      "lost_or_undetected": 8,
+      "omitted": "wire_shape",
+      "split": "development",
+      "unique_catches": 8
+    },
+    {
+      "applicable": 32,
+      "detected_without": 32,
+      "lost_or_undetected": 0,
+      "omitted": "semantic_rules",
+      "split": "development",
+      "unique_catches": 0
+    },
+    {
+      "applicable": 32,
+      "detected_without": 24,
+      "lost_or_undetected": 8,
+      "omitted": "integrity_request",
+      "split": "development",
+      "unique_catches": 8
+    },
+    {
+      "applicable": 32,
+      "detected_without": 24,
+      "lost_or_undetected": 8,
+      "omitted": "delivery_parseback",
+      "split": "development",
+      "unique_catches": 8
+    }
+  ],
+  "uncertainty": [
+    {
+      "all_detected_clusters": 4,
+      "clusters": 4,
+      "fixture_family_clusters": 16,
+      "population_inference": false,
+      "split": "development",
+      "unit": "fixture with applicable attacks",
+      "wilson_95": [
+        0.510109,
+        1
+      ]
+    }
+  ]
+}
