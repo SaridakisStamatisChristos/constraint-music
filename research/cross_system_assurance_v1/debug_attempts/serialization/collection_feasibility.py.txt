@@ -1,0 +1,357 @@
+"""Run/check native development pilots and derive a fail-closed feasibility report."""
+
+from __future__ import annotations
+
+import argparse
+import importlib.metadata
+import json
+import platform
+import subprocess
+import sys
+import time
+from collections import Counter
+from dataclasses import asdict
+from fractions import Fraction
+from hashlib import sha256
+from pathlib import Path
+from typing import Any
+
+from .midi_probe import parse_mido, parse_smf
+
+ROOT = Path(__file__).resolve().parent
+VOICES = ("Soprano", "Alto", "Tenor", "Bass")
+
+
+def digest(path: Path) -> str:
+    return sha256(path.read_bytes()).hexdigest()
+
+
+def write_json(path: Path, payload: Any) -> None:
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+
+def probe(system: str, tonic: str, directory: Path, binary: Path | None) -> None:
+    directory.mkdir(parents=True, exist_ok=True)
+    if system == "constraint-music":
+        from constraint_music.midi import write_midi
+        from constraint_music.models import GenerationSpec
+        from constraint_music.solver import ConstraintMusicSolver
+
+        spec = GenerationSpec(
+            key=tonic,
+            bars=4,
+            subdivisions_per_beat=1,
+            tempo_bpm=120,
+            workers=1,
+            seed=7,
+            max_time_seconds=10,
+        )
+        write_json(directory / "input.json", asdict(spec))
+        result = ConstraintMusicSolver().generate(spec)
+        write_json(directory / "score.json", result.to_dict())
+        write_midi(result, directory / "delivered.mid")
+        rows = [list(getattr(result, voice.lower())) for voice in VOICES]
+        events = [
+            [v, i, p, str(beat), "1"]
+            for i, (v, pitches) in enumerate(zip(VOICES, rows, strict=True))
+            for beat, p in enumerate(pitches)
+        ]
+    elif system == "music21":
+        from music21 import key, meter, note
+        from music21.figuredBass import realizer
+
+        basses = {"C": ["C3", "F3", "G3", "C3"], "G": ["G2", "C3", "D3", "G2"]}[tonic]
+        write_json(
+            directory / "input.json",
+            {
+                "key": tonic,
+                "meter": "4/4",
+                "bass": basses,
+                "quarter_length": 4,
+                "chorale_output": True,
+            },
+        )
+        line = realizer.FiguredBassLine(key.Key(tonic), meter.TimeSignature("4/4"))
+        for pitch in basses:
+            line.addElement(note.Note(pitch, quarterLength=4))
+        realization = line.realize()
+        realization.keyboardStyleOutput = False
+        # Development phrases are deliberately short; bounded by the parent process timeout.
+        progressions = realization.getAllPossibilityProgressions()
+        if not progressions:
+            raise ValueError("no figured-bass realization")
+        score = realization.generateRealizationFromPossibilityProgression(progressions[0])
+        score.write("musicxml", fp=directory / "score.musicxml")
+        score.write("midi", fp=directory / "delivered.mid")
+        events = []
+        for i, part in enumerate(score.parts):
+            for n in part.flatten().notes:
+                events.append(
+                    [
+                        VOICES[i],
+                        0,
+                        int(n.pitch.midi),
+                        str(Fraction(n.offset)),
+                        str(Fraction(n.quarterLength)),
+                    ]
+                )
+    elif system == "diatony":
+        if binary is None:
+            raise ValueError("Diatony probe executable required")
+        write_json(
+            directory / "input.json",
+            {"key": tonic, "degrees": [0, 3, 4, 0], "inversions": [0] * 4, "budget_ms": 2000},
+        )
+        completed = subprocess.run(
+            [
+                str(binary),
+                str({"C": 0, "G": 7}[tonic]),
+                "2000",
+                str(directory / "score.txt"),
+                str(directory / "delivered"),
+            ],
+            cwd=directory,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        (directory / "native_stdout.txt").write_text(completed.stdout)
+        (directory / "native_stderr.txt").write_text(completed.stderr)
+        if completed.returncode:
+            raise ValueError(f"native return code {completed.returncode}")
+        text = (directory / "score.txt").read_text().split("VOICE_ROWS_B_T_A_S\n")[1]
+        pitches = [[int(p) for p in line.split()] for line in text.strip().splitlines()]
+        if len(pitches) != 4 or any(len(row) != 4 for row in pitches):
+            raise ValueError("invalid native voice rows")
+        events = [
+            [voice, 0, row[3 - i], str(beat * 4), "4"]
+            for beat, row in enumerate(pitches)
+            for i, voice in enumerate(VOICES)
+        ]
+    else:
+        raise ValueError("unknown system")
+    write_json(directory / "normalized.json", {"events": sorted(events)})
+
+
+def inspect_score(tonic: str, normalized: dict[str, Any]) -> list[str]:
+    """Fresh shared development checks; no generator validity flags or theory imports."""
+    events = normalized["events"]
+    issues = []
+    scale = {(x + {"C": 0, "G": 7}[tonic]) % 12 for x in (0, 2, 4, 5, 7, 9, 11)}
+    if {event[0] for event in events} != set(VOICES):
+        issues.append("SYMBOLIC_VOICE_SET")
+    for voice in VOICES:
+        values = sorted((e for e in events if e[0] == voice), key=lambda e: Fraction(e[3]))
+        cursor = Fraction(0)
+        for _, _, pitch, onset, duration in values:
+            onset_q, duration_q = Fraction(onset), Fraction(duration)
+            if onset_q != cursor or duration_q <= 0:
+                issues.append("SYMBOLIC_GAP_OVERLAP_DURATION")
+            cursor = onset_q + duration_q
+            if not isinstance(pitch, int) or not 0 <= pitch <= 127 or pitch % 12 not in scale:
+                issues.append("SYMBOLIC_KEY_PITCH")
+        if cursor != 16:
+            issues.append("SYMBOLIC_LENGTH")
+    # Ordering at every transition; unison is permitted, identity remains the native voice.
+    for onset in {Fraction(e[3]) for e in events}:
+        sounding = {
+            e[0]: e[2] for e in events if Fraction(e[3]) <= onset < Fraction(e[3]) + Fraction(e[4])
+        }
+        if set(sounding) == set(VOICES) and [sounding[v] for v in VOICES] != sorted(
+            sounding.values(), reverse=True
+        ):
+            issues.append("SYMBOLIC_CROSSING")
+    return sorted(set(issues))
+
+
+def inspect_attempt(system: str, tonic: str, directory: Path) -> dict[str, Any]:
+    normalized = json.loads((directory / "normalized.json").read_text())
+    data = (directory / "delivered.mid").read_bytes()
+    parsed = parse_smf(data)
+    if parsed != parse_mido(data):
+        raise ValueError("independent SMF parsers disagree")
+    expected = Counter((e[2], e[3], e[4]) for e in normalized["events"])
+    observed = Counter((e[2], e[3], e[4]) for e in parsed["events"])
+    unvoiced = expected == observed
+    groups = sorted({(e[0], e[1]) for e in parsed["events"]})
+    if system == "diatony":
+        # Native single track/channel cannot authenticate distinct voice identities, even
+        # when pitches happen to be ordered. Do not manufacture identities by matching.
+        voiced = "UNOBSERVABLE"
+    else:
+        mapping = {
+            (i + 1, i if system == "constraint-music" else 0): voice
+            for i, voice in enumerate(VOICES)
+        }
+        voiced_observed = Counter(
+            (mapping.get((e[0], e[1])), e[1], *e[2:]) for e in parsed["events"]
+        )
+        voiced_expected = Counter(tuple(e) for e in normalized["events"])
+        voiced = "PASS" if voiced_observed == voiced_expected else "FAIL"
+    context_expected = sorted(
+        [
+            ["0", "key", f"{0 if tonic == 'C' else 1}:0"],
+            ["0", "meter", "4/4"],
+            ["0", "tempo", "500000"],
+        ]
+    )
+    return {
+        "symbolic_issues": inspect_score(tonic, normalized),
+        "parsed_notes": len(parsed["events"]),
+        "midi_groups": groups,
+        "parser_agreement": True,
+        "unvoiced_event_relation": "PASS" if unvoiced else "FAIL",
+        "voice_event_relation": voiced,
+        "context_relation": "PASS" if parsed["context"] == context_expected else "FAIL",
+        "observed_context": parsed["context"],
+    }
+
+
+def summarize(rows: list[dict[str, Any]], support: dict[str, Any]) -> dict[str, Any]:
+    expected = {f"{s}.{k}" for s in ("constraint-music", "music21", "diatony") for k in ("C", "G")}
+    if len(rows) != len(expected) or {r["id"] for r in rows} != expected:
+        raise ValueError("planned slots missing or duplicate")
+    qualified = []
+    for system in ("music21", "diatony"):
+        subset = [r for r in rows if r["system"] == system]
+        if support["candidate_scope_ready"][system] and all(
+            r["status"] == "OUTPUT"
+            and r["inspection"]["voice_event_relation"] == "PASS"
+            and r["inspection"]["context_relation"] == "PASS"
+            and not r["inspection"]["symbolic_issues"]
+            for r in subset
+        ):
+            qualified.append(system)
+    groups = {support["independence_groups"][system] for system in qualified}
+    return {
+        "planned_development_slots": 6,
+        "observed_development_slots": len(rows),
+        "statuses": dict(sorted(Counter(r["status"] for r in rows).items())),
+        "qualified_external_candidates": qualified,
+        "required_independent_external_candidates": 2,
+        "comparability_gate": "GO" if len(groups) >= 2 else "HOLD",
+        "held_out_slots": 0,
+        "paired_benchmark_completed": False,
+    }
+
+
+def check(root: Path = ROOT) -> dict[str, Any]:
+    payload = json.loads((root / "observations.json").read_text())
+    result = summarize(payload["rows"], json.loads((root / "support.json").read_text()))
+    for filename, expected in payload["protocol_hashes"].items():
+        if digest(root / filename) != expected:
+            raise ValueError(f"protocol hash mismatch: {filename}")
+    for row in payload["rows"]:
+        directory = root / "native" / row["id"]
+        for filename, expected in row["hashes"].items():
+            if Path(filename).name != filename or digest(directory / filename) != expected:
+                raise ValueError(f"evidence hash mismatch: {row['id']}/{filename}")
+        if row["status"] == "OUTPUT":
+            actual = inspect_attempt(row["system"], row["key"], directory)
+            if actual != row["inspection"]:
+                raise ValueError(f"inspection mismatch: {row['id']}")
+    if result != json.loads((root / "summary.json").read_text()):
+        raise ValueError("summary mismatch")
+    return result
+
+
+def run(binary: Path) -> None:
+    if (ROOT / "observations.json").exists():
+        raise ValueError("archive exists; use a new versioned study directory for reruns")
+    manifest = json.loads((ROOT / "manifest.json").read_text())
+    subprocess.run(
+        ["git", "diff", "--exit-code", manifest["pins"]["constraint-music"], "--", "src"],
+        cwd=ROOT.parents[1],
+        check=True,
+        capture_output=True,
+    )
+    for package in ("music21", "mido", "ortools", "constraint-music"):
+        observed = importlib.metadata.version(package)
+        if package != "constraint-music" and observed != manifest["pins"][package]:
+            raise ValueError(f"dependency pin mismatch: {package} {observed}")
+    rows = []
+    for system in manifest["systems"]:
+        for tonic in manifest["keys"]:
+            attempt_id = f"{system}.{tonic}"
+            directory = ROOT / "native" / attempt_id
+            directory.mkdir(parents=True, exist_ok=True)
+            started = time.perf_counter()
+            command = [
+                sys.executable,
+                "-m",
+                "research.cross_system_assurance_v1.feasibility",
+                "--probe",
+                system,
+                "--key",
+                tonic,
+                "--diatony-binary",
+                str(binary),
+            ]
+            row: dict[str, Any] = {"id": attempt_id, "system": system, "key": tonic}
+            try:
+                completed = subprocess.run(
+                    command, capture_output=True, text=True, timeout=manifest["timeout_seconds"]
+                )
+                (directory / "adapter_stdout.txt").write_text(completed.stdout)
+                (directory / "adapter_stderr.txt").write_text(completed.stderr)
+                row["return_code"] = completed.returncode
+                if completed.returncode:
+                    row["status"] = "CRASH"
+                else:
+                    row["inspection"] = inspect_attempt(system, tonic, directory)
+                    row["status"] = "OUTPUT"
+            except subprocess.TimeoutExpired:
+                row["status"] = "TIMEOUT"
+            except (ValueError, OSError) as exc:
+                row["status"] = "PARSE_FAILURE"
+                row["failure"] = str(exc)
+            row["elapsed_seconds"] = round(time.perf_counter() - started, 6)
+            row["hashes"] = {p.name: digest(p) for p in sorted(directory.iterdir()) if p.is_file()}
+            rows.append(row)
+            print(attempt_id, row["status"], flush=True)
+    protocol_files = (
+        "manifest.json",
+        "support.json",
+        "feasibility.py",
+        "midi_probe.py",
+        "diatony_probe.cpp",
+        "build_diatony.py",
+    )
+    write_json(
+        ROOT / "observations.json",
+        {
+            "protocol_hashes": {p: digest(ROOT / p) for p in protocol_files},
+            "rows": rows,
+            "environment": {
+                "python": platform.python_version(),
+                "platform": platform.platform(),
+                "dependencies": {
+                    p: importlib.metadata.version(p)
+                    for p in ("music21", "mido", "ortools", "constraint-music")
+                },
+                "diatony_probe_sha256": digest(binary),
+            },
+        },
+    )
+    write_json(
+        ROOT / "summary.json", summarize(rows, json.loads((ROOT / "support.json").read_text()))
+    )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--probe", choices=("constraint-music", "music21", "diatony"))
+    parser.add_argument("--key", choices=("C", "G"), default="C")
+    parser.add_argument("--diatony-binary", type=Path)
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    if args.check:
+        print(json.dumps(check(), indent=2))
+    elif args.probe:
+        probe(
+            args.probe, args.key, ROOT / "native" / f"{args.probe}.{args.key}", args.diatony_binary
+        )
+    elif args.diatony_binary:
+        run(args.diatony_binary.resolve())
+    else:
+        parser.error("choose --check, --probe, or --diatony-binary")

@@ -1,0 +1,23 @@
+{
+  "allowed_note_durations_quarters": [
+    1,
+    4
+  ],
+  "duration_quarters": 16,
+  "given_voice": null,
+  "harmony_constraint": null,
+  "key": "C",
+  "meter": "4/4",
+  "mode": "major",
+  "request_id": "delivery-envelope-v1.C",
+  "rests": false,
+  "schema_version": 1,
+  "tempo_bpm": 120,
+  "ties": false,
+  "voices": [
+    "Soprano",
+    "Alto",
+    "Tenor",
+    "Bass"
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "avoid_parallel_perfects": true,
+  "bars": 4,
+  "bass_high": 55,
+  "bass_low": 36,
+  "beats_per_bar": 4,
+  "harmony_vocabulary": "triads",
+  "key": "C",
+  "max_bass_leap": 7,
+  "max_consecutive_rests": 1,
+  "max_melody_leap": 12,
+  "max_onsets_per_bar": 16,
+  "max_repeated_notes": 2,
+  "max_rests_per_bar": 4,
+  "max_tie_steps": 1,
+  "max_ties_per_bar": 4,
+  "max_time_seconds": 10,
+  "melody_high": 81,
+  "melody_low": 60,
+  "min_onsets_per_bar": 1,
+  "min_rests_per_bar": 0,
+  "min_ties_per_bar": 0,
+  "minimum_applied_dominants": 0,
+  "minimum_borrowed_chords": 0,
+  "minimum_secondary_leading_tone_chords": 0,
+  "minimum_secondary_leading_tone_seventh_chords": 0,
+  "minimum_seventh_chords": 0,
+  "modal_mixture_enabled": false,
+  "mode": "major",
+  "modulation_boundary_beat": null,
+  "modulation_destination_key": null,
+  "modulation_enabled": false,
+  "motif_length_steps": 4,
+  "motif_relation": "none",
+  "motif_source_bar": 0,
+  "motif_target_bar": 2,
+  "motif_transpose_semitones": 0,
+  "phrases": [],
+  "progression_graph": [
+    [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    [
+      1,
+      3,
+      4,
+      6
+    ],
+    [
+      2,
+      3,
+      5
+    ],
+    [
+      0,
+      1,
+      3,
+      4
+    ],
+    [
+      0,
+      4,
+      5,
+      6
+    ],
+    [
+      1,
+      3,
+      4,
+      5
+    ],
+    [
+      0,
+      2,
+      6
+    ]
+  ],
+  "require_authentic_cadence": true,
+  "require_bar_downbeat_onset": true,
+  "resolve_leading_tone": true,
+  "rhythm_enabled": false,
+  "secondary_leading_tone_enabled": false,
+  "secondary_leading_tone_seventh_enabled": false,
+  "seed": 7,
+  "subdivisions_per_beat": 1,
+  "tempo_bpm": 120,
+  "tension_curve": [
+    0.08,
+    0.2,
+    0.48,
+    0.82,
+    0.18,
+    0.02
+  ],
+  "tonicization_enabled": false,
+  "workers": 1
+}

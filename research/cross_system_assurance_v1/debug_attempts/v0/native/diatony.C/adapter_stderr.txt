@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/scratch/1e6aa465b1e9/constraint-music/research/cross_system_assurance_v1/feasibility.py", line 350, in <module>
+    probe(
+  File "/workspace/scratch/1e6aa465b1e9/constraint-music/research/cross_system_assurance_v1/feasibility.py", line 120, in probe
+    raise ValueError(f"native return code {completed.returncode}")
+ValueError: native return code -11

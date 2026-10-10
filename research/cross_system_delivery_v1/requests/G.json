@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "request_id": "delivery-envelope-v1.G",
+  "key": "G",
+  "mode": "major",
+  "voices": ["Soprano", "Alto", "Tenor", "Bass"],
+  "duration_quarters": 16,
+  "meter": "4/4",
+  "tempo_bpm": 120,
+  "allowed_note_durations_quarters": [1, 4],
+  "rests": false,
+  "ties": false,
+  "harmony_constraint": null,
+  "given_voice": null
+}

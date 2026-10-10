@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/scratch/1e6aa465b1e9/constraint-music/research/cross_system_assurance_v1/feasibility.py", line 350, in <module>
+    probe(
+  File "/workspace/scratch/1e6aa465b1e9/constraint-music/research/cross_system_assurance_v1/feasibility.py", line 48, in probe
+    write_json(directory / "input.json", spec.to_dict())
+                                         ^^^^^^^^^^^^
+AttributeError: 'GenerationSpec' object has no attribute 'to_dict'

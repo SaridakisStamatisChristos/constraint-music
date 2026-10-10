@@ -1,0 +1,15 @@
+{
+  "comparability_gate": "HOLD",
+  "held_out_slots": 0,
+  "observed_development_slots": 6,
+  "paired_benchmark_completed": false,
+  "planned_development_slots": 6,
+  "qualified_external_candidates": [
+    "music21"
+  ],
+  "required_independent_external_candidates": 2,
+  "statuses": {
+    "CRASH": 4,
+    "OUTPUT": 2
+  }
+}

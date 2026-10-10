@@ -1,0 +1,199 @@
+{
+  "environment": {
+    "dependencies": {
+      "constraint-music": "2.13.0a1",
+      "mido": "1.3.3",
+      "music21": "9.9.2",
+      "ortools": "9.15.6755"
+    },
+    "diatony_probe_sha256": "4865816b58e95a14d5faa0ab8d892de4e0acfe528c8bde2f5c554bb4200a81d9",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "python": "3.12.14"
+  },
+  "protocol_hashes": {
+    "build_diatony.py": "488cd09608ed65c7b2885aed494ad5d944d3258330e0df712d1a58f3e1f0ae86",
+    "diatony_probe.cpp": "24941288ad48c86e86b094f4398db239e0a0b231e4e64828e1662f89e16bba41",
+    "feasibility.py": "8d0901cbe662da223dcb8bd83db8c57947310a43ed9dc95dac152d945ab75868",
+    "manifest.json": "e20061cc6ef7270a17920ed359146720e618978b0323df61d4ff4bed972bfadb",
+    "midi_probe.py": "183deb56959bb0306d2c4d6e8117ca5759f22d8a1911b9d82a9842b9d83c9ef9",
+    "support.json": "638fea868c65defe40a5b8260542cd49ac1553bd9e422d1c1e4f5a71ac862ee8"
+  },
+  "rows": [
+    {
+      "elapsed_seconds": 0.369873,
+      "hashes": {
+        "adapter_stderr.txt": "37b6b716050cf3e3eaf121c5233f123f9d4c7f295c551a0f94201e8b81a0ba62",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "id": "constraint-music.C",
+      "key": "C",
+      "return_code": 1,
+      "status": "CRASH",
+      "system": "constraint-music"
+    },
+    {
+      "elapsed_seconds": 0.364425,
+      "hashes": {
+        "adapter_stderr.txt": "37b6b716050cf3e3eaf121c5233f123f9d4c7f295c551a0f94201e8b81a0ba62",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "id": "constraint-music.G",
+      "key": "G",
+      "return_code": 1,
+      "status": "CRASH",
+      "system": "constraint-music"
+    },
+    {
+      "elapsed_seconds": 0.381043,
+      "hashes": {
+        "adapter_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "34443ec20d59cd9e0bc31b31345cc9d4750f33f99a7a412497d4487f71d6307e",
+        "input.json": "91e753181cb27f0d1a6920b0fc750954063c20dde2c0521dffeb054b29112c25",
+        "normalized.json": "846b5d750a7336b9b363eb34fe6ab0217dab3a45511ef14cb1ee97bb59d8e874",
+        "score.musicxml": "f0313c248164078accc22853f7b987ac54eb810dc850b450e2422c5ae84e1f68"
+      },
+      "id": "music21.C",
+      "inspection": {
+        "context_relation": "PASS",
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "0:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "key": "C",
+      "return_code": 0,
+      "status": "OUTPUT",
+      "system": "music21"
+    },
+    {
+      "elapsed_seconds": 0.397816,
+      "hashes": {
+        "adapter_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "1de0d407bbb908ea4e74fe1054f58f0323b007f9047b19b4cc924bc802fc5312",
+        "input.json": "f1008b6e4856d7058ee572442de5a595c9e59d0ec69af9e034f680c9d9ba159e",
+        "normalized.json": "21964b0297a72678b859d8569f75a156f2ab7da2bf713205c4498b6dca6a5f25",
+        "score.musicxml": "92e2c9f106fa24c82f1028a68fa11189105ea37c0bc09fc0efe422add8ccfbf5"
+      },
+      "id": "music21.G",
+      "inspection": {
+        "context_relation": "PASS",
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "1:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "key": "G",
+      "return_code": 0,
+      "status": "OUTPUT",
+      "system": "music21"
+    },
+    {
+      "elapsed_seconds": 0.235649,
+      "hashes": {
+        "adapter_stderr.txt": "942099b028377c2f6b0fed824c1e12cf38e4bb003f98f12edae1fd3c0408748c",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "0e041c7bd8ddfb56978111ffbc52795ff6833d6ed4be3825c7bfd15aeb76ff79",
+        "input.json": "aaa517a9ef4ee99255caf92eb9097fe6fa895d5291ab55701f81725f0240b8f4",
+        "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "score.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "id": "diatony.C",
+      "key": "C",
+      "return_code": 1,
+      "status": "CRASH",
+      "system": "diatony"
+    },
+    {
+      "elapsed_seconds": 0.19037,
+      "hashes": {
+        "adapter_stderr.txt": "942099b028377c2f6b0fed824c1e12cf38e4bb003f98f12edae1fd3c0408748c",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "e3083dfa4bc6e08072fb987e352d6d96e357e832ad258f8e36f14e899a659bf7",
+        "input.json": "38eae94a520d5b2156d7770c5bc49d3e8ccbec18c6d45d30bc8d29e669673528",
+        "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "score.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "id": "diatony.G",
+      "key": "G",
+      "return_code": 1,
+      "status": "CRASH",
+      "system": "diatony"
+    }
+  ]
+}
