@@ -1,0 +1,93 @@
+{
+  "diatony_probe_sha256": "507e516ec8b1a2cc5536e3ec6ff198cf61906ab4b0fa073a7d9c26de96653b0c",
+  "mido_version": "1.3.3",
+  "protocol_hashes": {
+    "contract.py": "c4869505ca11f4e3d8a1a0e0dbfb581513bb4078474aaac04161a3843ac28c5a",
+    "manifest.json": "d78b66a6be3ea81bc47ecac27567a4e2f725141f25e857eb975b0fec91027a18",
+    "pilot.py": "3acf81c82315c61d22859ade423315d3200cfe61a9fec91e91d16e6ce2e022f9",
+    "renderer.py": "2f9e20b85e3bd663df7d3702cd575091292aab7538ee663ce9622ecec4bababe",
+    "requests/C.json": "905c28dcb0bbf38a0374635442532b943428efd91f3c89f1d4564b5d52d32012",
+    "requests/G.json": "ed28d7c87ce01355a52cd51f3df13888f72b7490d0ff5fbba09db6bf2bf42b63"
+  },
+  "rows": [
+    {
+      "elapsed_generation_and_render_seconds": 0.167176,
+      "hashes": {
+        "adapted.mid": "5baade47907a9f28acc22893e89a96422d9a5459336c14b44b7b919b0ca91f36",
+        "delivered.mid": "0e041c7bd8ddfb56978111ffbc52795ff6833d6ed4be3825c7bfd15aeb76ff79",
+        "input.json": "aaa517a9ef4ee99255caf92eb9097fe6fa895d5291ab55701f81725f0240b8f4",
+        "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "normalized.json": "958c7874b247632a73b402ec0107b87cf01c65e506635e2576971ef7c952e124",
+        "request.json": "c62bea8ae0cbe80be5fe4e49feb836a5c5d60374e5d1e060fcc6cc73b52f1ca3",
+        "score.txt": "756e5d3feb6da2768a0da63c18e6085bdc236a59bb56514f8d39d07b3ed09816"
+      },
+      "id": "diatony.C",
+      "inspection": {
+        "context_relation": "PASS",
+        "division": 120,
+        "input_issues": [],
+        "native_inspection": {
+          "context_relation": "FAIL",
+          "midi_groups": [
+            [
+              1,
+              0
+            ]
+          ],
+          "observed_context": [],
+          "parsed_notes": 16,
+          "parser_agreement": true,
+          "symbolic_issues": [],
+          "unvoiced_event_relation": "PASS",
+          "voice_event_relation": "UNOBSERVABLE"
+        },
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "voice_event_relation": "PASS"
+      },
+      "status": "OUTPUT"
+    },
+    {
+      "elapsed_generation_and_render_seconds": 0.139587,
+      "hashes": {
+        "adapted.mid": "c3c75ad9afc067136d87adadb8c10d223f7107f3c826c35cbf6bbfa04789a2f4",
+        "delivered.mid": "e3083dfa4bc6e08072fb987e352d6d96e357e832ad258f8e36f14e899a659bf7",
+        "input.json": "38eae94a520d5b2156d7770c5bc49d3e8ccbec18c6d45d30bc8d29e669673528",
+        "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "normalized.json": "eba505e82b807fcbe274577cffb45f2fcac98843d67b90103ac0856e6cf5dc5a",
+        "request.json": "fb255687c12fbbfb7e194502e040702bb3a6c4f1b93f3d7ef285bd99e50abecf",
+        "score.txt": "3d1840099744ace346aaffe2064fb02bf458eeaf941ecfc08d25b2a9df37645f"
+      },
+      "id": "diatony.G",
+      "inspection": {
+        "context_relation": "PASS",
+        "division": 120,
+        "input_issues": [],
+        "native_inspection": {
+          "context_relation": "FAIL",
+          "midi_groups": [
+            [
+              1,
+              0
+            ]
+          ],
+          "observed_context": [],
+          "parsed_notes": 16,
+          "parser_agreement": true,
+          "symbolic_issues": [],
+          "unvoiced_event_relation": "PASS",
+          "voice_event_relation": "UNOBSERVABLE"
+        },
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "voice_event_relation": "PASS"
+      },
+      "status": "OUTPUT"
+    }
+  ],
+  "source_observations_sha256": "18d4a92d67dffa09f1fd96cfe39c686a8c60a5d1054a0739927e2799632699aa"
+}

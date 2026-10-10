@@ -1,0 +1,283 @@
+{
+  "delivery_feasibility_gate": "GO",
+  "held_out_slots": 0,
+  "native_profile_gate": "HOLD",
+  "new_generation_slots": 2,
+  "new_slot_statuses": {
+    "OUTPUT": 2
+  },
+  "observed_new_generation_slots": 2,
+  "paired_generation_benchmark_completed": false,
+  "profile_rows": [
+    {
+      "id": "constraint-music.C",
+      "inspection": {
+        "context_relation": "PASS",
+        "input_issues": [],
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "0:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 64,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "profile": "native-certified-SATB",
+      "request_id": "delivery-envelope-v1.C",
+      "shared_delivery_pass": true,
+      "status": "OUTPUT"
+    },
+    {
+      "id": "constraint-music.G",
+      "inspection": {
+        "context_relation": "PASS",
+        "input_issues": [],
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "1:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 64,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "profile": "native-certified-SATB",
+      "request_id": "delivery-envelope-v1.G",
+      "shared_delivery_pass": true,
+      "status": "OUTPUT"
+    },
+    {
+      "id": "music21.C",
+      "inspection": {
+        "context_relation": "PASS",
+        "input_issues": [],
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "0:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "profile": "native-chorale",
+      "request_id": "delivery-envelope-v1.C",
+      "shared_delivery_pass": true,
+      "status": "OUTPUT"
+    },
+    {
+      "id": "music21.G",
+      "inspection": {
+        "context_relation": "PASS",
+        "input_issues": [],
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "1:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "profile": "native-chorale",
+      "request_id": "delivery-envelope-v1.G",
+      "shared_delivery_pass": true,
+      "status": "OUTPUT"
+    },
+    {
+      "id": "diatony.C",
+      "inspection": {
+        "context_relation": "PASS",
+        "division": 120,
+        "input_issues": [],
+        "native_inspection": {
+          "context_relation": "FAIL",
+          "midi_groups": [
+            [
+              1,
+              0
+            ]
+          ],
+          "observed_context": [],
+          "parsed_notes": 16,
+          "parser_agreement": true,
+          "symbolic_issues": [],
+          "unvoiced_event_relation": "PASS",
+          "voice_event_relation": "UNOBSERVABLE"
+        },
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "voice_event_relation": "PASS"
+      },
+      "profile": "diatony-plus-benchmark-renderer-v1",
+      "request_id": "delivery-envelope-v1.C",
+      "shared_delivery_pass": true,
+      "status": "OUTPUT"
+    },
+    {
+      "id": "diatony.G",
+      "inspection": {
+        "context_relation": "PASS",
+        "division": 120,
+        "input_issues": [],
+        "native_inspection": {
+          "context_relation": "FAIL",
+          "midi_groups": [
+            [
+              1,
+              0
+            ]
+          ],
+          "observed_context": [],
+          "parsed_notes": 16,
+          "parser_agreement": true,
+          "symbolic_issues": [],
+          "unvoiced_event_relation": "PASS",
+          "voice_event_relation": "UNOBSERVABLE"
+        },
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "voice_event_relation": "PASS"
+      },
+      "profile": "diatony-plus-benchmark-renderer-v1",
+      "request_id": "delivery-envelope-v1.G",
+      "shared_delivery_pass": true,
+      "status": "OUTPUT"
+    }
+  ],
+  "qualified_external_engines": [
+    "music21",
+    "diatony"
+  ]
+}

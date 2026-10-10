@@ -15,3 +15,4 @@ dist/
 # Native evidence is required for the isolated cross-system development pilots.
 !research/cross_system_assurance_v1/native/**/*.mid
 !research/cross_system_assurance_v1/debug_attempts/**/native/**/*.mid
+!research/cross_system_delivery_v1/pilots/**/*.mid
