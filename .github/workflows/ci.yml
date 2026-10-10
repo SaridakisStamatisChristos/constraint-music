@@ -30,6 +30,8 @@ jobs:
         run: git fetch --no-tags research/history/cross_system_delivery_v1.bundle refs/heads/research/cross-system-assurance-v1:refs/assurance/cross-system-delivery-v1-original
       - name: Restore paired protocol freeze and collection history
         run: git fetch --no-tags research/history/paired_cross_system_v1.bundle refs/heads/research/paired-cross-system-benchmark-v1:refs/assurance/paired-cross-system-v1-original
+      - name: Restore fair paired v2 protocol and receipt history
+        run: git fetch --no-tags research/history/paired_cross_system_v2.bundle refs/heads/research/fair-paired-cross-system-v2:refs/assurance/paired-cross-system-v2-original
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
@@ -43,6 +45,7 @@ jobs:
       - run: python -m research.cross_system_delivery_v1.pilot --check
       - run: python -m research.paired_cross_system_v1.runner check
       - run: python -m research.paired_cross_system_v1.analysis --check
+      - run: python -m research.paired_cross_system_v2.runner check
 
   checker-only:
     runs-on: ubuntu-latest

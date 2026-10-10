@@ -1,6 +1,8 @@
 # Cross-system benchmark handoff completion
 
-Implementation status: 10 October 2026. The bounded paired extension and integrated manuscript draft are implemented; outside permission grants, external replication and journal/conference submission are not claimed completed.
+Implementation status: 10 October 2026. The original bounded paired extension and integrated manuscript draft are implemented. The follow-up [fair comparison v2](../research/paired_cross_system_v2/README.md) separately diagnoses the adapter error, declares a harder feasible grammar and measures a predefined paired primary outcome. Outside permission grants, external replication and journal/conference submission are not claimed completed.
+
+The following table records the completed, unchanged v1 handoff; its counts are not pooled with v2.
 
 | Handoff item | Implemented result | Boundary or remaining action |
 | --- | --- | --- |
@@ -18,6 +20,8 @@ Implementation status: 10 October 2026. The bounded paired extension and integra
 
 The earlier PR37 study remains 16 fixtures, 32 accepted controls and 456 held-out fault slots (332 applicable: 284 rejected, 48 blocked; 124 inapplicable). Its archived protocol, observations and hashes are unchanged. Native/adapted pilot records are likewise preserved.
 
-The music21 counterexample has exact delivery but wrong requested chord content in an Eb IV block, consistent with the adapter's integer-MIDI enharmonic spelling. This version does not fix the holdout after seeing it; a revised spelling policy requires a new study and fresh holdout.
+The separately retained controlled replay reproduces the v1 music21 counterexample, then passes every obligation when only the bass spelling changes from G-sharp to A-flat at unchanged MIDI 56. This confirms an adapter error for that case. V1 is preserved; v2 uses explicit diatonic spelling, equal fixed bass inputs/ranges, inversions, dominant sevenths and soprano anchors. Its primary endpoint uses identical adapted delivery for all three engines and reports native exports separately. The source and receipt are committed before fresh heldout generation; paired intervals, exact McNemar tests and a +10 percentage-point practical threshold are predefined. See the [v2 report](../research/paired_cross_system_v2/REPORT.md) for results and limits.
 
 Executable checks and derived outcomes are in the [study README](../research/paired_cross_system_v1/README.md) and [report](../research/paired_cross_system_v1/REPORT.md). The manuscript is [CROSS_SYSTEM_CONFORMANCE_PAPER_DRAFT.md](CROSS_SYSTEM_CONFORMANCE_PAPER_DRAFT.md). Written outside evaluator permission remains a real owner action under the unchanged proprietary license.
+
+The completed v2 follow-up retains all 792 slots and reports reproducible adapted passes of CM 45/128, music21 113/128, Diatony 51/128, with zero timeouts/harness errors/inspection blocks. The predefined superiority gate fails; music21 completes more requests in this declared conditional grammar, while the Diatony comparison is inconclusive. The paper now includes this negative finding separately in §6.5. Improving CM's completion under the harder obligations is a subsequent engineering objective; outcome-informed changes require a fresh version and holdout, not a rewrite of these results.

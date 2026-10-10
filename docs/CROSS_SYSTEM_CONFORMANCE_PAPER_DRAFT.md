@@ -6,7 +6,11 @@ Author-review manuscript draft, 10 October 2026. This draft integrates two separ
 
 A symbolic-music generator can return internally consistent events while missing the requested task, or return a conforming score whose exported file loses information. We evaluate these boundaries separately using a trusted external request, reconstruction of returned score facts, and independent parsing of delivered MIDI. A first bounded Constraint Music study retains 16 fixtures, 32 accepted controls and 456 held-out fault slots. A second, prospectively frozen paired study evaluates Constraint Music, music21 and Diatony on 12 shared SATB requests in six new major keys and two held-out harmonic families, plus four unsupported request cases. All 36 primary attempts returned outputs; delivered end-to-end passes were 12/12, 11/12 and 12/12 respectively, with Diatony's latter endpoint explicitly adapted rather than native. One music21 adapter/native-path output failed the requested triad content while preserving its delivered notes exactly. Among 432 planned injected fault slots, 420 were applicable: 385 were rejected and 35 blocked, with zero accepted faults and 12 retained inapplicable slots. Eight hand-positive and 35 applicable time-division controls passed. These results support the declared finite conformance protocol and demonstrate the value of separate boundaries, without implying population reliability, musical quality, optimization quality or system superiority.
 
+The subsequent controlled replay identifies the music21 discrepancy as an adapter spelling error. A separate freshly frozen study uses 128 feasible requests with inversions, dominant sevenths and soprano anchors. Reproducible common-adapted passes are Constraint Music 45/128, music21 113/128 and Diatony 51/128. Paired inference favors music21 on that declared completion outcome; the Diatony comparison is inconclusive. Constraint Music superiority is not established, and the conformance contribution remains separate from comparative yield.
+
 ## 1. Introduction
+
+The subsequent controlled spelling experiment and fresh paired study are reported in §6.5. They confirm that the v1 music21 discrepancy is an adapter error and that Constraint Music superiority is not established on the harder measured outcome. Frozen v1 observations remain intact; the new comparison is a separate study.
 
 Users can request a specific key, harmony, duration, voicing and delivery context. Meeting that request is a relation between the user's independently retained specification and the produced score. Agreement among fields inside a result is a weaker relation. Export introduces another boundary: a correct score can be delivered with altered pitch, duration, voice assignment or context. An evaluation that observes only a generator's internal validation flag cannot establish these relations.
 
@@ -90,7 +94,7 @@ All 36 delivered files pass the independent event/context relation. The music21 
 
 `heldout.extended-submediant.Eb.music21` follows I-vi-IV-ii-V-I. Its third block, at quarter 8, contains SATB MIDI pitches 70/62/58/56, giving pitch classes {10,2,8}. The requested IV in Eb requires {8,0,3}. Both semantic implementations reject triad content/completeness while native reconstruction and delivered MIDI remain exact.
 
-The preserved MusicXML spells the MIDI-56 bass as G-sharp. The adapter constructs bass notes from integer MIDI values; an enharmonic translation issue in this adapter/native realization path is consistent with the observed discrepancy. We do not attribute a general defect to music21 or claim causality established by a repair experiment. No held-out-informed spelling repair was performed. A revised spelling policy needs a new declaration and fresh holdout. The row, native XML and delivered SMF are linked in the archived evidence.
+The preserved MusicXML spells the MIDI-56 bass as G-sharp. A subsequent separately retained [controlled replay](../research/paired_cross_system_v2/DEVELOPMENT.md) reproduces the frozen wrong chord with integer-derived spelling. Changing only the spelling to A-flat, while retaining bass MIDI 56, request, native rules, ranges and selection policy, yields the requested IV triad and a fully conforming delivered file. This establishes an adapter error for this case, not a defect in music21. It cannot fairly support a superiority comparison. Study B remains frozen; corrected spelling is used only in a new declared study with fresh heldout requests.
 
 A coordinated request/score/MIDI mutation provides a separate boundary witness: internal consistency remains repaired, yet the result no longer matches the externally retained request. A truncated-MIDI witness demonstrates why admission failures must block acceptance without claiming that a particular harmony rule diagnosed them. All witness bytes and verdicts are linked by baseline IDs.
 
@@ -124,6 +128,24 @@ The sample is too small and too selected to infer relative generator reliability
 | Diatony | 0.071 / 0.081 / 0.120 | 17536 / 17720 / 18040 |
 
 Each cost distribution has twelve observations from this Linux runner; exact values are in the machine-derived report. Different registers, internal constraints, algorithms, note rhythms and clocks prevent a speed-superiority interpretation.
+
+### 6.5 Study C: corrected adapter and fresh fair comparison
+
+A new version preserves Study B while correcting bass spelling. Its source commit `6ffa3f6` and receipt commit `a1cdd15` precede heldout generation. The [protocol](../research/paired_cross_system_v2/PROTOCOL.md) predefines 128 IID draws from a finite grammar conditioned on independent reference feasibility. Requests contain 8/12 quarter-note chords, fixed bass pitches, inversions, optional dominant sevenths and zero/one/two soprano anchors. Native generators receive the same request and no reference solution. The sample has 128 requests with inversions, 99 with sevenths and 87 with soprano anchors. The grammar rejects 89 infeasible candidates and retains zero exact duplicate draws.
+
+The primary outcome is conforming common-adapted MIDI in both scheduled runs (seeds 7/19), with native export reported separately. Every engine uses the same renderer, ranges, externally checked obligations and 30-second fresh-worker wall cap. CP-SAT/Gecode also have 20-second native caps; no observed attempt times out. Different extra native musical constraints remain explicit. music21 uses ordinary native movement search for complete seventh-chord resolutions; its default special shortcut would force an incomplete tonic. Diatony's unchanged native writer has anonymous four-quarter chords, so adapted delivery explicitly maps chord indices to the requested quarter grid without changing pitches or voices.
+
+| Engine | Primary pass in both runs | Observable native pass in both runs |
+| --- | ---: | --- |
+| Constraint Music | 45/128 | 45/128 |
+| music21 | 113/128 | 113/128 |
+| Diatony | 51/128 | Full native contract unobservable |
+
+All 792 slots are retained: 768 primary attempts and 24 unsupported admission slots. Every produced score and adapted MIDI passes both semantic formulations and the byte relation; lower completion rates arise from native no-result outcomes. There are no timeouts, harness errors or inspection blocks. Unsupported minor/rest/tie/third-inversion requests are outside the primary denominator, not musical failures.
+
+CM minus music21 is −53.125 percentage points, with conservative simultaneous interval [−67.03, −35.19] points and exact two-sided McNemar p≈1.497×10⁻¹⁶. CM minus Diatony is −4.6875 points, interval [−21.72, +12.70] points, p≈0.4514. Pairing uses the request, never duplicated run rows. The intervals subtract Clopper–Pearson bounds for the two discordant-cell probabilities using a union-bound construction; 97.5% coverage per comparison gives at least 95% simultaneous coverage for both. Two exact tests use Bonferroni correction. The predefined superiority gate requires both lower bounds above +10 points and both raw p-values below .025; it fails.
+
+music21 completes substantially more requests on this outcome and grammar. The Diatony comparison is inconclusive. Neither result is a general ranking of music systems, listening quality or unconditioned product capability. The templates are shared with development, soprano anchors inherit low-register witness bias, and native extra rules differ. The freeze is local, not external preregistration; repeated workers are not independent replication. Any outcome-informed change to CM or the comparison requires a fresh study version. The [derived report](../research/paired_cross_system_v2/REPORT.md), complete raw archives and request-level paired results preserve this negative superiority finding.
 
 ## 7. Threats to validity and release
 

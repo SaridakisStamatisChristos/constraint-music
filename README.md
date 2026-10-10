@@ -252,6 +252,13 @@ The [EH-12 closure matrix](docs/EH12_CLOSURE_MATRIX.md) freezes the bounded assu
 claim, explicit non-claims, remaining blockers, and exact completion policy.
 The [EH-12 consolidated assurance corpus](docs/EH12_ASSURANCE_CORPUS.md) records the
 39-case PR-34 schema, interaction, delivery, multi-fixture, and compiler-deletion evidence.
+The [fair paired comparison v2](research/paired_cross_system_v2/README.md) fixes the
+music21 bass-spelling adapter error in a new study, preserves v1, and adds 128
+feasible requests with inversions, dominant sevenths and soprano anchors. Its
+common adapted-delivery endpoint, separate native exports, repeated runs,
+paired confidence intervals/tests and predefined practical threshold are in the
+[v2 report](research/paired_cross_system_v2/REPORT.md).
+
 The [paired cross-system conformance study](research/paired_cross_system_v1/README.md)
 adds a separate frozen corpus for Constraint Music, music21 and Diatony: 48 held-out
 attempts and 432 fault slots with complete native/delivered-byte replay. See its
