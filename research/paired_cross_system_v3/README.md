@@ -21,9 +21,13 @@ python -m research.paired_cross_system_v3.report
 python -m research.check_paired_v3
 ```
 
-The portable replay wrapper permits at most eight ULPs only for the conservative
-confidence interval bounds; other values, types, membership and report text must
-match exactly. No solver or comparator execution is needed for raw replay.
+The original frozen replay wrapper permits at most eight ULPs only for the
+conservative confidence interval bounds. Python 3.11 differs by about 1.1e-15
+in two bounds after binomial inversion and subtraction. A separately versioned
+CI portability wrapper therefore permits up to 1e-12 absolute drift in those
+bounds only. It retains exact checks for all other values, types, gate decisions,
+archive membership and report text. The original frozen wrapper still runs on
+Python 3.12 and 3.13. No solver or comparator execution is needed for raw replay.
 
 Pinned Diatony's capture binary is exactly the v2 binary; build with the unchanged
 v2 build harness against clean pinned upstream and the declared Gecode prefix.

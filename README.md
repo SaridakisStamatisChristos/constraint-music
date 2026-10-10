@@ -12,9 +12,12 @@ with independent score and native MIDI checks. It supports nonroot triad doublin
 and soprano sevenths without changing the legacy composition style contract.
 Its [fresh paired study](research/paired_cross_system_v3/REPORT.md) reports 128/128
 reproducible native/adapted passes, versus legacy CM 53/128, music21 111/128 and
-adapted Diatony 38/128. This is completion on the declared grammar/configurations;
-the +10-point practical-superiority gate remains unmet against music21.
-Archived v1/v2 remain intact.
+adapted Diatony 38/128. Paired analysis supports higher completion for the new
+API on this declared grammar and these configurations (17 wins and no losses
+against music21; corrected exact p=0.0000458). The separately predefined
++10-point minimum practical margin is not established against music21; it is
+not required for the narrower positive completion finding. Archived v1/v2
+remain intact.
 
 After installing `.[dev]`, run the complete repository-authored release gate with
 `python -m research.validate_release_assurance`. It validates the pinned environment,

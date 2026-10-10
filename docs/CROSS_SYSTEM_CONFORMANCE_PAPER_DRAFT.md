@@ -12,9 +12,12 @@ A subsequent opt-in request-bound harmonizer is developed on the archived cases
 and evaluated on 128 fresh, prospectively frozen requests with an unchanged
 shared contract. Reproducible native/common-adapted passes are 128/128, compared
 with 53/128 for the legacy CM configuration, 111/128 for music21 and 38/128 for
-adapted Diatony. Paired inference supports a completion advantage on this grammar,
-while the predefined +10-point practical-superiority gate remains unmet against
-music21. All earlier observations and verdicts are retained separately.
+adapted Diatony. Against music21 the new API wins on 17 requests and loses on none:
+the corrected exact paired p-value is 0.0000458 and the conservative simultaneous
+interval for the completion difference is [+2.34, +23.01] percentage points.
+This supports higher completion on the declared grammar and configurations. The
+separate prespecified +10-point minimum practical margin is not established
+against music21. All earlier observations and verdicts are retained separately.
 
 ## 1. Introduction
 
@@ -202,11 +205,17 @@ Their conservative simultaneous intervals are [+42.37, +69.94], [+2.34, +23.01]
 and [+54.43, +80.38] points. Exact McNemar p-values are approximately 5.294e-23,
 1.526e-5 and 1.616e-27; all three remain significant after correction.
 
-Practical improvement over legacy CM is established under the predefined gate.
-The all-comparison +10-point practical-superiority gate is **not established**:
-the music21 interval lower bound is +2.34 points. This is a statistically supported
-completion advantage for the configured endpoints and declared feasible grammar,
-not a general ranking of music systems, aesthetics, algorithms or unconditioned
+The primary comparative finding is a statistically supported completion advantage
+for the new API on the declared feasible grammar and configured endpoints. It
+achieves 128/128, so further score improvement within this corpus is impossible.
+The study also prespecified a stricter +10-point minimum practical margin. That
+number was an investigator-chosen threshold, with no independently calibrated
+musical or operational justification. The improvement over legacy CM clears it;
+the all-comparison gate is **not established** because the music21 interval lower
+bound is +2.34 points. We retain this frozen negative gate result rather than
+changing the protocol after observing the data. The gate tests the minimum size
+of the advantage, whereas the paired inference supports a positive advantage.
+Neither finding ranks music systems, aesthetics, algorithms or unconditioned
 products. Extra native comparator rules remain a configuration limitation.
 No universal completeness or listening-quality claim is made. The new result
 schema is `request-bound-satb-v1`, not legacy CM001..CM057 certification. All original
