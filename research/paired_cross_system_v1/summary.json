@@ -1,0 +1,454 @@
+{
+  "controls": {
+    "hand_pass": 8,
+    "hand_planned": 8,
+    "known_valid_false_rejections": 0,
+    "ppqn_applicable": 35,
+    "ppqn_pass": 35
+  },
+  "counterexamples": [
+    {
+      "evaluation": {
+        "boundary": "artifact",
+        "issues": [
+          "TRIAD_COMPLETENESS_OR_CONTENT"
+        ],
+        "status": "REJECT"
+      },
+      "evidence_members": [
+        "attempts/heldout.extended-submediant.Eb.music21/artifact.json",
+        "attempts/heldout.extended-submediant.Eb.music21/delivered.mid",
+        "attempts/heldout.extended-submediant.Eb.music21/native.mid",
+        "attempts/heldout.extended-submediant.Eb.music21/native_input.json",
+        "attempts/heldout.extended-submediant.Eb.music21/native_score.musicxml",
+        "attempts/heldout.extended-submediant.Eb.music21/request.json",
+        "attempts/heldout.extended-submediant.Eb.music21/worker_metrics.json",
+        "attempts/heldout.extended-submediant.Eb.music21/worker_stderr.txt",
+        "attempts/heldout.extended-submediant.Eb.music21/worker_stdout.txt"
+      ],
+      "generation": "OUTPUT",
+      "id": "heldout.extended-submediant.Eb.music21"
+    }
+  ],
+  "evidence_sha256": {
+    "development/index.json": "900200ecc7e7e8245cb71b93f4bf5637c82bdf1465bb13d03b8935a0216804ea",
+    "heldout/fault_index.json": "059ecbb4bd46cb5ab56c6306e007bb422c5bf094d9a1bf849402e91d82ddfe72",
+    "heldout/index.json": "3a1c3b6434db52076b9d1c8392c0047a660ccc292abb0f3771c7f6d0d1be4692"
+  },
+  "faults": {
+    "applicable": 420,
+    "false_accepts": 0,
+    "planned": 432,
+    "statuses": {
+      "BLOCKED": 35,
+      "INAPPLICABLE": 12,
+      "REJECT": 385
+    }
+  },
+  "freeze_sha256": "91952be174f9e5fe1f526a91e14075174272c9d172e76a126fc2e91588388613",
+  "freeze_source_commit": "167ed84819a24eeb629ee0605d98dd2f3d5412b1",
+  "gates": {
+    "complete_paired_collection": true,
+    "no_injected_false_accepts": true,
+    "outside_independent_replication_completed": false,
+    "positive_controls_pass": true,
+    "public_research_run_permission_granted": false,
+    "semantic_reference_agreement": true
+  },
+  "observed": {
+    "development_attempts": 12,
+    "fault_slots": 432,
+    "heldout_attempts": 48,
+    "heldout_families": 2,
+    "heldout_primary_attempts": 36,
+    "ppqn_control_slots": 36,
+    "primary_request_clusters": 12
+  },
+  "paired": [
+    {
+      "both_pass": 11,
+      "family_mean_differences": {
+        "extended-submediant": 0.16666666666666666,
+        "supertonic-preparation": 0
+      },
+      "illustrative_family_bootstrap_means": [
+        0.16666666666666666,
+        0.08333333333333333,
+        0.08333333333333333,
+        0
+      ],
+      "illustrative_range": [
+        0,
+        0.16666666666666666
+      ],
+      "interpretation": "Two purposively selected families; four ordered cluster resamples. Not a population confidence interval.",
+      "left": "constraint-music",
+      "left_only": 1,
+      "mean_difference": 0.08333333333333333,
+      "neither": 0,
+      "request_pairs": 12,
+      "right": "music21",
+      "right_only": 0
+    },
+    {
+      "both_pass": 12,
+      "family_mean_differences": {
+        "extended-submediant": 0,
+        "supertonic-preparation": 0
+      },
+      "illustrative_family_bootstrap_means": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "illustrative_range": [
+        0,
+        0
+      ],
+      "interpretation": "Two purposively selected families; four ordered cluster resamples. Not a population confidence interval.",
+      "left": "constraint-music",
+      "left_only": 0,
+      "mean_difference": 0,
+      "neither": 0,
+      "request_pairs": 12,
+      "right": "diatony",
+      "right_only": 0
+    },
+    {
+      "both_pass": 11,
+      "family_mean_differences": {
+        "extended-submediant": -0.16666666666666666,
+        "supertonic-preparation": 0
+      },
+      "illustrative_family_bootstrap_means": [
+        -0.16666666666666666,
+        -0.08333333333333333,
+        -0.08333333333333333,
+        0
+      ],
+      "illustrative_range": [
+        -0.16666666666666666,
+        0
+      ],
+      "interpretation": "Two purposively selected families; four ordered cluster resamples. Not a population confidence interval.",
+      "left": "music21",
+      "left_only": 0,
+      "mean_difference": -0.08333333333333333,
+      "neither": 0,
+      "request_pairs": 12,
+      "right": "diatony",
+      "right_only": 1
+    }
+  ],
+  "planned": {
+    "development_attempts": 12,
+    "development_requests": 4,
+    "faults_per_primary_attempt": 12,
+    "hand_controls": 8,
+    "heldout_attempts": 48,
+    "heldout_primary_attempts": 36,
+    "heldout_primary_requests": 12,
+    "heldout_unsupported_requests": 4,
+    "planned_heldout_fault_slots": 432,
+    "ppqn_controls_per_primary_attempt": 1
+  },
+  "schema_version": 1,
+  "study_id": "paired-cross-system-conformance-v1",
+  "systems": {
+    "constraint-music": {
+      "end_to_end_statuses": {
+        "PASS": 12
+      },
+      "faults": {
+        "applicable": 144,
+        "by_type": {
+          "artifact_duration": {
+            "REJECT": 12
+          },
+          "chromatic_pitch": {
+            "REJECT": 12
+          },
+          "coordinated_request": {
+            "REJECT": 12
+          },
+          "crossing": {
+            "REJECT": 12
+          },
+          "midi_channel": {
+            "REJECT": 12
+          },
+          "midi_duration": {
+            "REJECT": 12
+          },
+          "midi_pitch": {
+            "REJECT": 12
+          },
+          "midi_tempo": {
+            "REJECT": 12
+          },
+          "midi_truncated": {
+            "BLOCKED": 12
+          },
+          "missing_triad": {
+            "REJECT": 12
+          },
+          "request_key": {
+            "REJECT": 12
+          },
+          "request_tempo": {
+            "REJECT": 12
+          }
+        },
+        "first_boundary": {
+          "artifact": 48,
+          "delivery": 60,
+          "request": 36
+        },
+        "planned": 144,
+        "statuses": {
+          "BLOCKED": 12,
+          "REJECT": 132
+        }
+      },
+      "funnel": {
+        "delivered_full": 12,
+        "planned": 12,
+        "request_bound": 12,
+        "returned_output": 12,
+        "semantic_artifact": 12
+      },
+      "generation": {
+        "OUTPUT": 12
+      },
+      "independent_stages": {
+        "delivery": 12,
+        "native_end_to_end": 12,
+        "semantic": 12,
+        "source_relation": 12
+      },
+      "max_process_rss_kib_outputs": {
+        "max": 108988,
+        "median": 104434.0,
+        "min": 101996,
+        "n": 12
+      },
+      "native_delivery_statuses": {
+        "PASS": 12
+      },
+      "oracle_agreements": 12,
+      "ppqn_controls": {
+        "PASS": 12
+      },
+      "primary_attempts": 12,
+      "unsupported_attempts": 4,
+      "wall_seconds_all_primary": {
+        "max": 0.63242,
+        "median": 0.5455665000000001,
+        "min": 0.466788,
+        "n": 12
+      }
+    },
+    "diatony": {
+      "end_to_end_statuses": {
+        "PASS": 12
+      },
+      "faults": {
+        "applicable": 144,
+        "by_type": {
+          "artifact_duration": {
+            "REJECT": 12
+          },
+          "chromatic_pitch": {
+            "REJECT": 12
+          },
+          "coordinated_request": {
+            "REJECT": 12
+          },
+          "crossing": {
+            "REJECT": 12
+          },
+          "midi_channel": {
+            "REJECT": 12
+          },
+          "midi_duration": {
+            "REJECT": 12
+          },
+          "midi_pitch": {
+            "REJECT": 12
+          },
+          "midi_tempo": {
+            "REJECT": 12
+          },
+          "midi_truncated": {
+            "BLOCKED": 12
+          },
+          "missing_triad": {
+            "REJECT": 12
+          },
+          "request_key": {
+            "REJECT": 12
+          },
+          "request_tempo": {
+            "REJECT": 12
+          }
+        },
+        "first_boundary": {
+          "artifact": 48,
+          "delivery": 60,
+          "request": 36
+        },
+        "planned": 144,
+        "statuses": {
+          "BLOCKED": 12,
+          "REJECT": 132
+        }
+      },
+      "funnel": {
+        "delivered_full": 12,
+        "planned": 12,
+        "request_bound": 12,
+        "returned_output": 12,
+        "semantic_artifact": 12
+      },
+      "generation": {
+        "OUTPUT": 12
+      },
+      "independent_stages": {
+        "delivery": 12,
+        "native_end_to_end": 0,
+        "semantic": 12,
+        "source_relation": 12
+      },
+      "max_process_rss_kib_outputs": {
+        "max": 18040,
+        "median": 17720.0,
+        "min": 17536,
+        "n": 12
+      },
+      "native_delivery_statuses": {
+        "UNOBSERVABLE": 12
+      },
+      "oracle_agreements": 12,
+      "ppqn_controls": {
+        "PASS": 12
+      },
+      "primary_attempts": 12,
+      "unsupported_attempts": 4,
+      "wall_seconds_all_primary": {
+        "max": 0.12011,
+        "median": 0.08070250000000001,
+        "min": 0.071434,
+        "n": 12
+      }
+    },
+    "music21": {
+      "end_to_end_statuses": {
+        "PASS": 11,
+        "REJECT": 1
+      },
+      "faults": {
+        "applicable": 132,
+        "by_type": {
+          "artifact_duration": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "chromatic_pitch": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "coordinated_request": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "crossing": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "midi_channel": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "midi_duration": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "midi_pitch": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "midi_tempo": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "midi_truncated": {
+            "BLOCKED": 11,
+            "INAPPLICABLE": 1
+          },
+          "missing_triad": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "request_key": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          },
+          "request_tempo": {
+            "INAPPLICABLE": 1,
+            "REJECT": 11
+          }
+        },
+        "first_boundary": {
+          "artifact": 44,
+          "delivery": 55,
+          "request": 33
+        },
+        "planned": 144,
+        "statuses": {
+          "BLOCKED": 11,
+          "INAPPLICABLE": 12,
+          "REJECT": 121
+        }
+      },
+      "funnel": {
+        "delivered_full": 11,
+        "planned": 12,
+        "request_bound": 12,
+        "returned_output": 12,
+        "semantic_artifact": 11
+      },
+      "generation": {
+        "OUTPUT": 12
+      },
+      "independent_stages": {
+        "delivery": 12,
+        "native_end_to_end": 11,
+        "semantic": 11,
+        "source_relation": 12
+      },
+      "max_process_rss_kib_outputs": {
+        "max": 52244,
+        "median": 52048.0,
+        "min": 51768,
+        "n": 12
+      },
+      "native_delivery_statuses": {
+        "PASS": 12
+      },
+      "oracle_agreements": 12,
+      "ppqn_controls": {
+        "INAPPLICABLE": 1,
+        "PASS": 11
+      },
+      "primary_attempts": 12,
+      "unsupported_attempts": 4,
+      "wall_seconds_all_primary": {
+        "max": 0.455869,
+        "median": 0.3951605,
+        "min": 0.354599,
+        "n": 12
+      }
+    }
+  }
+}

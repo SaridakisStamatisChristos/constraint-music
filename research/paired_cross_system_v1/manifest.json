@@ -1,0 +1,82 @@
+{
+  "analysis": "Derive request/artifact/delivery/end-to-end transitions and yields on 12 primary request clusters per system. Report all planned slots and exact counts. Paired end-to-end differences use identical requests; family-cluster bootstrap is enumerated on the two held-out families (four ordered resamples), explicitly illustrative. No mutation-level confidence intervals, population guarantees, aesthetic rankings, optimization claims or speed-superiority claims. Costs are cold-process wall times and max per-process RSS, not summed pipeline RSS.",
+  "baseline_commit": "9de73eae948eac366e7e1a45047a970795ed76bf",
+  "budget": {
+    "music21_limit": "Parent wall limit; no native search clock. DAG realization and first viable path, never all-progressions enumeration.",
+    "parent_wall_seconds": 30,
+    "seed": 7,
+    "selection": "first feasible",
+    "solver_wall_seconds": 20,
+    "workers": 1
+  },
+  "equivalences": "Positive PPQN scaling with exact rational note times; ignored velocity/program/track-name fields. Track and channel voice identity, key/meter/tempo remain exact. Repeated attacks are not coalesced into sustained notes.",
+  "fault_eligibility": "Apply all twelve predeclared slots only to untouched outputs passing both semantic implementations and full external-request/delivery checks. Nonconforming, unsupported, crashed or timed-out baselines retain INAPPLICABLE slots with reasons. Verify mutation non-noop before evaluating. Repaired digests and coordinated event/MIDI mutations prevent integrity-only shortcuts.",
+  "faults": [
+    "request_key",
+    "request_tempo",
+    "coordinated_request",
+    "chromatic_pitch",
+    "missing_triad",
+    "crossing",
+    "artifact_duration",
+    "midi_pitch",
+    "midi_duration",
+    "midi_channel",
+    "midi_tempo",
+    "midi_truncated"
+  ],
+  "freeze": "Commit and hash protocol, source, corpus, budgets and fault plan before held-out collection; keep local original history in a Git bundle. No externally timestamped preregistration is claimed. Any held-out-informed change requires a new version and fresh holdout.",
+  "independence_groups": [
+    "constraint-music-cpsat",
+    "music21-fb-realizer",
+    "diatony-gecode"
+  ],
+  "order": "Sequential fresh processes; rotate the three-system order by request index; one thread and no overlapping generation.",
+  "pins": {
+    "constraint-music": "9de73eae948eac366e7e1a45047a970795ed76bf",
+    "diatony": "2b13446c117c02626659e819ff975fef4b5daec2",
+    "gecode": "6.2.0",
+    "mido": "1.3.3",
+    "music21": "9.9.2",
+    "ortools": "9.15.6755"
+  },
+  "profiles": {
+    "constraint-music": "Pinned benchmark conditioning subclass adds degrees, root positions, constant voices and V-I obligations to the existing compiled CP-SAT model; native quarter-note SATB export; native ranges/leap/repetition rules remain disclosed in captured input.",
+    "diatony": "Pinned upstream model is unchanged; benchmark subclass posts complete triads and all-voice V-I leading-tone obligations before first-feasible Gecode DFS. Original MIDI retained alongside separately declared renderer; whole notes.",
+    "music21": "Native figured-bass model with prescribed root bass register 48+root_pc, whole notes, original default rules plus benchmark Segment subclass posting the all-voice V-I leading-tone obligation before generation; native chorale MIDI with explicit request tempo. Pinned movement-DAG first-path selector."
+  },
+  "rights": "Owner-authorized execution here. Proprietary license stays unchanged; independent outside replay uses case-by-case written research-run permission, with a provided request/grant template. No automatic public grant or completed outside replication is claimed.",
+  "sample": {
+    "development_attempts": 12,
+    "development_requests": 4,
+    "faults_per_primary_attempt": 12,
+    "hand_controls": 8,
+    "heldout_attempts": 48,
+    "heldout_primary_attempts": 36,
+    "heldout_primary_requests": 12,
+    "heldout_unsupported_requests": 4,
+    "planned_heldout_fault_slots": 432,
+    "ppqn_controls_per_primary_attempt": 1
+  },
+  "schema_version": 1,
+  "shared_contract": "Major diatonic complete root-position triads on prescribed four-quarter harmonic blocks, constant voicing inside blocks, quarter/whole notes, four explicit noncrossing voices, no parallel perfects between harmonic blocks, ascending semitone resolution of a leading tone on V-I, exact voiced SMF events and key/meter/tempo. No rests, ties, fixed given voice, or contextual chromatic harmony is supported.",
+  "split": "Entire held-out harmonic families and six tonic keys are absent from development. Same request identities go to all three systems. Samples are purposive, not population-random.",
+  "statuses": [
+    "OUTPUT",
+    "TIMEOUT",
+    "NO_SOLUTION",
+    "HARNESS_ERROR",
+    "UNSUPPORTED",
+    "BLOCKED",
+    "PASS",
+    "REJECT",
+    "UNOBSERVABLE",
+    "INAPPLICABLE"
+  ],
+  "study_id": "paired-cross-system-conformance-v1",
+  "systems": [
+    "constraint-music",
+    "music21",
+    "diatony"
+  ]
+}

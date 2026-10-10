@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "scope": "Benchmark adapter support, not unrestricted native API capabilities",
+  "properties": [
+    {"property":"major_mode_eight_named_keys","systems":{"constraint-music":"SUPPORTED","music21":"SUPPORTED","diatony":"SUPPORTED"},"units":"pitch classes modulo 12","eligibility":"C,G,D,A,E,F,Bb,Eb; major only","failure":"SCALE"},
+    {"property":"prescribed_degrees_complete_root_triads","systems":{"constraint-music":"SUPPORTED","music21":"SUPPORTED","diatony":"SUPPORTED"},"units":"zero-based major scale degree 0..6","eligibility":"3..6 chords, four quarters each","failure":"TRIAD_COMPLETENESS_OR_CONTENT / ROOT_POSITION"},
+    {"property":"four_noncrossing_stable_voices","systems":{"constraint-music":"SUPPORTED","music21":"SUPPORTED","diatony":"SUPPORTED"},"units":"SATB absolute MIDI pitch; equality allowed between adjacent voices","eligibility":"constant voiced pitch in each four-quarter block","failure":"CROSSING / CHORD_VOICING_CHANGED"},
+    {"property":"parallel_perfects_and_cadential_resolution","systems":{"constraint-music":"SUPPORTED","music21":"SUPPORTED","diatony":"SUPPORTED"},"units":"pitch displacement between harmonic blocks","eligibility":"same-direction parallel octave/fifth forbidden; leading tone must rise one semitone on V-I","failure":"PARALLEL_PERFECT / CADENTIAL_LEADING_TONE"},
+    {"property":"explicit_quarter_or_whole_events","systems":{"constraint-music":"SUPPORTED","music21":"SUPPORTED","diatony":"SUPPORTED"},"units":"canonical integer quarter-note time strings","eligibility":"durations 1 or 4; contiguous coverage; attacks retained","failure":"EVENT_SHAPE / DURATION_OR_BOUNDS / GAP_OVERLAP / LENGTH"},
+    {"property":"exact_delivered_voice_time_context","systems":{"constraint-music":"SUPPORTED","music21":"SUPPORTED","diatony":"SUPPORTED"},"units":"parsed SMF rational quarter times and MIDI pitch","eligibility":"declared track/channel identity; 4/4; exact key and rounded microseconds/quarter tempo","failure":"EXACT_VOICED_EVENTS / KEY_METER_TEMPO / SMF_PARSE"},
+    {"property":"native_export_voice_and_context","systems":{"constraint-music":"SUPPORTED","music21":"SUPPORTED","diatony":"UNKNOWN"},"units":"untouched native SMF bytes","eligibility":"Diatony lacks observable SATB identity and exact requested context; use separately declared delivery renderer","failure":"NATIVE_VOICE_IDENTITY / NATIVE_CONTEXT"},
+    {"property":"minor","systems":{"constraint-music":"UNSUPPORTED","music21":"UNSUPPORTED","diatony":"UNSUPPORTED"},"units":"mode","eligibility":"outside version-1 shared adapter domain","failure":"REQUEST_ADMISSION"},
+    {"property":"rests","systems":{"constraint-music":"UNSUPPORTED","music21":"UNSUPPORTED","diatony":"UNSUPPORTED"},"units":"explicit silence","eligibility":"outside version-1 shared adapter domain","failure":"REQUEST_ADMISSION"},
+    {"property":"ties","systems":{"constraint-music":"UNSUPPORTED","music21":"UNSUPPORTED","diatony":"UNSUPPORTED"},"units":"explicit score tie identity","eligibility":"outside version-1 shared adapter domain","failure":"REQUEST_ADMISSION"},
+    {"property":"given_voice","systems":{"constraint-music":"UNSUPPORTED","music21":"UNSUPPORTED","diatony":"UNSUPPORTED"},"units":"prescribed complete voice sequence","eligibility":"outside version-1 shared adapter domain","failure":"REQUEST_ADMISSION"},
+    {"property":"contextual_chromatic_harmony","systems":{"constraint-music":"UNSUPPORTED","music21":"UNSUPPORTED","diatony":"UNSUPPORTED"},"units":"context-dependent alteration","eligibility":"outside version-1 shared adapter domain","failure":"REQUEST_ADMISSION"}
+  ],
+  "rights": {
+    "constraint-music":"Proprietary; owner authorized this execution. Outside replay requires a separate written grant.",
+    "music21":"BSD-3-Clause; retain upstream notices.",
+    "diatony":"CC0-1.0 upstream repository; retain provenance.",
+    "gecode":"MIT; retain upstream notices.",
+    "ortools":"Apache-2.0; retain upstream notices.",
+    "retention":"Preserve experiment inputs, generated outputs and logs. No vendored external source, binary, or changed upstream license is shipped."
+  }
+}

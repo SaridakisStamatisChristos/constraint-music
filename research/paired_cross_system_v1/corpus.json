@@ -1,0 +1,797 @@
+[
+  {
+    "eligible": true,
+    "family": "plagal-preparation",
+    "phase": "development",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        3,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "C",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "dev.plagal-preparation.C",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 120,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "short-cadence",
+    "phase": "development",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "C",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "dev.short-cadence.C",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 120,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "plagal-preparation",
+    "phase": "development",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        3,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "G",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "dev.plagal-preparation.G",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 120,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "short-cadence",
+    "phase": "development",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "G",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "dev.short-cadence.G",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 120,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "supertonic-preparation",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "D",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.supertonic-preparation.D",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 90,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "extended-submediant",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        5,
+        3,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "D",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.extended-submediant.D",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 90,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "supertonic-preparation",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "A",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.supertonic-preparation.A",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 108,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "extended-submediant",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        5,
+        3,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "A",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.extended-submediant.A",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 108,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "supertonic-preparation",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "E",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.supertonic-preparation.E",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 132,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "extended-submediant",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        5,
+        3,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "E",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.extended-submediant.E",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 132,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "supertonic-preparation",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "F",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.supertonic-preparation.F",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 90,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "extended-submediant",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        5,
+        3,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "F",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.extended-submediant.F",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 90,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "supertonic-preparation",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "Bb",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.supertonic-preparation.Bb",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 108,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "extended-submediant",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        5,
+        3,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "Bb",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.extended-submediant.Bb",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 108,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "supertonic-preparation",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "Eb",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.supertonic-preparation.Eb",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 132,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": true,
+    "family": "extended-submediant",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        5,
+        3,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "Eb",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.extended-submediant.Eb",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 132,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": false,
+    "family": "unsupported-mode",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "C",
+      "meter": "4/4",
+      "mode": "minor",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.unsupported.mode",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 120,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": false,
+    "family": "unsupported-rests",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "C",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.unsupported.rests",
+      "rests": true,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 120,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": false,
+    "family": "unsupported-ties",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": null,
+      "key": "C",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.unsupported.ties",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 120,
+      "ties": true,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  },
+  {
+    "eligible": false,
+    "family": "unsupported-given_voice",
+    "phase": "heldout",
+    "request": {
+      "allowed_note_quarters": [
+        1,
+        4
+      ],
+      "cadential_leading_tone_resolution": true,
+      "chord_quarters": 4,
+      "complete_triads": true,
+      "constant_voicing_per_chord": true,
+      "degrees": [
+        0,
+        1,
+        4,
+        0
+      ],
+      "given_voice": [
+        60,
+        62,
+        67,
+        60
+      ],
+      "key": "C",
+      "meter": "4/4",
+      "mode": "major",
+      "noncrossing": true,
+      "parallel_perfects": false,
+      "request_id": "heldout.unsupported.given_voice",
+      "rests": false,
+      "root_position": true,
+      "schema_version": 1,
+      "tempo_bpm": 120,
+      "ties": false,
+      "voices": [
+        "Soprano",
+        "Alto",
+        "Tenor",
+        "Bass"
+      ]
+    }
+  }
+]
