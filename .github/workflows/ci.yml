@@ -32,6 +32,8 @@ jobs:
         run: git fetch --no-tags research/history/paired_cross_system_v1.bundle refs/heads/research/paired-cross-system-benchmark-v1:refs/assurance/paired-cross-system-v1-original
       - name: Restore fair paired v2 protocol and receipt history
         run: git fetch --no-tags research/history/paired_cross_system_v2.bundle refs/heads/research/fair-paired-cross-system-v2:refs/assurance/paired-cross-system-v2-original
+      - name: Restore request-bound v3 source and receipt history
+        run: git fetch --no-tags research/history/paired_cross_system_v3.bundle refs/heads/feature/request-bound-harmonization:refs/assurance/paired-cross-system-v3-original
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
@@ -46,6 +48,7 @@ jobs:
       - run: python -m research.paired_cross_system_v1.runner check
       - run: python -m research.paired_cross_system_v1.analysis --check
       - run: python -m research.check_paired_v2
+      - run: python -m research.check_paired_v3
 
   checker-only:
     runs-on: ubuntu-latest
@@ -58,3 +61,5 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install .
       - run: python -c "from constraint_music.certification import verify_artifact; assert callable(verify_artifact)"
+
+      - run: python -c "from constraint_music.harmonization import verify_harmonization; from constraint_music.harmonization.midi import verify_midi; assert callable(verify_harmonization) and callable(verify_midi)"

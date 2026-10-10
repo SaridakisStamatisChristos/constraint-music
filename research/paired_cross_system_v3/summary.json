@@ -1,0 +1,2656 @@
+{
+  "adapted_reproducible_pass": {
+    "constraint-music": 128,
+    "diatony": 38,
+    "legacy-constraint-music": 53,
+    "music21": 111
+  },
+  "attempt_n": 1056,
+  "exact_duplicate_draws": 0,
+  "improvement_established": true,
+  "native_reproducible_pass": {
+    "constraint-music": 128,
+    "diatony": 0,
+    "legacy-constraint-music": 53,
+    "music21": 111
+  },
+  "paired_comparisons": {
+    "diatony": {
+      "bonferroni_p": 4.8467614016778965e-27,
+      "both_pass": 38,
+      "confidence": 0.9833333333333333,
+      "conservative_paired_ci": [
+        0.5442651245385459,
+        0.8038254283075905
+      ],
+      "difference": 0.703125,
+      "exact_mcnemar_two_sided_p": 1.6155871338926322e-27,
+      "left_only": 90,
+      "n": 128,
+      "neither_pass": 0,
+      "practical_margin": 0.1,
+      "right_only": 0,
+      "superiority_gate": true
+    },
+    "legacy-constraint-music": {
+      "bonferroni_p": 1.5881867761018131e-22,
+      "both_pass": 53,
+      "confidence": 0.9833333333333333,
+      "conservative_paired_ci": [
+        0.4237161823812698,
+        0.6993924805894043
+      ],
+      "difference": 0.5859375,
+      "exact_mcnemar_two_sided_p": 5.293955920339377e-23,
+      "left_only": 75,
+      "n": 128,
+      "neither_pass": 0,
+      "practical_margin": 0.1,
+      "right_only": 0,
+      "superiority_gate": true
+    },
+    "music21": {
+      "bonferroni_p": 4.57763671875e-05,
+      "both_pass": 111,
+      "confidence": 0.9833333333333333,
+      "conservative_paired_ci": [
+        0.023394439417224966,
+        0.23008555785856383
+      ],
+      "difference": 0.1328125,
+      "exact_mcnemar_two_sided_p": 1.52587890625e-05,
+      "left_only": 17,
+      "n": 128,
+      "neither_pass": 0,
+      "practical_margin": 0.1,
+      "right_only": 0,
+      "superiority_gate": false
+    }
+  },
+  "per_request": [
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.000"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.001"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.002"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.003"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.004"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.005"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.006"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.007"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.008"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.009"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.010"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.011"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.012"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.013"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.014"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.015"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.016"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.017"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.018"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.019"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.020"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "request_id": "heldout.021"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.022"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.023"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.024"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.025"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.026"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.027"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.028"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.029"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.030"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.031"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.032"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.033"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "request_id": "heldout.034"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.035"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.036"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.037"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.038"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.039"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.040"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.041"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.042"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.043"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.044"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.045"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.046"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.047"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.048"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.049"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.050"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.051"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.052"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.053"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.054"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.055"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.056"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.057"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.058"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.059"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.060"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.061"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.062"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.063"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.064"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.065"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.066"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.067"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.068"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.069"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.070"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.071"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.072"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.073"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.074"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.075"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "request_id": "heldout.076"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.077"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.078"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.079"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.080"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.081"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.082"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.083"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.084"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.085"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.086"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "request_id": "heldout.087"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.088"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.089"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.090"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.091"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.092"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.093"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.094"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.095"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.096"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.097"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.098"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.099"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.100"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.101"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.102"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.103"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.104"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.105"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.106"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": false
+      },
+      "request_id": "heldout.107"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.108"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.109"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "request_id": "heldout.110"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.111"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.112"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "request_id": "heldout.113"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.114"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.115"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 0,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": true,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.116"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.117"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.118"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 1
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": false
+      },
+      "request_id": "heldout.119"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.120"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.121"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.122"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 0,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": true,
+        "music21": true
+      },
+      "request_id": "heldout.123"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.124"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.125"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.126"
+    },
+    {
+      "cm_minus_competitor": {
+        "diatony": 1,
+        "legacy-constraint-music": 1,
+        "music21": 0
+      },
+      "native_pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "pass_both_runs": {
+        "constraint-music": true,
+        "diatony": false,
+        "legacy-constraint-music": false,
+        "music21": true
+      },
+      "request_id": "heldout.127"
+    }
+  ],
+  "population_scope": "IID feasible requests from the declared grammar, conditioned adapters and common renderer",
+  "primary_n": 128,
+  "statuses": {
+    "constraint-music": {
+      "OUTPUT": 256,
+      "UNSUPPORTED": 8
+    },
+    "diatony": {
+      "NO_SOLUTION_OR_NATIVE_LIMIT": 180,
+      "OUTPUT": 76,
+      "UNSUPPORTED": 8
+    },
+    "legacy-constraint-music": {
+      "NO_SOLUTION_OR_NATIVE_LIMIT": 150,
+      "OUTPUT": 106,
+      "UNSUPPORTED": 8
+    },
+    "music21": {
+      "NO_SOLUTION_OR_NATIVE_LIMIT": 34,
+      "OUTPUT": 222,
+      "UNSUPPORTED": 8
+    }
+  },
+  "superiority_established": false
+}

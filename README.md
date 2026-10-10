@@ -6,6 +6,16 @@ Constraint Music treats composition as a verifiable constraint problem. A YAML s
 
 > Current release line: **2.13.0a1** — fail-closed artifacts, request-bound strict certification, executable rule outcomes, solver-optional checking, and exact SATB MIDI delivery verification.
 
+An opt-in [request-bound harmonization API](docs/REQUEST_BOUND_HARMONIZATION.md)
+solves complete major-key SATB chord/voice requests under their exact obligations,
+with independent score and native MIDI checks. It supports nonroot triad doubling
+and soprano sevenths without changing the legacy composition style contract.
+Its [fresh paired study](research/paired_cross_system_v3/REPORT.md) reports 128/128
+reproducible native/adapted passes, versus legacy CM 53/128, music21 111/128 and
+adapted Diatony 38/128. This is completion on the declared grammar/configurations;
+the +10-point practical-superiority gate remains unmet against music21.
+Archived v1/v2 remain intact.
+
 After installing `.[dev]`, run the complete repository-authored release gate with
 `python -m research.validate_release_assurance`. It validates the pinned environment,
 quality suite, package artifacts, solver-free checker installation, evidence replays and

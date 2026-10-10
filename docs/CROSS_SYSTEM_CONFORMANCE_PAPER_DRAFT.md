@@ -1,6 +1,6 @@
 # Separating request, score, and delivered-file conformance in symbolic music generation
 
-Author-review manuscript draft, 10 October 2026. This draft integrates two separately declared studies; it is not a submission or a claim of externally timestamped preregistration.
+Author-review manuscript draft, 10 October 2026. This draft integrates the separately retainedly declared studies; it is not a submission or a claim of externally timestamped preregistration.
 
 ## Abstract
 
@@ -8,9 +8,17 @@ A symbolic-music generator can return internally consistent events while missing
 
 The subsequent controlled replay identifies the music21 discrepancy as an adapter spelling error. A separate freshly frozen study uses 128 feasible requests with inversions, dominant sevenths and soprano anchors. Reproducible common-adapted passes are Constraint Music 45/128, music21 113/128 and Diatony 51/128. Paired inference favors music21 on that declared completion outcome; the Diatony comparison is inconclusive. Constraint Music superiority is not established, and the conformance contribution remains separate from comparative yield.
 
+A subsequent opt-in request-bound harmonizer is developed on the archived cases
+and evaluated on 128 fresh, prospectively frozen requests with an unchanged
+shared contract. Reproducible native/common-adapted passes are 128/128, compared
+with 53/128 for the legacy CM configuration, 111/128 for music21 and 38/128 for
+adapted Diatony. Paired inference supports a completion advantage on this grammar,
+while the predefined +10-point practical-superiority gate remains unmet against
+music21. All earlier observations and verdicts are retained separately.
+
 ## 1. Introduction
 
-The subsequent controlled spelling experiment and fresh paired study are reported in §6.5. They confirm that the v1 music21 discrepancy is an adapter error and that Constraint Music superiority is not established on the harder measured outcome. Frozen v1 observations remain intact; the new comparison is a separate study.
+The controlled spelling experiment and fresh paired Study C are reported in §6.5; the subsequent request-bound engineering improvement and separately frozen Study D are in §6.6. They confirm that the v1 music21 discrepancy is an adapter error and that Constraint Music superiority is not established on the harder measured outcome. Frozen v1 observations remain intact; the new comparison is a separate study.
 
 Users can request a specific key, harmony, duration, voicing and delivery context. Meeting that request is a relation between the user's independently retained specification and the produced score. Agreement among fields inside a result is a weaker relation. Export introduces another boundary: a correct score can be delivered with altered pitch, duration, voice assignment or context. An evaluation that observes only a generator's internal validation flag cannot establish these relations.
 
@@ -146,6 +154,64 @@ All 792 slots are retained: 768 primary attempts and 24 unsupported admission sl
 CM minus music21 is −53.125 percentage points, with conservative simultaneous interval [−67.03, −35.19] points and exact two-sided McNemar p≈1.497×10⁻¹⁶. CM minus Diatony is −4.6875 points, interval [−21.72, +12.70] points, p≈0.4514. Pairing uses the request, never duplicated run rows. The intervals subtract Clopper–Pearson bounds for the two discordant-cell probabilities using a union-bound construction; 97.5% coverage per comparison gives at least 95% simultaneous coverage for both. Two exact tests use Bonferroni correction. The predefined superiority gate requires both lower bounds above +10 points and both raw p-values below .025; it fails.
 
 music21 completes substantially more requests on this outcome and grammar. The Diatony comparison is inconclusive. Neither result is a general ranking of music systems, listening quality or unconditioned product capability. The templates are shared with development, soprano anchors inherit low-register witness bias, and native extra rules differ. The freeze is local, not external preregistration; repeated workers are not independent replication. Any outcome-informed change to CM or the comparison requires a fresh study version. The [derived report](../research/paired_cross_system_v2/REPORT.md), complete raw archives and request-level paired results preserve this negative superiority finding.
+
+### 6.6 Study D: request-bound harmonization and prospective improvement
+
+The negative Study C result motivated a separate opt-in native API, not a rewrite
+of archived outcomes or a relaxation of legacy composition certification.
+`constraint_music.harmonization` compiles exactly the common request obligations
+with complete pitch-class chord tables, modular pair intervals and motion signs.
+Its independent scalar score checker reconstructs the requested chord contents,
+inversions, anchors, ranges, order, spacing and resolutions. Atomic native MIDI
+export independently parses the exact score/voice/time/context relation before
+publishing. No generator imports the finite-path reference or receives a witness.
+The legacy API retains root doubling, inner-voice-only sevenths and its melodic
+style obligations. Fixed-input diagnosis proves direct conflicts in 23 archived
+v2 requests: 21 have forbidden fixed bass tritones and five have given soprano
+sevenths (three overlap). Other failures involve coupled additional style rules;
+no per-rule causal attribution is asserted for them.
+
+The archived 128 v2 requests became development evidence; the new API delivers
+conforming native and adapted MIDI in both runs for all 128. This is explicitly
+development replay. A new [prospective v3 protocol](../research/paired_cross_system_v3/PROTOCOL.md)
+uses development seed 20261012 and fresh heldout seed 20261013. Source commit
+`3686df8` and receipt commit `5322fa9` precede heldout generation. The same conditional
+feasible grammar, obligations, 20-second native/30-second worker budgets, first
+native solution policy and repeat seeds 7/19 are preserved. A fourth configuration,
+unmodified legacy CM, supplies the prespecified paired engineering control.
+External adapters and Diatony binary are unchanged from v2. Engine order rotates
+across four configurations. Three comparisons use Bonferroni correction and
+at least 95% simultaneous coverage overall; the +10-point practical margin is
+fixed before collection. This local freeze is not external preregistration.
+
+| Configuration | Common-adapted pass in both runs | Observable native pass |
+| --- | ---: | --- |
+| CM request-bound API | 128/128 | 128/128 |
+| Legacy CM composition API | 53/128 | 53/128 |
+| music21 v2 configuration | 111/128 | 111/128 |
+| Diatony v2 configuration | 38/128 | Full native contract unobservable |
+
+All 1,056 slots replay: 1,024 primary attempts and 32 unsupported admission slots.
+All produced scores and common-adapted files conform; the new API also delivers
+128/128 exact native endpoints in both runs. There are zero timeouts, harness
+errors or inspection blocks. Requests are the analysis unit, not repeated runs.
+New CM has 75 additional passes and no losses versus legacy CM, 17 additional
+passes and no losses versus music21, and 90 additional passes and no losses versus
+Diatony. Signed differences are +58.59, +13.28 and +70.31 percentage points.
+Their conservative simultaneous intervals are [+42.37, +69.94], [+2.34, +23.01]
+and [+54.43, +80.38] points. Exact McNemar p-values are approximately 5.294e-23,
+1.526e-5 and 1.616e-27; all three remain significant after correction.
+
+Practical improvement over legacy CM is established under the predefined gate.
+The all-comparison +10-point practical-superiority gate is **not established**:
+the music21 interval lower bound is +2.34 points. This is a statistically supported
+completion advantage for the configured endpoints and declared feasible grammar,
+not a general ranking of music systems, aesthetics, algorithms or unconditioned
+products. Extra native comparator rules remain a configuration limitation.
+No universal completeness or listening-quality claim is made. The new result
+schema is `request-bound-satb-v1`, not legacy CM001..CM057 certification. All original
+studies and negative verdicts remain unchanged. Full outcomes and bytes are in the
+[derived v3 report](../research/paired_cross_system_v3/REPORT.md).
 
 ## 7. Threats to validity and release
 

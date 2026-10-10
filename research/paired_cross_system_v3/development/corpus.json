@@ -1,0 +1,1504 @@
+{
+  "discarded_reference_infeasible": 7,
+  "primary": [
+    {
+      "request": {
+        "bass": [
+          48,
+          52,
+          52,
+          57,
+          50,
+          48,
+          55,
+          48
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          2,
+          5,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          64,
+          null,
+          null,
+          74,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          0,
+          0,
+          2,
+          2,
+          2,
+          0,
+          0,
+          0
+        ],
+        "key": "C",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.000",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 108,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      },
+      "template": 3,
+      "witness": [
+        [
+          64,
+          60,
+          55,
+          48
+        ],
+        [
+          64,
+          59,
+          55,
+          52
+        ],
+        [
+          64,
+          60,
+          57,
+          52
+        ],
+        [
+          74,
+          65,
+          62,
+          57
+        ],
+        [
+          62,
+          59,
+          55,
+          50
+        ],
+        [
+          64,
+          60,
+          55,
+          48
+        ],
+        [
+          67,
+          62,
+          59,
+          55
+        ],
+        [
+          67,
+          64,
+          60,
+          48
+        ]
+      ]
+    },
+    {
+      "request": {
+        "bass": [
+          55,
+          52,
+          50,
+          55,
+          55,
+          52,
+          57,
+          55
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          1,
+          4,
+          0,
+          5,
+          3,
+          4,
+          0
+        ],
+        "given_soprano": [
+          null,
+          64,
+          81,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          0,
+          2,
+          0,
+          0,
+          1,
+          1,
+          2,
+          0
+        ],
+        "key": "G",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.001",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 132,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      },
+      "template": 2,
+      "witness": [
+        [
+          71,
+          62,
+          59,
+          55
+        ],
+        [
+          64,
+          60,
+          57,
+          52
+        ],
+        [
+          81,
+          72,
+          66,
+          50
+        ],
+        [
+          74,
+          71,
+          67,
+          55
+        ],
+        [
+          71,
+          64,
+          59,
+          55
+        ],
+        [
+          64,
+          60,
+          55,
+          52
+        ],
+        [
+          66,
+          62,
+          60,
+          57
+        ],
+        [
+          67,
+          62,
+          59,
+          55
+        ]
+      ]
+    },
+    {
+      "request": {
+        "bass": [
+          51,
+          55,
+          55,
+          53,
+          50,
+          51,
+          53,
+          51
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          2,
+          5,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          0,
+          0,
+          2,
+          0,
+          1,
+          0,
+          2,
+          0
+        ],
+        "key": "Eb",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.002",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 120,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      },
+      "template": 3,
+      "witness": [
+        [
+          67,
+          63,
+          58,
+          51
+        ],
+        [
+          67,
+          62,
+          58,
+          55
+        ],
+        [
+          72,
+          63,
+          60,
+          55
+        ],
+        [
+          65,
+          60,
+          56,
+          53
+        ],
+        [
+          70,
+          58,
+          53,
+          50
+        ],
+        [
+          67,
+          58,
+          55,
+          51
+        ],
+        [
+          65,
+          62,
+          58,
+          53
+        ],
+        [
+          67,
+          63,
+          58,
+          51
+        ]
+      ]
+    },
+    {
+      "request": {
+        "bass": [
+          52,
+          49,
+          56,
+          54,
+          54,
+          52,
+          59,
+          52
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          3,
+          0,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          0,
+          1,
+          1,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "key": "E",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.003",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 90,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      },
+      "template": 1,
+      "witness": [
+        [
+          68,
+          59,
+          56,
+          52
+        ],
+        [
+          61,
+          57,
+          52,
+          49
+        ],
+        [
+          71,
+          64,
+          59,
+          56
+        ],
+        [
+          66,
+          61,
+          57,
+          54
+        ],
+        [
+          66,
+          63,
+          59,
+          54
+        ],
+        [
+          68,
+          64,
+          59,
+          52
+        ],
+        [
+          71,
+          66,
+          63,
+          59
+        ],
+        [
+          71,
+          68,
+          64,
+          52
+        ]
+      ]
+    },
+    {
+      "request": {
+        "bass": [
+          48,
+          53,
+          55,
+          48,
+          52,
+          57,
+          53,
+          55,
+          48,
+          48,
+          50,
+          48
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          3,
+          4,
+          0,
+          0,
+          5,
+          1,
+          4,
+          0,
+          3,
+          4,
+          0
+        ],
+        "given_soprano": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          72,
+          null,
+          null,
+          64
+        ],
+        "inversions": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          2,
+          2,
+          0
+        ],
+        "key": "C",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.004",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 108,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      },
+      "template": 0,
+      "witness": [
+        [
+          60,
+          55,
+          52,
+          48
+        ],
+        [
+          69,
+          65,
+          60,
+          53
+        ],
+        [
+          67,
+          62,
+          59,
+          55
+        ],
+        [
+          67,
+          64,
+          60,
+          48
+        ],
+        [
+          64,
+          60,
+          55,
+          52
+        ],
+        [
+          72,
+          64,
+          60,
+          57
+        ],
+        [
+          65,
+          62,
+          57,
+          53
+        ],
+        [
+          71,
+          67,
+          62,
+          55
+        ],
+        [
+          72,
+          67,
+          64,
+          48
+        ],
+        [
+          60,
+          57,
+          53,
+          48
+        ],
+        [
+          65,
+          59,
+          55,
+          50
+        ],
+        [
+          64,
+          60,
+          55,
+          48
+        ]
+      ]
+    },
+    {
+      "request": {
+        "bass": [
+          53,
+          57,
+          57,
+          58,
+          48,
+          53,
+          48,
+          53
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          2,
+          5,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          64,
+          65
+        ],
+        "inversions": [
+          0,
+          0,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "key": "F",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.005",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 132,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      },
+      "template": 3,
+      "witness": [
+        [
+          69,
+          65,
+          60,
+          53
+        ],
+        [
+          69,
+          64,
+          60,
+          57
+        ],
+        [
+          74,
+          65,
+          62,
+          57
+        ],
+        [
+          70,
+          67,
+          62,
+          58
+        ],
+        [
+          79,
+          70,
+          64,
+          48
+        ],
+        [
+          72,
+          69,
+          65,
+          53
+        ],
+        [
+          64,
+          60,
+          55,
+          48
+        ],
+        [
+          65,
+          60,
+          57,
+          53
+        ]
+      ]
+    },
+    {
+      "request": {
+        "bass": [
+          57,
+          49,
+          49,
+          59,
+          59,
+          49,
+          52,
+          57
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          2,
+          5,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          0,
+          0,
+          2,
+          0,
+          2,
+          1,
+          0,
+          0
+        ],
+        "key": "A",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.006",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 90,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      },
+      "template": 3,
+      "witness": [
+        [
+          73,
+          69,
+          64,
+          57
+        ],
+        [
+          61,
+          56,
+          52,
+          49
+        ],
+        [
+          66,
+          57,
+          54,
+          49
+        ],
+        [
+          71,
+          66,
+          62,
+          59
+        ],
+        [
+          71,
+          68,
+          64,
+          59
+        ],
+        [
+          73,
+          69,
+          64,
+          49
+        ],
+        [
+          68,
+          64,
+          59,
+          52
+        ],
+        [
+          69,
+          64,
+          61,
+          57
+        ]
+      ]
+    },
+    {
+      "request": {
+        "bass": [
+          55,
+          48,
+          54,
+          55,
+          59,
+          48,
+          50,
+          55
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          1,
+          4,
+          0,
+          5,
+          3,
+          4,
+          0
+        ],
+        "given_soprano": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          66,
+          null
+        ],
+        "inversions": [
+          0,
+          1,
+          1,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "key": "G",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.007",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 108,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      },
+      "template": 2,
+      "witness": [
+        [
+          71,
+          62,
+          59,
+          55
+        ],
+        [
+          60,
+          57,
+          52,
+          48
+        ],
+        [
+          69,
+          62,
+          57,
+          54
+        ],
+        [
+          67,
+          62,
+          59,
+          55
+        ],
+        [
+          76,
+          67,
+          64,
+          59
+        ],
+        [
+          60,
+          55,
+          52,
+          48
+        ],
+        [
+          66,
+          62,
+          57,
+          50
+        ],
+        [
+          67,
+          62,
+          59,
+          55
+        ]
+      ]
+    }
+  ],
+  "sampling_seed": 20261012,
+  "unsupported": [
+    {
+      "request": {
+        "bass": [
+          48,
+          52,
+          52,
+          57,
+          50,
+          48,
+          55,
+          48
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          2,
+          5,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          64,
+          null,
+          null,
+          74,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          0,
+          0,
+          2,
+          2,
+          2,
+          0,
+          0,
+          0
+        ],
+        "key": "C",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "minor",
+        "parallel_perfects": false,
+        "request_id": "development.unsupported.minor",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 108,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      }
+    },
+    {
+      "request": {
+        "bass": [
+          48,
+          52,
+          52,
+          57,
+          50,
+          48,
+          55,
+          48
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          2,
+          5,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          64,
+          null,
+          null,
+          74,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          0,
+          0,
+          2,
+          2,
+          2,
+          0,
+          0,
+          0
+        ],
+        "key": "C",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.unsupported.rests",
+        "rests": true,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 108,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      }
+    },
+    {
+      "request": {
+        "bass": [
+          48,
+          52,
+          52,
+          57,
+          50,
+          48,
+          55,
+          48
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          2,
+          5,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          64,
+          null,
+          null,
+          74,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          0,
+          0,
+          2,
+          2,
+          2,
+          0,
+          0,
+          0
+        ],
+        "key": "C",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.unsupported.ties",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 108,
+        "ties": true,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      }
+    },
+    {
+      "request": {
+        "bass": [
+          48,
+          52,
+          52,
+          57,
+          50,
+          48,
+          55,
+          48
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 1,
+        "complete_chords": true,
+        "degrees": [
+          0,
+          2,
+          5,
+          1,
+          4,
+          0,
+          4,
+          0
+        ],
+        "given_soprano": [
+          64,
+          null,
+          null,
+          74,
+          null,
+          null,
+          null,
+          null
+        ],
+        "inversions": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "key": "C",
+        "max_adjacent_upper_spacing": 12,
+        "meter": "4/4",
+        "mode": "major",
+        "parallel_perfects": false,
+        "request_id": "development.unsupported.third-inversion",
+        "rests": false,
+        "schema_version": 2,
+        "seventh_step_down": true,
+        "sevenths": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "strict_noncrossing": true,
+        "tempo_bpm": 108,
+        "ties": false,
+        "voice_ranges": [
+          [
+            60,
+            84
+          ],
+          [
+            55,
+            74
+          ],
+          [
+            48,
+            67
+          ],
+          [
+            48,
+            59
+          ]
+        ]
+      }
+    }
+  ]
+}
