@@ -1,0 +1,82 @@
+[
+  {
+    "id": "hand.C.3",
+    "reference_pass": true,
+    "semantic_issues": [],
+    "verdict": {
+      "boundary": "delivery",
+      "issues": [],
+      "status": "PASS"
+    }
+  },
+  {
+    "id": "hand.C.3.ppqn",
+    "reference_pass": true,
+    "semantic_issues": [],
+    "verdict": {
+      "boundary": "delivery",
+      "issues": [],
+      "status": "PASS"
+    }
+  },
+  {
+    "id": "hand.C.4",
+    "reference_pass": true,
+    "semantic_issues": [],
+    "verdict": {
+      "boundary": "delivery",
+      "issues": [],
+      "status": "PASS"
+    }
+  },
+  {
+    "id": "hand.C.4.ppqn",
+    "reference_pass": true,
+    "semantic_issues": [],
+    "verdict": {
+      "boundary": "delivery",
+      "issues": [],
+      "status": "PASS"
+    }
+  },
+  {
+    "id": "hand.G.3",
+    "reference_pass": true,
+    "semantic_issues": [],
+    "verdict": {
+      "boundary": "delivery",
+      "issues": [],
+      "status": "PASS"
+    }
+  },
+  {
+    "id": "hand.G.3.ppqn",
+    "reference_pass": true,
+    "semantic_issues": [],
+    "verdict": {
+      "boundary": "delivery",
+      "issues": [],
+      "status": "PASS"
+    }
+  },
+  {
+    "id": "hand.G.4",
+    "reference_pass": true,
+    "semantic_issues": [],
+    "verdict": {
+      "boundary": "delivery",
+      "issues": [],
+      "status": "PASS"
+    }
+  },
+  {
+    "id": "hand.G.4.ppqn",
+    "reference_pass": true,
+    "semantic_issues": [],
+    "verdict": {
+      "boundary": "delivery",
+      "issues": [],
+      "status": "PASS"
+    }
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "binary_sha256": "02715bc6967b36119fd38510c8457d1ae8bfe66e730af79ef423897b01d13be7",
+  "dependencies": {
+    "mido": "1.3.3",
+    "music21": "9.9.2",
+    "ortools": "9.15.6755"
+  },
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "preregistered_externally": false,
+  "protocol_hashes": {
+    "PROTOCOL.md": "ffc1765bbf2960bbe867e0362c956f17a9346162b931c54970282554496a1b71",
+    "__init__.py": "851cf57cf10402554a3324827e68cadd88c9da426b30dba49a0111a3fe662c40",
+    "adapter.py": "a26aa21f641063583611a0667f55a68ce68b3896453de95ef57250a8e37b48cd",
+    "analysis.py": "1af89f6631913031e2e9bcc60427a553c97be386e2ab5dfecc5d52bbbf6cc254",
+    "build.py": "3921e389d4fa34e1609fa61fb2f3bbccfef676e41dfc2b5de8d19f3d05ebc6de",
+    "contract.py": "c4d94e7ac967b2db8d50f197f2c98d31e8dbcc5ead2f251b305e07024bed5501",
+    "controls.py": "d6859b88a24ead9515cd5473bcb6934753cd8c166b71a2db3405aeedd7c2b844",
+    "corpus.json": "6faa9ab4c50b2a6e529cedf2477597db16d5db1e2cdeb3045a6db4508b04fdbc",
+    "corpus.py": "a953ee2a6d5664732434f2332aeaf8fa9c39ee911f76a7f76ed73e14412d7bb4",
+    "diatony_probe.cpp": "9a1a267fec2a3d15afbd4b709bfa3366ebdc06b467ae6d7a9ddc4dac557f3dcb",
+    "faults.py": "5656323e428d0dcd69d56bcab753a5c71ba5ec8dfae7e9e3662495446b900d07",
+    "manifest.json": "67cdd1fb694cf65c854538a89ee6b49fe830e8134ed9cc2598bffa7b263ce782",
+    "native.py": "2158b711a9ce3241ca6e5572f53a99fa64f306b782ba0286a298456b62ff3f5d",
+    "oracle.py": "1212fbab5f03941209c9a04f02b118037e8df57f12d5d1a60835b4b1bda5cc21",
+    "reference.py": "b393342c5f618ad373e16ca79c4fd48e46bb2f181f9d36d36993e29f24a76626",
+    "render.py": "ac3aaadf7bd3fe7f3e4967b5b126bcf530ff5f705c317a040e5254736645e9d9",
+    "runner.py": "a2c11de81983dd11c6d2e810e1e993608c48beb1e86b728b584d354a6f243816",
+    "support.json": "0562f6282f9c70598b81531a8c8d1a190dd46474525a9ef5d8f837ff743d2bda"
+  },
+  "python": "3.12.14",
+  "schema_version": 1,
+  "source_commit": "167ed84819a24eeb629ee0605d98dd2f3d5412b1"
+}
