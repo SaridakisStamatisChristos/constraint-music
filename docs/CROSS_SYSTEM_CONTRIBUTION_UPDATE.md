@@ -24,3 +24,17 @@ The paired difference between Constraint Music and music21 is one request out of
 The new [v2 report](../research/paired_cross_system_v2/REPORT.md) uses 128 feasible requests with inversions, dominant sevenths and soprano anchors, fresh frozen sampling, two runs, common adapted delivery and separate native exports. Reproducible passes are CM 45/128, music21 113/128, adapted Diatony 51/128. CM-minus-music21 is −53.125 points (simultaneous interval −67.03 to −35.19); CM-minus-Diatony is −4.6875 points (−21.72 to +12.70). The predefined +10-point superiority gate fails. All 792 planned slots replay; there are no timeouts, harness errors or inspection blocks. These are conditional grammar/configuration results, not global music-system rankings. They strengthen the fairness of the comparison while contradicting a CM superiority claim on this outcome. The conformance protocol contribution remains separate.
 
 The bounded paired-extension gates pass, so the [single integrated manuscript draft](CROSS_SYSTEM_CONFORMANCE_PAPER_DRAFT.md) is supported as a draft for author review. It preserves PR37's separate counts and explicitly addresses adaptations, conceptual oracle dependence and unsupported features. The unchanged proprietary license limits outside execution; the [case-by-case permission route](RESEARCH_REPLAY_PERMISSION_TEMPLATE.md) is provided but no grant or external replication is invented. Venue selection, author review, written evaluator grants, actual independent replication and submission remain separate actions.
+
+## Subsequent request-bound engineering result
+
+The new opt-in native harmonization API and prospective [v3 report](../research/paired_cross_system_v3/REPORT.md)
+now establish a scoped completion advantage: new CM 128/128, legacy CM 53/128,
+music21 111/128 and adapted Diatony 38/128 on the same 128 fresh requests, each
+passing both runs. All 1,056 slots replay with no timeout/error/block. The exact
+paired comparisons are significant after three-comparison correction. The
++10-point practical improvement over legacy CM clears its predefined gate;
+the all-comparison practical-superiority gate fails because music21's interval
+lower bound is +2.34 points. This improves request completion, not the novelty of
+constraint-based harmony, musical quality, or general system superiority. The
+new request-bound score/MIDI contract is separate from preserved legacy style
+certification. V2's negative result remains valid for its old configuration.

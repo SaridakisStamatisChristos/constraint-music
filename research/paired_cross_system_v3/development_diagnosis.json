@@ -1,0 +1,701 @@
+{
+  "direct_fixed_input_conflicts": {
+    "fixed bass tritone (CM014)": 21,
+    "given soprano seventh (legacy CM005)": 5
+  },
+  "legacy_pass_requests": 45,
+  "proven_INFEASIBLE_attempts": 166,
+  "requests_with_direct_conflict": 23,
+  "rows": [
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.000"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.001"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.002"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.003"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.004"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.005"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.006"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.007"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.008"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.009"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)",
+        "given soprano seventh (legacy CM005)"
+      ],
+      "request_id": "heldout.010"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.011"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.012"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.013"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.014"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)",
+        "given soprano seventh (legacy CM005)"
+      ],
+      "request_id": "heldout.015"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.016"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.017"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.018"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "given soprano seventh (legacy CM005)"
+      ],
+      "request_id": "heldout.019"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.020"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.021"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.022"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.023"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.024"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.025"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.026"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.027"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.028"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.029"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.030"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.031"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.032"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.033"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.034"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.035"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.036"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.037"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.038"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.039"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.040"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.041"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.042"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.043"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.044"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.045"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.046"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.047"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.048"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.049"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.050"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.051"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.052"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.053"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.054"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.055"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.056"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.057"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.058"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.059"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.060"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.061"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.062"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.063"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.064"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.065"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.066"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.067"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.068"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.069"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.070"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.071"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.072"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.073"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.074"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.075"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.076"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.077"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.078"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.079"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.080"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.081"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.082"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.083"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.084"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.085"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.086"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "given soprano seventh (legacy CM005)"
+      ],
+      "request_id": "heldout.087"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.088"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.089"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.090"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.091"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.092"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)",
+        "given soprano seventh (legacy CM005)"
+      ],
+      "request_id": "heldout.093"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.094"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.095"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.096"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.097"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.098"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.099"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.100"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.101"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.102"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.103"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.104"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.105"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.106"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.107"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.108"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.109"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.110"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.111"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.112"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.113"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.114"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.115"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.116"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.117"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.118"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.119"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.120"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.121"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.122"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [],
+      "request_id": "heldout.123"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.124"
+    },
+    {
+      "legacy_pass": false,
+      "necessary_conflicts": [
+        "fixed bass tritone (CM014)"
+      ],
+      "request_id": "heldout.125"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.126"
+    },
+    {
+      "legacy_pass": true,
+      "necessary_conflicts": [],
+      "request_id": "heldout.127"
+    }
+  ],
+  "scope": "development diagnosis of archived v2 corpus; not a new holdout"
+}

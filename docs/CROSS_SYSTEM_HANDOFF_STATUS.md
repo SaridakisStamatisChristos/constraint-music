@@ -25,3 +25,18 @@ The separately retained controlled replay reproduces the v1 music21 counterexamp
 Executable checks and derived outcomes are in the [study README](../research/paired_cross_system_v1/README.md) and [report](../research/paired_cross_system_v1/REPORT.md). The manuscript is [CROSS_SYSTEM_CONFORMANCE_PAPER_DRAFT.md](CROSS_SYSTEM_CONFORMANCE_PAPER_DRAFT.md). Written outside evaluator permission remains a real owner action under the unchanged proprietary license.
 
 The completed v2 follow-up retains all 792 slots and reports reproducible adapted passes of CM 45/128, music21 113/128, Diatony 51/128, with zero timeouts/harness errors/inspection blocks. The predefined superiority gate fails; music21 completes more requests in this declared conditional grammar, while the Diatony comparison is inconclusive. The paper now includes this negative finding separately in §6.5. Improving CM's completion under the harder obligations is a subsequent engineering objective; outcome-informed changes require a fresh version and holdout, not a rewrite of these results.
+
+## Request-bound harmonization follow-up completed
+
+The [native API](REQUEST_BOUND_HARMONIZATION.md) implements complete chord requests,
+all-voice pitch anchors and independent score/native MIDI checks under a separate
+explicit contract. Legacy composition constraints/certificates remain unchanged.
+All 128 archived v2 cases now pass both seeds as development replay. Source and
+receipt commits precede the fresh v3 holdout, whose four paired configurations
+pass 128/128 (new CM), 53/128 (legacy CM), 111/128 (music21), 38/128 (adapted Diatony).
+All 1,056 planned slots and native/adapted artifacts replay without errors,
+blocks or timeouts. Practical improvement over legacy CM is established;
+the stronger all-comparison +10-point gate remains unmet against music21.
+The manuscript records these new results in §6.6 without replacing prior studies.
+See the [report](../research/paired_cross_system_v3/REPORT.md) for exact paired
+counts, simultaneous intervals, limitations and retained raw evidence.
