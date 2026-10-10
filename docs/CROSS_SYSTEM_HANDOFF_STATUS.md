@@ -35,8 +35,12 @@ All 128 archived v2 cases now pass both seeds as development replay. Source and
 receipt commits precede the fresh v3 holdout, whose four paired configurations
 pass 128/128 (new CM), 53/128 (legacy CM), 111/128 (music21), 38/128 (adapted Diatony).
 All 1,056 planned slots and native/adapted artifacts replay without errors,
-blocks or timeouts. Practical improvement over legacy CM is established;
-the stronger all-comparison +10-point gate remains unmet against music21.
-The manuscript records these new results in §6.6 without replacing prior studies.
+blocks or timeouts. The 17 CM-only passes and zero losses versus music21 establish
+a statistically supported positive completion difference on the declared grammar
+(corrected exact p=0.0000458; simultaneous interval [+2.34, +23.01] points).
+The separately prespecified +10-point minimum practical margin remains unmet
+against music21; it was an investigator-selected threshold, not a calibrated
+requirement for the narrower completion claim. The frozen gate verdict and all
+prior study results remain intact in the manuscript's §6.6.
 See the [report](../research/paired_cross_system_v3/REPORT.md) for exact paired
 counts, simultaneous intervals, limitations and retained raw evidence.
