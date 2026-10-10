@@ -1,0 +1,5 @@
+{
+  "phase": "development-only",
+  "source_commit": "3fee767",
+  "reason": "Fix two adapter harness errors: GenerationSpec serialization uses dataclasses.asdict; remove duplicate explicit cleanup of Gecode restart controls. The preliminary native crash happened after export. Preserve all six preliminary slots separately; these are not held-out system-performance observations."
+}

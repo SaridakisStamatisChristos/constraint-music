@@ -1,0 +1,325 @@
+{
+  "environment": {
+    "dependencies": {
+      "constraint-music": "2.13.0a1",
+      "mido": "1.3.3",
+      "music21": "9.9.2",
+      "ortools": "9.15.6755"
+    },
+    "diatony_probe_sha256": "507e516ec8b1a2cc5536e3ec6ff198cf61906ab4b0fa073a7d9c26de96653b0c",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "python": "3.12.14"
+  },
+  "protocol_hashes": {
+    "build_diatony.py": "488cd09608ed65c7b2885aed494ad5d944d3258330e0df712d1a58f3e1f0ae86",
+    "diatony_probe.cpp": "71bef556d5cdaf6c14d90b008c962bf2072efb0060b6178fafe6d1f7dd65d324",
+    "feasibility.py": "654de9f4facfcb50aa3e3409e1a8449ab77f5b398d176e2a39c781a27878a7cf",
+    "manifest.json": "e20061cc6ef7270a17920ed359146720e618978b0323df61d4ff4bed972bfadb",
+    "midi_probe.py": "183deb56959bb0306d2c4d6e8117ca5759f22d8a1911b9d82a9842b9d83c9ef9",
+    "support.json": "638fea868c65defe40a5b8260542cd49ac1553bd9e422d1c1e4f5a71ac862ee8"
+  },
+  "rows": [
+    {
+      "elapsed_seconds": 4.23809,
+      "hashes": {
+        "adapter_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "2ce9c48564ad644fd8f94aef0bd90608390fcf46471932eb69ad08a3e7343ce0",
+        "input.json": "3bfd407e97de6c157e8173b9aa562c270897c022e60cc598d19f4b32ea11643f",
+        "normalized.json": "bc93a365810e76ad04713dbbbc136f80f7211babf63639c062ee87d85a20dcdf",
+        "score.json": "ad57f982df77d9ff45e4c961ddd86d6290f58ac837d2921e4c98a77602091ad3"
+      },
+      "id": "constraint-music.C",
+      "inspection": {
+        "context_relation": "PASS",
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "0:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 64,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "key": "C",
+      "return_code": 0,
+      "status": "OUTPUT",
+      "system": "constraint-music"
+    },
+    {
+      "elapsed_seconds": 3.923327,
+      "hashes": {
+        "adapter_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "81d0afe2896a514663b028d78e016ec16fbba067548e4f27041047b9d1c99c17",
+        "input.json": "8fa62ec4552d29a6a08fdce6b1a0456b120edb95c0b4ceddb6ae07323324ae65",
+        "normalized.json": "d7cd4d909714ef021f7438fe28674ce1a73094feed1d1948eec37061082ede77",
+        "score.json": "cd222ab7cf8452d5b5187c340b8cb28ce7762c3eb2b292eb07350697e540ab59"
+      },
+      "id": "constraint-music.G",
+      "inspection": {
+        "context_relation": "PASS",
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            4,
+            3
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "1:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 64,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "key": "G",
+      "return_code": 0,
+      "status": "OUTPUT",
+      "system": "constraint-music"
+    },
+    {
+      "elapsed_seconds": 0.360234,
+      "hashes": {
+        "adapter_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "34443ec20d59cd9e0bc31b31345cc9d4750f33f99a7a412497d4487f71d6307e",
+        "input.json": "91e753181cb27f0d1a6920b0fc750954063c20dde2c0521dffeb054b29112c25",
+        "normalized.json": "846b5d750a7336b9b363eb34fe6ab0217dab3a45511ef14cb1ee97bb59d8e874",
+        "score.musicxml": "9383c4df200405131709b81c992f7788f948488c819f6ad3c06bd5c5ea4b8964"
+      },
+      "id": "music21.C",
+      "inspection": {
+        "context_relation": "PASS",
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "0:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "key": "C",
+      "return_code": 0,
+      "status": "OUTPUT",
+      "system": "music21"
+    },
+    {
+      "elapsed_seconds": 0.385913,
+      "hashes": {
+        "adapter_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "1de0d407bbb908ea4e74fe1054f58f0323b007f9047b19b4cc924bc802fc5312",
+        "input.json": "f1008b6e4856d7058ee572442de5a595c9e59d0ec69af9e034f680c9d9ba159e",
+        "normalized.json": "21964b0297a72678b859d8569f75a156f2ab7da2bf713205c4498b6dca6a5f25",
+        "score.musicxml": "77c946d1b4d659c02551971bb9d98e4e80d61fde97b6d397203c26e10905711f"
+      },
+      "id": "music21.G",
+      "inspection": {
+        "context_relation": "PASS",
+        "midi_groups": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "observed_context": [
+          [
+            "0",
+            "key",
+            "1:0"
+          ],
+          [
+            "0",
+            "meter",
+            "4/4"
+          ],
+          [
+            "0",
+            "tempo",
+            "500000"
+          ]
+        ],
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "PASS"
+      },
+      "key": "G",
+      "return_code": 0,
+      "status": "OUTPUT",
+      "system": "music21"
+    },
+    {
+      "elapsed_seconds": 0.23791,
+      "hashes": {
+        "adapter_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "0e041c7bd8ddfb56978111ffbc52795ff6833d6ed4be3825c7bfd15aeb76ff79",
+        "input.json": "aaa517a9ef4ee99255caf92eb9097fe6fa895d5291ab55701f81725f0240b8f4",
+        "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "normalized.json": "958c7874b247632a73b402ec0107b87cf01c65e506635e2576971ef7c952e124",
+        "score.txt": "756e5d3feb6da2768a0da63c18e6085bdc236a59bb56514f8d39d07b3ed09816"
+      },
+      "id": "diatony.C",
+      "inspection": {
+        "context_relation": "FAIL",
+        "midi_groups": [
+          [
+            1,
+            0
+          ]
+        ],
+        "observed_context": [],
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "UNOBSERVABLE"
+      },
+      "key": "C",
+      "return_code": 0,
+      "status": "OUTPUT",
+      "system": "diatony"
+    },
+    {
+      "elapsed_seconds": 0.182758,
+      "hashes": {
+        "adapter_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "adapter_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "delivered.mid": "e3083dfa4bc6e08072fb987e352d6d96e357e832ad258f8e36f14e899a659bf7",
+        "input.json": "38eae94a520d5b2156d7770c5bc49d3e8ccbec18c6d45d30bc8d29e669673528",
+        "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "normalized.json": "eba505e82b807fcbe274577cffb45f2fcac98843d67b90103ac0856e6cf5dc5a",
+        "score.txt": "3d1840099744ace346aaffe2064fb02bf458eeaf941ecfc08d25b2a9df37645f"
+      },
+      "id": "diatony.G",
+      "inspection": {
+        "context_relation": "FAIL",
+        "midi_groups": [
+          [
+            1,
+            0
+          ]
+        ],
+        "observed_context": [],
+        "parsed_notes": 16,
+        "parser_agreement": true,
+        "symbolic_issues": [],
+        "unvoiced_event_relation": "PASS",
+        "voice_event_relation": "UNOBSERVABLE"
+      },
+      "key": "G",
+      "return_code": 0,
+      "status": "OUTPUT",
+      "system": "diatony"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "scope": "development validation serialization only",
+  "reason": "Compare inspections by canonical JSON, since JSON stores tuple track/channel groups as arrays. No native bytes, observed outcomes, musical predicates, or denominators changed. Original collection observations and source are preserved here.",
+  "collection_source_commit": "f53c6d0"
+}

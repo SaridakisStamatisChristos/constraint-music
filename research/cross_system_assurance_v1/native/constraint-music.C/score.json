@@ -1,0 +1,937 @@
+{
+  "music": {
+    "actual_tension": [
+      7,
+      9,
+      20,
+      20,
+      26,
+      39,
+      46,
+      59,
+      69,
+      69,
+      59,
+      38,
+      20,
+      20,
+      59,
+      3
+    ],
+    "alto_midi": [
+      60,
+      60,
+      57,
+      57,
+      60,
+      62,
+      65,
+      55,
+      67,
+      67,
+      55,
+      64,
+      64,
+      64,
+      55,
+      67
+    ],
+    "alto_names": [
+      "C4",
+      "C4",
+      "A3",
+      "A3",
+      "C4",
+      "D4",
+      "F4",
+      "G3",
+      "G4",
+      "G4",
+      "G3",
+      "E4",
+      "E4",
+      "E4",
+      "G3",
+      "G4"
+    ],
+    "bass_midi": [
+      40,
+      43,
+      45,
+      45,
+      45,
+      50,
+      48,
+      47,
+      47,
+      47,
+      47,
+      48,
+      45,
+      45,
+      47,
+      48
+    ],
+    "bass_names": [
+      "E2",
+      "G2",
+      "A2",
+      "A2",
+      "A2",
+      "D3",
+      "C3",
+      "B2",
+      "B2",
+      "B2",
+      "B2",
+      "C3",
+      "A2",
+      "A2",
+      "B2",
+      "C3"
+    ],
+    "chord_degrees": [
+      0,
+      0,
+      5,
+      5,
+      5,
+      1,
+      3,
+      4,
+      4,
+      4,
+      4,
+      5,
+      5,
+      5,
+      4,
+      0
+    ],
+    "chord_form_names": [
+      "I6",
+      "I64",
+      "vi",
+      "vi",
+      "vi",
+      "ii",
+      "IV64",
+      "V6",
+      "V6",
+      "V6",
+      "V6",
+      "vi6",
+      "vi",
+      "vi",
+      "V6",
+      "I"
+    ],
+    "chord_inversions": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0
+    ],
+    "chord_kinds": [
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad",
+      "triad"
+    ],
+    "chord_names": [
+      "I",
+      "I",
+      "vi",
+      "vi",
+      "vi",
+      "ii",
+      "IV",
+      "V",
+      "V",
+      "V",
+      "V",
+      "vi",
+      "vi",
+      "vi",
+      "V",
+      "I"
+    ],
+    "melody_midi": [
+      67,
+      64,
+      60,
+      60,
+      64,
+      65,
+      69,
+      67,
+      74,
+      74,
+      67,
+      69,
+      72,
+      72,
+      67,
+      72
+    ],
+    "melody_names": [
+      "G4",
+      "E4",
+      "C4",
+      "C4",
+      "E4",
+      "F4",
+      "A4",
+      "G4",
+      "D5",
+      "D5",
+      "G4",
+      "A4",
+      "C5",
+      "C5",
+      "G4",
+      "C5"
+    ],
+    "modal_sources": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "rhythm": [
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset",
+      "onset"
+    ],
+    "soprano_midi": [
+      67,
+      64,
+      60,
+      60,
+      64,
+      65,
+      69,
+      67,
+      74,
+      74,
+      67,
+      69,
+      72,
+      72,
+      67,
+      72
+    ],
+    "soprano_names": [
+      "G4",
+      "E4",
+      "C4",
+      "C4",
+      "E4",
+      "F4",
+      "A4",
+      "G4",
+      "D5",
+      "D5",
+      "G4",
+      "A4",
+      "C5",
+      "C5",
+      "G4",
+      "C5"
+    ],
+    "target_tension": [
+      8,
+      12,
+      16,
+      20,
+      29,
+      39,
+      48,
+      59,
+      71,
+      82,
+      61,
+      39,
+      18,
+      13,
+      7,
+      2
+    ],
+    "tenor_midi": [
+      48,
+      48,
+      52,
+      52,
+      57,
+      57,
+      53,
+      50,
+      55,
+      55,
+      50,
+      57,
+      57,
+      57,
+      50,
+      64
+    ],
+    "tenor_names": [
+      "C3",
+      "C3",
+      "E3",
+      "E3",
+      "A3",
+      "A3",
+      "F3",
+      "D3",
+      "G3",
+      "G3",
+      "D3",
+      "A3",
+      "A3",
+      "A3",
+      "D3",
+      "E4"
+    ],
+    "tonicization_targets": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "solver": {
+    "objective": 2337.0,
+    "status": "OPTIMAL",
+    "wall_time_seconds": 3.8157185080000002
+  },
+  "spec": {
+    "avoid_parallel_perfects": true,
+    "bars": 4,
+    "bass_high": 55,
+    "bass_low": 36,
+    "beats_per_bar": 4,
+    "harmony_vocabulary": "triads",
+    "key": "C",
+    "max_bass_leap": 7,
+    "max_consecutive_rests": 1,
+    "max_melody_leap": 12,
+    "max_onsets_per_bar": 16,
+    "max_repeated_notes": 2,
+    "max_rests_per_bar": 4,
+    "max_tie_steps": 1,
+    "max_ties_per_bar": 4,
+    "max_time_seconds": 10,
+    "melody_high": 81,
+    "melody_low": 60,
+    "min_onsets_per_bar": 1,
+    "min_rests_per_bar": 0,
+    "min_ties_per_bar": 0,
+    "minimum_applied_dominants": 0,
+    "minimum_borrowed_chords": 0,
+    "minimum_secondary_leading_tone_chords": 0,
+    "minimum_secondary_leading_tone_seventh_chords": 0,
+    "minimum_seventh_chords": 0,
+    "modal_mixture_enabled": false,
+    "mode": "major",
+    "modulation_boundary_beat": null,
+    "modulation_destination_key": null,
+    "modulation_enabled": false,
+    "motif_length_steps": 4,
+    "motif_relation": "none",
+    "motif_source_bar": 0,
+    "motif_target_bar": 2,
+    "motif_transpose_semitones": 0,
+    "phrases": [],
+    "progression_graph": {
+      "0": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "1": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "2": [
+        2,
+        3,
+        5
+      ],
+      "3": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "4": [
+        0,
+        4,
+        5,
+        6
+      ],
+      "5": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "6": [
+        0,
+        2,
+        6
+      ]
+    },
+    "require_authentic_cadence": true,
+    "require_bar_downbeat_onset": true,
+    "resolve_leading_tone": true,
+    "rhythm_enabled": false,
+    "secondary_leading_tone_enabled": false,
+    "secondary_leading_tone_seventh_enabled": false,
+    "seed": 7,
+    "subdivisions_per_beat": 1,
+    "tempo_bpm": 120,
+    "tension_curve": [
+      0.08,
+      0.2,
+      0.48,
+      0.82,
+      0.18,
+      0.02
+    ],
+    "tonicization_enabled": false,
+    "workers": 1
+  },
+  "validation": {
+    "checked_rules": [
+      "CM001",
+      "CM002",
+      "CM003",
+      "CM004",
+      "CM005",
+      "CM006",
+      "CM007",
+      "CM008",
+      "CM009",
+      "CM010",
+      "CM011",
+      "CM012",
+      "CM013",
+      "CM014",
+      "CM015",
+      "CM016",
+      "CM017",
+      "CM018",
+      "CM019",
+      "CM020",
+      "CM021",
+      "CM022",
+      "CM023",
+      "CM024",
+      "CM025",
+      "CM026",
+      "CM027",
+      "CM028",
+      "CM029",
+      "CM030",
+      "CM031",
+      "CM032",
+      "CM033",
+      "CM034",
+      "CM035",
+      "CM036",
+      "CM037",
+      "CM038",
+      "CM039",
+      "CM040",
+      "CM041",
+      "CM042",
+      "CM043",
+      "CM044",
+      "CM045",
+      "CM046",
+      "CM047",
+      "CM048",
+      "CM049",
+      "CM050",
+      "CM051",
+      "CM052",
+      "CM053",
+      "CM054",
+      "CM055",
+      "CM056",
+      "CM057"
+    ],
+    "diagnostics": [],
+    "failed_rules": [],
+    "issues": [],
+    "rule_outcomes": [
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM001",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM002",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM003",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM004",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM005",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM006",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM007",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM008",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM009",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "melodic leading-tone resolution is enabled",
+        "rule_id": "CM010",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM011",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM012",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM013",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM014",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "parallel-perfect avoidance is enabled",
+        "rule_id": "CM015",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "whole-piece closure is required",
+        "rule_id": "CM016",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM017",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "rhythm feature is disabled",
+        "rule_id": "CM018",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "rhythm feature is disabled",
+        "rule_id": "CM019",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "no motif relation is declared",
+        "rule_id": "CM020",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "cadential closure is required",
+        "rule_id": "CM021",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "no phrase grammar is declared",
+        "rule_id": "CM022",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "no phrase grammar is declared",
+        "rule_id": "CM023",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "no phrase grammar is declared",
+        "rule_id": "CM024",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "no phrase grammar is declared",
+        "rule_id": "CM025",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "no phrase grammar is declared",
+        "rule_id": "CM026",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM027",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM028",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM029",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM030",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "parallel-perfect avoidance is enabled",
+        "rule_id": "CM031",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "leading-tone resolution is enabled",
+        "rule_id": "CM032",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "mandatory for the current SATB certification profile",
+        "rule_id": "CM033",
+        "status": "PASS",
+        "visited": true
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "triad-only vocabulary",
+        "rule_id": "CM034",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "triad-only vocabulary",
+        "rule_id": "CM035",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "triad-only vocabulary",
+        "rule_id": "CM036",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "tonicization is disabled",
+        "rule_id": "CM037",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "tonicization is disabled",
+        "rule_id": "CM038",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "tonicization is disabled",
+        "rule_id": "CM039",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "tonicization is disabled",
+        "rule_id": "CM040",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "modal mixture is disabled",
+        "rule_id": "CM041",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "modal mixture is disabled",
+        "rule_id": "CM042",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "modulation is disabled",
+        "rule_id": "CM043",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "modulation is disabled",
+        "rule_id": "CM044",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "modulation is disabled",
+        "rule_id": "CM045",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "modulation is disabled",
+        "rule_id": "CM046",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "modulation is disabled",
+        "rule_id": "CM047",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "modulation is disabled",
+        "rule_id": "CM048",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "borrowed sevenths are out of scope",
+        "rule_id": "CM049",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "borrowed sevenths are out of scope",
+        "rule_id": "CM050",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "borrowed sevenths are out of scope",
+        "rule_id": "CM051",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "secondary leading-tone triads are disabled",
+        "rule_id": "CM052",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "secondary leading-tone triads are disabled",
+        "rule_id": "CM053",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "secondary leading-tone triads are disabled",
+        "rule_id": "CM054",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "secondary leading-tone sevenths are disabled",
+        "rule_id": "CM055",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "secondary leading-tone sevenths are disabled",
+        "rule_id": "CM056",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      },
+      {
+        "diagnostic_codes": [],
+        "rationale": "secondary leading-tone sevenths are disabled",
+        "rule_id": "CM057",
+        "status": "NOT_APPLICABLE",
+        "visited": false
+      }
+    ],
+    "valid": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "scope": "Inspected pinned entry points and native render profiles; not all possible integrations.",
+  "properties": {
+    "key_major_C_G": {"constraint-music": "SUPPORTED", "music21": "SUPPORTED", "diatony": "SUPPORTED"},
+    "four_symbolic_voices": {"constraint-music": "SUPPORTED", "music21": "SUPPORTED", "diatony": "SUPPORTED"},
+    "given_bass_line": {"constraint-music": "UNSUPPORTED", "music21": "SUPPORTED", "diatony": "UNKNOWN"},
+    "fixed_root_position_I_IV_V_I": {"constraint-music": "UNSUPPORTED", "music21": "SUPPORTED", "diatony": "SUPPORTED"},
+    "arbitrary_shared_rhythm": {"constraint-music": "UNKNOWN", "music21": "UNKNOWN", "diatony": "UNSUPPORTED"},
+    "native_smf_voice_identity": {"constraint-music": "SUPPORTED", "music21": "SUPPORTED", "diatony": "UNSUPPORTED"},
+    "native_smf_key_meter_tempo": {"constraint-music": "SUPPORTED", "music21": "SUPPORTED", "diatony": "UNSUPPORTED"},
+    "ties_rests_contextual_harmony_shared": {"constraint-music": "UNKNOWN", "music21": "UNKNOWN", "diatony": "UNKNOWN"}
+  },
+  "independence_groups": {"constraint-music": "constraint-music-cpsat", "music21": "music21-fb-realizer", "diatony": "diatony-gecode"},
+  "candidate_scope_ready": {"music21": true, "diatony": false},
+  "licenses": {
+    "constraint-music": "LicenseRef-Constraint-Music-Proprietary; owner-authorized execution in this task only; no new third-party grant",
+    "music21": "BSD-3-Clause; package license inspected; independently implemented realizer",
+    "diatony": "CC0-1.0 at pinned checkout; Gecode MIT; embedded midifile BSD-2-Clause; upstream source and binaries not redistributed here"
+  }
+}
