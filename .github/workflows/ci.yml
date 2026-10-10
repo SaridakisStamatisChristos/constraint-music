@@ -45,7 +45,7 @@ jobs:
       - run: python -m research.cross_system_delivery_v1.pilot --check
       - run: python -m research.paired_cross_system_v1.runner check
       - run: python -m research.paired_cross_system_v1.analysis --check
-      - run: python -m research.paired_cross_system_v2.runner check
+      - run: python -m research.check_paired_v2
 
   checker-only:
     runs-on: ubuntu-latest

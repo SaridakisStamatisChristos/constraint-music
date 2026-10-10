@@ -31,7 +31,7 @@ After permission, from the repository root:
 python -m pip install -e . mido==1.3.3
 git fetch --no-tags research/history/paired_cross_system_v2.bundle \
   refs/heads/research/fair-paired-cross-system-v2:refs/assurance/paired-cross-system-v2-original
-python -m research.paired_cross_system_v2.runner check
+python -m research.check_paired_v2
 ```
 
 Replay needs only the checker dependencies, original protocol Git objects and
@@ -39,6 +39,13 @@ archives. It does not rerun generators or need Gecode/music21/OR-Tools. Source
 commit `6ffa3f6` and freeze-receipt commit `a1cdd15` precede heldout generation.
 The history bundle preserves those objects when GitHub transport flattens commits.
 The original binary is hashed but is not redistributed.
+
+The wrapper outside the frozen study permits at most eight floating-point ULPs
+on the two computed confidence bounds. Python 3.11 reproduced one bound as
+0.12704383281166098 rather than 0.1270438328116611. Every other value, type,
+count, verdict, archive hash and rendered report remains exact. The original
+study code, receipt and stored values are unchanged; this is portable replay,
+not a new analysis or a changed superiority threshold.
 
 Direct file inspection needs no repository execution:
 

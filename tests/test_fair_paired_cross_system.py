@@ -9,6 +9,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
+from research.check_paired_v2 import same_summary
 from research.paired_cross_system_v1.render import render
 from research.paired_cross_system_v2 import runner
 from research.paired_cross_system_v2.contract import VOICES, admission
@@ -183,7 +184,7 @@ def test_frozen_heldout_replay_and_report():
 
     runner.verify_freeze()
     summary = runner.analyze()
-    assert summary == json.loads((runner.ROOT / "summary.json").read_text())
+    assert same_summary(summary, json.loads((runner.ROOT / "summary.json").read_text()))
     assert summary["primary_n"] == 128 and summary["attempt_n"] == 792
     assert report(summary) == (runner.ROOT / "REPORT.md").read_text()
 
@@ -217,3 +218,21 @@ def test_native_normalization_cannot_repair_pitch(cases):
     files["events.json"] = json.dumps(normalized).encode()
     with pytest.raises(ValueError, match="native capture differs"):
         runner.inspect("constraint-music", entry["request"], files)
+
+
+def test_portable_summary_allows_only_tiny_ci_rounding():
+    original = {
+        "paired_comparisons": {
+            "diatony": {"conservative_paired_ci": [-0.2172283604579312, 0.1270438328116611]}
+        }
+    }
+    changed = copy.deepcopy(original)
+    changed["paired_comparisons"]["diatony"]["conservative_paired_ci"][1] = 0.12704383281166098
+    assert same_summary(changed, original)
+    changed["paired_comparisons"]["diatony"]["conservative_paired_ci"][1] += 1e-10
+    assert not same_summary(changed, original)
+
+
+@pytest.mark.parametrize("changed", ({"n": True}, {"n": 127}, {"n": 128, "extra": 0}))
+def test_portable_summary_keeps_counts_types_and_structure_exact(changed):
+    assert not same_summary(changed, {"n": 128})
