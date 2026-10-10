@@ -1,0 +1,410 @@
+{
+  "corrected": {
+    "delivery": {
+      "division": 10080,
+      "issues": [],
+      "parsed_notes": 24,
+      "parser_agreement": true,
+      "status": "PASS"
+    },
+    "events": [
+      [
+        "Alto",
+        62,
+        "16",
+        "4"
+      ],
+      [
+        "Alto",
+        63,
+        "0",
+        "4"
+      ],
+      [
+        "Alto",
+        63,
+        "20",
+        "4"
+      ],
+      [
+        "Alto",
+        63,
+        "4",
+        "4"
+      ],
+      [
+        "Alto",
+        63,
+        "8",
+        "4"
+      ],
+      [
+        "Alto",
+        65,
+        "12",
+        "4"
+      ],
+      [
+        "Bass",
+        48,
+        "4",
+        "4"
+      ],
+      [
+        "Bass",
+        51,
+        "0",
+        "4"
+      ],
+      [
+        "Bass",
+        51,
+        "20",
+        "4"
+      ],
+      [
+        "Bass",
+        53,
+        "12",
+        "4"
+      ],
+      [
+        "Bass",
+        56,
+        "8",
+        "4"
+      ],
+      [
+        "Bass",
+        58,
+        "16",
+        "4"
+      ],
+      [
+        "Soprano",
+        65,
+        "16",
+        "4"
+      ],
+      [
+        "Soprano",
+        67,
+        "0",
+        "4"
+      ],
+      [
+        "Soprano",
+        67,
+        "20",
+        "4"
+      ],
+      [
+        "Soprano",
+        67,
+        "4",
+        "4"
+      ],
+      [
+        "Soprano",
+        68,
+        "12",
+        "4"
+      ],
+      [
+        "Soprano",
+        72,
+        "8",
+        "4"
+      ],
+      [
+        "Tenor",
+        58,
+        "0",
+        "4"
+      ],
+      [
+        "Tenor",
+        58,
+        "16",
+        "4"
+      ],
+      [
+        "Tenor",
+        58,
+        "20",
+        "4"
+      ],
+      [
+        "Tenor",
+        60,
+        "12",
+        "4"
+      ],
+      [
+        "Tenor",
+        60,
+        "4",
+        "4"
+      ],
+      [
+        "Tenor",
+        60,
+        "8",
+        "4"
+      ]
+    ],
+    "issues": [],
+    "native_input": {
+      "bass_spellings": [
+        "E-3",
+        "C3",
+        "A-3",
+        "F3",
+        "B-3",
+        "E-3"
+      ],
+      "legacy_spelling": false,
+      "request": {
+        "allowed_note_quarters": [
+          1,
+          4
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 4,
+        "complete_triads": true,
+        "constant_voicing_per_chord": true,
+        "degrees": [
+          0,
+          5,
+          3,
+          1,
+          4,
+          0
+        ],
+        "given_voice": null,
+        "key": "Eb",
+        "meter": "4/4",
+        "mode": "major",
+        "noncrossing": true,
+        "parallel_perfects": false,
+        "request_id": "heldout.extended-submediant.Eb",
+        "rests": false,
+        "root_position": true,
+        "schema_version": 1,
+        "tempo_bpm": 132,
+        "ties": false,
+        "voices": [
+          "Soprano",
+          "Alto",
+          "Tenor",
+          "Bass"
+        ]
+      }
+    }
+  },
+  "legacy": {
+    "delivery": {
+      "division": 10080,
+      "issues": [],
+      "parsed_notes": 24,
+      "parser_agreement": true,
+      "status": "PASS"
+    },
+    "events": [
+      [
+        "Alto",
+        60,
+        "12",
+        "4"
+      ],
+      [
+        "Alto",
+        62,
+        "16",
+        "4"
+      ],
+      [
+        "Alto",
+        62,
+        "8",
+        "4"
+      ],
+      [
+        "Alto",
+        63,
+        "0",
+        "4"
+      ],
+      [
+        "Alto",
+        63,
+        "20",
+        "4"
+      ],
+      [
+        "Alto",
+        63,
+        "4",
+        "4"
+      ],
+      [
+        "Bass",
+        48,
+        "4",
+        "4"
+      ],
+      [
+        "Bass",
+        51,
+        "0",
+        "4"
+      ],
+      [
+        "Bass",
+        51,
+        "20",
+        "4"
+      ],
+      [
+        "Bass",
+        53,
+        "12",
+        "4"
+      ],
+      [
+        "Bass",
+        56,
+        "8",
+        "4"
+      ],
+      [
+        "Bass",
+        58,
+        "16",
+        "4"
+      ],
+      [
+        "Soprano",
+        65,
+        "16",
+        "4"
+      ],
+      [
+        "Soprano",
+        67,
+        "0",
+        "4"
+      ],
+      [
+        "Soprano",
+        67,
+        "20",
+        "4"
+      ],
+      [
+        "Soprano",
+        67,
+        "4",
+        "4"
+      ],
+      [
+        "Soprano",
+        68,
+        "12",
+        "4"
+      ],
+      [
+        "Soprano",
+        70,
+        "8",
+        "4"
+      ],
+      [
+        "Tenor",
+        58,
+        "0",
+        "4"
+      ],
+      [
+        "Tenor",
+        58,
+        "16",
+        "4"
+      ],
+      [
+        "Tenor",
+        58,
+        "20",
+        "4"
+      ],
+      [
+        "Tenor",
+        58,
+        "8",
+        "4"
+      ],
+      [
+        "Tenor",
+        60,
+        "12",
+        "4"
+      ],
+      [
+        "Tenor",
+        60,
+        "4",
+        "4"
+      ]
+    ],
+    "issues": [
+      "TRIAD_COMPLETENESS_OR_CONTENT"
+    ],
+    "native_input": {
+      "bass_spellings": [
+        "E-3",
+        "C3",
+        "G#3",
+        "F3",
+        "B-3",
+        "E-3"
+      ],
+      "legacy_spelling": true,
+      "request": {
+        "allowed_note_quarters": [
+          1,
+          4
+        ],
+        "cadential_leading_tone_resolution": true,
+        "chord_quarters": 4,
+        "complete_triads": true,
+        "constant_voicing_per_chord": true,
+        "degrees": [
+          0,
+          5,
+          3,
+          1,
+          4,
+          0
+        ],
+        "given_voice": null,
+        "key": "Eb",
+        "meter": "4/4",
+        "mode": "major",
+        "noncrossing": true,
+        "parallel_perfects": false,
+        "request_id": "heldout.extended-submediant.Eb",
+        "rests": false,
+        "root_position": true,
+        "schema_version": 1,
+        "tempo_bpm": 132,
+        "ties": false,
+        "voices": [
+          "Soprano",
+          "Alto",
+          "Tenor",
+          "Bass"
+        ]
+      }
+    }
+  }
+}

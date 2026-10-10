@@ -1,0 +1,1894 @@
+[
+  {
+    "files": {
+      "native_failure.json": "33a339b2ec619e5de173d88c4675cdfcc9fb504d9d1bc3f6d92f1b8d4232b12d",
+      "native_input.json": "d5d5b2d348948edd93ff62127cb55735f36017cb4feef924e4d777c39daf16c1",
+      "process.json": "6db5930d7f8be75284996dbf79010a3636f60b5c56dc7fd7fa9a62e3d155a9de",
+      "request.json": "c3594b3c25c1affe3031eaef8b3083bb47ea7b5d236f917f20c8dcab74290b6d",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.572259,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.000",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "adapted.mid": "0737bc21cadcd9b32c666214b76c0d0709b79c7cbb32a216da2952f5e9213143",
+      "events.json": "f6c2b1602cb05086dda24a5a17c08ee025999553789416e01817af5f5dce53f0",
+      "metrics.json": "98c28ca9ddca5a91f136318339bf4639e39d69fb984e526729d34cf21f7bdcc9",
+      "native.mid": "f397a46d1245a4e6c6bdd1503653bd701dad1bdf9b49dd8b3b4a7a6ec92dae57",
+      "native_input.json": "05f5df5f66b06c3144299eb1c06e57b4af0682e367c17d242148a3774b44f6fd",
+      "native_score.musicxml": "582a3c991bd016f721da11fbf38c8f126be1be90f1a756f6d9801c86e07f197f",
+      "process.json": "4b82d83cb2c4b3a34a9b9f7799462ed53abdc2b40f272d755fadbad6bbec282c",
+      "request.json": "c3594b3c25c1affe3031eaef8b3083bb47ea7b5d236f917f20c8dcab74290b6d",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.450098,
+        "max_process_rss_kib": 120452
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.974716,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.000",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "8a6263968d2df2b2d5486d1efba30c9415e4ffae89d8a9289800ad074836158d",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "4d4947795d0b3300ec758c5350c1fcebbb4d3c8abfa7f814953619bebde2b03e",
+      "request.json": "c3594b3c25c1affe3031eaef8b3083bb47ea7b5d236f917f20c8dcab74290b6d",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.453504,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.000",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "native_failure.json": "33a339b2ec619e5de173d88c4675cdfcc9fb504d9d1bc3f6d92f1b8d4232b12d",
+      "native_input.json": "afaddb0398bb9e1080201c928477d1f9adbbd6672d7f3d2f86d7bd26f5605ac9",
+      "process.json": "007d926a82fe11e74608765a83bb58b4163cfe7cb4ea4929607c24e46ab25514",
+      "request.json": "c3594b3c25c1affe3031eaef8b3083bb47ea7b5d236f917f20c8dcab74290b6d",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.481655,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.000",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "adapted.mid": "0737bc21cadcd9b32c666214b76c0d0709b79c7cbb32a216da2952f5e9213143",
+      "events.json": "f6c2b1602cb05086dda24a5a17c08ee025999553789416e01817af5f5dce53f0",
+      "metrics.json": "0d993ac07af03adeb40284c2290b25ea794580a74226e99e0096e00eccf87c22",
+      "native.mid": "f397a46d1245a4e6c6bdd1503653bd701dad1bdf9b49dd8b3b4a7a6ec92dae57",
+      "native_input.json": "05f5df5f66b06c3144299eb1c06e57b4af0682e367c17d242148a3774b44f6fd",
+      "native_score.musicxml": "52a97f00d79124bc166285379d9ca31360a0867e0983749d62481d5af8f00453",
+      "process.json": "f3a51a7e07ce5e5daf9e3d0b61cd34422c6431f81c31a1728098f10320d38578",
+      "request.json": "c3594b3c25c1affe3031eaef8b3083bb47ea7b5d236f917f20c8dcab74290b6d",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.397305,
+        "max_process_rss_kib": 119660
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.874142,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.000",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "7e19fd63d449e64be2cd19d75f41549c48f9bc84507caab94ae8a721ca3b026e",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "00257a53d8ca2af524a4434b52af03a482e5f507c090672a24a5fda881d134b8",
+      "request.json": "c3594b3c25c1affe3031eaef8b3083bb47ea7b5d236f917f20c8dcab74290b6d",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.43207,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.000",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "3c6a7011f751214761ed68ff928e76133fbedf8c95918f9e386e7927a108bef4",
+      "events.json": "acfce4233552c009a11c5dd5eb71019bd350b15d907a8cb2f91ef662a1df443f",
+      "metrics.json": "f43b79ce2239ff5c4edffe27fe6d5c71febc6e81f2214b54072e05702b6cfa5a",
+      "native.mid": "4ef0e1f146d6d29cd6ae6a6541a0926a6c1c2e2530a8ead742b81a000e2af32a",
+      "native_input.json": "6dcb39fb89d917cdb925c55fc2b9984265c6bbf3431d5d9ab0ae28326492519e",
+      "native_score.musicxml": "7bb48321412f86edec2d9d039b8d3e850e03d4181ef9e7afd293b17cf9d4f99f",
+      "process.json": "b0e96dcd2482f975ec8b52cad66f1c5f63ca8f5fe0e6b37ef6ac7df6f6c492b4",
+      "request.json": "8c215707365a3c549f8f7296bd3a1cc366036bdedc4a7fd6c8babb9d2f1b1f00",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.298075,
+        "max_process_rss_kib": 120124
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.795321,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.001",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "f9c1d0828d3b5973143d966893778dabbce8d41ab35b71e70e1d81d50864193c",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "e5e224d0789115001c1ba0cbb4d9d0cea49e9af12b33c7be401772f8f7b90ca6",
+      "request.json": "8c215707365a3c549f8f7296bd3a1cc366036bdedc4a7fd6c8babb9d2f1b1f00",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.458789,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.001",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "native_failure.json": "33a339b2ec619e5de173d88c4675cdfcc9fb504d9d1bc3f6d92f1b8d4232b12d",
+      "native_input.json": "d0a47c224e3481d5d423600622f0fa636572950a86f36009ed8d407002b4e44b",
+      "process.json": "c0ac12095a6ed4ac85dbf536717f2b4a0059b726a4ead775ad23b1489735bdf0",
+      "request.json": "8c215707365a3c549f8f7296bd3a1cc366036bdedc4a7fd6c8babb9d2f1b1f00",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.458844,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.001",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "adapted.mid": "3c6a7011f751214761ed68ff928e76133fbedf8c95918f9e386e7927a108bef4",
+      "events.json": "acfce4233552c009a11c5dd5eb71019bd350b15d907a8cb2f91ef662a1df443f",
+      "metrics.json": "42509b234d77e5481aba0a38b7ca74bd339f98ccbfbf504e57908420caa0612a",
+      "native.mid": "4ef0e1f146d6d29cd6ae6a6541a0926a6c1c2e2530a8ead742b81a000e2af32a",
+      "native_input.json": "6dcb39fb89d917cdb925c55fc2b9984265c6bbf3431d5d9ab0ae28326492519e",
+      "native_score.musicxml": "c3c076aacb1cb97d1226d91e8d563ef175ca0bbf6db6563d83253e6a77cd5f82",
+      "process.json": "8c96bb0c6f15414d1155a724bc767aa61e223514b0e55afca0f710172f29d942",
+      "request.json": "8c215707365a3c549f8f7296bd3a1cc366036bdedc4a7fd6c8babb9d2f1b1f00",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.280141,
+        "max_process_rss_kib": 119208
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.746767,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.001",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "11f14716242dc789fe1d58f64d8529ab07337c936d199c045e872990993fabd3",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "006746147bec52bf909f33225d108426e57a5ccd4f5960490c2a528a0a0766e0",
+      "request.json": "8c215707365a3c549f8f7296bd3a1cc366036bdedc4a7fd6c8babb9d2f1b1f00",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.413195,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.001",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "native_failure.json": "33a339b2ec619e5de173d88c4675cdfcc9fb504d9d1bc3f6d92f1b8d4232b12d",
+      "native_input.json": "2c1f86cb94b17c6cf0f793764ac87e68274a9d213ba2044b4a24f11403e36b80",
+      "process.json": "6a1d5aabd0aabfd749080097447c6071500c27844604cf2b38b1498c3b23d10a",
+      "request.json": "8c215707365a3c549f8f7296bd3a1cc366036bdedc4a7fd6c8babb9d2f1b1f00",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.427172,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.001",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "native_input.json": "5239199dd8454637a29c5e72a8712633a1e7bb1ecbc2d3d681e2f450e554b7e1",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "580d09015452305e62ed6916f78e44d45b5a5fd5a9cba96e2d44d659c75a1205",
+      "request.json": "30d1400a153074bab270f61e1bacab8e3bd835b5601bdc745405aa72d9ce7c09",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.424034,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.002",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "d0e53c0e9dd0c430daebf713801abfb5dfc2d5a6da633b46cdbf1122d6fe97f7",
+      "events.json": "4fab1608f8c4f00dbe4b00be3090d01ca330f080a9b9a3bf39f183304705c825",
+      "metrics.json": "da6e3c10d67fbc40fc6049b4009c2947aa14c05e1df97ee686dc2f14a7e92c18",
+      "native.mid": "b5948b3c7f16b4f4b1ee2ab39e8bb37d18321f81277f0d22dce0d0156dbc650b",
+      "native_input.json": "68a07796edfc86f37f018f7d7dda29617ad1b90f570b22999b3e3222f5bd3d36",
+      "native_score.json": "f5c4c5e76e08ead66d4f5cf535651b03cce5193c9681656d14a46fe6d1b35394",
+      "process.json": "1cb9cb7d6afb2b8d5355a8fb7c6ea08c776e89cf8b84622b712d985e5851150b",
+      "request.json": "30d1400a153074bab270f61e1bacab8e3bd835b5601bdc745405aa72d9ce7c09",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.120929,
+        "max_process_rss_kib": 111672
+      },
+      "native": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.544336,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.002",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "native_input.json": "878ec3b8c3e9c8f0dc927d32c61b885cb17ef633d0a64053cbee13ddd0501b49",
+      "process.json": "55a9f2f6687e15d4b4d8919750985d33d2c82227de6a54d8946f7eb3bf9b5c97",
+      "request.json": "30d1400a153074bab270f61e1bacab8e3bd835b5601bdc745405aa72d9ce7c09",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.810665,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.002",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "cdd4d2e73d34d17dd5ec57fc058784e50e9c77ea4d9783b5a5a6e61bf9ba8f45",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "242bd2bbd2d63f2d8cbf2936668f3a39fb133fe52c29008d2c481df8d32e6b12",
+      "request.json": "30d1400a153074bab270f61e1bacab8e3bd835b5601bdc745405aa72d9ce7c09",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.466817,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.002",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "d0e53c0e9dd0c430daebf713801abfb5dfc2d5a6da633b46cdbf1122d6fe97f7",
+      "events.json": "4fab1608f8c4f00dbe4b00be3090d01ca330f080a9b9a3bf39f183304705c825",
+      "metrics.json": "e0fba3b6d9c5f9a74bff701eb73c9f2cc41185069b8ee0d9278e41f39a4dd46d",
+      "native.mid": "b5948b3c7f16b4f4b1ee2ab39e8bb37d18321f81277f0d22dce0d0156dbc650b",
+      "native_input.json": "9ac94dd27a1ebca175ea67a1e7bfa484aaf5d8e41022feb4dc496a7f8ec0d803",
+      "native_score.json": "765a28a4d9bb7837fd57da00e4f1a3c890a3c42ff044eedc32bdd0a8444053a8",
+      "process.json": "358918a9ebda13f928fe6bcf709530eae57ee3df1794eb6b90438f8519d5c395",
+      "request.json": "30d1400a153074bab270f61e1bacab8e3bd835b5601bdc745405aa72d9ce7c09",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.124389,
+        "max_process_rss_kib": 110748
+      },
+      "native": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.528559,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.002",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "native_input.json": "878ec3b8c3e9c8f0dc927d32c61b885cb17ef633d0a64053cbee13ddd0501b49",
+      "process.json": "408397109021f4c94069162e1f4f7b985eda6969987174c105a97b72cae54a8b",
+      "request.json": "30d1400a153074bab270f61e1bacab8e3bd835b5601bdc745405aa72d9ce7c09",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.83471,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.002",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_failure.json": "33a339b2ec619e5de173d88c4675cdfcc9fb504d9d1bc3f6d92f1b8d4232b12d",
+      "native_input.json": "80a8fe95dffa044f50e9af99fe1e1b3fe01c35c64b298e40004db5dcea8bcb51",
+      "process.json": "3cc79791f55408a4fc05b2ad0213a0856a19985ba621a93ad3fdc86c75e95111",
+      "request.json": "990eee9109212369923f423c49e2dadf0e1ac3a1cde0d0152b58b86a13a232aa",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.444573,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.003",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "adapted.mid": "31f504ca5d5414624df227ca21b6219613ca56697f882b501e70d3b2c309bb56",
+      "events.json": "33074c5c29ba6ed0fdecf36dc6f777e80817fcd6f652d3e376a81f6678b4b8c2",
+      "metrics.json": "3882e512e1c64ea733c371a10870bf249771726eca50ec5da0de98a2cf200132",
+      "native.mid": "5d675d5d43051b144c38b677c9d002c67bfe23e92622fc08c2bf0e3247f1cbf4",
+      "native_input.json": "d7d99b6080db7de522af8c35eb1394f8d55ea7bb5bc9a118fbb28c680b7fa8a6",
+      "native_score.musicxml": "9234b66699fb156f71c99c863d2fe7cc8377c3cc6cde72eee7cb2eb7757efcb2",
+      "process.json": "e66c416d20c5e931b7b7444689a0a9f1e2b03e089c7a67a99231334b388d0dcd",
+      "request.json": "990eee9109212369923f423c49e2dadf0e1ac3a1cde0d0152b58b86a13a232aa",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.311004,
+        "max_process_rss_kib": 119544
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.788623,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.003",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "f0711220f5cb3f47bdf00bff2a7e1e33d5a6d96fd612543297db89422d90e96e",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "304c2d1abee3fb218f62f7784e6c1306d3352066f87cc19cc61a62a52266d41d",
+      "request.json": "990eee9109212369923f423c49e2dadf0e1ac3a1cde0d0152b58b86a13a232aa",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.520583,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.003",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "native_failure.json": "33a339b2ec619e5de173d88c4675cdfcc9fb504d9d1bc3f6d92f1b8d4232b12d",
+      "native_input.json": "cafb643c5d128488251264e51feed269c5a67246dedc651c9c681230de271d34",
+      "process.json": "28a26c0c071a717f0ba6703e2f6cf8402be4210033a25a8f64cd1da2560869b0",
+      "request.json": "990eee9109212369923f423c49e2dadf0e1ac3a1cde0d0152b58b86a13a232aa",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.567897,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.003",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "adapted.mid": "31f504ca5d5414624df227ca21b6219613ca56697f882b501e70d3b2c309bb56",
+      "events.json": "33074c5c29ba6ed0fdecf36dc6f777e80817fcd6f652d3e376a81f6678b4b8c2",
+      "metrics.json": "1b4d4ac3bbf73f16639e83757dadbbfc9332ea5faa735e2f07d62598425843ac",
+      "native.mid": "5d675d5d43051b144c38b677c9d002c67bfe23e92622fc08c2bf0e3247f1cbf4",
+      "native_input.json": "d7d99b6080db7de522af8c35eb1394f8d55ea7bb5bc9a118fbb28c680b7fa8a6",
+      "native_score.musicxml": "7f1cac1dbd3a053ed76cd9a5118c3f5ecc44714d4caeefa21aa1207b684404ea",
+      "process.json": "04403a62dbcab474a5b81682672acbd7aaea22a250171e8139b5a3973fd0a6b1",
+      "request.json": "990eee9109212369923f423c49e2dadf0e1ac3a1cde0d0152b58b86a13a232aa",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.524363,
+        "max_process_rss_kib": 119812
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 1.222619,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.003",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "8a4b3f3bc5438c266052a94be0cfc0d9318a2709919ddba2142ba6fb0450dfb3",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "ef45275a7daf75556b31bb026f3b52ccd6edfcc5589c7265254d7197239487d7",
+      "request.json": "990eee9109212369923f423c49e2dadf0e1ac3a1cde0d0152b58b86a13a232aa",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.570898,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.003",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "2dacdc45a5ed89a136e1cb5b8c329fa18a652e9ba00027f1a4f520337ee7e30c",
+      "events.json": "f9de27826b34e870404a2822927e4c10a8f68146c1a313d01660ebd551761b26",
+      "metrics.json": "25442f632df9ae1a2eda54afdb970e6c6a5059e3079409c60c138b0e388958a9",
+      "native.mid": "479f7765a8f591eaac20220b485961aa8263226827e3037680109fad87342111",
+      "native_input.json": "3a11e4929a30139d7eb14407123149f6bdcdf26ef46283cd45c56deefde42c48",
+      "native_score.musicxml": "f218f7e21fb522307eca739cce71e2aea393c6a659606f6b66f6541f7bf31a19",
+      "process.json": "c704df582c61ab7d46f8c2d3c772bdd63ef5219c857203c7ede0a00e9859643b",
+      "request.json": "a29058bb79341bd0813d00c211b59e842e4b342c4eafadfb90fafed40357a8c3",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.467844,
+        "max_process_rss_kib": 119136
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 1.093138,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.004",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "adapted.mid": "06b29dd5614c2dc1408259cceec3db0ce8bc3d586b47d65541c792666a279c5e",
+      "events.json": "258a75aed688439d88b136fbcc2ae5a8e2d2412a3e4b044aa76e6dafe0f6c139",
+      "metrics.json": "8208a0fb84bf96c2fe890b86993bd662388449150f643d6a323eacaa82cd8505",
+      "native.mid": "eaac13474d85f589b7cccfc72bb4f31f72f88b6a04e8986f9ade37d1f24c8cc9",
+      "native_input.json": "e1d669812b61344c338519a44e816a2cf4530289c4db50998389ef4378f9749c",
+      "native_score.txt": "d3eb5d768fc6f8fa4f94de111930f202adeb8a0dd961913521545a8d94ef962c",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "26de6ffd184af682f8d97e285629fe674ea7de9ec4f99d6e38febda8ac92c511",
+      "request.json": "a29058bb79341bd0813d00c211b59e842e4b342c4eafadfb90fafed40357a8c3",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.015783,
+        "max_process_rss_kib": 84792
+      },
+      "native": {
+        "issues": [
+          "VOICE_IDENTITY_CONTEXT_TIME_PROFILE"
+        ],
+        "native_unvoiced_relation": "PASS",
+        "status": "UNOBSERVABLE"
+      },
+      "native_pass": false,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.474281,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.004",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "df73e7ea1a3ffac9974198f5587b067099fa5eb58998efadd306f684b4364995",
+      "events.json": "8b399b590a8932f244bb5526912a339569c3e6c73c6c46da603eafa5bcbd97c6",
+      "metrics.json": "2299c80df791c58a182888a3b10331e2e994645ca7f9365ccbac1face47b40cb",
+      "native.mid": "0fd6860219cf27ab8c4eb31a546327a59bf293f2b9fe69a531a364a5f66eb167",
+      "native_input.json": "96b92e2e9c9dc3b21aa8217b7197efbd97601ce3a378903ab419b1f0c1d08967",
+      "native_score.json": "fdc2bd2e070cbc54a1c94919c0bbdbd27c9fb98e1081ccd330969803c0b2fc42",
+      "process.json": "def6ff3b975b9691b59fb7f018b8c36091420aef8d0a418e65e7b843442787c8",
+      "request.json": "a29058bb79341bd0813d00c211b59e842e4b342c4eafadfb90fafed40357a8c3",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.075712,
+        "max_process_rss_kib": 103708
+      },
+      "native": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.494032,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.004",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "adapted.mid": "2dacdc45a5ed89a136e1cb5b8c329fa18a652e9ba00027f1a4f520337ee7e30c",
+      "events.json": "f9de27826b34e870404a2822927e4c10a8f68146c1a313d01660ebd551761b26",
+      "metrics.json": "b98464e14d1a19bdfbe95f043ec3bc8fd6525899e22d1f1852d6f3203e3dbfeb",
+      "native.mid": "479f7765a8f591eaac20220b485961aa8263226827e3037680109fad87342111",
+      "native_input.json": "3a11e4929a30139d7eb14407123149f6bdcdf26ef46283cd45c56deefde42c48",
+      "native_score.musicxml": "4fc05325325bda400cb87797bcef5508147d54f6bd611649def7e003387b76d9",
+      "process.json": "51c0297ec506cc625632fe6d304a72915bcbb4648e798e514f84a85602186af6",
+      "request.json": "a29058bb79341bd0813d00c211b59e842e4b342c4eafadfb90fafed40357a8c3",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.329752,
+        "max_process_rss_kib": 118124
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.868941,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.004",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "adapted.mid": "06b29dd5614c2dc1408259cceec3db0ce8bc3d586b47d65541c792666a279c5e",
+      "events.json": "258a75aed688439d88b136fbcc2ae5a8e2d2412a3e4b044aa76e6dafe0f6c139",
+      "metrics.json": "63d807bf22cf434078872d49ddfb0aa28b5a4acb7ee7284284df257c3ddd00e9",
+      "native.mid": "eaac13474d85f589b7cccfc72bb4f31f72f88b6a04e8986f9ade37d1f24c8cc9",
+      "native_input.json": "94740f65c91aa78df077bb9f2bf26d7487970e1a165ae6db83758aeac0720705",
+      "native_score.txt": "d3eb5d768fc6f8fa4f94de111930f202adeb8a0dd961913521545a8d94ef962c",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "a5a190e92eb8e3bede3abf9cdc9432bb261e9ff66a7a274891968c5976eaf85e",
+      "request.json": "a29058bb79341bd0813d00c211b59e842e4b342c4eafadfb90fafed40357a8c3",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.014955,
+        "max_process_rss_kib": 85020
+      },
+      "native": {
+        "issues": [
+          "VOICE_IDENTITY_CONTEXT_TIME_PROFILE"
+        ],
+        "native_unvoiced_relation": "PASS",
+        "status": "UNOBSERVABLE"
+      },
+      "native_pass": false,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.484899,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.004",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "df73e7ea1a3ffac9974198f5587b067099fa5eb58998efadd306f684b4364995",
+      "events.json": "8b399b590a8932f244bb5526912a339569c3e6c73c6c46da603eafa5bcbd97c6",
+      "metrics.json": "ebaf7bb88f1f7cd4d5d979caf410e1e6466f4da13ca103f8b8d3d87b9b104ae9",
+      "native.mid": "0fd6860219cf27ab8c4eb31a546327a59bf293f2b9fe69a531a364a5f66eb167",
+      "native_input.json": "730c5f8ec47ce81839be19167ae909cd2e5542eb24e21bf650bcd31f386ab140",
+      "native_score.json": "0ef1f076ab382a8086f57d6eef02411ee8dd5e5bbd6f2a8ebbbff48c7c430bd2",
+      "process.json": "aa3a33798f19c1c3153ddf9405c635cd875e674dc8afd1ef127aa84b7a7eb50d",
+      "request.json": "a29058bb79341bd0813d00c211b59e842e4b342c4eafadfb90fafed40357a8c3",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.072672,
+        "max_process_rss_kib": 104252
+      },
+      "native": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.495463,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.004",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "native_input.json": "8fff890b1c76313f429e85d7fd097a5dd2e60376dfcbb4028d589cd22ab78edf",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "3de37690bcf90bf75030111d83302dc6bf70f7d480eff423e93a35fc89b23767",
+      "request.json": "675ad2653852d262d8a6cc3863a246ced6a1ccaa8c18eff489401228ff43851b",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.403696,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.005",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "61c160a2f7aebc61eb99b583875b291e82d83b1defb3c31cce8b66140dfccfb0",
+      "events.json": "644f9e31d7c1f73c0a131e5656d4708d454a6dd0c0664713883ae1b08e28bc2d",
+      "metrics.json": "beab1c01481993eafd5e4651296186afc8dbd6a3059370d8d59cd918c6c63084",
+      "native.mid": "d1825c9a63a69cbafabaf1f619def301d61951c93dcf74a61a6034e8b8344c79",
+      "native_input.json": "c824413fb165c8ec0680f4a2ff4ec834ad2a6ab6a5d4389aeb18f1f8b3191f15",
+      "native_score.json": "06bf4c5a808ea7a74adb483016db82d5f6c4cc352e702dabdab452765dd9e91a",
+      "process.json": "5398d4a3eaf562065f077df21b6ae7adec2c537359d596d9e373caee3fef9208",
+      "request.json": "675ad2653852d262d8a6cc3863a246ced6a1ccaa8c18eff489401228ff43851b",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.061283,
+        "max_process_rss_kib": 104632
+      },
+      "native": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.426221,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.005",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "native_input.json": "2f7824983948137e63c1089bd0d8e77e3891cf3ec82af5ad1a21d155eff87de5",
+      "process.json": "2a02abf45dedc4df5982a0798d728315998338291da5de9fd632bdf2399491f5",
+      "request.json": "675ad2653852d262d8a6cc3863a246ced6a1ccaa8c18eff489401228ff43851b",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.666415,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.005",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "13d29f41f765558da8b9ef4a77715860b006107aeac0ec62cdac605d9f7cf864",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "343bebcb2a9aae265c1a3685ef6369c9da67924d5f0f8f4c0df91aad036f73d8",
+      "request.json": "675ad2653852d262d8a6cc3863a246ced6a1ccaa8c18eff489401228ff43851b",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.402418,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.005",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "61c160a2f7aebc61eb99b583875b291e82d83b1defb3c31cce8b66140dfccfb0",
+      "events.json": "644f9e31d7c1f73c0a131e5656d4708d454a6dd0c0664713883ae1b08e28bc2d",
+      "metrics.json": "d700ee72f389e020c2d398003c59c1855d236f563f13427628be2bd39ff2b22f",
+      "native.mid": "d1825c9a63a69cbafabaf1f619def301d61951c93dcf74a61a6034e8b8344c79",
+      "native_input.json": "51d40f20032d36018bcd9b11829547bd6be3fae5328c92c7f1475c51218ee84f",
+      "native_score.json": "17d7f2ea9634106cd4ea2bca38baa45e70716544fb16ee5d27e2346ac5bc9ad3",
+      "process.json": "3824cfce42bca5a0381144174055fd72bd0c630a96ea23ced8adf5970511a4b0",
+      "request.json": "675ad2653852d262d8a6cc3863a246ced6a1ccaa8c18eff489401228ff43851b",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.068569,
+        "max_process_rss_kib": 105128
+      },
+      "native": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 32,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.483315,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.005",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "native_input.json": "2f7824983948137e63c1089bd0d8e77e3891cf3ec82af5ad1a21d155eff87de5",
+      "process.json": "8fdd73f451674709317c15c9ad9b0ee55c7da76f7f267f20a4bcd04dbbebff0f",
+      "request.json": "675ad2653852d262d8a6cc3863a246ced6a1ccaa8c18eff489401228ff43851b",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.739241,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.005",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "adapted.mid": "acbd699105af12dcd9081ba734e0e41bde9ce52b75e6585c9b2861fdd5c286b7",
+      "events.json": "deba99debe41fb42a59f2d9fa976df7a07f93b370910d8c0a267a5f19da70da6",
+      "metrics.json": "14b11509f6524f6b1101aec3231dd71b673b6b889a2cf799369aa08753aaf9b0",
+      "native.mid": "ddf9cf4a230abe29c9bd183cd0309a383f27ef33efa0831623d8d7fbe0d4306a",
+      "native_input.json": "069ee2973c5dc403986c0f06db7b29d92cf6ef8845c6333790a26e5d194b66ff",
+      "native_score.json": "e6222e223ac1cc9e10c0d3affc34daf85ae7827043c64638d0c4ed887490712c",
+      "process.json": "10e6ce6e5d0f6ef5436fd9af5091d6910494305993e1a5c263d52995dc29c791",
+      "request.json": "94512ceaf87d87929a35dadad9042c938ada7d20fb578af7989d63a873d8eafe",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.105044,
+        "max_process_rss_kib": 111520
+      },
+      "native": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.515115,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.006",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "native_input.json": "79e713cd1d57b5a4b323337deb1274fe4206324fb8294be2c2a3f3330efc3f06",
+      "process.json": "6c65b57051cf0a744bf958c1508b619102a477fba05ab2a5e712e4d0e53c75bb",
+      "request.json": "94512ceaf87d87929a35dadad9042c938ada7d20fb578af7989d63a873d8eafe",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.758457,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.006",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "c01b53a249fb2236acf675cb2f4bc1009cc31144b4738e9f2026ddddec775241",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "936bc82a8119eec56969f11e00fabf23385c71c892749bc5a03352f62f53a03e",
+      "request.json": "94512ceaf87d87929a35dadad9042c938ada7d20fb578af7989d63a873d8eafe",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.456179,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.006",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "acbd699105af12dcd9081ba734e0e41bde9ce52b75e6585c9b2861fdd5c286b7",
+      "events.json": "deba99debe41fb42a59f2d9fa976df7a07f93b370910d8c0a267a5f19da70da6",
+      "metrics.json": "5da129b8ec0d42c1af37d0aa41a43527c041d5c4aa1fe95f3c33234e2514760e",
+      "native.mid": "ddf9cf4a230abe29c9bd183cd0309a383f27ef33efa0831623d8d7fbe0d4306a",
+      "native_input.json": "16a39a164b8f5a4b46a39336527f01084f0b9c798949d80c448b631012df629f",
+      "native_score.json": "18445fade13c088a95617bfcdcba553284f70e51f190659a3d336e0aef63c0a5",
+      "process.json": "8cc9fb39f581d63ded58a6b4eae2cef36d45c16da42d25c9c1f0e4e35bf5ac4f",
+      "request.json": "94512ceaf87d87929a35dadad9042c938ada7d20fb578af7989d63a873d8eafe",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.103631,
+        "max_process_rss_kib": 111700
+      },
+      "native": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.537824,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.006",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "native_input.json": "79e713cd1d57b5a4b323337deb1274fe4206324fb8294be2c2a3f3330efc3f06",
+      "process.json": "9e4be15f2b69ab544315f50a12d4acbd4e00a0a0ee9206657269134636fce18e",
+      "request.json": "94512ceaf87d87929a35dadad9042c938ada7d20fb578af7989d63a873d8eafe",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.834773,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.006",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "719295edfd28253275e44df1b87eb6471fc83cac173f074ec6aea9fed289e8ec",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "48e66b9bf4d806f31d3c01a8ee18d6b260936c73362561bf43c761becd5decb9",
+      "request.json": "94512ceaf87d87929a35dadad9042c938ada7d20fb578af7989d63a873d8eafe",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.504091,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.006",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "adapted.mid": "975dbc4bc8731ddfa4a5f3c04723107a996008e0eeb1c7e1b18f329ecb6a374c",
+      "events.json": "99c69769498cd121c4ff7125d7aa359f523f718b079d43fdc1b8186ab611cb05",
+      "metrics.json": "393bb419c7339cb5bfabe224e4e356bc67a6ed7a0f14adc23a3f25b5b1c7f6bb",
+      "native.mid": "1ac0bfc9b8aa9ea6f88ddf55bb13839bcb5834007206dcfa41c3c031193d9f60",
+      "native_input.json": "64f799ad40f2f1585fda57620bf9d18822f7d39371cd0525963bcc8502aef1e8",
+      "native_score.musicxml": "d79842a03e3ce201f53c0b1414ee7fd9aff01562532aa2f30d836c027f129a8a",
+      "process.json": "fd5c2791ac2f8e47ff4f4d05f3176cc06d8259e9198816f67b0c6fd13a4e7a7e",
+      "request.json": "2d234bd043e5b933fd569b3ab8405d5d5f8ae94212a130c821438393d7efd2bd",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.407399,
+        "max_process_rss_kib": 118784
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.885874,
+      "returncode": 0,
+      "seed": 7,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.007",
+    "seed": 7,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "01767f62488291e77b783428c2ce44ebe7ad2c5f8cc5e0d000db7b55643bd78d",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "8994c9f588be2fd6aada5c4e8c521faec846926b0f8d73ced19ff2aeee28c292",
+      "request.json": "2d234bd043e5b933fd569b3ab8405d5d5f8ae94212a130c821438393d7efd2bd",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.421638,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.007",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "native_failure.json": "33a339b2ec619e5de173d88c4675cdfcc9fb504d9d1bc3f6d92f1b8d4232b12d",
+      "native_input.json": "d0c144dca6045923f2121d250bac33bddf2fa40715e037f05113957099712385",
+      "process.json": "14830d7f922a7c89c96850bd25815e5113e67b8248b4a72b383ed75f43d68186",
+      "request.json": "2d234bd043e5b933fd569b3ab8405d5d5f8ae94212a130c821438393d7efd2bd",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.464753,
+      "returncode": 3,
+      "seed": 7,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.007",
+    "seed": 7,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "adapted.mid": "975dbc4bc8731ddfa4a5f3c04723107a996008e0eeb1c7e1b18f329ecb6a374c",
+      "events.json": "99c69769498cd121c4ff7125d7aa359f523f718b079d43fdc1b8186ab611cb05",
+      "metrics.json": "47413d9d15f08ecee560650a01f22e75b5a088187d196c10de5e44921fbe2f00",
+      "native.mid": "1ac0bfc9b8aa9ea6f88ddf55bb13839bcb5834007206dcfa41c3c031193d9f60",
+      "native_input.json": "64f799ad40f2f1585fda57620bf9d18822f7d39371cd0525963bcc8502aef1e8",
+      "native_score.musicxml": "beb7bdd92217d488ef42ee4105a4248a1ce8e56aedd6b3d6c0a3fb3de7777568",
+      "process.json": "f84ab7b94b1480e76c2adf5afffd08178ffae522de1b882f2f73cd479d41b8e3",
+      "request.json": "2d234bd043e5b933fd569b3ab8405d5d5f8ae94212a130c821438393d7efd2bd",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "inspection": {
+      "adapted": {
+        "division": 480,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "adapted_pass": true,
+      "metrics": {
+        "elapsed_seconds": 0.409535,
+        "max_process_rss_kib": 119740
+      },
+      "native": {
+        "division": 10080,
+        "issues": [],
+        "parsed_notes": 48,
+        "parser_agreement": true,
+        "status": "PASS"
+      },
+      "native_pass": true,
+      "reference_agreement": true,
+      "semantic_issues": []
+    },
+    "process": {
+      "elapsed_seconds": 0.883109,
+      "returncode": 0,
+      "seed": 19,
+      "status": "OUTPUT"
+    },
+    "request_id": "development.007",
+    "seed": 19,
+    "status": "OUTPUT",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "native_input.json": "b9477855032d20a206d8321d1cc1120af86056d79bd4fb3cfd38a122303ddd42",
+      "native_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "process.json": "68c3e7d2693284ec1a1645399fda6ed20b3863f675847505ab411c38a868594e",
+      "request.json": "2d234bd043e5b933fd569b3ab8405d5d5f8ae94212a130c821438393d7efd2bd",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.418219,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.007",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "native_failure.json": "33a339b2ec619e5de173d88c4675cdfcc9fb504d9d1bc3f6d92f1b8d4232b12d",
+      "native_input.json": "75da04fe6e53c52166c177c69beb6c68498aeeb89a5306fac9415e29b028bfbc",
+      "process.json": "1d16c1172ac3d470cfa40b2edab9c888eb2502444a62588edeff496b1eb9211a",
+      "request.json": "2d234bd043e5b933fd569b3ab8405d5d5f8ae94212a130c821438393d7efd2bd",
+      "worker_stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "worker_stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "process": {
+      "elapsed_seconds": 0.488548,
+      "returncode": 3,
+      "seed": 19,
+      "status": "NO_SOLUTION_OR_NATIVE_LIMIT"
+    },
+    "request_id": "development.007",
+    "seed": 19,
+    "status": "NO_SOLUTION_OR_NATIVE_LIMIT",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "8d363bbc7166836c5ea53d45f4a325d69fc1b48eadb68b44cfcb6273fcc66238"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.minor",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "8d363bbc7166836c5ea53d45f4a325d69fc1b48eadb68b44cfcb6273fcc66238"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.minor",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "8d363bbc7166836c5ea53d45f4a325d69fc1b48eadb68b44cfcb6273fcc66238"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.minor",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "8d363bbc7166836c5ea53d45f4a325d69fc1b48eadb68b44cfcb6273fcc66238"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.minor",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "8d363bbc7166836c5ea53d45f4a325d69fc1b48eadb68b44cfcb6273fcc66238"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.minor",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "8d363bbc7166836c5ea53d45f4a325d69fc1b48eadb68b44cfcb6273fcc66238"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.minor",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "9c9ab0a55dd403814c2d027c0ed1a3f29966548515a62c4f68bdebe3dee0d99c"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.rests",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "9c9ab0a55dd403814c2d027c0ed1a3f29966548515a62c4f68bdebe3dee0d99c"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.rests",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "9c9ab0a55dd403814c2d027c0ed1a3f29966548515a62c4f68bdebe3dee0d99c"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.rests",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "9c9ab0a55dd403814c2d027c0ed1a3f29966548515a62c4f68bdebe3dee0d99c"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.rests",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "9c9ab0a55dd403814c2d027c0ed1a3f29966548515a62c4f68bdebe3dee0d99c"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.rests",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "9c9ab0a55dd403814c2d027c0ed1a3f29966548515a62c4f68bdebe3dee0d99c"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.rests",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "aeaa4a4ae0a3f4ad7cb86c1135b643a40fc9972c8dd2f6e830d165694132aeaa"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.ties",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "aeaa4a4ae0a3f4ad7cb86c1135b643a40fc9972c8dd2f6e830d165694132aeaa"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.ties",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "aeaa4a4ae0a3f4ad7cb86c1135b643a40fc9972c8dd2f6e830d165694132aeaa"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.ties",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "aeaa4a4ae0a3f4ad7cb86c1135b643a40fc9972c8dd2f6e830d165694132aeaa"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.ties",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "aeaa4a4ae0a3f4ad7cb86c1135b643a40fc9972c8dd2f6e830d165694132aeaa"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.ties",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "aeaa4a4ae0a3f4ad7cb86c1135b643a40fc9972c8dd2f6e830d165694132aeaa"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.ties",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "17f0d0fc646447157b62cf83e42db3fe6583c317dac51bbc035823aa45534179"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.third-inversion",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "17f0d0fc646447157b62cf83e42db3fe6583c317dac51bbc035823aa45534179"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.third-inversion",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "e04d7234e5fb90ba52523547225e2c3064ac46f595e1b938498c70ea90928a0c",
+      "request.json": "17f0d0fc646447157b62cf83e42db3fe6583c317dac51bbc035823aa45534179"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 7,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.third-inversion",
+    "seed": 7,
+    "status": "UNSUPPORTED",
+    "system": "music21"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "17f0d0fc646447157b62cf83e42db3fe6583c317dac51bbc035823aa45534179"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.third-inversion",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "diatony"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "17f0d0fc646447157b62cf83e42db3fe6583c317dac51bbc035823aa45534179"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.third-inversion",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "constraint-music"
+  },
+  {
+    "files": {
+      "process.json": "c5d28607f94d87693ec3466022cfec08a95232f05bcbe182b7231f77cc9ac57c",
+      "request.json": "17f0d0fc646447157b62cf83e42db3fe6583c317dac51bbc035823aa45534179"
+    },
+    "process": {
+      "elapsed_seconds": 0.0,
+      "seed": 19,
+      "status": "UNSUPPORTED"
+    },
+    "request_id": "development.unsupported.third-inversion",
+    "seed": 19,
+    "status": "UNSUPPORTED",
+    "system": "music21"
+  }
+]
