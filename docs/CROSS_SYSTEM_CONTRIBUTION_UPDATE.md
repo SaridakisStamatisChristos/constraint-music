@@ -31,10 +31,16 @@ The new opt-in native harmonization API and prospective [v3 report](../research/
 now establish a scoped completion advantage: new CM 128/128, legacy CM 53/128,
 music21 111/128 and adapted Diatony 38/128 on the same 128 fresh requests, each
 passing both runs. All 1,056 slots replay with no timeout/error/block. The exact
-paired comparisons are significant after three-comparison correction. The
-+10-point practical improvement over legacy CM clears its predefined gate;
-the all-comparison practical-superiority gate fails because music21's interval
-lower bound is +2.34 points. This improves request completion, not the novelty of
-constraint-based harmony, musical quality, or general system superiority. The
+paired comparisons are significant after three-comparison correction. Against
+music21, there are 17 CM-only passes and no losses, with a corrected exact
+p-value of 0.0000458 and a conservative simultaneous difference interval of
+[+2.34, +23.01] percentage points. The main finding is higher completion on the
+declared grammar and configurations. The separately prespecified +10-point
+minimum practical margin clears against legacy CM, but the all-comparison gate
+fails because the music21 interval lower bound is +2.34 points. That threshold
+was an investigator choice without a domain-calibrated basis; its frozen result
+remains visible and does not negate the positive paired finding. The result does
+not establish novel constraint-based harmony, musical quality, or a general
+system ranking. The
 new request-bound score/MIDI contract is separate from preserved legacy style
 certification. V2's negative result remains valid for its old configuration.
