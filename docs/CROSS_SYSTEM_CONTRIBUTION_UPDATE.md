@@ -1,6 +1,6 @@
 # Claim-level update for the paired conformance extension
 
-Updated 10 October 2026 after completed paired collection. This is a focused comparison of the handoff's named primary works, not exhaustive novelty clearance. The [Pisters full-text matrix](MULTIFIXTURE_CONTRIBUTION_PREFLIGHT.md) remains intact. The larger manuscript incorporates PR37 and the paired extension as separate bounded studies.
+Updated 10 October 2026 after completed paired collection. This is a focused comparison of the study plan's named primary works, not exhaustive novelty clearance. The [Pisters full-text matrix](MULTIFIXTURE_CONTRIBUTION_PREFLIGHT.md) remains intact. The larger manuscript incorporates PR37 and the paired extension as separate bounded studies.
 
 | Primary work and inspected basis | Credit and overlap | Bounded distinction in this repository | Claim avoided |
 | --- | --- | --- | --- |
