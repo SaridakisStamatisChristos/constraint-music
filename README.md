@@ -1,228 +1,96 @@
 # Constraint Music
 
-**Deterministic symbolic music synthesis with explicit hard constraints, CP-SAT optimization, and independent post-solve verification.**
+**Deterministic symbolic SATB generation with explicit musical constraints, CP-SAT search, and independent post-solve verification.**
 
-Constraint Music treats composition as a verifiable constraint problem. A YAML specification is compiled into an OR-Tools CP-SAT model; the solver produces melody, rhythm, bass, harmonic identity, and a solver-native SATB realization; a separate application-level verifier reconstructs the declared musical semantics from ordinary serialized values; only verified results are exported.
+Constraint Music turns a declarative musical specification into a verifiable symbolic-music artifact. A YAML `GenerationSpec` is validated and compiled into an OR-Tools CP-SAT model; the generator produces melody, rhythm, bass, harmonic identity, and SATB voicing; a separate application-level verifier reconstructs the declared musical semantics from ordinary serialized values before JSON and MIDI outputs are accepted.
 
-> Current release line: **2.13.0a1** — fail-closed artifacts, request-bound strict certification, executable rule outcomes, solver-optional checking, and exact SATB MIDI delivery verification.
+Current package: **2.13.0a1**  
+Artifact schema / executable contract: **2.13 / 2.13**  
+Python: **3.11–3.13**
 
-An opt-in [request-bound harmonization API](docs/REQUEST_BOUND_HARMONIZATION.md)
-solves complete major-key SATB chord/voice requests under their exact obligations,
-with independent score and native MIDI checks. It supports nonroot triad doubling
-and soprano sevenths without changing the legacy composition style contract.
-Its [fresh paired study](research/paired_cross_system_v3/REPORT.md) reports 128/128
-reproducible native/adapted passes, versus legacy CM 53/128, music21 111/128 and
-adapted Diatony 38/128. Paired analysis supports higher completion for the new
-API on this declared grammar and these configurations (17 wins and no losses
-against music21; corrected exact p=0.0000458). The separately predefined
-+10-point minimum practical margin is not established against music21; it is
-not required for the narrower positive completion finding. Archived v1/v2
-remain intact.
+> A solver status of `OPTIMAL` or `FEASIBLE` is not certification. Solver/verifier, objective, request-binding, artifact-shape, or delivered-MIDI disagreement fails closed.
 
-After installing `.[dev]`, run the complete repository-authored release gate with
-`python -m research.validate_release_assurance`. It validates the pinned environment,
-quality suite, package artifacts, solver-free checker installation, evidence replays and
-SHA-256 values, the frozen EH-12 claim/closure state, and the exact clean Git commit/tree
-under review. GitHub Actions additionally binds that attestation to its checkout SHA and
-workspace.
+## Architecture
 
-## Pipeline
+```mermaid
+flowchart LR
+    A[Musical input / YAML GenerationSpec] --> B[Schema and configuration validation]
+    B --> C[Constraint model]
+    C --> C1[Tonal + rhythmic + phrase rules]
+    C --> C2[SATB voice leading + harmonic identity]
+    C --> C3[Tonicization + modal source + active-key context]
+    C --> D[OR-Tools CP-SAT generator]
+    D --> E[Generated harmony and serialized score values]
 
-```text
-YAML GenerationSpec
-      |
-      v
-pitch + rhythm + phrase grammar
-      |
-      +--> chord degree / deterministic support degree
-      +--> harmonic form + inversion
-      +--> nullable local target identity
-      +--> nullable modal source
-      +--> persistent active-key context
-      |
-      v
-OR-Tools CP-SAT compiler
-      |
-      v
-weighted solve / no-good enumeration / Pareto candidate search
-      |
-      v
-ordinary serialized musical values
-      |
-      +--> independent 57-rule verifier + executable applicability ledger
-      +--> independent objective-vector recomputation
-      +--> externally fixed request + semantic provenance digests
-      |
-      +----> certified SATB MIDI + independent parse-back
-      +----> JSON + SATB + harmonic/context metadata
+    E --> F[Independent CM001-CM057 verifier]
+    E --> G[Independent objective and provenance recomputation]
+    E --> H[MIDI rendering]
+    H --> I[Independent MIDI parse-back]
+
+    F --> J{All required checks pass?}
+    G --> J
+    I --> J
+    J -->|Yes| K[Certified JSON + MIDI + validation report]
+    J -->|No| L[Reject / fail closed]
 ```
 
-A solver status of `OPTIMAL` or `FEASIBLE` is never sufficient. Solver/verifier or solver/objective disagreement fails closed.
+The generator and verifier intentionally sit on opposite sides of the trust boundary. The verifier does not accept an opaque chord label or solver witness as truth; it reconstructs the relevant musical identity from the serialized result and the declared contract.
 
-## Release progression
+See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [Executable Contract](docs/EXECUTABLE_CONTRACT.md), and [Assurance Boundary](docs/ASSURANCE_BOUNDARY.md).
 
-- **v2.1** — explicit rhythm CSP and motif grammar.
-- **v2.2** — phrase grammar and phrase-local cadence semantics.
-- **v2.3** — exact distinct enumeration and bounded Pareto search.
-- **v2.4** — solver-native SATB harmony.
-- **v2.5** — opt-in diatonic seventh vocabulary and structured inversions.
-- **v2.6** — verified applied-dominant tonicization.
-- **v2.7** — verified modal mixture with explicit parallel-source identity.
-- **v2.8** — persistent active local-key regions and one certified dominant-key modulation.
-- **v2.8.0a2** — strict modulation repair with context-union domains and no terminal tendency-tone exemption.
-- **v2.9** — source-aware borrowed seventh chords.
-- **v2.10** — target-derived secondary leading-tone triads.
-- **v2.11** — fully diminished secondary leading-tone sevenths with exact functional disambiguation.
-- **v2.12** — complete secondary leading-tone seventh certification: eligible `°7`/`ø7` qualities, all four inversions, exact quality-specific tendency behavior, and scoped chromatic outer-voice support.
-- **v2.13** — fail-closed artifact shape, request binding, honest per-rule outcomes, solver-optional checking, and certified SATB delivery round trips.
+## Core capabilities
 
-## Harmonic identity stays decomposed
+Constraint Music currently includes:
 
-Constraint Music deliberately avoids a single opaque Roman-numeral field. Each beat may carry independent semantic axes:
+- deterministic, seedable CP-SAT generation;
+- explicit pitch, rhythm, motif, phrase, cadence, and progression constraints;
+- solver-native SATB voicing with range, ordering, spacing, completeness, doubling, parallel-perfect, and tendency-tone rules;
+- triads and opt-in seventh-chord vocabulary with structured inversion semantics;
+- verified applied-dominant tonicization;
+- verified modal mixture and a scoped borrowed-seventh family;
+- persistent active-key context for one certified same-mode modulation to the dominant;
+- target-derived secondary leading-tone triads;
+- fully diminished and eligible half-diminished secondary leading-tone sevenths, including all four inversions where certified;
+- exact no-good enumeration and bounded Pareto candidate search;
+- independent objective-vector recomputation;
+- fail-closed JSON artifact validation, request binding, provenance digests, and exact SATB MIDI delivery checking;
+- a solver-optional checker/certifier path;
+- an opt-in request-bound SATB harmonization API with independent score and native-MIDI checks.
 
-- `harmony` — functional/support chord-degree sequence;
-- `harmonic_form` — chord kind + inversion;
-- `tonicization` — nullable local target identity shared by certified target-bearing chromatic functions;
-- `modal_source` — nullable canonical parallel source;
-- `key_context` — persistent active local-key sequence / modulation identity;
-- `voicing` — SATB realization.
+The harmonic representation remains decomposed rather than relying on one trusted Roman-numeral field. Important axes include functional/support degree, harmonic form, inversion, nullable local target, nullable modal source, persistent key context, and SATB voicing.
 
-The artifact-global key remains immutable. Persistent modulation changes active-key interpretation without rewriting that global key.
+## Musical semantics
 
-A non-null local target is interpreted together with harmonic form and independently reconstructed pitch identity:
+The current executable contract exposes **57 stable hard-rule IDs** (`CM001`–`CM057`). The major harmonic extensions are documented separately so their scope and interactions remain explicit:
 
-- target + triad under the v2.10 feature => secondary leading-tone triad;
-- target + seventh reconstructing exactly as active-key `V7/x` => applied dominant;
-- target + seventh reconstructing as an eligible target-derived `vii°7/x` or `viiø7/x` form => secondary leading-tone seventh.
-
-No opaque secondary-function or quality field is required as the artifact source of truth.
-
-## Expanded harmony and applied dominants
-
-Expanded harmony is opt-in:
-
-```yaml
-harmony_vocabulary: triads+sevenths
-minimum_seventh_chords: 1
-```
-
-Applied dominants additionally use:
-
-```yaml
-tonicization_enabled: true
-minimum_applied_dominants: 1
-```
-
-`minimum_applied_dominants` counts only exact active-key `V7/x` realizations. A target-bearing secondary leading-tone seventh cannot satisfy that minimum merely because it is a seventh with a target.
-
-See [Expanded Harmony](docs/EXPANDED_HARMONY.md) and [Applied-Dominant Tonicization](docs/TONICIZATION.md).
-
-## Modal mixture and borrowed sevenths
-
-```yaml
-modal_mixture_enabled: true
-minimum_borrowed_chords: 1
-```
-
-Major active keys use parallel natural minor as their canonical source; minor active keys use parallel major. v2.9 adds a deliberately filtered subset of source-derived borrowed sevenths when expanded harmony is also enabled. Borrowing remains independent from local-target identity and persistent key context.
-
-See [Modal Mixture](docs/MODAL_MIXTURE.md) and [Borrowed Seventh Chords](docs/BORROWED_SEVENTHS.md).
-
-## Persistent local key and controlled modulation
-
-v2.8 distinguishes persistent modulation from one-chord local-target events. Its conservative certified model supports one same-mode modulation to the dominant key with:
-
-- an explicit destination key and boundary;
-- source I as a common-chord pivot reinterpreted as destination IV;
-- persistent destination-key interpretation after the boundary;
-- destination V-I confirmation;
-- one serialized active-key context per beat.
-
-The strict v2.8.0a2 repair keeps exact active-key pitch admission and destination leading-tone resolution through the final cadence.
-
-## Secondary leading-tone triads
-
-```yaml
-secondary_leading_tone_enabled: true
-minimum_secondary_leading_tone_chords: 1
-```
-
-v2.10 derives `vii°/x` from the exact active local key and explicit non-tonic target. The chromatic diminished root is not forged into a fake diatonic degree; instead, a deterministic support degree preserves progression semantics while target + voicing reconstruct the actual sonority.
-
-See [Secondary Leading-Tone Triads](docs/SECONDARY_LEADING_TONE.md).
-
-## v2.12: complete secondary leading-tone sevenths
-
-```yaml
-harmony_vocabulary: triads+sevenths
-secondary_leading_tone_seventh_enabled: true
-minimum_secondary_leading_tone_seventh_chords: 1
-```
-
-For a **major local target**, the certified family is:
-
-```text
-vii°7/x   vii°65/x   vii°43/x   vii°42/x
-viiø7/x   viiø65/x   viiø43/x   viiø42/x
-```
-
-For a **minor local target**, the certified family is:
-
-```text
-vii°7/x   vii°65/x   vii°43/x   vii°42/x
-```
-
-Diminished and augmented target triads are not treated as local tonics by this subsystem.
-
-Certification requires:
-
-- exact target-derived four-tone pitch content, each pitch class once;
-- independent reconstruction of fully diminished vs. eligible half-diminished quality;
-- root, first, second, or third inversion with actual bass/inversion agreement;
-- inversion `3` only on a beat independently reconstructed as a secondary leading-tone seventh;
-- immediate resolution to the declared untargeted, unborrowed triadic target;
-- local leading tone/root `+1` semitone;
-- diminished fifth `-1` for a major target and `-2` for a minor target;
-- fully diminished chordal seventh `-1` semitone;
-- half-diminished chordal seventh `-2` semitones;
-- the same rules in every SATB voice, including the bass of a genuine `42`;
-- no modal-source overlap and no contamination of certified cadence/modulation anchors;
-- post-modulation reconstruction against the persistent destination active key, never the stale global key.
-
-The chromatic outer-voice expansion needed for genuine third inversion is routed only when this feature is enabled. Ordinary harmony retains the earlier domain and inversion contract. Structural support for secondary sevenths is progression-graph compatible but no longer requires the obsolete v2.11 two-tone diatonic-overlap workaround; exact target/quality/pitch reconstruction carries the musical identity.
-
-See [Secondary Leading-Tone Seventh Chords](docs/SECONDARY_LEADING_TONE_SEVENTHS.md) and [v2.12 Release Notes](docs/V2_12_RELEASE_NOTES.md).
-
-## Hard-constraint contract
-
-v2.12 exposes **57 stable hard-rule IDs**:
-
-- `CM001–CM021` — tonal, rhythmic, motif, and articulation rules;
-- `CM022–CM026` — phrase structure;
-- `CM027–CM032` — SATB contract;
-- `CM033–CM036` — expanded harmonic form and seventh behavior;
-- `CM037–CM040` — exact applied-dominant tonicization;
-- `CM041–CM042` — modal-source context and borrowed-triad realization;
-- `CM043–CM048` — persistent key context and controlled modulation;
-- `CM049–CM051` — borrowed-seventh eligibility, realization, and tendencies;
-- `CM052–CM054` — secondary leading-tone triad context, realization, and resolution;
-- `CM055–CM057` — complete secondary leading-tone seventh context/quality, four-tone realization/inversion, and exact target/tendency resolution.
-
-Search/ranking semantics cannot waive a hard rule.
-
-See [Verification](docs/VERIFICATION.md).
+- [SATB harmony](docs/SATB_HARMONY.md)
+- [Expanded harmony](docs/EXPANDED_HARMONY.md)
+- [Applied-dominant tonicization](docs/TONICIZATION.md)
+- [Modal mixture](docs/MODAL_MIXTURE.md)
+- [Borrowed seventh chords](docs/BORROWED_SEVENTHS.md)
+- [Secondary leading-tone triads](docs/SECONDARY_LEADING_TONE.md)
+- [Secondary leading-tone sevenths](docs/SECONDARY_LEADING_TONE_SEVENTHS.md)
+- [Phrase grammar](docs/PHRASE_GRAMMAR.md)
+- [Rhythm and motifs](docs/RHYTHM_AND_MOTIFS.md)
 
 ## Install
 
-Python 3.11+:
+From a checkout, create a Python 3.11+ environment and install the capability you need:
 
 ```bash
 python -m venv .venv
 # Linux/macOS
 source .venv/bin/activate
 # Windows PowerShell: .venv\Scripts\Activate.ps1
-python -m pip install -e ".[generation]"  # generation + checking
-python -m pip install -e ".[dev]"         # contributors
+
+# Checker/certifier only; OR-Tools is not required
+python -m pip install -e .
+
+# Generation + checking
+python -m pip install -e ".[generation]"
+
+# Contributor/research environment with exact research pins
+python -m pip install -e ".[dev]"
 ```
 
 ## Generate
@@ -234,109 +102,84 @@ constraint-music generate examples/secondary_leading_tone_sevenths.yaml \
   --print-grid
 ```
 
-The default `certified-satb` profile writes conductor plus exact S/A/T/B tracks. Use
-`--render-profile melody-plus-satb` when the separately specified rhythmic melody
-projection is also required.
+The default `certified-satb` profile writes conductor plus exact S/A/T/B tracks. Use `--render-profile melody-plus-satb` when the separately specified rhythmic melody projection is also required.
 
-## Inspect or certify without rerunning CP-SAT
+## Verify and certify
+
+Inspect an artifact without rerunning CP-SAT:
 
 ```bash
 constraint-music verify build/composition.json
+```
 
-# Strict release gate: independently fixed request + exact delivered MIDI
+Run the strict request-and-delivery gate:
+
+```bash
 constraint-music certify build/composition.json \
   --spec examples/secondary_leading_tone_sevenths.yaml \
   --midi build/composition.mid \
   --certificate build/composition.certificate.json
 ```
 
-`verify` is explicitly an embedded-context consistency inspection. `certify` is the
-strict release gate: it validates shape before reconstruction, binds an independently
-supplied request and contract, recomputes every semantic/claim digest, and parses the
-delivered MIDI independently. `--allow-legacy` only inspects supported 2.12 artifacts
-and never bypasses arbitrary integrity errors.
+`verify` checks embedded-context consistency. `certify` validates artifact shape, binds an independently supplied request and contract, recomputes semantic and claim digests, and independently parses the delivered MIDI. `--allow-legacy` only inspects supported 2.12 artifacts; it does not bypass integrity failures.
 
-See [Assurance Boundary](docs/ASSURANCE_BOUNDARY.md),
-[Executable Contract](docs/EXECUTABLE_CONTRACT.md), and
-[Reproducibility](docs/REPRODUCIBILITY.md). The research-only
-[EH-10 comparison](docs/EH10_ASSURANCE_COMPARISON.md) documents internal signal
-ablations and narrowly scoped external adapters without adding certification bypasses.
-The [EH-12 closure matrix](docs/EH12_CLOSURE_MATRIX.md) freezes the bounded assurance
-claim, explicit non-claims, remaining blockers, and exact completion policy.
-The [EH-12 consolidated assurance corpus](docs/EH12_ASSURANCE_CORPUS.md) records the
-39-case PR-34 schema, interaction, delivery, multi-fixture, and compiler-deletion evidence.
-The [fair paired comparison v2](research/paired_cross_system_v2/README.md) fixes the
-music21 bass-spelling adapter error in a new study, preserves v1, and adds 128
-feasible requests with inversions, dominant sevenths and soprano anchors. Its
-common adapted-delivery endpoint, separate native exports, repeated runs,
-paired confidence intervals/tests and predefined practical threshold are in the
-[v2 report](research/paired_cross_system_v2/REPORT.md).
+The separate request-bound harmonization API is described in [Request-Bound Harmonization](docs/REQUEST_BOUND_HARMONIZATION.md).
 
-The [paired cross-system conformance study](research/paired_cross_system_v1/README.md)
-adds a separate frozen corpus for Constraint Music, music21 and Diatony: 48 held-out
-attempts and 432 fault slots with complete native/delivered-byte replay. See its
-[derived report](research/paired_cross_system_v1/REPORT.md),
-[integrated manuscript draft](docs/CROSS_SYSTEM_CONFORMANCE_PAPER_DRAFT.md), and
-[handoff status](docs/CROSS_SYSTEM_HANDOFF_STATUS.md). Independent execution follows
-the [written-permission route](docs/RESEARCH_REPLAY_PERMISSION_TEMPLATE.md) under
-the unchanged proprietary license.
+## Testing and release assurance
 
-## Reproducibility
-
-Use `workers: 1` with a fixed `seed` for deterministic regression work and deterministic enumeration order. Multi-worker CP-SAT search is for performance and should not be assumed to return an identical optimum or enumeration order on every runtime.
-
-The contributor extra pins OR-Tools 9.15.6755 for the checked-in generator-boundary
-evidence and music21 9.9.2 for external-comparator evidence. The ordinary `generation`
-extra intentionally remains compatible with the supported OR-Tools 9.15 release line;
-the `comparators` extra installs the exact research comparator pin.
-
-## Quality gates
-
-Every supported interpreter runs the same complete gate:
+Install the development extra, then run the normal quality suite:
 
 ```bash
 ruff check src tests research
-mypy --python-version <3.11|3.12|3.13> src
+mypy src
 pytest --cov=constraint_music --cov-report=term-missing
-python -m research.validate_eh12_closure
-python -m research.eh12_assurance_corpus
 python -m build
 ```
 
-GitHub Actions runs those gates independently on Python **3.11, 3.12, and 3.13**. The current local baseline includes branch-aware coverage, strict mypy, and successful package builds. The secondary-seventh evidence spans all 12 chromatic tonics in both major and minor modes, every progression-reachable eligible target, both certified quality classes where applicable, all four inversions, finite register/context/resolution partitions, a pinned generator-finalization fault matrix, one exact named compiler-constraint deletion, and five cross-feature control/fault pairs with zero disagreements or escapes.
+The repository-authored aggregate gate is:
 
-The frozen corruption benchmark adds 30 attacks across realized music, harmonic claims,
-wire structure, integrity/request binding, and certified MIDI delivery, plus two valid
-controls. Raw outcomes, stable development/evaluation splits, family/tier metrics, and
-cluster-aware uncertainty are checked in under `research/results/`; the current corpus
-detects all attacks, accepts both controls, and has zero crashes.
+```bash
+python -m research.validate_release_assurance
+```
 
-The EH-10 observational ablation records four overlapping assurance channels. Removing
-wire-shape, semantic, integrity/request, or delivery signals leaves respectively
-24/30, 25/30, 23/30, and 24/30 attacks detected; no control is flagged. Two pinned,
-scope-normalized music21 9.9.2 adapters have zero disagreements across 9,840 bounded
-voice-leading cases and 126 C-major triad-policy cases. These are finite predicate
-comparisons, not whole-system equivalence or superiority claims.
+That gate validates the pinned research environment, lint/types/tests/builds, solver-free checker installation, deterministic evidence replays, evidence SHA-256 values, frozen bounded-assurance claim state, and the exact clean Git commit/tree under review. CI runs the quality gate on Python 3.11, 3.12, and 3.13 and separately replays preserved cross-system research histories.
 
-## Scope boundary
+See [Reproducibility](docs/REPRODUCIBILITY.md) and [Engineering Assurance Status](docs/ENGINEERING_ASSURANCE_STATUS.md).
 
-Independent verification is an application-level separation of trust, not a formal proof of OR-Tools, Python, or the host machine. Constraint satisfaction demonstrates conformance to the declared executable contract; it does not prove aesthetic quality or complete historical-style authenticity.
+## Research evidence
 
-The v2.12 harmonic subsystem remains the boundary for secondary leading-tone
-sevenths in v2.13. Separate future domains include arbitrary modulation chains,
-distant/enharmonic modulation, broad enharmonic reinterpretation,
-augmented-sixth/Neapolitan reinterpretation, unrestricted chromatic-harmony
-inference, free key-center inference, and probabilistic harmony certification.
+Research material is intentionally kept under [`research/`](research/README.md) rather than mixed into the product narrative. Frozen protocols, source/receipt histories, raw outputs, derived reports, negative findings, and prior study versions are retained for reproducibility.
 
-See [Architecture](docs/ARCHITECTURE.md), [Verification](docs/VERIFICATION.md), [History](docs/HISTORY.md), [Roadmap](docs/ROADMAP.md), and [Changelog](CHANGELOG.md).
+The current request-bound paired study reports **128/128** reproducible native/adapted passes for the new API on its declared grammar and configurations, versus legacy Constraint Music **53/128**, music21 **111/128**, and adapted Diatony **38/128**. Against music21 there are 17 Constraint-Music-only passes and no losses; the corrected exact paired p-value is **0.0000458**, with a conservative simultaneous completion-difference interval of **[+2.34, +23.01] percentage points**. The separately prespecified **+10-point minimum practical margin is not established against music21**.
 
-## Licence
+Those results support a scoped completion difference on the declared grammar and configurations. They do **not** establish general musical quality, universal completeness, novelty of constraint-based harmony, or overall superiority to other music systems. Earlier v1/v2 studies and their negative findings remain preserved rather than rewritten.
 
-Constraint Music is **proprietary, source-available software**. It is not open
-source. Copyright © 2026 Stamatis-Christos Saridakis. All rights are reserved.
+See [Cross-System Study Status](docs/CROSS_SYSTEM_STUDY_STATUS.md), the [v3 report](research/paired_cross_system_v3/REPORT.md), and the [integrated manuscript draft](docs/CROSS_SYSTEM_CONFORMANCE_PAPER_DRAFT.md).
 
-Public repository visibility permits the limited viewing and forking rights
-required by GitHub's Terms of Service; it does not grant a general right to run,
-modify, redistribute, sublicense, or commercialize the software. Contributions
-are accepted only by prior written agreement. See [LICENSE](LICENSE) for the
-complete terms and licensing contact route.
+## Repository layout
+
+```text
+src/constraint_music/   Product implementation
+examples/               Example generation specifications
+tests/                  Correctness, adversarial, isolation, and regression tests
+docs/                   Product, musical-semantics, assurance, and usage documentation
+research/               Versioned experiments, protocols, evidence, replay tools, and reports
+.github/workflows/       CI and reproducibility workflows
+```
+
+A documentation map is available in [`docs/README.md`](docs/README.md).
+
+## Current limitations
+
+- Independent verification is an application-level separation of trust, not a formal proof of OR-Tools, Python, the operating system, or the host machine.
+- The certified modulation model is deliberately narrow: one same-mode modulation to the dominant under explicit pivot and cadence rules.
+- Secondary-function, modal-mixture, and seventh-chord support is contract-scoped rather than unrestricted chromatic-harmony inference.
+- The request-bound comparative studies use declared finite grammars and configured endpoints; they are not unconditioned rankings of music systems.
+- Finite adversarial, bounded-conformance, and performance evidence does not imply population-level robustness or latency/capacity guarantees.
+- Aesthetic quality and complete historical-style authenticity are outside the executable contract.
+
+Future work that has not been implemented is separated from current capability in [Future Work](docs/FUTURE_WORK.md).
+
+## License
+
+Constraint Music is publicly visible but **proprietary**. See [`LICENSE`](LICENSE). The repository does not grant a general right to use, modify, redistribute, or execute the software beyond the rights stated in that license and applicable GitHub terms.
