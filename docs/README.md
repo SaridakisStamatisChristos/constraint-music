@@ -4,6 +4,7 @@ Constraint Music documentation is organized by durable concern rather than imple
 
 ## Architecture and trust boundary
 
+- [Architecture Overview](ARCHITECTURE_OVERVIEW.md) — visual end-to-end system diagram covering specification, constraint compilation, CP-SAT search, independent certification, delivery, and fail-closed rejection.
 - [Architecture](ARCHITECTURE.md) — generator, constraint model, verifier, certification, and delivery flow.
 - [Assurance Boundary](ASSURANCE_BOUNDARY.md) — what independent verification does and does not establish.
 - [Executable Contract](EXECUTABLE_CONTRACT.md) — rule outcomes and executable hard-constraint contract.
